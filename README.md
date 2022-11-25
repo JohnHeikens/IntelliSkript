@@ -1,0 +1,2 @@
+# IntelliSkript
+ Intellisense for skript!
