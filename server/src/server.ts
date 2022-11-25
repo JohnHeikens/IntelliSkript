@@ -140,42 +140,79 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
 	// The validator creates diagnostics for all uppercase words length 2 and more
 	const text = textDocument.getText();
-	const pattern = /\b[A-Z]{2,}\b/g;
-	let m: RegExpExecArray | null;
-
+	//const pattern = /check\[.*?\]/g; // /\b[A-Z]{2,}\b/g;
+	//let m: RegExpExecArray | null;
 	let problems = 0;
 	const diagnostics: Diagnostic[] = [];
-	while ((m = pattern.exec(text)) && problems < settings.maxNumberOfProblems) {
-		problems++;
-		const diagnostic: Diagnostic = {
-			severity: DiagnosticSeverity.Warning,
-			range: {
-				start: textDocument.positionAt(m.index),
-				end: textDocument.positionAt(m.index + m[0].length)
-			},
-			message: `${m[0]} is all uppercase.`,
-			source: 'ex'
-		};
-		if (hasDiagnosticRelatedInformationCapability) {
-			diagnostic.relatedInformation = [
-				{
-					location: {
-						uri: textDocument.uri,
-						range: Object.assign({}, diagnostic.range)
+
+	//loop over all lines in the skript file and check for errors
+
+	const lines = text.split("\n");
+	let currentLineIndex = 0;
+    let currentLineStartPosition = 0;
+
+	while ((currentLineIndex < lines.length) && (problems < settings.maxNumberOfProblems)) {
+		
+		const currentLine = lines[currentLineIndex];
+		//trim comments off
+
+		const commentIndex = currentLine.search(/(?<!#)#(?!#)/);
+
+		const trimmedLine = commentIndex == -1 ? currentLine : currentLine.substring(0, commentIndex);
+
+		if (trimmedLine.trim().length != 0) {
+			//check for invalid amounts of spaces
+
+			const spaceCount = trimmedLine.search(/(?! )/);
+			if ((spaceCount % 4) != 0) {
+				++problems;
+				const diagnostic: Diagnostic = {
+					severity: DiagnosticSeverity.Warning,
+					range: {
+						start: textDocument.positionAt(currentLineStartPosition + Math.floor(spaceCount / 4) * 4),
+						end: textDocument.positionAt(currentLineStartPosition + spaceCount)
 					},
-					message: 'Spelling matters'
-				},
-				{
-					location: {
-						uri: textDocument.uri,
-						range: Object.assign({}, diagnostic.range)
-					},
-					message: 'Particularly for names'
-				}
-			];
+					message: `invalid space count(` + spaceCount + ")",
+					source: 'ex'
+				};
+				diagnostics.push(diagnostic);
+			}
 		}
-		diagnostics.push(diagnostic);
+		currentLineIndex++;
+		currentLineStartPosition += currentLine.length + 1;
 	}
+
+	//while ((m = pattern.exec(text)) && problems < settings.maxNumberOfProblems) {
+	//	problems++;
+	//	const diagnostic: Diagnostic = {
+	//		severity: DiagnosticSeverity.Warning,
+	//		range: {
+	//			start: textDocument.positionAt(m.index),
+	//			end: textDocument.positionAt(m.index + m[0].length)
+	//		},
+	//		message: `${m[0]} is all uppercase.`,
+	//		source: 'ex'
+	//	};
+	//	if (hasDiagnosticRelatedInformationCapability) {
+	//		diagnostic.relatedInformation = [
+	//			{
+	//				location: {
+	//					uri: textDocument.uri,
+	//					range: Object.assign({}, diagnostic.range)
+	//				},
+	//				message: 'Spelling matters'
+	//			},
+	//			{
+	//				location: {
+	//					uri: textDocument.uri,
+	//					range: Object.assign({}, diagnostic.range)
+	//				},
+	//				message: 'Particularly for names'
+	//			}
+	//		];
+	//	}
+	//	diagnostics.push(diagnostic);
+	//}
 
 	// Send the computed diagnostics to VSCode.
 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
