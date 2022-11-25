@@ -80,27 +80,27 @@ connection.onInitialized(() => {
 	}
 });
 
-// The example settings
-interface ExampleSettings {
+// IntelliSkript settings
+interface IntelliSkriptSettings {
 	maxNumberOfProblems: number;
 }
 
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
-const defaultSettings: ExampleSettings = { maxNumberOfProblems: 1000 };
-let globalSettings: ExampleSettings = defaultSettings;
+const defaultSettings: IntelliSkriptSettings = { maxNumberOfProblems: 1000 };
+let globalSettings: IntelliSkriptSettings = defaultSettings;
 
 // Cache the settings of all open documents
-const documentSettings: Map<string, Thenable<ExampleSettings>> = new Map();
+const documentSettings: Map<string, Thenable<IntelliSkriptSettings>> = new Map();
 
 connection.onDidChangeConfiguration(change => {
 	if (hasConfigurationCapability) {
 		// Reset all cached document settings
 		documentSettings.clear();
 	} else {
-		globalSettings = <ExampleSettings>(
-			(change.settings.languageServerExample || defaultSettings)
+		globalSettings = <IntelliSkriptSettings>(
+			(change.settings.intelliSkript || defaultSettings)
 		);
 	}
 
@@ -108,7 +108,7 @@ connection.onDidChangeConfiguration(change => {
 	documents.all().forEach(validateTextDocument);
 });
 
-function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
+function getDocumentSettings(resource: string): Thenable<IntelliSkriptSettings> {
 	if (!hasConfigurationCapability) {
 		return Promise.resolve(globalSettings);
 	}
@@ -116,7 +116,7 @@ function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
 	if (!result) {
 		result = connection.workspace.getConfiguration({
 			scopeUri: resource,
-			section: 'languageServerExample'
+			section: 'intelliSkript'
 		});
 		documentSettings.set(resource, result);
 	}
@@ -149,35 +149,105 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
 	const lines = text.split("\n");
 	let currentLineIndex = 0;
-    let currentLineStartPosition = 0;
+	let currentLineStartPosition = 0;
+	const currentType = "";
+
+	const allowedStartTokens: string[] = ["function", "effect", "condition", "on"];
+	let expectedIndentationCount = 0;
+	let currentIndentationString = "";
 
 	while ((currentLineIndex < lines.length) && (problems < settings.maxNumberOfProblems)) {
-		
+
 		const currentLine = lines[currentLineIndex];
 		//trim comments off
 
 		const commentIndex = currentLine.search(/(?<!#)#(?!#)/);
 
-		const trimmedLine = commentIndex == -1 ? currentLine : currentLine.substring(0, commentIndex);
+		const lineWithoutComments = commentIndex == -1 ? currentLine : currentLine.substring(0, commentIndex);
 
-		if (trimmedLine.trim().length != 0) {
+		const trimmedLine = lineWithoutComments.trim();
+
+
+
+		if (trimmedLine.length != 0) {
 			//check for invalid amounts of spaces
 
-			const spaceCount = trimmedLine.search(/(?! )/);
-			if ((spaceCount % 4) != 0) {
-				++problems;
-				const diagnostic: Diagnostic = {
-					severity: DiagnosticSeverity.Warning,
-					range: {
-						start: textDocument.positionAt(currentLineStartPosition + Math.floor(spaceCount / 4) * 4),
-						end: textDocument.positionAt(currentLineStartPosition + spaceCount)
-					},
-					message: `invalid space count(` + spaceCount + ")",
-					source: 'ex'
-				};
-				diagnostics.push(diagnostic);
+			const indentationEndIndex = currentLine.search(/(?!( |\t))/);
+
+			let currentType = "";
+
+			if (trimmedLine.endsWith(":")) {
+				currentType = "section";
+
+				//currentType = 'command';
 			}
+
+			if (indentationEndIndex == 0) {
+				if (currentType == "section") {
+					currentIndentationString = "";
+				}
+				else {
+					++problems;
+					const diagnostic: Diagnostic = {
+						severity: DiagnosticSeverity.Error,
+						range: {
+							start: textDocument.positionAt(currentLineStartPosition),
+							end: textDocument.positionAt(currentLineStartPosition + trimmedLine.length)
+						},
+						message: `can't understand this line`,
+						source: 'ex'
+					};
+					diagnostics.push(diagnostic);
+				}
+			}
+			else {
+				const indentationString = currentLine.substring(0, indentationEndIndex);
+				const inverseIndentationType = (indentationString[0] == " ") ? "\t" : " ";
+				if (indentationString.includes(inverseIndentationType)) {
+					++problems;
+					const diagnostic: Diagnostic = {
+						severity: DiagnosticSeverity.Error,
+						range: {
+							start: textDocument.positionAt(currentLineStartPosition + Math.floor(indentationEndIndex / 4) * 4),
+							end: textDocument.positionAt(currentLineStartPosition + indentationEndIndex)
+						},
+						message: `indentation error: do not mix tabs and spaces` + indentationEndIndex,
+						source: 'ex'
+					};
+					diagnostics.push(diagnostic);
+				}
+				else {
+					if (currentIndentationString == "") {
+						currentIndentationString = indentationString;
+					}
+					else {
+						const currentExpectedIndentationCharachterCount = expectedIndentationCount * currentIndentationString.length;
+						if ((indentationEndIndex > currentExpectedIndentationCharachterCount) || (indentationEndIndex % currentIndentationString.length) != 0) {
+							const indentationExpectationStringDescription =
+								++problems;
+							const diagnostic: Diagnostic = {
+								severity: DiagnosticSeverity.Error,
+								range: {
+									start: textDocument.positionAt(currentLineStartPosition + Math.floor(indentationEndIndex / 4) * 4),
+									end: textDocument.positionAt(currentLineStartPosition + indentationEndIndex)
+								},
+								message: `indentation error: expected ` + currentExpectedIndentationCharachterCount + (currentIndentationString[0] == " " ? " space" : " tab") + (currentExpectedIndentationCharachterCount == 1 ? "" : "s") + ` but found ` + indentationEndIndex,
+								source: 'ex'
+							};
+							diagnostics.push(diagnostic);
+						}
+					}
+				}
+			}
+
+			if (currentType == "section") {
+
+				expectedIndentationCount++;
+			}
+
 		}
+
+
 		currentLineIndex++;
 		currentLineStartPosition += currentLine.length + 1;
 	}
