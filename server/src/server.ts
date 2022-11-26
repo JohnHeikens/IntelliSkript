@@ -21,6 +21,16 @@ import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
 
+import {
+	SkriptFile
+} from "./SkriptFile"; 
+
+import {
+	SkriptSection
+} from "./SkriptSection";
+import { SkriptFunction } from './SkriptFunction';
+import { SkriptContext } from './SkriptContext';
+
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
@@ -138,151 +148,10 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 	// In this simple example we get the settings for every validate run.
 	const settings = await getDocumentSettings(textDocument.uri);
 
-	// The validator creates diagnostics for all uppercase words length 2 and more
-	const text = textDocument.getText();
-	//const pattern = /check\[.*?\]/g; // /\b[A-Z]{2,}\b/g;
-	//let m: RegExpExecArray | null;
-	let problems = 0;
-	const diagnostics: Diagnostic[] = [];
+	const context = new SkriptContext(textDocument);
 
-	//loop over all lines in the skript file and check for errors
-
-	const lines = text.split("\n");
-	let currentLineIndex = 0;
-	let currentLineStartPosition = 0;
-	const currentType = "";
-
-	const allowedStartTokens: string[] = ["function", "effect", "condition", "on"];
-	let expectedIndentationCount = 0;
-	let currentIndentationString = "";
-
-	while ((currentLineIndex < lines.length) && (problems < settings.maxNumberOfProblems)) {
-
-		const currentLine = lines[currentLineIndex];
-		//trim comments off
-
-		const commentIndex = currentLine.search(/(?<!#)#(?!#)/);
-
-		const lineWithoutComments = commentIndex == -1 ? currentLine : currentLine.substring(0, commentIndex);
-
-		const trimmedLine = lineWithoutComments.trim();
-
-
-
-		if (trimmedLine.length != 0) {
-			//check for invalid amounts of spaces
-
-			const indentationEndIndex = currentLine.search(/(?!( |\t))/);
-
-			let currentType = "";
-
-			if (trimmedLine.endsWith(":")) {
-				currentType = "section";
-
-				//currentType = 'command';
-			}
-
-			if (indentationEndIndex == 0) {
-				if (currentType == "section") {
-					currentIndentationString = "";
-				}
-				else {
-					++problems;
-					const diagnostic: Diagnostic = {
-						severity: DiagnosticSeverity.Error,
-						range: {
-							start: textDocument.positionAt(currentLineStartPosition),
-							end: textDocument.positionAt(currentLineStartPosition + trimmedLine.length)
-						},
-						message: `can't understand this line`,
-						source: 'ex'
-					};
-					diagnostics.push(diagnostic);
-				}
-			}
-			else {
-				const indentationString = currentLine.substring(0, indentationEndIndex);
-				const inverseIndentationType = (indentationString[0] == " ") ? "\t" : " ";
-				if (indentationString.includes(inverseIndentationType)) {
-					++problems;
-					const diagnostic: Diagnostic = {
-						severity: DiagnosticSeverity.Error,
-						range: {
-							start: textDocument.positionAt(currentLineStartPosition + Math.floor(indentationEndIndex / 4) * 4),
-							end: textDocument.positionAt(currentLineStartPosition + indentationEndIndex)
-						},
-						message: `indentation error: do not mix tabs and spaces` + indentationEndIndex,
-						source: 'ex'
-					};
-					diagnostics.push(diagnostic);
-				}
-				else {
-					if (currentIndentationString == "") {
-						currentIndentationString = indentationString;
-					}
-					else {
-						const currentExpectedIndentationCharachterCount = expectedIndentationCount * currentIndentationString.length;
-						if ((indentationEndIndex > currentExpectedIndentationCharachterCount) || (indentationEndIndex % currentIndentationString.length) != 0) {
-							
-								++problems;
-							const diagnostic: Diagnostic = {
-								severity: DiagnosticSeverity.Error,
-								range: {
-									start: textDocument.positionAt(currentLineStartPosition + Math.floor(indentationEndIndex / 4) * 4),
-									end: textDocument.positionAt(currentLineStartPosition + indentationEndIndex)
-								},
-								message: `indentation error: expected ` + currentExpectedIndentationCharachterCount + (currentIndentationString[0] == " " ? " space" : " tab") + (currentExpectedIndentationCharachterCount == 1 ? "" : "s") + ` but found ` + indentationEndIndex,
-								source: 'ex'
-							};
-							diagnostics.push(diagnostic);
-						}
-					}
-				}
-			}
-
-			if (currentType == "section") {
-
-				expectedIndentationCount++;
-			}
-
-		}
-
-
-		currentLineIndex++;
-		currentLineStartPosition += currentLine.length + 1;
-	}
-
-	//while ((m = pattern.exec(text)) && problems < settings.maxNumberOfProblems) {
-	//	problems++;
-	//	const diagnostic: Diagnostic = {
-	//		severity: DiagnosticSeverity.Warning,
-	//		range: {
-	//			start: textDocument.positionAt(m.index),
-	//			end: textDocument.positionAt(m.index + m[0].length)
-	//		},
-	//		message: `${m[0]} is all uppercase.`,
-	//		source: 'ex'
-	//	};
-	//	if (hasDiagnosticRelatedInformationCapability) {
-	//		diagnostic.relatedInformation = [
-	//			{
-	//				location: {
-	//					uri: textDocument.uri,
-	//					range: Object.assign({}, diagnostic.range)
-	//				},
-	//				message: 'Spelling matters'
-	//			},
-	//			{
-	//				location: {
-	//					uri: textDocument.uri,
-	//					range: Object.assign({}, diagnostic.range)
-	//				},
-	//				message: 'Particularly for names'
-	//			}
-	//		];
-	//	}
-	//	diagnostics.push(diagnostic);
-	//}
+	const currentFile = new SkriptFile(context);
+	const diagnostics: Diagnostic[] = context.diagnostics;
 
 	// Send the computed diagnostics to VSCode.
 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
