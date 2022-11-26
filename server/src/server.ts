@@ -223,7 +223,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 					else {
 						const currentExpectedIndentationCharachterCount = expectedIndentationCount * currentIndentationString.length;
 						if ((indentationEndIndex > currentExpectedIndentationCharachterCount) || (indentationEndIndex % currentIndentationString.length) != 0) {
-							const indentationExpectationStringDescription =
+							
 								++problems;
 							const diagnostic: Diagnostic = {
 								severity: DiagnosticSeverity.Error,
