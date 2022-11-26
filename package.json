@@ -3,7 +3,7 @@
 	"description": "IntelliSense for skript",
 	"author": "John Heikens",
 	"license": "GNU",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"icon": "icon.png",
 	"repository": {
 		"type": "git",
@@ -17,11 +17,19 @@
 	"engines": {
 		"vscode": "^1.63.0"
 	},
-    "languages": [{
-        "id": "skript",
-        "extensions": [ ".sk", ".skript" ],
-        "aliases": [ "Skript", "skript" ]
-    }],
+	"languages": [
+		{
+			"id": "skript",
+			"extensions": [
+				".sk",
+				".skript"
+			],
+			"aliases": [
+				"Skript",
+				"skript"
+			]
+		}
+	],
 	"activationEvents": [
 		"onLanguage:skript"
 	],
