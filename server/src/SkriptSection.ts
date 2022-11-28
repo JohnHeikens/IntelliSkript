@@ -1,9 +1,11 @@
 import {
 	SkriptContext
 } from './SkriptContext';
+import { SkriptVariable } from './SkriptVariable';
 
 export class SkriptSection {
 	childSections: Array<SkriptSection>;
+	definedVariables: Array<SkriptVariable> = [];
 	parent: SkriptSection | undefined;
 	constructor(parent: SkriptSection | undefined) {
 		this.childSections = new Array<SkriptSection>();

@@ -3,10 +3,6 @@ import {
 } from "./SkriptSection";
 
 import {
-	TextDocument
-} from 'vscode-languageserver-textdocument';
-
-import {
 	DiagnosticSeverity,
 	Diagnostic
 } from 'vscode-languageserver/node';
@@ -15,14 +11,14 @@ import { SkriptFunction } from './SkriptFunction';
 import {
 	SkriptContext
 } from './SkriptContext';
-import { nextTick } from 'process';
-
 export class SkriptFile extends SkriptSection {
 
 	createSection(context: SkriptContext): SkriptSection {
 		const sectionKeyword = context.currentString.substring(0, context.currentString.indexOf(" "));
 		if (sectionKeyword == "function") {
-			return new SkriptFunction(this);
+			const f = new SkriptFunction(context, this);
+			
+			return f;
 		}
 		else{
 			return super.createSection(context);
@@ -97,7 +93,7 @@ export class SkriptFile extends SkriptSection {
 						}
 						else{
 							const currentIndentationCount = indentationEndIndex / currentIndentationString.length;
-							const StacksToPop = currentIndentationCount - expectedIndentationCount;
+							const StacksToPop = expectedIndentationCount - currentIndentationCount;
 							for(let i = 0; i < StacksToPop; i++) {
 								currentContext.currentSection = currentContext.currentSection?.parent;
 							}

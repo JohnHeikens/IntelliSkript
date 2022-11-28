@@ -4,13 +4,16 @@
  * ------------------------------------------------------------------------------------------ */
 
 import * as path from 'path';
+import * as vscode from 'vscode';
+
 import { workspace, ExtensionContext } from 'vscode';
+//import { SkriptDefinitionProvider } from './SkriptDefinitionProvider';
 
 import {
 	LanguageClient,
 	LanguageClientOptions,
 	ServerOptions,
-	TransportKind
+	TransportKind,
 } from 'vscode-languageclient/node';
 
 let client: LanguageClient;
@@ -52,6 +55,11 @@ export function activate(context: ExtensionContext) {
 		serverOptions,
 		clientOptions
 	);
+
+	
+    //context.subscriptions.push(
+    //    vscode.languages.registerDefinitionProvider(
+    //        ".sk", new SkriptDefinitionProvider()));
 
 	// Start the client. This will also launch the server
 	client.start();

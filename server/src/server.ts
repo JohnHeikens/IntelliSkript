@@ -25,11 +25,9 @@ import {
 	SkriptFile
 } from "./SkriptFile"; 
 
-import {
-	SkriptSection
-} from "./SkriptSection";
-import { SkriptFunction } from './SkriptFunction';
-import { SkriptContext } from './SkriptContext';
+import { 
+	SkriptContext 
+} from './SkriptContext';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -64,8 +62,9 @@ connection.onInitialize((params: InitializeParams) => {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
 			// Tell the client that this server supports code completion.
 			completionProvider: {
-				resolveProvider: true
-			}
+				resolveProvider: true	
+			},
+			definitionProvider: true
 		}
 	};
 	if (hasWorkspaceFolderCapability) {
