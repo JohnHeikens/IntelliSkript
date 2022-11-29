@@ -6,16 +6,16 @@ import {
 	createConnection,
 	TextDocuments,
 	Diagnostic,
-	DiagnosticSeverity,
 	ProposedFeatures,
 	InitializeParams,
 	DidChangeConfigurationNotification,
-	CompletionItem,
-	CompletionItemKind,
-	TextDocumentPositionParams,
 	TextDocumentSyncKind,
 	InitializeResult,
-	DefinitionLink
+	DefinitionLink,
+	WorkspaceChange,
+	ChangeAnnotation,
+	CodeAction,
+	CodeActionKind
 } from 'vscode-languageserver/node';
 
 import {
@@ -24,12 +24,13 @@ import {
 
 import {
 	SkriptFile
-} from "./SkriptFile";
+} from "./Section/SkriptFile";
 
 import {
 	SkriptContext
 } from './SkriptContext';
-import { SkriptWorkSpace } from './SkriptWorkSpace';
+import { SkriptWorkSpace } from './Section/SkriptWorkSpace';
+import assert = require('assert');
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -109,10 +110,11 @@ connection.onInitialize((params: InitializeParams) => {
 		capabilities: {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
 			// Tell the client that this server supports code completion.
-			completionProvider: {
-				resolveProvider: true
-			},
-			definitionProvider: true
+			//completionProvider: {
+			//	resolveProvider: true
+			//},
+			definitionProvider: true,
+			codeActionProvider: true
 		}
 	};
 	if (hasWorkspaceFolderCapability) {
@@ -293,41 +295,84 @@ connection.onDidChangeWatchedFiles(_change => {
 	//validateTextDocument(new TextDocument(_change.changes[0].uri));
 });
 
-// This handler provides the initial list of the completion items.
-connection.onCompletion(
-	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-		// The pass parameter contains the position of the text document in
-		// which code complete got requested. For the example we ignore this
-		// info and always provide the same completion items.
-		return [
-			{
-				label: 'TypeScript',
-				kind: CompletionItemKind.Text,
-				data: 1
-			},
-			{
-				label: 'JavaScript',
-				kind: CompletionItemKind.Text,
-				data: 2
+
+connection.onCodeAction((params) => {
+	const document = documents.get(params.textDocument.uri);
+	const change: WorkspaceChange = new WorkspaceChange();
+	const diagnosticsAssociated = params.context.diagnostics;
+	if (diagnosticsAssociated.length > 0) {
+		const currentDiagnostic = params.context.diagnostics[0];
+		if (currentDiagnostic.code != undefined) {
+			if ((currentDiagnostic.code as string).startsWith("IntelliSkript Indent")) {
+				const data = currentDiagnostic.data;
+				const indentString = data as string;
+				//change.createFile(`${folder}/newFile.bat`, { overwrite: true });
+				if (document) {
+					const a = change.getTextEditChange(document);
+					a.replace({
+						start: {
+							line: params.range.start.line,
+							character: 0
+						}, end:
+						{
+							line: params.range.start.line,
+							character: SkriptFile.getIndentationEndIndex(document.getText().split("\n")[params.range.start.line])
+						}
+					}, indentString, ChangeAnnotation.create('Insert the expected amount of spaces and tabs', true));
+				}
+				//const b = change.getTextEditChange({ uri: `${folder}/newFile.bat`, version: null });
+				//b.insert({ line: 0, character: 0 }, 'The initial content', ChangeAnnotation.create('Add additional content', true));
+
+				const codeAction: CodeAction = {
+					title: 'Fix indentation',
+					kind: CodeActionKind.QuickFix,
+					data: params.textDocument.uri
+				};
+				codeAction.edit = change.edit;
+				return [
+					codeAction
+				];
 			}
-		];
+		}
 	}
-);
+	return [];
+});
+
+// This handler provides the initial list of the completion items.
+//connection.onCompletion(
+//	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
+//		// The pass parameter contains the position of the text document in
+//		// which code complete got requested. For the example we ignore this
+//		// info and always provide the same completion items.
+//		return [
+//			{
+//				label: 'TypeScript',
+//				kind: CompletionItemKind.Text,
+//				data: 1
+//			},
+//			{
+//				label: 'JavaScript',
+//				kind: CompletionItemKind.Text,
+//				data: 2
+//			}
+//		];
+//	}
+//);
 
 // This handler resolves additional information for the item selected in
 // the completion list.
-connection.onCompletionResolve(
-	(item: CompletionItem): CompletionItem => {
-		if (item.data === 1) {
-			item.detail = 'TypeScript details';
-			item.documentation = 'TypeScript documentation';
-		} else if (item.data === 2) {
-			item.detail = 'JavaScript details';
-			item.documentation = 'JavaScript documentation';
-		}
-		return item;
-	}
-);
+//connection.onCompletionResolve(
+//	(item: CompletionItem): CompletionItem => {
+//		if (item.data === 1) {
+//			item.detail = 'TypeScript details';
+//			item.documentation = 'TypeScript documentation';
+//		} else if (item.data === 2) {
+//			item.detail = 'JavaScript details';
+//			item.documentation = 'JavaScript documentation';
+//		}
+//		return item;
+//	}
+//);
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events

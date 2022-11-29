@@ -6,20 +6,28 @@ import { SkriptFunction } from './SkriptFunction';
 
 import {
 	SkriptContext
-} from './SkriptContext';
+} from '../SkriptContext';
 import { SkriptCommand } from './SkriptCommand';
-import { SkriptEffect } from './SkriptEffect';
+import { SkriptEffect } from '../SkriptEffect';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { SkriptWorkSpace } from './SkriptWorkSpace';
+import { SkriptImportSection } from './SkriptImportSection';
+import { DiagnosticSeverity } from 'vscode-languageserver/node';
+
+function removeRemainder(toDivide:number, toDivideBy:number):number {
+	return Math.floor(toDivide / toDivideBy) * toDivideBy;
+}
+
 export class SkriptFile extends SkriptSection {
 	document: TextDocument;
 	workSpace: SkriptWorkSpace | undefined;
 
 	createSection(context: SkriptContext): SkriptSection {
-		const sectionKeyword = context.currentString.substring(0, context.currentString.indexOf(" "));
+		const spaceIndex = context.currentString.indexOf(" ");
+		const sectionKeyword = spaceIndex == -1 ? context.currentString : context.currentString.substring(0, spaceIndex);
 		if (sectionKeyword == "function") {
 			const s = new SkriptFunction(context, this);
-			
+
 			return s;
 		}
 		else if (sectionKeyword == "command") {
@@ -30,7 +38,11 @@ export class SkriptFile extends SkriptSection {
 			const s = new SkriptEffect(context, this);
 			return s;
 		}
-		else{
+		else if (sectionKeyword == "import") {
+			const s = new SkriptImportSection(context, this);
+			return s;
+		}
+		else {
 			return super.createSection(context);
 		}
 	}
@@ -43,9 +55,10 @@ export class SkriptFile extends SkriptSection {
 		return line.search(/(?!( |\t))/);
 	}
 
+	
 
 	constructor(workSpace: SkriptWorkSpace | undefined, context: SkriptContext) {
-		super(context,undefined);
+		super(context, undefined);
 		this.workSpace = workSpace;
 		this.document = context.currentDocument;
 		context.currentSection = this;
@@ -68,20 +81,24 @@ export class SkriptFile extends SkriptSection {
 
 			//remove comments and space from the right
 			const commentIndex = currentLine.search(/(?<!#)#(?!#)/);
-			const lineWithoutComments = commentIndex == -1? currentLine: currentLine.substring(0, commentIndex);
+			const lineWithoutComments = commentIndex == -1 ? currentLine : currentLine.substring(0, commentIndex);
 			const trimmedLine = lineWithoutComments.trim();
-			
-			cont:
+
+			//cont:
 			if (trimmedLine.length > 0) {
 				const indentationEndIndex = SkriptFile.getIndentationEndIndex(currentLine);
 				context.currentPosition = currentLineStartPosition + indentationEndIndex;
 				const indentationString = currentLine.substring(0, indentationEndIndex);
 				const inverseIndentationType = (indentationString[0] == " ") ? "\t" : " ";
+				const currentExpectedIndentationCharachterCount = expectedIndentationCount * currentIndentationString.length;
 				if (indentationString.includes(inverseIndentationType)) {
 					context.addDiagnostic(
-						currentLineStartPosition + Math.floor(indentationEndIndex / 4) * 4,
+						currentLineStartPosition,
 						currentLineStartPosition + indentationEndIndex,
-						`indentation error: do not mix tabs and spaces` + indentationEndIndex
+						`indentation error: do not mix tabs and spaces` + indentationEndIndex,
+						DiagnosticSeverity.Error,
+						"IntelliSkript Indent Mix",
+						currentIndentationString.repeat(expectedIndentationCount)
 					);
 				}
 				else {
@@ -89,21 +106,30 @@ export class SkriptFile extends SkriptSection {
 						currentIndentationString = indentationString;
 					}
 					else {
-						const currentExpectedIndentationCharachterCount = expectedIndentationCount * currentIndentationString.length;
 						if ((indentationEndIndex > currentExpectedIndentationCharachterCount) || (indentationEndIndex % currentIndentationString.length) != 0) {
-							const difference = indentationEndIndex - (Math.floor(indentationEndIndex / 4) * 4);
+							const difference = indentationEndIndex - removeRemainder(indentationEndIndex, currentIndentationString.length);
 							context.addDiagnostic(
-								currentLineStartPosition + Math.floor(indentationEndIndex / 4) * 4,
+								currentLineStartPosition + removeRemainder(indentationEndIndex, currentIndentationString.length),
 								difference,
-								`indentation error: expected ` + currentExpectedIndentationCharachterCount + (currentIndentationString[0] == " " ? " space" : " tab") + (currentExpectedIndentationCharachterCount == 1 ? "" : "s") + ` but found ` + indentationEndIndex
+								`indentation error: expected ` + currentExpectedIndentationCharachterCount + (currentIndentationString[0] == " " ? " space" : " tab") + (currentExpectedIndentationCharachterCount == 1 ? "" : "s") + ` but found ` + indentationEndIndex,
+								DiagnosticSeverity.Error,
+								"IntelliSkript Indent Amount",
+								currentIndentationString.repeat(expectedIndentationCount)
 							);
-							break cont;
+							//process the line like normally. this way the next lines will not all generate errors messages.
+							//break cont;
 						}
-						else{
+						else {
 							const currentIndentationCount = indentationEndIndex / currentIndentationString.length;
 							const StacksToPop = expectedIndentationCount - currentIndentationCount;
-							for(let i = 0; i < StacksToPop; i++) {
-								context.currentSection = context.currentSection?.parent instanceof SkriptSection ? context.currentSection?.parent as SkriptSection : undefined;
+							if (context.currentSection) {
+								for (let i = 0; i < StacksToPop; i++) {
+									context.currentSection.endLine = currentLineIndex;
+									context.currentSection = context.currentSection?.parent instanceof SkriptSection ? context.currentSection?.parent as SkriptSection : undefined;
+									if (!context.currentSection) {
+										break;
+									}
+								}
 							}
 							expectedIndentationCount = currentIndentationCount;
 						}
@@ -111,10 +137,9 @@ export class SkriptFile extends SkriptSection {
 					if (trimmedLine.endsWith(":")) {
 						context.currentString = trimmedLine.substring(0, trimmedLine.length - 1);
 						const newSection: SkriptSection | undefined = context.currentSection?.createSection?.(context);
-						if(newSection != undefined) context.currentSection?.childSections.push(newSection);
+						if (newSection != undefined) context.currentSection?.childSections.push(newSection);
 						context.currentSection = newSection;
-						if (indentationEndIndex == 0)
-						{
+						if (indentationEndIndex == 0) {
 							currentIndentationString = "";
 						}
 						expectedIndentationCount++;

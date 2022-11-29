@@ -1,10 +1,10 @@
 import { Location, Range } from 'vscode-languageserver/node';
-import { SkriptContext } from './SkriptContext';
+import { SkriptContext } from '../SkriptContext';
 import {
 	SkriptSection
 
 } from "./SkriptSection";
-import { SkriptVariable } from './SkriptVariable';
+import { SkriptVariable } from '../SkriptVariable';
 export class SkriptFunction extends SkriptSection {
 	name: string;
 	//context.currentString should be 'function example(a: string, b: number) :: string' for example

@@ -2,10 +2,10 @@ import { SkriptContext } from './SkriptContext';
 import{
 	SkriptSection
 
-} from "./SkriptSection";
+} from "./Section/SkriptSection";
 export class SkriptEffect extends SkriptSection{
 	createSection(context: SkriptContext): SkriptSection {
-		const regex = /parse|trigger/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
+		const regex = /^(parse|trigger|pattern(|s))$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);
 
 		if (result == null){

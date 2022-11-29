@@ -1,4 +1,4 @@
-import { SkriptContext } from './SkriptContext';
+import { SkriptContext } from '../SkriptContext';
 import{
 	SkriptSection
 
@@ -14,7 +14,7 @@ export class SkriptCommand extends SkriptSection{
 		}
 	}
 	createSection(context: SkriptContext): SkriptSection {
-		const regex = /aliases|executable by|usage|description|permission|cooldown|cooldown (message|bypass|storage)|trigger/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
+		const regex = /^(aliases|executable by|usage|description|permission|cooldown|cooldown (message|bypass|storage)|trigger)$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);
 
 		if (result == null){
@@ -23,7 +23,7 @@ export class SkriptCommand extends SkriptSection{
 		return super.createSection(context);
 	}
 	processLine(context: SkriptContext): void {
-		const regex = /(aliases|executable by|usage|description|permission|cooldown|cooldown (message|bypass|storage)): (.*)/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
+		const regex = /^(aliases|executable by|usage|description|permission|cooldown|cooldown (message|bypass|storage)): (.*)/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);
 		if (result == null){
 			context.addDiagnostic(context.currentPosition, context.currentString.length, "make sure to put your code for the command in triggers");

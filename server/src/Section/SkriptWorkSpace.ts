@@ -1,6 +1,6 @@
 import { SkriptFile } from './SkriptFile';
 import { SkriptSectionGroup } from './SkriptSectionGroup';
-import { SkriptVariable } from './SkriptVariable';
+import { SkriptVariable } from '../SkriptVariable';
 
 export class SkriptWorkSpace extends SkriptSectionGroup{
 	//the 'childsections' variable is not used here. TODO somehow merge the childsections and files variable
