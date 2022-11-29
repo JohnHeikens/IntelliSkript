@@ -3,7 +3,7 @@ import {
 } from 'vscode-languageserver-textdocument';
 
 import {
-	Diagnostic, DiagnosticSeverity, Range
+	Diagnostic, DiagnosticSeverity, Location, Range
 } from  'vscode-languageserver/node';
 
 import {

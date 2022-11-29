@@ -2,23 +2,33 @@ import {
 	SkriptSection
 } from "./SkriptSection";
 
-import {
-	DiagnosticSeverity,
-	Diagnostic
-} from 'vscode-languageserver/node';
 import { SkriptFunction } from './SkriptFunction';
 
 import {
 	SkriptContext
 } from './SkriptContext';
+import { SkriptCommand } from './SkriptCommand';
+import { SkriptEffect } from './SkriptEffect';
+import { TextDocument } from 'vscode-languageserver-textdocument';
+import { SkriptWorkSpace } from './SkriptWorkSpace';
 export class SkriptFile extends SkriptSection {
+	document: TextDocument;
+	workSpace: SkriptWorkSpace | undefined;
 
 	createSection(context: SkriptContext): SkriptSection {
 		const sectionKeyword = context.currentString.substring(0, context.currentString.indexOf(" "));
 		if (sectionKeyword == "function") {
-			const f = new SkriptFunction(context, this);
+			const s = new SkriptFunction(context, this);
 			
-			return f;
+			return s;
+		}
+		else if (sectionKeyword == "command") {
+			const c = new SkriptCommand(context, this);
+			return c;
+		}
+		else if (sectionKeyword == "effect") {
+			const s = new SkriptEffect(context, this);
+			return s;
 		}
 		else{
 			return super.createSection(context);
@@ -26,23 +36,21 @@ export class SkriptFile extends SkriptSection {
 	}
 
 	processLine(context: SkriptContext): void {
-		const diagnostic: Diagnostic = {
-			severity: DiagnosticSeverity.Error,
-			range: {
-				start: context.currentDocument.positionAt(context.currentPosition),
-				end: context.currentDocument.positionAt(context.currentPosition + context.currentString.length)
-			},
-			message: `can't understand this line (colon or indentation missing?)`,
-			source: 'IntelliSkript'
-		};
-		context.diagnostics.push(diagnostic);
+		context.addDiagnostic(context.currentPosition, context.currentString.length, "can't understand this line (colon or indentation missing?");
 	}
 
-	constructor(currentContext: SkriptContext) {
-		super(undefined);
-		currentContext.currentSection = this;
+	static getIndentationEndIndex(line: string): number {
+		return line.search(/(?!( |\t))/);
+	}
 
-		const text = currentContext.currentDocument.getText();
+
+	constructor(workSpace: SkriptWorkSpace | undefined, context: SkriptContext) {
+		super(context,undefined);
+		this.workSpace = workSpace;
+		this.document = context.currentDocument;
+		context.currentSection = this;
+
+		const text = context.currentDocument.getText();
 
 		const lines = text.split("\n");
 
@@ -65,12 +73,12 @@ export class SkriptFile extends SkriptSection {
 			
 			cont:
 			if (trimmedLine.length > 0) {
-				const indentationEndIndex = currentLine.search(/(?!( |\t))/);
-				currentContext.currentPosition = currentLineStartPosition + indentationEndIndex;
+				const indentationEndIndex = SkriptFile.getIndentationEndIndex(currentLine);
+				context.currentPosition = currentLineStartPosition + indentationEndIndex;
 				const indentationString = currentLine.substring(0, indentationEndIndex);
 				const inverseIndentationType = (indentationString[0] == " ") ? "\t" : " ";
 				if (indentationString.includes(inverseIndentationType)) {
-					currentContext.addDiagnostic(
+					context.addDiagnostic(
 						currentLineStartPosition + Math.floor(indentationEndIndex / 4) * 4,
 						currentLineStartPosition + indentationEndIndex,
 						`indentation error: do not mix tabs and spaces` + indentationEndIndex
@@ -84,7 +92,7 @@ export class SkriptFile extends SkriptSection {
 						const currentExpectedIndentationCharachterCount = expectedIndentationCount * currentIndentationString.length;
 						if ((indentationEndIndex > currentExpectedIndentationCharachterCount) || (indentationEndIndex % currentIndentationString.length) != 0) {
 							const difference = indentationEndIndex - (Math.floor(indentationEndIndex / 4) * 4);
-							currentContext.addDiagnostic(
+							context.addDiagnostic(
 								currentLineStartPosition + Math.floor(indentationEndIndex / 4) * 4,
 								difference,
 								`indentation error: expected ` + currentExpectedIndentationCharachterCount + (currentIndentationString[0] == " " ? " space" : " tab") + (currentExpectedIndentationCharachterCount == 1 ? "" : "s") + ` but found ` + indentationEndIndex
@@ -95,16 +103,16 @@ export class SkriptFile extends SkriptSection {
 							const currentIndentationCount = indentationEndIndex / currentIndentationString.length;
 							const StacksToPop = expectedIndentationCount - currentIndentationCount;
 							for(let i = 0; i < StacksToPop; i++) {
-								currentContext.currentSection = currentContext.currentSection?.parent;
+								context.currentSection = context.currentSection?.parent instanceof SkriptSection ? context.currentSection?.parent as SkriptSection : undefined;
 							}
 							expectedIndentationCount = currentIndentationCount;
 						}
 					}
 					if (trimmedLine.endsWith(":")) {
-						currentContext.currentString = trimmedLine.substring(0, currentLine.length - 1);
-						const newSection: SkriptSection | undefined = currentContext.currentSection?.createSection?.(currentContext);
-						if(newSection != undefined) currentContext.currentSection?.childSections.push(newSection);
-						currentContext.currentSection = newSection;
+						context.currentString = trimmedLine.substring(0, trimmedLine.length - 1);
+						const newSection: SkriptSection | undefined = context.currentSection?.createSection?.(context);
+						if(newSection != undefined) context.currentSection?.childSections.push(newSection);
+						context.currentSection = newSection;
 						if (indentationEndIndex == 0)
 						{
 							currentIndentationString = "";
@@ -112,8 +120,8 @@ export class SkriptFile extends SkriptSection {
 						expectedIndentationCount++;
 					}
 					else {
-						currentContext.currentString = trimmedLine;
-						currentContext.currentSection?.processLine?.(currentContext);
+						context.currentString = trimmedLine;
+						context.currentSection?.processLine?.(context);
 					}
 				}
 			}

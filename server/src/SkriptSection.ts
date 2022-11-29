@@ -2,14 +2,17 @@ import {
 	SkriptContext
 } from './SkriptContext';
 import { SkriptVariable } from './SkriptVariable';
+import {SkriptSectionGroup } from './SkriptSectionGroup';
+import { Location } from 'vscode-languageserver/node';
 
-export class SkriptSection {
-	childSections: Array<SkriptSection>;
+export class SkriptSection extends SkriptSectionGroup {
 	definedVariables: Array<SkriptVariable> = [];
-	parent: SkriptSection | undefined;
-	constructor(parent: SkriptSection | undefined) {
-		this.childSections = new Array<SkriptSection>();
-		this.parent = parent;
+
+	startLine: number;
+
+	constructor(context: SkriptContext, parent: SkriptSection | undefined) {
+		super(parent);
+		this.startLine = context.currentDocument.positionAt(context.currentPosition).line;
 	}
 
 	processLine(context: SkriptContext): void {
@@ -24,6 +27,25 @@ export class SkriptSection {
 		}
 	}
 	createSection(context: SkriptContext): SkriptSection {
-		return new SkriptSection(this);
+		return new SkriptSection(context, this);
+	}
+	getExactSectionAtLine(line: number): SkriptSection
+	{
+		const childSection = this.getChildSectionAtLine(line);
+		return childSection == undefined? this : childSection.getExactSectionAtLine(line);
+	}
+
+	override getVariableByName(name: string) : SkriptVariable | undefined
+	{
+		for(const variable of this.definedVariables) {
+			if (variable.overlap(name))//regexes overlap, could be the same variable
+			{
+				return variable;
+			}
+		}
+		if (this.parent != undefined) {
+			return this.parent.getVariableByName(name);
+		}
+		return undefined;
 	}
 }

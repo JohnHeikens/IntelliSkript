@@ -14,7 +14,8 @@ import {
 	CompletionItemKind,
 	TextDocumentPositionParams,
 	TextDocumentSyncKind,
-	InitializeResult
+	InitializeResult,
+	DefinitionLink
 } from 'vscode-languageserver/node';
 
 import {
@@ -23,11 +24,12 @@ import {
 
 import {
 	SkriptFile
-} from "./SkriptFile"; 
+} from "./SkriptFile";
 
-import { 
-	SkriptContext 
+import {
+	SkriptContext
 } from './SkriptContext';
+import { SkriptWorkSpace } from './SkriptWorkSpace';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -36,11 +38,48 @@ const connection = createConnection(ProposedFeatures.all);
 // Create a simple text document manager.
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
+//workspace folders
+const currentWorkSpaces: SkriptWorkSpace[] = [];
+
+//files without any workspace
+const currentLooseFiles: SkriptFile[] = [];
+
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
 let hasDiagnosticRelatedInformationCapability = false;
 
+function getSkriptWorkSpaceByUri(uri: string): SkriptWorkSpace | undefined {
+	for (const ws of currentWorkSpaces) {
+		if (ws.uri.startsWith(uri)) {
+			return ws;
+		}
+	}
+	return undefined;
+}
+
+function getLooseFileByUri(uri: string): SkriptFile | undefined {
+	for (const f of currentLooseFiles) {
+		if (f.document.uri == uri) {
+			return f;
+		}
+	}
+	return undefined;
+}
+
+function getSkriptFileByUri(uri: string): SkriptFile | undefined {
+	const ws = getSkriptWorkSpaceByUri(uri);
+	if (ws) {
+		return ws.getSkriptFileByUri(uri);
+	}
+	return getLooseFileByUri(uri);
+}
+
+
 connection.onInitialize((params: InitializeParams) => {
+	if (params.workspaceFolders != null) {
+		for (const folder of params.workspaceFolders)
+			currentWorkSpaces.push(new SkriptWorkSpace(folder.uri));
+	}
 	const capabilities = params.capabilities;
 
 	// Does the client support the `workspace/configuration` request?
@@ -62,7 +101,7 @@ connection.onInitialize((params: InitializeParams) => {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
 			// Tell the client that this server supports code completion.
 			completionProvider: {
-				resolveProvider: true	
+				resolveProvider: true
 			},
 			definitionProvider: true
 		}
@@ -135,6 +174,7 @@ function getDocumentSettings(resource: string): Thenable<IntelliSkriptSettings> 
 // Only keep settings for open documents
 documents.onDidClose(e => {
 	documentSettings.delete(e.document.uri);
+
 });
 
 // The content of a text document has changed. This event is emitted
@@ -149,12 +189,96 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
 	const context = new SkriptContext(textDocument);
 
-	const currentFile = new SkriptFile(context);
+	const ws = getSkriptWorkSpaceByUri(textDocument.uri);
+
+	if (ws) {
+
+		let found = false;
+		//update skriptfile for that workspace
+		for (let i = 0; i < ws.files.length; i++) {
+			if (ws.files[i].document.uri == textDocument.uri) {
+				//temporarily delete (it's recalculating) so an error will be thrown if anything ever tries accessing a recalculating file
+				delete ws.files[i];
+				const currentFile = new SkriptFile(ws, context);
+				ws.files[i] = currentFile;
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			//add document to skript workspace
+			ws.files.push(new SkriptFile(undefined, context));
+		}
+	}
+	else {
+		currentLooseFiles.push(new SkriptFile(undefined, context));
+	}
+
 	const diagnostics: Diagnostic[] = context.diagnostics;
+
 
 	// Send the computed diagnostics to VSCode.
 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 }
+
+//connection.onDefinition(e => {//
+//	return e.position;
+//});
+
+//examples:
+//https://github.com/microsoft/vscode-languageserver-node/blob/main/testbed/server/src/server.ts
+
+connection.onDefinition((params): DefinitionLink[] => {
+	//check the line
+	const f = getSkriptFileByUri(params.textDocument.uri);
+	if (f) {
+		const lines = f.document.getText().split('\n');
+		const clickedLineText = lines[params.position.line];
+
+		const variableRegex = /\{(.*?)\}/g;
+		let match;
+		const exactSection = f.getExactSectionAtLine(params.position.line);
+		while ((match = variableRegex.exec(clickedLineText))) {
+			if (params.position.character >= match.index && params.position.character < match.index + match[0].length) {
+				//clicked on a variable
+				const variable = exactSection.getVariableByName(match[1]);
+
+
+				if (variable != undefined) {
+
+					const targetLineIndex = variable.firstReferenceLocation.range.start.line;
+					const targetLine = f.document.getText().split('\n')[targetLineIndex];
+
+
+					const targetLineRange = {
+						start: { line: targetLineIndex, character: SkriptFile.getIndentationEndIndex(targetLine) },
+						end: { line: targetLineIndex, character: targetLine.length }
+					};
+					return [{
+						targetUri: variable.firstReferenceLocation.uri,
+						targetRange: targetLineRange,
+						targetSelectionRange: variable.firstReferenceLocation.range,
+						originSelectionRange: {
+							start: { line: params.position.line, character: match.index },
+							end: { line: params.position.line, character: match.index + match[0].length }
+						}
+					}];
+				}
+			}
+		}
+	}
+	//const currentDocumentText = params.textDocument.getText();
+
+	return [{
+		targetUri: params.textDocument.uri,
+		targetRange: { start: { line: 0, character: 2 }, end: { line: 5, character: 45 } },
+		targetSelectionRange: { start: { line: 1, character: 5 }, end: { line: 1, character: 10 } },
+		originSelectionRange: {
+			start: { line: params.position.line, character: Math.max(0, params.position.character - 4) },
+			end: { line: params.position.line, character: params.position.character + 4 }
+		}
+	}];
+});
 
 connection.onDidChangeWatchedFiles(_change => {
 	// Monitored files have change in VSCode
