@@ -1,7 +1,7 @@
 # IntelliSkript
  Intellisense for skript!
 
-- check syntax/indentation errors
+- check syntax/indentation errors<br>
 ![Animation](https://user-images.githubusercontent.com/50964021/204584349-18d29e3a-ed19-4f58-99be-f9e0d4fda7cf.gif)
 
 - jump to variable definitions
