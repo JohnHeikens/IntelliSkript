@@ -2,7 +2,7 @@
  Intellisense for skript!
 
 - check syntax/indentation errors
-![image](https://user-images.githubusercontent.com/50964021/204580101-1b85abe7-ab78-4a4c-b761-2ae6dd5dd7ff.png)
+![Animation](https://user-images.githubusercontent.com/50964021/204584349-18d29e3a-ed19-4f58-99be-f9e0d4fda7cf.gif)
 
 - jump to variable definitions
 ![image](https://user-images.githubusercontent.com/50964021/204463996-8b9ee466-41a5-45f9-bedd-e3fa9b320771.png)
