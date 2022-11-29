@@ -8,3 +8,5 @@
 
 report issues at https://github.com/johnheikens/IntelliSkript/issues<br>
 do you have any question? go to https://pex.li/discord
+
+![image](https://user-images.githubusercontent.com/50964021/204579516-09165dba-7638-4307-a51b-f275c3c20643.png)
