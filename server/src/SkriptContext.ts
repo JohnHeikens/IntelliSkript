@@ -10,7 +10,9 @@ import {
 	SkriptSection
 } from "./SkriptSection";
 
+//TOODO: make context able to 'push' and 'pop' (make a function able to modify the context or create an instance while keeping reference to the same diagnostics list
 export class SkriptContext {
+	parent :SkriptContext | undefined = undefined;
 	currentDocument: TextDocument;
 	currentString: string;
 	currentPosition: number;
@@ -23,6 +25,7 @@ export class SkriptContext {
 		this.diagnostics = diagnostics;
 		this.currentSection = currentSection;
 	}
+
 	addDiagnostic(startPosition: number, length: number, message: string, severity = DiagnosticSeverity.Error): void {
 		const diagnostic: Diagnostic = {
 			severity: severity,
@@ -35,4 +38,6 @@ export class SkriptContext {
 		};
 		this.diagnostics.push(diagnostic);
 	}
+
+	
 }

@@ -45,13 +45,22 @@ const currentWorkSpaces: SkriptWorkSpace[] = [];
 const currentLooseFiles: SkriptFile[] = [];
 
 let hasConfigurationCapability = false;
-let hasWorkspaceFolderCapability = false;
+let hasWorkspaceFolderCapability = true;
 let hasDiagnosticRelatedInformationCapability = false;
 
 function getSkriptWorkSpaceByUri(uri: string): SkriptWorkSpace | undefined {
 	for (const ws of currentWorkSpaces) {
 		if (ws.uri.startsWith(uri)) {
 			return ws;
+		}
+	}
+	return undefined;
+}
+
+function getLooseFileIndexByUri(uri: string): number | undefined {
+	for (let i = 0; i < currentLooseFiles.length; i++) {
+		if (currentLooseFiles[i].document.uri == uri) {
+			return i;
 		}
 	}
 	return undefined;
@@ -130,13 +139,13 @@ connection.onInitialized(() => {
 
 // IntelliSkript settings
 interface IntelliSkriptSettings {
-	maxNumberOfProblems: number;
+	requireTabIndents: boolean;
 }
 
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
-const defaultSettings: IntelliSkriptSettings = { maxNumberOfProblems: 1000 };
+const defaultSettings: IntelliSkriptSettings = { requireTabIndents: false };
 let globalSettings: IntelliSkriptSettings = defaultSettings;
 
 // Cache the settings of all open documents
@@ -174,8 +183,13 @@ function getDocumentSettings(resource: string): Thenable<IntelliSkriptSettings> 
 // Only keep settings for open documents
 documents.onDidClose(e => {
 	documentSettings.delete(e.document.uri);
-
+	const i = getLooseFileIndexByUri(e.document.uri);
+	if (i != undefined) {
+		currentLooseFiles.splice(i, 1);
+	}
 });
+
+
 
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
@@ -246,6 +260,7 @@ connection.onDefinition((params): DefinitionLink[] => {
 
 				if (variable != undefined) {
 
+					//return all reference locations
 					const targetLineIndex = variable.firstReferenceLocation.range.start.line;
 					const targetLine = f.document.getText().split('\n')[targetLineIndex];
 
@@ -268,21 +283,14 @@ connection.onDefinition((params): DefinitionLink[] => {
 		}
 	}
 	//const currentDocumentText = params.textDocument.getText();
-
-	return [{
-		targetUri: params.textDocument.uri,
-		targetRange: { start: { line: 0, character: 2 }, end: { line: 5, character: 45 } },
-		targetSelectionRange: { start: { line: 1, character: 5 }, end: { line: 1, character: 10 } },
-		originSelectionRange: {
-			start: { line: params.position.line, character: Math.max(0, params.position.character - 4) },
-			end: { line: params.position.line, character: params.position.character + 4 }
-		}
-	}];
+	return [];
 });
 
 connection.onDidChangeWatchedFiles(_change => {
 	// Monitored files have change in VSCode
 	connection.console.log('We received an file change event');
+	//TODO: update skriptfiles
+	//validateTextDocument(new TextDocument(_change.changes[0].uri));
 });
 
 // This handler provides the initial list of the completion items.
