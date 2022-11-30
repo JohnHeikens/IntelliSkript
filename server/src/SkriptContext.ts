@@ -33,12 +33,14 @@ export class SkriptContext {
 
 	//no popping as the popping will be done automatically (the garbage collector will clean it up
 	push(newPosition: number, newSize: number): SkriptContext {
-		return new SkriptContext(
+		const subContext = new SkriptContext(
 			this.currentDocument,
 			this.currentSection,
 			this.currentPosition + newPosition,
 			this.currentString.substring(newPosition, newPosition + newSize),
 			this.diagnostics);
+		//subContext.hierarchy = this.hierarchy;//the more data, the better so we're keeping the hierarchical data from the higher levels for now
+		return subContext;
 	}
 
 	addDiagnostic(relativePosition: number, length: number, message: string, severity: DiagnosticSeverity = DiagnosticSeverity.Error, code: string | undefined = undefined, data: unknown = undefined): void {
@@ -52,7 +54,7 @@ export class SkriptContext {
 			source: 'IntelliSkript',
 			data: data,
 			code: code,
-			codeDescription: {href: 'https://github.com/JohnHeikens/IntelliSkript/wiki'}
+			codeDescription: { href: 'https://github.com/JohnHeikens/IntelliSkript/wiki' }
 		};
 		this.diagnostics.push(diagnostic);
 	}
@@ -84,7 +86,7 @@ export class SkriptContext {
 					node.end = i;//pop
 				}
 				else if (node.charachter == "") {
-					if (this.currentString[i - 1].match(/[0-1]/) == null) {//don't push for percentages
+					if (this.currentString[i - 1].match(/[0-9]/) == null) {//don't push for percentages
 						node.children.push(new SkriptNestHierarchy(i, '%'));//push
 					}
 				}
@@ -126,5 +128,47 @@ export class SkriptContext {
 		return this.hierarchy;
 
 
+	}
+	hierarchicFind(toFind: RegExp, start = 0, end = this.currentString.length): RegExpExecArray[] {
+		const results: RegExpExecArray[] = [];
+		if (this.hierarchy) {
+			let index = start;
+			let childIndex = 0;
+			let currentResult;
+			while (childIndex < this.hierarchy.children.length) {
+				let nextSubIndex = this.hierarchy.children[childIndex].start;
+				if (nextSubIndex > index) {
+					if (nextSubIndex > end) {
+						nextSubIndex = end;
+					}
+					while ((currentResult = toFind.exec(this.currentString.substring(index, nextSubIndex)))) {
+						currentResult.index += index;
+						results.push(currentResult);
+					}
+					if (nextSubIndex == end) {
+						return results;
+					}
+				}
+				index = this.hierarchy.children[childIndex].end + 1;
+				childIndex++;
+			}
+			while ((currentResult = toFind.exec(this.currentString.substring(index, end)))) {
+				currentResult.index += index;
+				results.push(currentResult);
+			}
+		}
+
+		return results;
+	}
+	splitHierarchically(delimiter: RegExp, start = 0, end = this.currentString.length): string[] {
+		const indexes = this.hierarchicFind(delimiter, start, end);
+		const results = Array(indexes.length + 1);
+		let currentIndex = start;
+		for (let i = 0; i < indexes.length; i++) {
+			results[i] = this.currentString.substring(currentIndex, indexes[i].index);
+			currentIndex = indexes[i].index + indexes[i].length;
+		}
+		results[indexes.length] = this.currentString.substring(currentIndex, end);
+		return results;
 	}
 }
