@@ -2,11 +2,11 @@
 export class SkriptNestHierarchy {
 	start = 0;
 	end = 0;
-	charachter = '';
+	character = '';
 
 	children: SkriptNestHierarchy[] = [];
 	//positions:number[] = [];
-	//charachters = "";
+	//characters = "";
 	getActiveNode(): SkriptNestHierarchy {
 		if (this.children.length > 0 && this.children[this.children.length - 1].end == 0) {
 			return this.children[this.children.length - 1].getActiveNode();
@@ -15,9 +15,9 @@ export class SkriptNestHierarchy {
 	}
 
 
-	constructor(start: number, charachter: string) {
+	constructor(start: number, character: string) {
 		this.start = start;
-		this.charachter = charachter;
+		this.character = character;
 	}
 
 	getChildNodeAt(pos: number): SkriptNestHierarchy | undefined{

@@ -92,7 +92,7 @@ export class SkriptFile extends SkriptSection {
 				//context.currentPosition = currentLineStartPosition + indentationEndIndex;
 				const indentationString = currentLine.substring(0, indentationEndIndex);
 				const inverseIndentationType = (indentationString[0] == " ") ? "\t" : " ";
-				const currentExpectedIndentationCharachterCount = expectedIndentationCount * currentIndentationString.length;
+				const currentExpectedIndentationcharacterCount = expectedIndentationCount * currentIndentationString.length;
 				if (indentationString.includes(inverseIndentationType)) {
 					context.addDiagnostic(
 						currentLineStartPosition,
@@ -108,12 +108,12 @@ export class SkriptFile extends SkriptSection {
 						currentIndentationString = indentationString;
 					}
 					else {
-						if ((indentationEndIndex > currentExpectedIndentationCharachterCount) || (indentationEndIndex % currentIndentationString.length) != 0) {
+						if ((indentationEndIndex > currentExpectedIndentationcharacterCount) || (indentationEndIndex % currentIndentationString.length) != 0) {
 							const difference = indentationEndIndex - removeRemainder(indentationEndIndex, currentIndentationString.length);
 							context.addDiagnostic(
 								currentLineStartPosition + removeRemainder(indentationEndIndex, currentIndentationString.length),
 								difference,
-								`indentation error: expected ` + currentExpectedIndentationCharachterCount + (currentIndentationString[0] == " " ? " space" : " tab") + (currentExpectedIndentationCharachterCount == 1 ? "" : "s") + ` but found ` + indentationEndIndex,
+								`indentation error: expected ` + currentExpectedIndentationcharacterCount + (currentIndentationString[0] == " " ? " space" : " tab") + (currentExpectedIndentationcharacterCount == 1 ? "" : "s") + ` but found ` + indentationEndIndex,
 								DiagnosticSeverity.Error,
 								"IntelliSkript->Indent->Amount",
 								currentIndentationString.repeat(expectedIndentationCount)

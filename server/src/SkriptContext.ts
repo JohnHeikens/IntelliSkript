@@ -66,9 +66,9 @@ export class SkriptContext {
 		for (let i = 0; i < this.currentString.length; i++) {
 			if (this.currentString[i] == '"') {
 				const node = this.hierarchy.getActiveNode();
-				if (node.charachter == '"') {
+				if (node.character == '"') {
 					if (this.currentString[i + 1] == '"') {
-						i++; continue;//skip escaped string charachters
+						i++; continue;//skip escaped string characters
 					}
 					else {
 						node.end = i;//pop
@@ -82,39 +82,39 @@ export class SkriptContext {
 			}
 			else if (this.currentString[i] == '%') {
 				const node = this.hierarchy.getActiveNode();
-				if (node.charachter == '%') {
+				if (node.character == '%') {
 					node.end = i;//pop
 				}
-				else if (node.charachter == "") {
+				else if (node.character == "") {
 					if (this.currentString[i - 1].match(/[0-9]/) == null) {//don't push for percentages
 						node.children.push(new SkriptNestHierarchy(i, '%'));//push
 					}
 				}
 				//order is important here! "example".includes("") will return true!
-				else if ("{\"".includes(node.charachter)) {
+				else if ("{\"".includes(node.character)) {
 					node.children.push(new SkriptNestHierarchy(i, '%'));//push
 				}
-				//else if(node.charachter.length > 0){
-				//	// % is also needed for definition of effects so when node.charachter == "" then we'll allow the %'s
-				//	this.addDiagnostic(i, 1, "can't use placeholder (%) charachters here", DiagnosticSeverity.Error, "IntelliSkript->placeholder->wrongplace");
+				//else if(node.character.length > 0){
+				//	// % is also needed for definition of effects so when node.character == "" then we'll allow the %'s
+				//	this.addDiagnostic(i, 1, "can't use placeholder (%) characters here", DiagnosticSeverity.Error, "IntelliSkript->placeholder->wrongplace");
 				//}
 			}
 			else if (openBraces.includes(this.currentString[i])) {
 				const node = this.hierarchy.getActiveNode();
-				if (node.charachter != '"') {//braces don't count in a string
+				if (node.character != '"') {//braces don't count in a string
 					node.children.push(new SkriptNestHierarchy(i, this.currentString[i]));//push
 				}
 			}
 			else if (closingBraces.includes(this.currentString[i])) {
 				const node = this.hierarchy.getActiveNode();
 
-				if (node.charachter != '"') {//braces don't count in a string
-					if (closingBraces.indexOf(this.currentString[i]) == openBraces.indexOf(node.charachter)) {
+				if (node.character != '"') {//braces don't count in a string
+					if (closingBraces.indexOf(this.currentString[i]) == openBraces.indexOf(node.character)) {
 						node.end = i;//pop
 					}
 					else {
 						//unmatched closing brace found!
-						this.addDiagnostic(i, 1, "unmatched closing charachter found", DiagnosticSeverity.Error, "IntelliSkript->nest->unmatched");
+						this.addDiagnostic(i, 1, "unmatched closing character found", DiagnosticSeverity.Error, "IntelliSkript->nest->unmatched");
 					}
 				}
 			}
@@ -123,7 +123,7 @@ export class SkriptContext {
 
 		const lastActiveNode = this.hierarchy.getActiveNode();
 		if (lastActiveNode != this.hierarchy) {
-			this.addDiagnostic(lastActiveNode.start, 1, "no matching closing charachter found", DiagnosticSeverity.Error, "IntelliSkript->nest->no matching");
+			this.addDiagnostic(lastActiveNode.start, 1, "no matching closing character found", DiagnosticSeverity.Error, "IntelliSkript->nest->no matching");
 		}
 		return this.hierarchy;
 
