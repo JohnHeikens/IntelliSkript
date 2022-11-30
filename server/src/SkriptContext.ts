@@ -3,6 +3,7 @@ import {
 } from 'vscode-languageserver-textdocument';
 
 import {
+	CodeDescription,
 	Diagnostic, DiagnosticSeverity, Location, Range
 } from 'vscode-languageserver/node';
 import { SkriptNestHierarchy } from './Nesting/SkriptNestHierarchy';
@@ -50,7 +51,8 @@ export class SkriptContext {
 			message: message,
 			source: 'IntelliSkript',
 			data: data,
-			code: code
+			code: code,
+			codeDescription: {href: 'https://github.com/JohnHeikens/IntelliSkript/wiki'}
 		};
 		this.diagnostics.push(diagnostic);
 	}
