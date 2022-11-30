@@ -13,27 +13,39 @@ import {
 
 //TOODO: make context able to 'push' and 'pop' (make a function able to modify the context or create an instance while keeping reference to the same diagnostics list
 export class SkriptContext {
-	parent: SkriptContext | undefined = undefined;
+	//reference variables
 	currentDocument: TextDocument;
-	currentString: string;
-	currentPosition: number;
-	diagnostics: Diagnostic[];
-	currentSection: SkriptSection | undefined;
+	diagnostics: Diagnostic[] = [];
+
+	parent: SkriptContext | undefined = undefined;
+	currentString = "";
+	currentPosition = 0;
+	currentSection: SkriptSection | undefined = undefined;
 	hierarchy: SkriptNestHierarchy | undefined = undefined;
-	constructor(currentDocument: TextDocument, currentSection: SkriptSection | undefined = undefined, currentLine = "", currentPosition = 0, diagnostics: Diagnostic[] = []) {
+	constructor(currentDocument: TextDocument, currentSection: SkriptSection | undefined = undefined, currentPosition = 0, currentString: string | undefined = undefined, diagnostics: Diagnostic[] = []) {
 		this.currentPosition = currentPosition;
-		this.currentString = currentLine;
+		this.currentString = currentString == undefined ? currentDocument.getText() : currentString;
 		this.currentDocument = currentDocument;
 		this.diagnostics = diagnostics;
 		this.currentSection = currentSection;
 	}
 
-	addDiagnostic(startPosition: number, length: number, message: string, severity: DiagnosticSeverity = DiagnosticSeverity.Error, code: string | undefined = undefined, data: unknown = undefined): void {
+	//no popping as the popping will be done automatically (the garbage collector will clean it up
+	push(newPosition: number, newSize: number): SkriptContext {
+		return new SkriptContext(
+			this.currentDocument,
+			this.currentSection,
+			this.currentPosition + newPosition,
+			this.currentString.substring(newPosition, newPosition + newSize),
+			this.diagnostics);
+	}
+
+	addDiagnostic(relativePosition: number, length: number, message: string, severity: DiagnosticSeverity = DiagnosticSeverity.Error, code: string | undefined = undefined, data: unknown = undefined): void {
 		const diagnostic: Diagnostic = {
 			severity: severity,
 			range: {
-				start: this.currentDocument.positionAt(startPosition),
-				end: this.currentDocument.positionAt(startPosition + length)
+				start: this.currentDocument.positionAt(this.currentPosition + relativePosition),
+				end: this.currentDocument.positionAt(this.currentPosition + relativePosition + length)
 			},
 			message: message,
 			source: 'IntelliSkript',
@@ -69,12 +81,19 @@ export class SkriptContext {
 				if (node.charachter == '%') {
 					node.end = i;//pop
 				}
-				else if (node.charachter != "" && "{\"".includes(node.charachter)) {
+				else if (node.charachter == "") {
+					if (this.currentString[i - 1].match(/[0-1]/) == null) {//don't push for percentages
+						node.children.push(new SkriptNestHierarchy(i, '%'));//push
+					}
+				}
+				//order is important here! "example".includes("") will return true!
+				else if ("{\"".includes(node.charachter)) {
 					node.children.push(new SkriptNestHierarchy(i, '%'));//push
 				}
-				else {
-					this.addDiagnostic(this.currentPosition + i, 1, "can't use placeholder (%) charachters here", DiagnosticSeverity.Error, "IntelliSkript->placeholder->wrongplace");
-				}
+				//else if(node.charachter.length > 0){
+				//	// % is also needed for definition of effects so when node.charachter == "" then we'll allow the %'s
+				//	this.addDiagnostic(i, 1, "can't use placeholder (%) charachters here", DiagnosticSeverity.Error, "IntelliSkript->placeholder->wrongplace");
+				//}
 			}
 			else if (openBraces.includes(this.currentString[i])) {
 				const node = this.hierarchy.getActiveNode();
@@ -91,7 +110,7 @@ export class SkriptContext {
 					}
 					else {
 						//unmatched closing brace found!
-						this.addDiagnostic(this.currentPosition + i, 1, "unmatched closing charachter found", DiagnosticSeverity.Error, "IntelliSkript->nest->unmatched");
+						this.addDiagnostic(i, 1, "unmatched closing charachter found", DiagnosticSeverity.Error, "IntelliSkript->nest->unmatched");
 					}
 				}
 			}
@@ -100,7 +119,7 @@ export class SkriptContext {
 
 		const lastActiveNode = this.hierarchy.getActiveNode();
 		if (lastActiveNode != this.hierarchy) {
-			this.addDiagnostic(this.currentPosition + lastActiveNode.start, 1, "no matching closing charachter found", DiagnosticSeverity.Error, "IntelliSkript->nest->no matching");
+			this.addDiagnostic(lastActiveNode.start, 1, "no matching closing charachter found", DiagnosticSeverity.Error, "IntelliSkript->nest->no matching");
 		}
 		return this.hierarchy;
 

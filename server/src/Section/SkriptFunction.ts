@@ -14,14 +14,13 @@ export class SkriptFunction extends SkriptSection {
 		//(,|and|)){1,}\)
 		const result = regex.exec(context.currentString);
 		if (result == null) {
-			context.addDiagnostic(context.currentPosition, context.currentString.length, "cannot recognize function", DiagnosticSeverity.Error, "IntelliSkript->function->unrecognized");
+			context.addDiagnostic(0, context.currentString.length, "cannot recognize function", DiagnosticSeverity.Error, "IntelliSkript->function->unrecognized");
 			this.name = "";
 		}
 		else {
 			this.name = result[1];
 			if (result[2].trim().length > 0) {
 				const argumentStrings = result[2].split(/,|and/);
-				//int currentPosition = context.currentPosition + "function ".length + this.name.length + "("
 				for (const currentArgumentString of argumentStrings) {
 					const variableDefinitionParts = currentArgumentString.split(":");
 					if (variableDefinitionParts.length == 2) {
@@ -31,7 +30,7 @@ export class SkriptFunction extends SkriptSection {
 						this.definedVariables.push(new SkriptVariable(Loc, variableName, variableDefinitionParts[1].trim()));
 					}
 					else {
-						context.addDiagnostic(context.currentPosition + context.currentString.indexOf(currentArgumentString), currentArgumentString.length, "unrecognized function argument (no \":\" found)");
+						context.addDiagnostic(0 + context.currentString.indexOf(currentArgumentString), currentArgumentString.length, "unrecognized function argument (no \":\" found)");
 					}
 				}
 			}

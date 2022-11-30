@@ -48,7 +48,7 @@ export class SkriptFile extends SkriptSection {
 	}
 
 	processLine(context: SkriptContext): void {
-		context.addDiagnostic(context.currentPosition, context.currentString.length, "can't understand this line (colon or indentation missing?");
+		context.addDiagnostic(0, context.currentString.length, "can't understand this line (colon or indentation missing?");
 	}
 
 	static getIndentationEndIndex(line: string): number {
@@ -78,6 +78,7 @@ export class SkriptFile extends SkriptSection {
 
 		while (currentLineIndex < lines.length) {
 			const currentLine = lines[currentLineIndex];
+			const currentLineContext = context.push(currentLineStartPosition, currentLine.length);
 
 			//remove comments and space from the right
 			const commentIndex = currentLine.search(/(?<!#)#(?!#)/);
@@ -87,7 +88,8 @@ export class SkriptFile extends SkriptSection {
 			//cont:
 			if (trimmedLine.length > 0) {
 				const indentationEndIndex = SkriptFile.getIndentationEndIndex(currentLine);
-				context.currentPosition = currentLineStartPosition + indentationEndIndex;
+				const trimmedContext = currentLineContext.push(indentationEndIndex, trimmedLine.length);
+				//context.currentPosition = currentLineStartPosition + indentationEndIndex;
 				const indentationString = currentLine.substring(0, indentationEndIndex);
 				const inverseIndentationType = (indentationString[0] == " ") ? "\t" : " ";
 				const currentExpectedIndentationCharachterCount = expectedIndentationCount * currentIndentationString.length;
@@ -135,9 +137,11 @@ export class SkriptFile extends SkriptSection {
 						}
 					}
 					if (trimmedLine.endsWith(":")) {
-						context.currentString = trimmedLine.substring(0, trimmedLine.length - 1);
-						context.createHierarchy();
-						const newSection: SkriptSection | undefined = context.currentSection?.createSection?.(context);
+
+						const contextWithoutColon = trimmedContext.push(0, trimmedContext.currentString.length - 1);
+						//context.currentString = trimmedLine.substring(0, trimmedLine.length - 1);
+						contextWithoutColon.createHierarchy();
+						const newSection: SkriptSection | undefined = context.currentSection?.createSection?.(contextWithoutColon);
 						if (newSection != undefined) context.currentSection?.childSections.push(newSection);
 						context.currentSection = newSection;
 						if (indentationEndIndex == 0) {
@@ -146,9 +150,9 @@ export class SkriptFile extends SkriptSection {
 						expectedIndentationCount++;
 					}
 					else {
-						context.currentString = trimmedLine;
-						context.createHierarchy();
-						context.currentSection?.processLine?.(context);
+						//context.currentString = trimmedLine;
+						trimmedContext.createHierarchy();
+						trimmedContext.currentSection?.processLine?.(trimmedContext);
 					}
 				}
 			}

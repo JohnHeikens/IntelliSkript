@@ -52,20 +52,24 @@ export class SkriptSection extends SkriptSectionGroup {
 
 	}
 	createSection(context: SkriptContext): SkriptSection {
-		const checkPattern = /check \[(?!\()(.*?)\]/g;
+		const checkPattern = /check \[(?!\()/g;
 		let p: RegExpExecArray | null;
 		let isIfStatement = false;
 		while ((p = checkPattern.exec(context.currentString))) {
-			context.addDiagnostic(
-				context.currentPosition + p.index + "check [".length,
-				p[1].length,
-				`add braces around here to increase skript (re)load performance`, DiagnosticSeverity.Information, "IntelliSkript->Performance->Braces->Lambda");
+			const braceIndex = p.index + "check ".length;
+			const node = context.hierarchy?.getChildNodeAt(braceIndex);//without the brace because we need to check the brace
+			if (node && node.start == braceIndex) {
+				context.addDiagnostic(
+					p.index + "check [".length,
+					node.end - node.start - 1,
+					`add braces around here to increase skript (re)load performance`, DiagnosticSeverity.Information, "IntelliSkript->Performance->Braces->Lambda");
+				isIfStatement = true;
+			}
+		}
+		if (context.currentString.startsWith("if")) {
 			isIfStatement = true;
 		}
-		if (context.currentString.startsWith("if")){
-			isIfStatement = true;
-		}
-		if(isIfStatement) {
+		if (isIfStatement) {
 			return new SkriptIfStatement(context, this);
 		}
 		return new SkriptSection(context, this);
