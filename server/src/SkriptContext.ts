@@ -58,7 +58,7 @@ export class SkriptContext {
 		};
 		this.diagnostics.push(diagnostic);
 	}
-	createHierarchy() {
+	createHierarchy(addDiagnostics = false) {
 		const openBraces = "{([";//< can also be used as operator so not including in brace list
 		const closingBraces = "})]";
 		this.hierarchy = new SkriptNestHierarchy(0, '');
@@ -112,7 +112,7 @@ export class SkriptContext {
 					if (closingBraces.indexOf(this.currentString[i]) == openBraces.indexOf(node.character)) {
 						node.end = i;//pop
 					}
-					else {
+					else if (addDiagnostics) {
 						//unmatched closing brace found!
 						this.addDiagnostic(i, 1, "unmatched closing character found", DiagnosticSeverity.Error, "IntelliSkript->nest->unmatched");
 					}
@@ -121,9 +121,12 @@ export class SkriptContext {
 
 		}
 
-		const lastActiveNode = this.hierarchy.getActiveNode();
-		if (lastActiveNode != this.hierarchy) {
-			this.addDiagnostic(lastActiveNode.start, 1, "no matching closing character found", DiagnosticSeverity.Error, "IntelliSkript->nest->no matching");
+		if (addDiagnostics) {
+
+			const lastActiveNode = this.hierarchy.getActiveNode();
+			if (lastActiveNode != this.hierarchy) {
+				this.addDiagnostic(lastActiveNode.start, 1, "no matching closing character found", DiagnosticSeverity.Error, "IntelliSkript->nest->no matching");
+			}
 		}
 		return this.hierarchy;
 

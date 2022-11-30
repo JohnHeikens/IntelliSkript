@@ -4,7 +4,7 @@ import {
 import { SkriptVariable } from '../SkriptVariable';
 import { SkriptSectionGroup } from './SkriptSectionGroup';
 import { Location, DiagnosticSeverity } from 'vscode-languageserver/node';
-const variablePattern = /\{(.*)\}/g;
+//const variablePattern = /\{(.*)\}/g;
 //IMPORT BELOW TO AVOID CIRCULAR DEPENDENCIES
 
 export class SkriptSection extends SkriptSectionGroup {
@@ -39,17 +39,27 @@ export class SkriptSection extends SkriptSectionGroup {
 		}
 	}
 
+	private detectVariablesRecursively(context: SkriptContext, currentNode: SkriptNestHierarchy) {
+		if (currentNode.character == '{') {
+			this.addVariableReference(Location.create(context.currentDocument.uri,
+				{
+					start: context.currentDocument.positionAt(context.currentPosition + currentNode.start + "{".length),
+					end: context.currentDocument.positionAt(context.currentPosition + currentNode.end)
+				}), context.currentString.substring(currentNode.start + "{".length, currentNode.end));
+		}
+
+		for(const currentChild of currentNode.children) {
+			this.detectVariablesRecursively(context, currentChild);
+		}
+	}
+
 	processLine(context: SkriptContext): void {
 
 		let p: RegExpExecArray | null;
-		while ((p = variablePattern.exec(context.currentString))) {
-			this.addVariableReference(Location.create(context.currentDocument.uri,
-				{
-					start: context.currentDocument.positionAt(context.currentPosition + p.index),
-					end: context.currentDocument.positionAt(context.currentPosition + p.index + p[0].length)
-				}), p[1]);
+		//detect all variables in this line
+		if (context.hierarchy) {
+			this.detectVariablesRecursively(context, context.hierarchy);
 		}
-
 	}
 	createSection(context: SkriptContext): SkriptSection {
 		const checkPattern = /check \[(?!\()/g;
@@ -81,4 +91,4 @@ export class SkriptSection extends SkriptSectionGroup {
 
 
 }
-import { SkriptIfStatement } from './SkriptIfStatement';
+import { SkriptIfStatement } from './SkriptIfStatement'; import { SkriptNestHierarchy } from '../Nesting/SkriptNestHierarchy';

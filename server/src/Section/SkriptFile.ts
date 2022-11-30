@@ -140,7 +140,7 @@ export class SkriptFile extends SkriptSection {
 
 						const contextWithoutColon = trimmedContext.push(0, trimmedContext.currentString.length - 1);
 						//context.currentString = trimmedLine.substring(0, trimmedLine.length - 1);
-						contextWithoutColon.createHierarchy();
+						contextWithoutColon.createHierarchy(true);
 						const newSection: SkriptSection | undefined = context.currentSection?.createSection?.(contextWithoutColon);
 						if (newSection != undefined) context.currentSection?.childSections.push(newSection);
 						context.currentSection = newSection;
@@ -151,7 +151,7 @@ export class SkriptFile extends SkriptSection {
 					}
 					else {
 						//context.currentString = trimmedLine;
-						trimmedContext.createHierarchy();
+						trimmedContext.createHierarchy(true);
 						trimmedContext.currentSection?.processLine?.(trimmedContext);
 					}
 				}

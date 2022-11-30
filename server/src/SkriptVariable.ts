@@ -1,5 +1,6 @@
 import { Location, Position } from 'vscode-languageserver/node';
 
+//TODO: use skripthierarchy here
 export class SkriptVariable {
 	firstReferenceLocation: Location;
 	namePattern: string;//can be "_ex" or "_ex::3::%string%"
