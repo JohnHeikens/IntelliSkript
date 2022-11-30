@@ -59,7 +59,7 @@ export class SkriptSection extends SkriptSectionGroup {
 			context.addDiagnostic(
 				context.currentPosition + p.index + "check [".length,
 				p[1].length,
-				`add braces around here to increase skript (re)load performance`, DiagnosticSeverity.Information);
+				`add braces around here to increase skript (re)load performance`, DiagnosticSeverity.Information, "IntelliSkript->Performance->Braces->Lambda");
 			isIfStatement = true;
 		}
 		if (context.currentString.startsWith("if")){

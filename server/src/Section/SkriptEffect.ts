@@ -1,8 +1,8 @@
-import { SkriptContext } from './SkriptContext';
+import { SkriptContext } from '../SkriptContext';
 import{
 	SkriptSection
 
-} from "./Section/SkriptSection";
+} from "./SkriptSection";
 export class SkriptEffect extends SkriptSection{
 	createSection(context: SkriptContext): SkriptSection {
 		const regex = /^(parse|trigger|pattern(|s))$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;

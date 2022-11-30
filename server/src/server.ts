@@ -303,7 +303,12 @@ connection.onCodeAction((params) => {
 	if (diagnosticsAssociated.length > 0) {
 		const currentDiagnostic = params.context.diagnostics[0];
 		if (currentDiagnostic.code != undefined) {
-			if ((currentDiagnostic.code as string).startsWith("IntelliSkript Indent")) {
+			const codeAction: CodeAction = {
+				title: 'Action not recognized',
+				kind: CodeActionKind.QuickFix,
+				data: params.textDocument.uri
+			};
+			if ((currentDiagnostic.code as string).startsWith("IntelliSkript->Indent")) {
 				const data = currentDiagnostic.data;
 				const indentString = data as string;
 				//change.createFile(`${folder}/newFile.bat`, { overwrite: true });
@@ -323,11 +328,29 @@ connection.onCodeAction((params) => {
 				//const b = change.getTextEditChange({ uri: `${folder}/newFile.bat`, version: null });
 				//b.insert({ line: 0, character: 0 }, 'The initial content', ChangeAnnotation.create('Add additional content', true));
 
-				const codeAction: CodeAction = {
-					title: 'Fix indentation',
-					kind: CodeActionKind.QuickFix,
-					data: params.textDocument.uri
-				};
+				codeAction.title = "Fix Indentation";
+				codeAction.edit = change.edit;
+				return [
+					codeAction
+				];
+			}
+			if ((currentDiagnostic.code as string).startsWith("IntelliSkript->Performance->Braces")) {
+
+
+				//change.createFile(`${folder}/newFile.bat`, { overwrite: true });
+				if (document) {
+					const a = change.getTextEditChange(document);
+					a.insert(
+						currentDiagnostic.range.start, "(");
+					a.insert(
+						currentDiagnostic.range.end, ")",
+						ChangeAnnotation.create('Insert braces to improve performance', true));
+				}
+				//const b = change.getTextEditChange({ uri: `${folder}/newFile.bat`, version: null });
+				//b.insert({ line: 0, character: 0 }, 'The initial content', ChangeAnnotation.create('Add additional content', true));
+
+				codeAction.isPreferred = true;
+				codeAction.title = "Add Braces";
 				codeAction.edit = change.edit;
 				return [
 					codeAction

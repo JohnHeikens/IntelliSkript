@@ -8,7 +8,7 @@ import {
 	SkriptContext
 } from '../SkriptContext';
 import { SkriptCommand } from './SkriptCommand';
-import { SkriptEffect } from '../SkriptEffect';
+import { SkriptEffect } from './SkriptEffect';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { SkriptWorkSpace } from './SkriptWorkSpace';
 import { SkriptImportSection } from './SkriptImportSection';
@@ -97,7 +97,7 @@ export class SkriptFile extends SkriptSection {
 						currentLineStartPosition + indentationEndIndex,
 						`indentation error: do not mix tabs and spaces` + indentationEndIndex,
 						DiagnosticSeverity.Error,
-						"IntelliSkript Indent Mix",
+						"IntelliSkript->Indent->Mix",
 						currentIndentationString.repeat(expectedIndentationCount)
 					);
 				}
@@ -113,7 +113,7 @@ export class SkriptFile extends SkriptSection {
 								difference,
 								`indentation error: expected ` + currentExpectedIndentationCharachterCount + (currentIndentationString[0] == " " ? " space" : " tab") + (currentExpectedIndentationCharachterCount == 1 ? "" : "s") + ` but found ` + indentationEndIndex,
 								DiagnosticSeverity.Error,
-								"IntelliSkript Indent Amount",
+								"IntelliSkript->Indent->Amount",
 								currentIndentationString.repeat(expectedIndentationCount)
 							);
 							//process the line like normally. this way the next lines will not all generate errors messages.
@@ -136,6 +136,7 @@ export class SkriptFile extends SkriptSection {
 					}
 					if (trimmedLine.endsWith(":")) {
 						context.currentString = trimmedLine.substring(0, trimmedLine.length - 1);
+						context.createHierarchy();
 						const newSection: SkriptSection | undefined = context.currentSection?.createSection?.(context);
 						if (newSection != undefined) context.currentSection?.childSections.push(newSection);
 						context.currentSection = newSection;
@@ -146,6 +147,7 @@ export class SkriptFile extends SkriptSection {
 					}
 					else {
 						context.currentString = trimmedLine;
+						context.createHierarchy();
 						context.currentSection?.processLine?.(context);
 					}
 				}

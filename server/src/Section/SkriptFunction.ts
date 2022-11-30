@@ -1,4 +1,4 @@
-import { Location, Range } from 'vscode-languageserver/node';
+import { Location, Range, DiagnosticSeverity } from 'vscode-languageserver/node';
 import { SkriptContext } from '../SkriptContext';
 import {
 	SkriptSection
@@ -14,7 +14,7 @@ export class SkriptFunction extends SkriptSection {
 		//(,|and|)){1,}\)
 		const result = regex.exec(context.currentString);
 		if (result == null) {
-			context.addDiagnostic(context.currentPosition, context.currentString.length, "cannot recognize function");
+			context.addDiagnostic(context.currentPosition, context.currentString.length, "cannot recognize function", DiagnosticSeverity.Error, "IntelliSkript->function->unrecognized");
 			this.name = "";
 		}
 		else {
