@@ -10,9 +10,12 @@
 		"url": "https://github.com/JohnHeikens/IntelliSkript"
 	},
 	"publisher": "JohnHeikens",
-	"categories": [],
+	"categories": [
+		"Programming Languages",
+		"Linters"
+	],
 	"keywords": [
-		"multi-root ready"
+		"skript", "intelliskript", "intellisense"
 	],
 	"engines": {
 		"vscode": "^1.63.0"
