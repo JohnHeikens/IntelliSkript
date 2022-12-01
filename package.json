@@ -22,18 +22,6 @@
 	"engines": {
 		"vscode": "^1.63.0"
 	},
-	"languages": [
-		{
-			"id": "intelliskript",
-			"aliases": [
-				"skript",
-				"sk"
-			],
-			"extensions": [
-				".sk"
-			]
-		}
-	],
 	"activationEvents": [
 		"onLanguage:intelliskript",
 		"onLanguage:skript",
@@ -41,6 +29,20 @@
 	],
 	"main": "./client/out/extension",
 	"contributes": {
+		"languages": [
+		  {
+			"id": "skript",
+			"extensions": [".sk"],
+			"aliases": ["Skript", "sk"],
+			"filenames": [],
+			"firstLine": "#sk",
+			"configuration": "./language-configuration.json",
+			"icon": {
+			  "light": "./icon.png",
+			  "dark": "./icon.png"
+			}
+		  }
+		],
 		"configuration": {
 			"type": "object",
 			"title": "IntelliSkript configuration",
