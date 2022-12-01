@@ -19,6 +19,7 @@ import {
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
+	vscode.window.showInformationMessage('activated');
 	// The server is implemented in node
 	const serverModule = context.asAbsolutePath(
 		path.join('server', 'out', 'server.js')
@@ -55,7 +56,6 @@ export function activate(context: ExtensionContext) {
 		serverOptions,
 		clientOptions
 	);
-
 	
     //context.subscriptions.push(
     //    vscode.languages.registerDefinitionProvider(

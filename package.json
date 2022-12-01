@@ -24,10 +24,9 @@
 	},
 	"languages": [
 		{
-			"id": "skript",
+			"id": "sk",
 			"extensions": [
-				".sk",
-				".skript"
+				".sk"
 			],
 			"aliases": [
 				"Skript",
@@ -36,7 +35,7 @@
 		}
 	],
 	"activationEvents": [
-		"onLanguage:skript"
+		"onLanguage:sk"
 	],
 	"main": "./client/out/extension",
 	"contributes": {
@@ -44,11 +43,11 @@
 			"type": "object",
 			"title": "IntelliSkript configuration",
 			"properties": {
-				"intelliSkript.maxNumberOfProblems": {
+				"IntelliSkript.ErrorExempts": {
 					"scope": "resource",
-					"type": "number",
-					"default": 100,
-					"description": "Controls the maximum number of problems produced by the server."
+					"type": "string",
+					"default": "",
+					"description": "A RegExp which allows you to filter out annoying errors"
 				},
 				"intelliSkript.trace.server": {
 					"scope": "window",
