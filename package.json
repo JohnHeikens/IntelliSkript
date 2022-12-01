@@ -24,17 +24,19 @@
 	},
 	"languages": [
 		{
-			"id": "sk",
+			"id": "intelliskript",
+			"aliases": [
+				"skript",
+				"sk"
+			],
 			"extensions": [
 				".sk"
-			],
-			"aliases": [
-				"Skript",
-				"skript"
 			]
 		}
 	],
 	"activationEvents": [
+		"onLanguage:intelliskript",
+		"onLanguage:skript",
 		"onLanguage:sk"
 	],
 	"main": "./client/out/extension",
