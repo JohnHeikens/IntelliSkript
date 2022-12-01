@@ -19,7 +19,7 @@ import {
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
-	vscode.window.showInformationMessage('activated');
+	//vscode.window.showInformationMessage('IntelliSkript has been activated');
 	// The server is implemented in node
 	const serverModule = context.asAbsolutePath(
 		path.join('server', 'out', 'server.js')

@@ -90,7 +90,7 @@ export class SkriptFile extends SkriptSection {
 
 		while (currentLineIndex < lines.length) {
 			const currentLine = lines[currentLineIndex];
-			const currentLineContext = context.push(currentLineStartPosition, currentLine.length);
+			//const currentLineContext = context.push(currentLineStartPosition, currentLine.length);
 
 			//remove comments and space from the right
 			const commentIndex = currentLine.search(/(?<!#)#(?!#)/);
@@ -100,7 +100,6 @@ export class SkriptFile extends SkriptSection {
 			//cont:
 			if (trimmedLine.length > 0) {
 				const indentationEndIndex = SkriptFile.getIndentationEndIndex(currentLine);
-				const trimmedContext = currentLineContext.push(indentationEndIndex, trimmedLine.length);
 				//context.currentPosition = currentLineStartPosition + indentationEndIndex;
 				const indentationString = currentLine.substring(0, indentationEndIndex);
 				const inverseIndentationType = (indentationString[0] == " ") ? "\t" : " ";
@@ -118,6 +117,11 @@ export class SkriptFile extends SkriptSection {
 				else {
 					if (currentIndentationString == "") {
 						currentIndentationString = indentationString;
+						if(indentationString == "")
+						{
+							popStacks(expectedIndentationCount);
+							expectedIndentationCount = 0;
+						}
 					}
 					else {
 						if ((indentationEndIndex > currentExpectedIndentationcharacterCount) || (indentationEndIndex % currentIndentationString.length) != 0) {
@@ -140,6 +144,7 @@ export class SkriptFile extends SkriptSection {
 							expectedIndentationCount = currentIndentationCount;
 						}
 					}
+					const trimmedContext = context.push(currentLineStartPosition + indentationEndIndex, trimmedLine.length);
 					if (trimmedLine.endsWith(":")) {
 
 						const contextWithoutColon = trimmedContext.push(0, trimmedContext.currentString.length - 1);
@@ -163,7 +168,7 @@ export class SkriptFile extends SkriptSection {
 			currentLineIndex++;
 			currentLineStartPosition += currentLine.length + 1;
 		}
-		popStacks(Infinity);
+		popStacks(expectedIndentationCount);
 
 		while (currentLineIndex < lines.length) {
 
