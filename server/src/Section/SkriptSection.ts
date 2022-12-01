@@ -19,6 +19,7 @@ export class SkriptSection extends SkriptSectionGroup {
 		this.endLine = this.startLine;
 	}
 
+	//go up first, then iterate downwards
 	override getVariableByName(name: string): SkriptVariable | undefined {
 		for (const variable of this.definedVariables) {
 			if (variable.overlap(name))//regexes overlap, could be the same variable

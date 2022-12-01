@@ -23,17 +23,17 @@ export class SkriptFunction extends SkriptSection {
 				const argumentIndex = "function ".length + result[1].length + "(".length;
 				const specializedContext = context.push(argumentIndex, result[2].length);
 				specializedContext.createHierarchy();
-				const argumentStrings = specializedContext.splitHierarchically(/,| and /g); //result[2].split(/,|and/);
+				const argumentStrings = specializedContext.splitHierarchically(/,/g); //result[2].split(/,|and/);
 				for (const currentArgumentString of argumentStrings) {
-					const variableDefinitionParts = currentArgumentString.split(":");
+					const variableDefinitionParts = currentArgumentString.text.split(":");
 					if (variableDefinitionParts.length == 2) {
 						const variableName = "_" + variableDefinitionParts[0].trim();
-						const currentPosition = context.currentPosition + context.currentString.indexOf(variableDefinitionParts[0].trimEnd());
+						const currentPosition = specializedContext.currentPosition + currentArgumentString.index;
 						const Loc = Location.create(context.currentDocument.uri, Range.create(context.currentDocument.positionAt(currentPosition), context.currentDocument.positionAt(currentPosition + variableDefinitionParts[0].trim().length)));
 						this.definedVariables.push(new SkriptVariable(Loc, variableName, variableDefinitionParts[1].trim()));
 					}
 					else {
-						context.addDiagnostic(0 + context.currentString.indexOf(currentArgumentString), currentArgumentString.length, "unrecognized function argument (no \":\" found)");
+						specializedContext.addDiagnostic(currentArgumentString.index, currentArgumentString.text.length, "unrecognized function argument (no \":\" found)");
 					}
 				}
 			}

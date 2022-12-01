@@ -163,15 +163,15 @@ export class SkriptContext {
 
 		return results;
 	}
-	splitHierarchically(delimiter: RegExp, start = 0, end = this.currentString.length): string[] {
+	splitHierarchically(delimiter: RegExp, start = 0, end = this.currentString.length): { text: string, index: number }[] {
 		const indexes = this.hierarchicFind(delimiter, start, end);
 		const results = Array(indexes.length + 1);
 		let currentIndex = start;
 		for (let i = 0; i < indexes.length; i++) {
-			results[i] = this.currentString.substring(currentIndex, indexes[i].index);
+			results[i] = { text: this.currentString.substring(currentIndex, indexes[i].index), index: currentIndex };
 			currentIndex = indexes[i].index + indexes[i].length;
 		}
-		results[indexes.length] = this.currentString.substring(currentIndex, end);
+		results[indexes.length] = { text: this.currentString.substring(currentIndex, end), index: currentIndex };
 		return results;
 	}
 }

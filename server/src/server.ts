@@ -208,26 +208,28 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 	const ws = getSkriptWorkSpaceByUri(textDocument.uri);
 
 	if (ws) {
-
-		let found = false;
-		//update skriptfile for that workspace
-		for (let i = 0; i < ws.files.length; i++) {
-			if (ws.files[i].document.uri == textDocument.uri) {
-				//temporarily delete (it's recalculating) so an error will be thrown if anything ever tries accessing a recalculating file
-				delete ws.files[i];
-				const currentFile = new SkriptFile(ws, context);
-				ws.files[i] = currentFile;
-				found = true;
-				break;
-			}
+		const fileIndex = ws.getSkriptFileIndexByUri(textDocument.uri);
+		if (fileIndex) {
+			//temporarily delete (it's recalculating) so an error will be thrown if anything ever tries accessing a recalculating file
+			delete ws.files[fileIndex];
+			const currentFile = new SkriptFile(ws, context);
+			ws.files[fileIndex] = currentFile;
 		}
-		if (!found) {
+		else{
 			//add document to skript workspace
 			ws.files.push(new SkriptFile(undefined, context));
 		}
 	}
 	else {
-		currentLooseFiles.push(new SkriptFile(undefined, context));
+		const fileIndex = getLooseFileIndexByUri(textDocument.uri);
+		if (fileIndex == undefined){
+			currentLooseFiles.push(new SkriptFile(undefined, context));
+		}
+		else{
+			delete currentLooseFiles[fileIndex];
+			const currentFile = new SkriptFile(undefined, context);
+			currentLooseFiles[fileIndex] = currentFile;
+		}
 	}
 
 	const diagnostics: Diagnostic[] = context.diagnostics;
@@ -236,10 +238,6 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 	// Send the computed diagnostics to VSCode.
 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 }
-
-//connection.onDefinition(e => {//
-//	return e.position;
-//});
 
 //examples:
 //https://github.com/microsoft/vscode-languageserver-node/blob/main/testbed/server/src/server.ts

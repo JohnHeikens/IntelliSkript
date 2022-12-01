@@ -2,7 +2,7 @@ import { SkriptFile } from './SkriptFile';
 import { SkriptSectionGroup } from './SkriptSectionGroup';
 import { SkriptVariable } from '../SkriptVariable';
 
-export class SkriptWorkSpace extends SkriptSectionGroup{
+export class SkriptWorkSpace extends SkriptSectionGroup {
 	//the 'childsections' variable is not used here. TODO somehow merge the childsections and files variable
 	files: SkriptFile[] = [];
 	uri = "";
@@ -18,12 +18,14 @@ export class SkriptWorkSpace extends SkriptSectionGroup{
 		}
 		return undefined;
 	}
-	getSkriptFileByUri(uri: string): SkriptFile | undefined {
-		for (const f of this.files) {
-			if (f.document.uri == uri) {
-				return f;
-			}
-		}
+	getSkriptFileIndexByUri(uri: string): number | undefined {
+		this.files.forEach((file, index) => {
+			if (file.document.uri == uri) return index;
+		});
 		return undefined;
+	}
+	getSkriptFileByUri(uri: string): SkriptFile | undefined {
+		const index = this.getSkriptFileIndexByUri(uri);
+		return index ? this.files[index] : undefined;
 	}
 }

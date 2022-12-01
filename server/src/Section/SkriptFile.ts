@@ -14,7 +14,7 @@ import { SkriptWorkSpace } from './SkriptWorkSpace';
 import { SkriptImportSection } from './SkriptImportSection';
 import { DiagnosticSeverity } from 'vscode-languageserver/node';
 
-function removeRemainder(toDivide:number, toDivideBy:number):number {
+function removeRemainder(toDivide: number, toDivideBy: number): number {
 	return Math.floor(toDivide / toDivideBy) * toDivideBy;
 }
 
@@ -55,7 +55,7 @@ export class SkriptFile extends SkriptSection {
 		return line.search(/(?!( |\t))/);
 	}
 
-	
+
 
 	constructor(workSpace: SkriptWorkSpace | undefined, context: SkriptContext) {
 		super(context, undefined);
@@ -75,6 +75,18 @@ export class SkriptFile extends SkriptSection {
 
 		let expectedIndentationCount = 0;
 		let currentIndentationString = "";
+
+		function popStacks(stacksToPop: number) {
+			if (context.currentSection != undefined) {
+				for (let i = 0; i < stacksToPop; i++) {
+					context.currentSection.endLine = currentLineIndex;
+					context.currentSection = context.currentSection?.parent instanceof SkriptSection ? context.currentSection?.parent as SkriptSection : undefined;
+					if (!context.currentSection) {
+						break;
+					}
+				}
+			}
+		}
 
 		while (currentLineIndex < lines.length) {
 			const currentLine = lines[currentLineIndex];
@@ -124,15 +136,7 @@ export class SkriptFile extends SkriptSection {
 						else {
 							const currentIndentationCount = indentationEndIndex / currentIndentationString.length;
 							const StacksToPop = expectedIndentationCount - currentIndentationCount;
-							if (context.currentSection) {
-								for (let i = 0; i < StacksToPop; i++) {
-									context.currentSection.endLine = currentLineIndex;
-									context.currentSection = context.currentSection?.parent instanceof SkriptSection ? context.currentSection?.parent as SkriptSection : undefined;
-									if (!context.currentSection) {
-										break;
-									}
-								}
-							}
+							popStacks(StacksToPop);
 							expectedIndentationCount = currentIndentationCount;
 						}
 					}
@@ -159,6 +163,7 @@ export class SkriptFile extends SkriptSection {
 			currentLineIndex++;
 			currentLineStartPosition += currentLine.length + 1;
 		}
+		popStacks(Infinity);
 
 		while (currentLineIndex < lines.length) {
 
