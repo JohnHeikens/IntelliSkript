@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="3.7893066mm"
+   height="2.3490844mm"
+   viewBox="0 0 3.7893066 2.3490844"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   sodipodi:docname="skript icon.svg"
+   inkscape:export-filename="skript icon.png"
+   inkscape:export-xdpi="857.99341"
+   inkscape:export-ydpi="857.99341"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="45.254834"
+     inkscape:cx="4.2205436"
+     inkscape:cy="4.065864"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient2553">
+      <stop
+         style="stop-color:#007bff;stop-opacity:1;"
+         offset="0"
+         id="stop2549" />
+      <stop
+         style="stop-color:#00ffff;stop-opacity:1;"
+         offset="0.2236111"
+         id="stop2559" />
+      <stop
+         style="stop-color:#007bff;stop-opacity:1;"
+         offset="0.4159722"
+         id="stop2561" />
+      <stop
+         style="stop-color:#007bff;stop-opacity:1;"
+         offset="0.48055553"
+         id="stop2557" />
+      <stop
+         style="stop-color:#00ffff;stop-opacity:1;"
+         offset="0.71805555"
+         id="stop2563" />
+      <stop
+         style="stop-color:#007bff;stop-opacity:1;"
+         offset="1"
+         id="stop2551" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2553"
+       id="linearGradient2555"
+       x1="44.790764"
+       y1="155.46008"
+       x2="48.530071"
+       y2="155.46008"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-44.765763,-154.28553)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.175px;font-family:Gadugi;-inkscape-font-specification:'Gadugi Bold';fill:#00daff;fill-opacity:1;stroke:#000000;stroke-width:0.05;stroke-dasharray:none;stroke-opacity:1"
+       x="44.648136"
+       y="156.57086"
+       id="text360"><tspan
+         sodipodi:role="line"
+         id="tspan358"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Gadugi;-inkscape-font-specification:'Gadugi Bold';fill:#00daff;fill-opacity:1;stroke:#000000;stroke-width:0.05;stroke-dasharray:none;stroke-opacity:1"
+         x="44.648136"
+         y="156.57086">SK</tspan></text>
+  </g>
+</svg>

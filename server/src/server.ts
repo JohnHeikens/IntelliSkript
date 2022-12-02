@@ -15,7 +15,17 @@ import {
 	WorkspaceChange,
 	ChangeAnnotation,
 	CodeAction,
-	CodeActionKind
+	CodeActionKind,
+	SemanticTokensRegistrationOptions,
+	SemanticTokensLegend,
+	SemanticTokensClientCapabilities,
+	SemanticTokensRegistrationType,
+	DocumentSelector,
+	SymbolInformation,
+	SymbolKind,
+	SemanticTokensBuilder,
+	Position,
+	Range
 } from 'vscode-languageserver/node';
 
 import {
@@ -31,6 +41,9 @@ import {
 } from './SkriptContext';
 import { SkriptWorkSpace } from './Section/SkriptWorkSpace';
 import assert = require('assert');
+import { connect } from 'http2';
+import { TokenTypes } from './TokenTypes';
+import { TokenModifiers } from './TokenModifiers';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -84,6 +97,36 @@ function getSkriptFileByUri(uri: string): SkriptFile | undefined {
 	return getLooseFileByUri(uri);
 }
 
+let semanticTokensLegend: SemanticTokensLegend | undefined;
+function computeLegend(capability: SemanticTokensClientCapabilities): SemanticTokensLegend {
+
+	const clientTokenTypes = new Set<string>(capability.tokenTypes);
+	const clientTokenModifiers = new Set<string>(capability.tokenModifiers);
+
+	const tokenTypes: string[] = [];
+	for (let i = 0; i < TokenTypes.length; i++) {
+		const str = TokenTypes[i];
+		if (clientTokenTypes.has(str)) {
+			tokenTypes.push(str);
+		} else {
+			if (str === 'lambdaFunction') {
+				tokenTypes.push('function');
+			} else {
+				tokenTypes.push('type');
+			}
+		}
+	}
+
+	const tokenModifiers: string[] = [];
+	for (let i = 0; i < tokenModifiers.length; i++) {
+		const str = tokenModifiers[i];
+		if (clientTokenModifiers.has(str)) {
+			tokenModifiers.push(str);
+		}
+	}
+
+	return { tokenTypes, tokenModifiers };
+}
 
 connection.onInitialize((params: InitializeParams) => {
 	if (params.workspaceFolders != null) {
@@ -106,25 +149,99 @@ connection.onInitialize((params: InitializeParams) => {
 		capabilities.textDocument.publishDiagnostics.relatedInformation
 	);
 
-	const result: InitializeResult = {
-		capabilities: {
-			textDocumentSync: TextDocumentSyncKind.Incremental,
-			// Tell the client that this server supports code completion.
-			//completionProvider: {
-			//	resolveProvider: true
-			//},
-			definitionProvider: true,
-			codeActionProvider: true
-		}
-	};
-	if (hasWorkspaceFolderCapability) {
-		result.capabilities.workspace = {
-			workspaceFolders: {
-				supported: true
+
+
+	semanticTokensLegend = computeLegend(params.capabilities.textDocument!.semanticTokens!);
+	//return result;
+	return new Promise((resolve, reject) => {
+		//const result: InitializeResult = {
+		//	capabilities: {
+		//		textDocumentSync: TextDocumentSyncKind.Incremental,
+		//		// Tell the client that this server supports code completion.
+		//		//completionProvider: {
+		//		//	resolveProvider: true
+		//		//},
+		//		definitionProvider: true,
+		//		codeActionProvider: true
+		//	}
+		//};
+		const result: InitializeResult = {
+			capabilities: {
+				textDocumentSync: TextDocumentSyncKind.Incremental,
+				// Tell the client that this server supports code completion.
+				//completionProvider: {
+				//	resolveProvider: true
+				//},
+				definitionProvider: true,
+				codeActionProvider: true,
+				//textDocumentSync: TextDocumentSyncKind.Full,
+				//hoverProvider: true,
+				//completionProvider: {
+				//	triggerCharacters: ['.'],
+				//	allCommitCharacters: [';'],
+				//	resolveProvider: false,
+				//},
+				//signatureHelpProvider: {
+				//},
+				//definitionProvider: true,
+				//referencesProvider: { workDoneProgress: true },
+				//documentHighlightProvider: true,
+				//documentSymbolProvider: true,
+				//workspaceSymbolProvider: true,
+				//codeActionProvider: {
+				//	codeActionKinds: [CodeActionKind.Refactor],//, CodeActionKind.Source, CodeActionKind.SourceOrganizeImports],
+				//	resolveProvider: true
+				//},
+				//codeLensProvider: {
+				//	resolveProvider: true
+				//},
+				//documentFormattingProvider: true,
+				//documentRangeFormattingProvider: true,
+				//documentOnTypeFormattingProvider: {
+				//	firstTriggerCharacter: ';',
+				//	moreTriggerCharacter: ['{', '\n']
+				//},
+				//renameProvider: true,
+				//workspace: {
+				//	workspaceFolders: {
+				//		supported: true,
+				//		changeNotifications: true
+				//	}
+				//},
+				//implementationProvider: {
+				//	id: 'AStaticImplementationID',
+				//	documentSelector: ['bat']
+				//},
+				//typeDefinitionProvider: true,
+				//declarationProvider: { workDoneProgress: true },
+				//executeCommandProvider: {
+				//	commands: ['testbed.helloWorld']
+				//},
+				//callHierarchyProvider: true,
+				//selectionRangeProvider: { workDoneProgress: true },
+				//diagnosticProvider: {
+				//	identifier: 'testbed',
+				//	interFileDependencies: true,
+				//	workspaceDiagnostics: false
+				//},
+				//notebookDocumentSync: {
+				//	notebookSelector: [{
+				//		cells: [{ language: 'bat'}]
+				//	}]
+				//}
 			}
 		};
-	}
-	return result;
+		if (hasWorkspaceFolderCapability) {
+			result.capabilities.workspace = {
+				workspaceFolders: {
+					supported: true
+				}
+			};
+		}
+		setTimeout(() => {
+			resolve(result);
+		}, 50);
+	});
 });
 
 connection.onInitialized(() => {
@@ -137,6 +254,18 @@ connection.onInitialized(() => {
 			connection.console.log('Workspace folder change event received.');
 		});
 	}
+	const sel: DocumentSelector = [{ language: 'skript' }];
+
+	assert(semanticTokensLegend != undefined);
+	const registrationOptions: SemanticTokensRegistrationOptions = {
+		documentSelector: sel,
+		legend: semanticTokensLegend,
+		range: false,
+		full: {
+			delta: true
+		}
+	};
+	void connection.client.register(SemanticTokensRegistrationType.type, registrationOptions);
 });
 
 // IntelliSkript settings
@@ -215,17 +344,17 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 			const currentFile = new SkriptFile(ws, context);
 			ws.files[fileIndex] = currentFile;
 		}
-		else{
+		else {
 			//add document to skript workspace
 			ws.files.push(new SkriptFile(undefined, context));
 		}
 	}
 	else {
 		const fileIndex = getLooseFileIndexByUri(textDocument.uri);
-		if (fileIndex == undefined){
+		if (fileIndex == undefined) {
 			currentLooseFiles.push(new SkriptFile(undefined, context));
 		}
-		else{
+		else {
 			delete currentLooseFiles[fileIndex];
 			const currentFile = new SkriptFile(undefined, context);
 			currentLooseFiles[fileIndex] = currentFile;
@@ -293,6 +422,81 @@ connection.onDidChangeWatchedFiles(_change => {
 	//validateTextDocument(new TextDocument(_change.changes[0].uri));
 });
 
+connection.onDocumentSymbol((identifier) => {
+	return [
+		SymbolInformation.create('Item 1', SymbolKind.Function, {
+			start: { line: 0, character: 0 },
+			end: { line: 0, character: 10 }
+		}, identifier.textDocument.uri),
+		SymbolInformation.create('Item 2', SymbolKind.Function, {
+			start: { line: 1, character: 0 },
+			end: { line: 1, character: 10 }
+		}, identifier.textDocument.uri)
+	];
+});
+
+const tokenBuilders: Map<string, SemanticTokensBuilder> = new Map();
+documents.onDidClose((event) => {
+	tokenBuilders.delete(event.document.uri);
+});
+function getTokenBuilder(document: TextDocument): SemanticTokensBuilder {
+	let result = tokenBuilders.get(document.uri);
+	if (result !== undefined) {
+		return result;
+	}
+	result = new SemanticTokensBuilder();
+	tokenBuilders.set(document.uri, result);
+	return result;
+}
+
+function buildTokens(builder: SemanticTokensBuilder, document: TextDocument) {
+	const text = document.getText();
+	const regexp = /\w+/g;
+	let match: RegExpMatchArray | null;
+	let tokenCounter = 0;
+	let modifierCounter = 0;
+	while ((match = regexp.exec(text)) !== null && match.index !== undefined) {
+		const word = match[0];
+		const position = document.positionAt(match.index);
+		const tokenType = tokenCounter % TokenTypes.length;
+		const tokenModifier = 1 << modifierCounter % TokenModifiers.length;
+		builder.push(position.line, position.character, word.length, tokenType, tokenModifier);
+		//builder.push(
+		//	new Range(new Position(1, 1), new Position(1, 5)),
+		//	'class',
+		//	['declaration']);
+		//return;//TODO: remove again
+		tokenCounter++;
+		modifierCounter++;
+	}
+}
+
+connection.languages.semanticTokens.on((params) => {
+	const document = documents.get(params.textDocument.uri);
+	if (document === undefined) {
+		return { data: [] };
+	}
+	const builder = getTokenBuilder(document);
+	buildTokens(builder, document);
+	return builder.build();
+});
+
+connection.languages.semanticTokens.onDelta((params) => {
+	const document = documents.get(params.textDocument.uri);
+	if (document === undefined) {
+		return { edits: [] };
+	}
+	const builder = getTokenBuilder(document);
+	builder.previousResult(params.previousResultId);
+	buildTokens(builder, document);
+	return builder.buildEdits();
+});
+
+connection.languages.semanticTokens.onRange((params) => {
+	return { data: [] };
+});
+
+//connection.
 
 connection.onCodeAction((params) => {
 	const document = documents.get(params.textDocument.uri);

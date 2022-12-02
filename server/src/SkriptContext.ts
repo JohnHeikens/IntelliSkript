@@ -86,7 +86,7 @@ export class SkriptContext {
 					node.end = i;//pop
 				}
 				else if (node.character == "") {
-					if (this.currentString[i - 1].match(/[0-9]/) == null) {//don't push for percentages
+					if ((i == 0) || (this.currentString[i - 1].match(/[0-9]/) == null)) {//don't push for percentages
 						node.children.push(new SkriptNestHierarchy(i, '%'));//push
 					}
 				}
