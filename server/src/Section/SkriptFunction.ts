@@ -14,7 +14,7 @@ export class SkriptFunction extends SkriptSection {
 		//(,|and|)){1,}\)
 		const result = regex.exec(context.currentString);
 		if (result == null) {
-			context.addDiagnostic(0, context.currentString.length, "cannot recognize function", DiagnosticSeverity.Error, "IntelliSkript->function->unrecognized");
+			context.addDiagnostic(0, context.currentString.length, "cannot recognize function", DiagnosticSeverity.Error, "IntelliSkript->Function->Unrecognized");
 			this.name = "";
 		}
 		else {

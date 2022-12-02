@@ -77,12 +77,24 @@ export class SkriptFile extends SkriptSection {
 		let currentIndentationString = "";
 
 		function popStacks(stacksToPop: number) {
-			if (context.currentSection != undefined) {
-				for (let i = 0; i < stacksToPop; i++) {
-					context.currentSection.endLine = currentLineIndex;
-					context.currentSection = context.currentSection?.parent instanceof SkriptSection ? context.currentSection?.parent as SkriptSection : undefined;
-					if (!context.currentSection) {
-						break;
+			if (stacksToPop > 0) {
+				if (context.currentSection != undefined) {
+					if (context.currentSection.startLine == (currentLineIndex - 1)) {
+						if (currentLineIndex < lines.length) {
+							context.addDiagnostic(currentLineStartPosition, lines[currentLineIndex].length, "empty configuration section (expected something here)", DiagnosticSeverity.Warning, "IntelliSkript->Indent->Empty", currentIndentationString.repeat(expectedIndentationCount));
+						}
+						else {
+							const lastLine = lines[currentLineIndex - 1];
+							const LastLineStartPosition = currentLineStartPosition - 1 - lastLine.length;
+							context.addDiagnostic(LastLineStartPosition, lines[currentLineIndex - 1].length, "empty configuration section", DiagnosticSeverity.Warning, "IntelliSkript->Indent->Empty");
+						}
+					}
+					for (let i = 0; i < stacksToPop; i++) {
+						context.currentSection.endLine = currentLineIndex;
+						context.currentSection = context.currentSection?.parent instanceof SkriptSection ? context.currentSection?.parent as SkriptSection : undefined;
+						if (!context.currentSection) {
+							break;
+						}
 					}
 				}
 			}
@@ -117,8 +129,7 @@ export class SkriptFile extends SkriptSection {
 				else {
 					if (currentIndentationString == "") {
 						currentIndentationString = indentationString;
-						if(indentationString == "")
-						{
+						if (indentationString == "") {
 							popStacks(expectedIndentationCount);
 							expectedIndentationCount = 0;
 						}
