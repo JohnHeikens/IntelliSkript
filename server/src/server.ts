@@ -318,6 +318,13 @@ documents.onDidClose(e => {
 	if (i != undefined) {
 		currentLooseFiles.splice(i, 1);
 	}
+	const ws = getSkriptWorkSpaceByUri(e.document.uri);
+	if (ws) {
+		const fileIndex = ws.getSkriptFileIndexByUri(e.document.uri);
+		if (fileIndex != undefined) {
+			ws.files.splice(fileIndex, 1);
+		}
+	}
 });
 
 
@@ -330,7 +337,7 @@ documents.onDidChangeContent(change => {
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 	// In this simple example we get the settings for every validate run.
-	const settings = await getDocumentSettings(textDocument.uri);
+	//const settings = await getDocumentSettings(textDocument.uri);
 
 	const context = new SkriptContext(textDocument);
 
@@ -340,6 +347,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 		const fileIndex = ws.getSkriptFileIndexByUri(textDocument.uri);
 		if (fileIndex) {
 			//temporarily delete (it's recalculating) so an error will be thrown if anything ever tries accessing a recalculating file
+			context.currentBuilder = ws.files[fileIndex].builder;
 			delete ws.files[fileIndex];
 			const currentFile = new SkriptFile(ws, context);
 			ws.files[fileIndex] = currentFile;
@@ -355,6 +363,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 			currentLooseFiles.push(new SkriptFile(undefined, context));
 		}
 		else {
+			context.currentBuilder = currentLooseFiles[fileIndex].builder;
 			delete currentLooseFiles[fileIndex];
 			const currentFile = new SkriptFile(undefined, context);
 			currentLooseFiles[fileIndex] = currentFile;
@@ -435,61 +444,72 @@ connection.onDocumentSymbol((identifier) => {
 	];
 });
 
-const tokenBuilders: Map<string, SemanticTokensBuilder> = new Map();
-documents.onDidClose((event) => {
-	tokenBuilders.delete(event.document.uri);
-});
-function getTokenBuilder(document: TextDocument): SemanticTokensBuilder {
-	let result = tokenBuilders.get(document.uri);
-	if (result !== undefined) {
-		return result;
-	}
-	result = new SemanticTokensBuilder();
-	tokenBuilders.set(document.uri, result);
-	return result;
-}
-
-function buildTokens(builder: SemanticTokensBuilder, document: TextDocument) {
-	const text = document.getText();
-	const regexp = /\w+/g;
-	let match: RegExpMatchArray | null;
-	let tokenCounter = 0;
-	let modifierCounter = 0;
-	while ((match = regexp.exec(text)) !== null && match.index !== undefined) {
-		const word = match[0];
-		const position = document.positionAt(match.index);
-		const tokenType = tokenCounter % TokenTypes.length;
-		const tokenModifier = 1 << modifierCounter % TokenModifiers.length;
-		builder.push(position.line, position.character, word.length, tokenType, tokenModifier);
-		//builder.push(
-		//	new Range(new Position(1, 1), new Position(1, 5)),
-		//	'class',
-		//	['declaration']);
-		//return;//TODO: remove again
-		tokenCounter++;
-		modifierCounter++;
-	}
-}
+//function buildTokens(builder: SemanticTokensBuilder, document: TextDocument) {
+//	const text = document.getText();
+//	const regexp = /\w+/g;
+//	let match: RegExpMatchArray | null;
+//	let tokenCounter = 0;
+//	let modifierCounter = 0;
+//	while ((match = regexp.exec(text)) !== null && match.index !== undefined) {
+//		const word = match[0];
+//		const position = document.positionAt(match.index);
+//		const tokenType = tokenCounter % TokenTypes.length;
+//		const tokenModifier = 1 << modifierCounter % TokenModifiers.length;
+//		builder.push(position.line, position.character, word.length, tokenType, tokenModifier);
+//		//builder.push(
+//		//	new Range(new Position(1, 1), new Position(1, 5)),
+//		//	'class',
+//		//	['declaration']);
+//		//return;//TODO: remove again
+//		tokenCounter++;
+//		modifierCounter++;
+//	}
+//}
 
 connection.languages.semanticTokens.on((params) => {
-	const document = documents.get(params.textDocument.uri);
-	if (document === undefined) {
+	const file = getSkriptFileByUri(params.textDocument.uri);
+	if (file == undefined) {
 		return { data: [] };
 	}
-	const builder = getTokenBuilder(document);
-	buildTokens(builder, document);
-	return builder.build();
+	else {
+		const result = file.builder.build();
+		if (result.resultId != undefined) {
+			//already tell the builder that next builds will be deltas
+			file.builder.previousResult(result.resultId);
+		}
+		return result;
+	}
+
+	//const document = documents.get(params.textDocument.uri);
+	//if (document === undefined) {
+	//}
+	//const builder = getTokenBuilder(document);
+	//buildTokens(builder, document);
+	//return builder.build();
 });
 
 connection.languages.semanticTokens.onDelta((params) => {
-	const document = documents.get(params.textDocument.uri);
-	if (document === undefined) {
-		return { edits: [] };
+	const file = getSkriptFileByUri(params.textDocument.uri);
+	if (file == undefined) {
+		return { data: [] };
 	}
-	const builder = getTokenBuilder(document);
-	builder.previousResult(params.previousResultId);
-	buildTokens(builder, document);
-	return builder.buildEdits();
+	else {
+		const result = file.builder.buildEdits();
+		if (result.resultId != undefined) {
+			//already tell the builder that next builds will be deltas
+			file.builder.previousResult(result.resultId);
+		}
+		return result;
+	}
+	// const document = documents.get(params.textDocument.uri);
+	// //return { edits: [] };
+	// if (document === undefined) {
+	// 	return { edits: [] };
+	// }
+	// const builder = getTokenBuilder(document);
+	// builder.previousResult(params.previousResultId);
+	// buildTokens(builder, document);
+	// return builder.buildEdits();
 });
 
 connection.languages.semanticTokens.onRange((params) => {

@@ -3,44 +3,62 @@ import {
 } from 'vscode-languageserver-textdocument';
 
 import {
-	CodeDescription,
-	Diagnostic, DiagnosticSeverity, Location, Range
+	Diagnostic, DiagnosticSeverity, SemanticTokensBuilder
 } from 'vscode-languageserver/node';
 import { SkriptNestHierarchy } from './Nesting/SkriptNestHierarchy';
 
 import {
 	SkriptSection
 } from "./Section/SkriptSection";
+import { TokenModifiers } from './TokenModifiers';
+import { TokenTypes } from './TokenTypes';
 
 //TOODO: make context able to 'push' and 'pop' (make a function able to modify the context or create an instance while keeping reference to the same diagnostics list
 export class SkriptContext {
+
+	referenceFields: {
+		currentSection: SkriptSection | undefined;
+
+	} = { currentSection: undefined };
+
+	public get currentSection(): SkriptSection | undefined { return this.referenceFields.currentSection; }
+	public set currentSection(newValue: SkriptSection | undefined) { this.referenceFields.currentSection = newValue; }
+
 	//reference variables
 	currentDocument: TextDocument;
+	currentBuilder: SemanticTokensBuilder = new SemanticTokensBuilder();
 	diagnostics: Diagnostic[] = [];
 
+	//variables which can change in push()
 	parent: SkriptContext | undefined = undefined;
 	currentString = "";
 	currentPosition = 0;
-	currentSection: SkriptSection | undefined = undefined;
 	hierarchy: SkriptNestHierarchy | undefined = undefined;
-	constructor(currentDocument: TextDocument, currentSection: SkriptSection | undefined = undefined, currentPosition = 0, currentString: string | undefined = undefined, diagnostics: Diagnostic[] = []) {
-		this.currentPosition = currentPosition;
+	constructor(currentDocument: TextDocument, currentString: string | undefined = undefined, currentBuilder: SemanticTokensBuilder = new SemanticTokensBuilder()) {
 		this.currentString = currentString == undefined ? currentDocument.getText() : currentString;
 		this.currentDocument = currentDocument;
-		this.diagnostics = diagnostics;
-		this.currentSection = currentSection;
+		this.currentBuilder = currentBuilder;
 	}
 
 	//no popping as the popping will be done automatically (the garbage collector will clean it up
 	push(newPosition: number, newSize: number): SkriptContext {
 		const subContext = new SkriptContext(
 			this.currentDocument,
-			this.currentSection,
-			this.currentPosition + newPosition,
 			this.currentString.substring(newPosition, newPosition + newSize),
-			this.diagnostics);
+			this.currentBuilder);
+
+		subContext.referenceFields = this.referenceFields;
+		subContext.currentPosition = this.currentPosition + newPosition;
+		subContext.diagnostics = this.diagnostics;
+
 		//subContext.hierarchy = this.hierarchy;//the more data, the better so we're keeping the hierarchical data from the higher levels for now
 		return subContext;
+	}
+
+	//CAUTION! HIGHLIGHTING SHOULD BE DONE IN ORDER
+	addToken(relativePosition: number, length: number, type: TokenTypes, modifier: TokenModifiers = TokenModifiers.abstract): void {
+		const absolutePosition = this.currentDocument.positionAt(this.currentPosition + relativePosition);
+		this.currentBuilder.push(absolutePosition.line, absolutePosition.character, length, type, modifier);
 	}
 
 	addDiagnostic(relativePosition: number, length: number, message: string, severity: DiagnosticSeverity = DiagnosticSeverity.Error, code: string | undefined = undefined, data: unknown = undefined): void {
@@ -58,6 +76,43 @@ export class SkriptContext {
 		};
 		this.diagnostics.push(diagnostic);
 	}
+
+	highLightRecursively(currentHierarchyNode: SkriptNestHierarchy): void {
+
+		const HighLightDetails = (start: number, end: number) => {
+			const length = end - start;
+			if (currentHierarchyNode.character == '"') {
+				this.addToken(start, length, TokenTypes.string);
+			}
+			else if (currentHierarchyNode.character == '{') {
+				this.addToken(start, length, TokenTypes.variable);
+			}
+			else {
+				const numberRegExp = /\b(?<!\.)[0-9]{1,}(\.[0-9]{1,}|)(?!\.)\b/g;
+				let p: RegExpExecArray | null;
+				const lastIndex = start;
+				while ((p = numberRegExp.exec(this.currentString.substring(start, end)))) {
+					//this.addToken(lastIndex, (start + p.index) - lastIndex, TokenTypes.number);
+					this.addToken(start + p.index, p[0].length, TokenTypes.number);
+				}
+				//this.addToken(lastIndex, end - lastIndex, TokenTypes.keyword);
+			}
+		};
+
+		let lastEnd = currentHierarchyNode.start;
+		for (const child of currentHierarchyNode.children) {
+			HighLightDetails(lastEnd, child.start + 1);
+			this.highLightRecursively(child);
+			//this.addToken(lastEnd, child.start - lastEnd, TokenTypes.string);
+			lastEnd = child.end;
+		}
+		HighLightDetails(lastEnd, currentHierarchyNode.end + 1);
+		//this.addToken(lastEnd, currentHierarchyNode.end + 1 - lastEnd, TokenTypes.string);
+		//for (const child of currentHierarchyNode.children) {
+		//	this.highLightRecursively(child);
+		//}
+	}
+
 	createHierarchy(addDiagnostics = false) {
 		const openBraces = "{([";//< can also be used as operator so not including in brace list
 		const closingBraces = "})]";
@@ -128,6 +183,7 @@ export class SkriptContext {
 				this.addDiagnostic(lastActiveNode.start, 1, "no matching closing character found", DiagnosticSeverity.Error, "IntelliSkript->nest->no matching");
 			}
 		}
+		this.hierarchy.end = this.currentString.length;
 		return this.hierarchy;
 
 

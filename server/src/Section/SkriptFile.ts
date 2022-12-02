@@ -12,7 +12,9 @@ import { SkriptEffect } from './SkriptEffect';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { SkriptWorkSpace } from './SkriptWorkSpace';
 import { SkriptImportSection } from './SkriptImportSection';
-import { DiagnosticSeverity } from 'vscode-languageserver/node';
+import { DiagnosticSeverity, SemanticTokensBuilder } from 'vscode-languageserver/node';
+import { TokenTypes } from '../TokenTypes';
+import assert = require('assert');
 
 function removeRemainder(toDivide: number, toDivideBy: number): number {
 	return Math.floor(toDivide / toDivideBy) * toDivideBy;
@@ -21,6 +23,7 @@ function removeRemainder(toDivide: number, toDivideBy: number): number {
 export class SkriptFile extends SkriptSection {
 	document: TextDocument;
 	workSpace: SkriptWorkSpace | undefined;
+	builder: SemanticTokensBuilder;
 
 	createSection(context: SkriptContext): SkriptSection {
 		const spaceIndex = context.currentString.indexOf(" ");
@@ -59,6 +62,7 @@ export class SkriptFile extends SkriptSection {
 
 	constructor(workSpace: SkriptWorkSpace | undefined, context: SkriptContext) {
 		super(context, undefined);
+		this.builder = context.currentBuilder;
 		this.workSpace = workSpace;
 		this.document = context.currentDocument;
 		context.currentSection = this;
@@ -107,6 +111,11 @@ export class SkriptFile extends SkriptSection {
 			//remove comments and space from the right
 			const commentIndex = currentLine.search(/(?<!#)#(?!#)/);
 			const lineWithoutComments = commentIndex == -1 ? currentLine : currentLine.substring(0, commentIndex);
+
+			const currentLineContext = context.push(currentLineStartPosition, currentLine.length);
+
+
+
 			const trimmedLine = lineWithoutComments.trim();
 
 			//cont:
@@ -156,11 +165,15 @@ export class SkriptFile extends SkriptSection {
 						}
 					}
 					const trimmedContext = context.push(currentLineStartPosition + indentationEndIndex, trimmedLine.length);
+					trimmedContext.createHierarchy(true);
+					assert(trimmedContext.hierarchy != undefined);
+					trimmedContext.highLightRecursively(trimmedContext.hierarchy);
+
 					if (trimmedLine.endsWith(":")) {
 
 						const contextWithoutColon = trimmedContext.push(0, trimmedContext.currentString.length - 1);
 						//context.currentString = trimmedLine.substring(0, trimmedLine.length - 1);
-						contextWithoutColon.createHierarchy(true);
+						//contextWithoutColon.createHierarchy(true);
 						const newSection: SkriptSection | undefined = context.currentSection?.createSection?.(contextWithoutColon);
 						if (newSection != undefined) context.currentSection?.childSections.push(newSection);
 						context.currentSection = newSection;
@@ -171,10 +184,12 @@ export class SkriptFile extends SkriptSection {
 					}
 					else {
 						//context.currentString = trimmedLine;
-						trimmedContext.createHierarchy(true);
 						trimmedContext.currentSection?.processLine?.(trimmedContext);
 					}
 				}
+			}
+			if (commentIndex != -1) {
+				currentLineContext.addToken(commentIndex, currentLine.length - commentIndex, TokenTypes.comment);
 			}
 			currentLineIndex++;
 			currentLineStartPosition += currentLine.length + 1;
