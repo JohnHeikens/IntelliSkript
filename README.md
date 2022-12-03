@@ -9,6 +9,10 @@
 - analyze `/sk reload` performance impact
 ![image](https://user-images.githubusercontent.com/50964021/204579516-09165dba-7638-4307-a51b-f275c3c20643.png)
 
+## to make intelliskript work with skript-vscode:
+disable the 'IntelliSkript.UseColorTheme' setting
+![setting](https://user-images.githubusercontent.com/50964021/205459970-b192de41-d5ad-4353-a734-9d6a39f1c3fe.gif)
+
 
 report issues at https://github.com/johnheikens/IntelliSkript/issues<br>
 do you have any question? go to https://pex.li/discord
