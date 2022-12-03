@@ -1,9 +1,12 @@
 # IntelliSkript
  Intellisense for skript!
 
-## to make intelliskript work with other skript plugins for VS Code:
+## to make intelliskript work with other skript themes for VS Code:
 disable the 'IntelliSkript.UseColorTheme' setting<br>
 ![setting](https://user-images.githubusercontent.com/50964021/205459970-b192de41-d5ad-4353-a734-9d6a39f1c3fe.gif)
+
+change the file association to the theme you'd like
+![image](https://user-images.githubusercontent.com/50964021/205463033-63696532-1713-447a-a13c-b21f06b4bd13.png)
 
 ## What is IntelliSkript?
 
