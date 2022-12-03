@@ -23,7 +23,10 @@
 		"vscode": "^1.63.0"
 	},
 	"activationEvents": [
-		"onLanguage:skript"
+		"onLanguage:skript",
+		"onLanguage:Sk-VSC",
+		"onLanguage:sk",
+		"onLanguage:skriptlang"
 	],
 	"main": "./client/out/extension",
 	"contributes": {
