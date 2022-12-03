@@ -252,10 +252,12 @@ connection.onInitialized(async () => {
 
 	//compatibility with all main vscode plugins
 	const sel: DocumentSelector = [
-		{ language: 'skript' },
-		{ language: 'Sk-VSC' },
-		{ language: 'sk' },
-		{ language: 'skriptlang' }];
+		{ pattern: '**/*.sk'}
+		//{ language: 'skript' },
+		//{ language: 'Sk-VSC' },
+		//{ language: 'sk' },
+		//{ language: 'skriptlang' }
+	];
 
 	const settings = await getGlobalSettings();
 

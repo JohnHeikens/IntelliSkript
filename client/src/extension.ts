@@ -42,7 +42,17 @@ export function activate(context: ExtensionContext) {
 	// Options to control the language client
 	const clientOptions: LanguageClientOptions = {
 		// Register the server for plain text documents
-		documentSelector: [{ scheme: 'file', language: 'skript' }],
+		documentSelector: [
+			//{
+			//	scheme: 'file',
+			//	language: 'skript'
+			//}
+			//https://github.com/Microsoft/vscode-languageserver-node/issues/175
+			{
+				scheme: 'file',
+				pattern: '**/*.sk'// pattern: path.join(vscode.workspace.rootPath, "/dub.{sdl,json")
+			}
+		],
 		synchronize: {
 			// Notify the server about file changes to '.clientrc files contained in the workspace
 			fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
