@@ -48,13 +48,19 @@
 		],
 		"configuration": {
 			"type": "object",
-			"title": "IntelliSkript configuration",
+			"title": "IntelliSkript",
 			"properties": {
 				"IntelliSkript.ErrorExempts": {
 					"scope": "resource",
 					"type": "string",
 					"default": "",
 					"description": "A RegExp which allows you to filter out annoying errors"
+				},
+				"IntelliSkript.UseColorTheme": {
+					"scope": "resource",
+					"type": "boolean",
+					"default": true,
+					"description": "Disable this and reload VS code if you have a skript color theme plugin installed"
 				},
 				"intelliSkript.trace.server": {
 					"scope": "window",

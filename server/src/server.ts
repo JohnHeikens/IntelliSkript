@@ -22,11 +22,7 @@ import {
 	SemanticTokensRegistrationType,
 	DocumentSelector,
 	SymbolInformation,
-	SymbolKind,
-	SemanticTokensBuilder,
-	Position,
-	Range
-} from 'vscode-languageserver/node';
+	SymbolKind} from 'vscode-languageserver/node';
 
 import {
 	TextDocument
@@ -41,9 +37,7 @@ import {
 } from './SkriptContext';
 import { SkriptWorkSpace } from './Section/SkriptWorkSpace';
 import assert = require('assert');
-import { connect } from 'http2';
 import { TokenTypes } from './TokenTypes';
-import { TokenModifiers } from './TokenModifiers';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -150,7 +144,6 @@ connection.onInitialize((params: InitializeParams) => {
 	);
 
 
-
 	semanticTokensLegend = computeLegend(params.capabilities.textDocument!.semanticTokens!);
 	//return result;
 	return new Promise((resolve, reject) => {
@@ -168,6 +161,7 @@ connection.onInitialize((params: InitializeParams) => {
 		const result: InitializeResult = {
 			capabilities: {
 				textDocumentSync: TextDocumentSyncKind.Incremental,
+
 				// Tell the client that this server supports code completion.
 				//completionProvider: {
 				//	resolveProvider: true
@@ -244,7 +238,7 @@ connection.onInitialize((params: InitializeParams) => {
 	});
 });
 
-connection.onInitialized(() => {
+connection.onInitialized(async () => {
 	if (hasConfigurationCapability) {
 		// Register for all configuration changes.
 		connection.client.register(DidChangeConfigurationNotification.type, undefined);
@@ -256,27 +250,36 @@ connection.onInitialized(() => {
 	}
 	const sel: DocumentSelector = [{ language: 'skript' }];
 
-	assert(semanticTokensLegend != undefined);
-	const registrationOptions: SemanticTokensRegistrationOptions = {
-		documentSelector: sel,
-		legend: semanticTokensLegend,
-		range: false,
-		full: {
-			delta: true
-		}
-	};
-	void connection.client.register(SemanticTokensRegistrationType.type, registrationOptions);
+	const settings = await getGlobalSettings();
+	
+	if (settings.UseColorTheme) {
+
+		assert(semanticTokensLegend != undefined);
+		const registrationOptions: SemanticTokensRegistrationOptions = {
+			documentSelector: sel,
+			legend: semanticTokensLegend,
+			range: false,
+			full: {
+				delta: true
+			}
+		};
+		void connection.client.register(SemanticTokensRegistrationType.type, registrationOptions);
+	}
 });
 
 // IntelliSkript settings
 interface IntelliSkriptSettings {
 	requireTabIndents: boolean;
+	UseColorTheme: boolean;
 }
 
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
-const defaultSettings: IntelliSkriptSettings = { requireTabIndents: false };
+const defaultSettings: IntelliSkriptSettings = {
+	requireTabIndents: false,
+	UseColorTheme: true
+};
 let globalSettings: IntelliSkriptSettings = defaultSettings;
 
 // Cache the settings of all open documents
@@ -288,13 +291,46 @@ connection.onDidChangeConfiguration(change => {
 		documentSettings.clear();
 	} else {
 		globalSettings = <IntelliSkriptSettings>(
-			(change.settings.intelliSkript || defaultSettings)
+			(change.settings.languageServerExample || defaultSettings)
 		);
 	}
 
 	// Revalidate all open text documents
 	documents.all().forEach(validateTextDocument);
+	//if (change.settings != null) {
+	//	if (hasConfigurationCapability) {
+	//		// Reset all cached document settings
+	//		documentSettings.clear();
+	//	}// else {
+	//	//}
+	//	globalSettings = <IntelliSkriptSettings>(
+	//		(change.settings.intelliSkript || defaultSettings)
+	//	);
+	//
+	//	// Revalidate all open text documents
+	//	documents.all().forEach(validateTextDocument);
+	//}
 });
+
+//function getDocumentSettings(resource: string): Thenable<IntelliSkriptSettings> {
+//	if (!hasConfigurationCapability) {
+//		return Promise.resolve(globalSettings);
+//	}
+//	let result = documentSettings.get(resource);
+//	if (!result) {
+//		result = connection.workspace.getConfiguration({
+//			scopeUri: resource,
+//			section: 'intelliSkript'
+//		});
+//		documentSettings.set(resource, result);
+//	}
+//	return result;
+//}
+
+function getGlobalSettings(): Thenable<IntelliSkriptSettings> {
+		const settings = connection.workspace.getConfiguration("IntelliSkript");
+	return settings;
+}
 
 function getDocumentSettings(resource: string): Thenable<IntelliSkriptSettings> {
 	if (!hasConfigurationCapability) {
@@ -337,7 +373,8 @@ documents.onDidChangeContent(change => {
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 	// In this simple example we get the settings for every validate run.
-	//const settings = await getDocumentSettings(textDocument.uri);
+	//const settings = await getDocumentSettings(textDocument.uri); //will pause execution of this and mess up coloring of documents
+	//const settings = getDocumentSettings(textDocument.uri);
 
 	const context = new SkriptContext(textDocument);
 
@@ -467,6 +504,7 @@ connection.onDocumentSymbol((identifier) => {
 //}
 
 connection.languages.semanticTokens.on((params) => {
+	//const settings = getDocumentSettings(params.textDocument.uri);
 	const file = getSkriptFileByUri(params.textDocument.uri);
 	if (file == undefined) {
 		return { data: [] };
