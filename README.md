@@ -7,7 +7,7 @@ disable the 'IntelliSkript.UseColorTheme' setting<br>
 
 ## What is IntelliSkript?
 
-IntelliSkript is the most advanced skript plugin for Visual Studio Code out there. this plugin will detect errors as you code! it is designed to be compatible with other skript plugins.
+IntelliSkript is the most advanced skript plugin for Visual Studio Code out there. this plugin will detect errors as you code! it is designed to be compatible with other skript plugins and color theme for VS Codes.
 ### IntelliSkript can:
 
 - check syntax/indentation errors<br>
