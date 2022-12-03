@@ -22,7 +22,8 @@ import {
 	SemanticTokensRegistrationType,
 	DocumentSelector,
 	SymbolInformation,
-	SymbolKind} from 'vscode-languageserver/node';
+	SymbolKind
+} from 'vscode-languageserver/node';
 
 import {
 	TextDocument
@@ -248,10 +249,16 @@ connection.onInitialized(async () => {
 			connection.console.log('Workspace folder change event received.');
 		});
 	}
-	const sel: DocumentSelector = [{ language: 'skript' }];
+
+	//compatibility with all main vscode plugins
+	const sel: DocumentSelector = [
+		{ language: 'skript' },
+		{ language: 'Sk-VSC' },
+		{ language: 'sk' },
+		{ language: 'skriptlang' }];
 
 	const settings = await getGlobalSettings();
-	
+
 	if (settings.UseColorTheme) {
 
 		assert(semanticTokensLegend != undefined);
@@ -328,7 +335,7 @@ connection.onDidChangeConfiguration(change => {
 //}
 
 function getGlobalSettings(): Thenable<IntelliSkriptSettings> {
-		const settings = connection.workspace.getConfiguration("IntelliSkript");
+	const settings = connection.workspace.getConfiguration("IntelliSkript");
 	return settings;
 }
 
