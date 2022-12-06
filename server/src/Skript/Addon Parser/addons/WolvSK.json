@@ -1,0 +1,651 @@
+{
+  "events": [
+    {
+      "id": "afk_toggle",
+      "name": "On AFK Toggle",
+      "patterns": [
+        "[on] afk[ status] (change|toggle)"
+      ],
+      "event values": [
+        "event-player"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "anvil_gui",
+      "name": "On Anvil GUI",
+      "patterns": [
+        "[on] (close|confirm|done)[ a[n]] anvil gui name[d] %string%",
+        "[on] (close|confirm|done)[ a[n]] anvil gui"
+      ],
+      "event values": [
+        "event-string",
+        "event-inventory",
+        "event-player"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "user_balance_update",
+      "name": "On User Balance Update",
+      "patterns": [
+        "[on] [user ](balance|money) (update|change)"
+      ],
+      "event values": [
+        "event-double",
+        "event-player"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "vehicle_steer_backward",
+      "name": "On Vehicle Steer Backward",
+      "patterns": [
+        "[on] vehicle steer backward"
+      ],
+      "event values": [
+        "event-player"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "vehicle_steer_forward",
+      "name": "On Vehicle Steer Forward",
+      "patterns": [
+        "[on] vehicle steer forward"
+      ],
+      "event values": [
+        "event-player"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "vehicle_steer_jump",
+      "name": "On Vehicle Steer Jump",
+      "patterns": [
+        "[on] vehicle steer jump"
+      ],
+      "event values": [
+        "event-player"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "vehicle_steer_left",
+      "name": "On Vehicle Steer Left",
+      "patterns": [
+        "[on] vehicle steer left"
+      ],
+      "event values": [
+        "event-player"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "vehicle_steer_right",
+      "name": "On Vehicle Steer Right",
+      "patterns": [
+        "[on] vehicle steer right"
+      ],
+      "event values": [
+        "event-player"
+      ],
+      "cancellable": false
+    }
+  ],
+  "conditions": [
+    {
+      "id": "CondCooldownFinish",
+      "name": "CondCooldownFinish",
+      "patterns": [
+        "cooldown %string% is (finish[ed]|over|done)",
+        "cooldown %string% of %player% is (finish[ed]|over|done)",
+        "cooldown %string% is(n't| not) (finish[ed]|over|done)",
+        "cooldown %string% of %player% is(n't| not) (finish[ed]|over|done)"
+      ]
+    },
+    {
+      "id": "CondEssentialsAFK",
+      "name": "CondEssentialsAFK",
+      "patterns": [
+        "%player% is afk",
+        "%player% is(n't| not) afk"
+      ]
+    },
+    {
+      "id": "CondEssentialsCanBuild",
+      "name": "CondEssentialsCanBuild",
+      "patterns": [
+        "essentials %player% can build",
+        "essentials %player% cannot build"
+      ]
+    },
+    {
+      "id": "CondEssentialsCanInteractVanish",
+      "name": "CondEssentialsCanInteractVanish",
+      "patterns": [
+        "%player% can interact vanish",
+        "%player% cannot interact vanish"
+      ]
+    },
+    {
+      "id": "CondEssentialsGodMode",
+      "name": "CondEssentialsGodMode",
+      "patterns": [
+        "%player% is[ in] god[ mode]",
+        "%player% is(n't| not)[ in] god[ mode]"
+      ]
+    },
+    {
+      "id": "CondEssentialsHasHome",
+      "name": "CondEssentialsHasHome",
+      "patterns": [
+        "%player% ha(s|ve)[ a[n]] home",
+        "%player% does(n't| not) ha(s|ve)[ a[n]] home",
+        "%player% ha(s|ve)(n't| not)[ a[n]] home"
+      ]
+    },
+    {
+      "id": "CondEssentialsHasPowertools",
+      "name": "CondEssentialsHasPowertools",
+      "patterns": [
+        "%player% ha(s|ve) powertool[s]",
+        "%player% does(n't| not) ha(s|ve) powertool[s]",
+        "%player% ha(s|ve)(n't| not) powertool[s]"
+      ]
+    },
+    {
+      "id": "CondEssentialsIgnore",
+      "name": "CondEssentialsIgnore",
+      "patterns": [
+        "%player% (ignore|is ignoring) %player%",
+        "%player% does(n't| not) ignore %player%"
+      ]
+    },
+    {
+      "id": "CondEssentialsIsJailed",
+      "name": "CondEssentialsIsJailed",
+      "patterns": [
+        "%player% is jail[ed]",
+        "%player% is(n't| not) jail[ed]"
+      ]
+    },
+    {
+      "id": "CondEssentialsIsMuted",
+      "name": "CondEssentialsIsMuted",
+      "patterns": [
+        "%player% is mute[d]",
+        "%player% is(n't| not) muted"
+      ]
+    },
+    {
+      "id": "CondEssentialsPowerToolsEnabled",
+      "name": "CondEssentialsPowerToolsEnabled",
+      "patterns": [
+        "%player% ha(s|ve) powertool[s] enable[d]",
+        "%player% does(n't| not) ha(s|ve) powertool[s] enable[d]",
+        "%player% ha(s|ve)(n't| not) powertool[s] enable[d]"
+      ]
+    },
+    {
+      "id": "CondEssentialsSocialSpyEnabled",
+      "name": "CondEssentialsSocialSpyEnabled",
+      "patterns": [
+        "%player% ha(s|ve) social spy[ enable[d]]",
+        "%player% does(n't| not) ha(s|ve) social spy[ enable[d]]",
+        "%player% ha(s|ve)(n't| not) social spy[ enable[d]]"
+      ]
+    },
+    {
+      "id": "CondEssentialsVanish",
+      "name": "CondEssentialsVanish",
+      "patterns": [
+        "%player% is vanish[ed]",
+        "%player% is(n't| not) vanish[ed]"
+      ]
+    },
+    {
+      "id": "CondEven",
+      "name": "CondEven",
+      "patterns": [
+        "%number% is even",
+        "%number% is(n't| not) even"
+      ]
+    },
+    {
+      "id": "CondOdd",
+      "name": "CondOdd",
+      "patterns": [
+        "%number% is odd",
+        "%number% is(n't| not) odd"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "EffCallMethodWithParams",
+      "name": "EffCallMethodWithParams",
+      "patterns": [
+        "call (function|method) %string% with param[meter][s] %objects% in class[ named] %string%"
+      ]
+    },
+    {
+      "id": "EffCallMethodWithoutParams",
+      "name": "EffCallMethodWithoutParams",
+      "patterns": [
+        "call (function|method) %string% [without param[meter][s]] in class[ named] %string%"
+      ]
+    },
+    {
+      "id": "EffCreateCooldown",
+      "name": "EffCreateCooldown",
+      "patterns": [
+        "(delete|reset|finish) cooldown %string%",
+        "(delete|reset|finish) cooldown %string% (for|of) %player%"
+      ]
+    },
+    {
+      "id": "EffCreateCooldown",
+      "name": "EffCreateCooldown",
+      "patterns": [
+        "create cooldown %string% for %timespan%",
+        "create cooldown %string% (for|of) %player% for %timespan%"
+      ]
+    },
+    {
+      "id": "EffEssentialsDelHome",
+      "name": "EffEssentialsDelHome",
+      "patterns": [
+        "delete home %string% of %player%"
+      ]
+    },
+    {
+      "id": "EffEssentialsMakePlayerBecomeAFK",
+      "name": "EffEssentialsMakePlayerBecomeAFK",
+      "patterns": [
+        "make %player% become afk",
+        "make %player% become (no afk|active)"
+      ]
+    },
+    {
+      "id": "EffEssentialsMakePlayerGod",
+      "name": "EffEssentialsMakePlayerGod",
+      "patterns": [
+        "make %player% become god",
+        "disable god[ mode] for %player%"
+      ]
+    },
+    {
+      "id": "EffEssentialsMakePlayerIgnore",
+      "name": "EffEssentialsMakePlayerIgnore",
+      "patterns": [
+        "make %player% ignore %player%",
+        "make %player% (doesn't ignore|unignore) %player%"
+      ]
+    },
+    {
+      "id": "EffEssentialsMakePlayerJailed",
+      "name": "EffEssentialsMakePlayerJailed",
+      "patterns": [
+        "jail %player%",
+        "unjail %player%"
+      ]
+    },
+    {
+      "id": "EffEssentialsMakePlayerMuted",
+      "name": "EffEssentialsMakePlayerMuted",
+      "patterns": [
+        "mute %player%",
+        "unmute %player%"
+      ]
+    },
+    {
+      "id": "EffEssentialsMakeSocialSpy",
+      "name": "EffEssentialsMakeSocialSpy",
+      "patterns": [
+        "enable social spy for %player%",
+        "disable social spy for %player%"
+      ]
+    },
+    {
+      "id": "EffEssentialsMakeVanish",
+      "name": "EffEssentialsMakeVanish",
+      "patterns": [
+        "vanish %player%",
+        "unvanish %player%"
+      ]
+    },
+    {
+      "id": "EffEssentialsSendMail",
+      "name": "EffEssentialsSendMail",
+      "patterns": [
+        "send mail %string% to %player%"
+      ]
+    },
+    {
+      "id": "EffOpenAnvilGUI",
+      "name": "EffOpenAnvilGUI",
+      "patterns": [
+        "open[ a[n]] anvil gui name[d] %string% to %player%",
+        "open[ a[n]] anvil gui name[d] %string% to %player% with[ default] text %string%",
+        "open[ a[n]] anvil gui name[d] %string% to %player% with item %itemstack%",
+        "open[ a[n]] anvil gui name[d] %string% to %player% with[ default] text %string% and [with ]item %itemstack%"
+      ]
+    }
+  ],
+  "expressions": [
+    {
+      "id": "ExprAnvilGUIInputText",
+      "name": "ExprAnvilGUIInputText",
+      "return type": "Text",
+      "patterns": [
+        "[input ]text of anvil( |-)gui"
+      ]
+    },
+    {
+      "id": "ExprAnvilGUIName",
+      "name": "ExprAnvilGUIName",
+      "return type": "Text",
+      "patterns": [
+        "name of anvil( |-)gui"
+      ]
+    },
+    {
+      "id": "ExprBlockPower",
+      "name": "ExprBlockPower",
+      "return type": "integer",
+      "patterns": [
+        "power of %block%",
+        "%block%['s] power"
+      ]
+    },
+    {
+      "id": "ExprClientVersion",
+      "name": "ExprClientVersion",
+      "return type": "integer",
+      "patterns": [
+        "(minecraft|mc) version of %player%"
+      ]
+    },
+    {
+      "id": "ExprCooldownLeftTime",
+      "name": "ExprCooldownLeftTime",
+      "return type": "Timespan",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "reset"
+      ],
+      "patterns": [
+        "cooldown[ left][ time] %string%",
+        "cooldown[ left][ time] %string% of %player%"
+      ]
+    },
+    {
+      "id": "ExprCountry",
+      "name": "ExprCountry",
+      "return type": "Text",
+      "patterns": [
+        "country of ip %string%",
+        "country of %player%",
+        "country code of ip %string%",
+        "country code of %player%",
+        "ip %string%['s] country",
+        "%player%['s] country",
+        "ip %string%['s] country code",
+        "%player%['s] country code"
+      ]
+    },
+    {
+      "id": "ExprEssentialsHome",
+      "name": "ExprEssentialsHome",
+      "return type": "Location",
+      "changers": [
+        "set",
+        "remove"
+      ],
+      "patterns": [
+        "home of %player%",
+        "%player%['s] home"
+      ]
+    },
+    {
+      "id": "ExprEssentialsHome",
+      "name": "ExprEssentialsHome",
+      "return type": "Location",
+      "changers": [
+        "set",
+        "remove"
+      ],
+      "patterns": [
+        "home %string% of %player%",
+        "%player%['s] home %string%"
+      ]
+    },
+    {
+      "id": "ExprEssentialsHomes",
+      "name": "ExprEssentialsHomes",
+      "return type": "Text",
+      "patterns": [
+        "homes of %player%",
+        "%player%['s] homes"
+      ]
+    },
+    {
+      "id": "ExprEssentialsJail",
+      "name": "ExprEssentialsJail",
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "jail of %player%",
+        "%player%['s] jail"
+      ]
+    },
+    {
+      "id": "ExprEssentialsJailTimeout",
+      "name": "ExprEssentialsJailTimeout",
+      "return type": "long",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "jail timeout of %player%",
+        "%player%['s] jail timeout"
+      ]
+    },
+    {
+      "id": "ExprEssentialsLastAccountName",
+      "name": "ExprEssentialsLastAccountName",
+      "return type": "Text",
+      "patterns": [
+        "last account name of %player%",
+        "%player%['s] last account name"
+      ]
+    },
+    {
+      "id": "ExprEssentialsLastLoginAddress",
+      "name": "ExprEssentialsLastLoginAddress",
+      "return type": "Text",
+      "patterns": [
+        "last login address of %player%",
+        "%player%['s] last login address"
+      ]
+    },
+    {
+      "id": "ExprEssentialsLogoutLocation",
+      "name": "ExprEssentialsLogoutLocation",
+      "return type": "Location",
+      "patterns": [
+        "log[ ]out[ location] of %player%",
+        "%player%['s] log[ ]out[ location]"
+      ]
+    },
+    {
+      "id": "ExprEssentialsMuteTimeout",
+      "name": "ExprEssentialsMuteTimeout",
+      "return type": "long",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "mute timeout of %player%",
+        "%player%['s] mute timeout"
+      ]
+    },
+    {
+      "id": "ExprEssentialsNickname",
+      "name": "ExprEssentialsNickname",
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "essential[s] nick[ ]name %player%",
+        "%player%['s] essential[s] nick[ ]name"
+      ]
+    },
+    {
+      "id": "ExprListSort",
+      "name": "ExprListSort",
+      "return type": "Object",
+      "patterns": [
+        "%objects% (sorted|in order)"
+      ]
+    },
+    {
+      "id": "ExprMathsAbsoluteValue",
+      "name": "ExprMathsAbsoluteValue",
+      "return type": "double",
+      "patterns": [
+        "abs[olute] [value of ]%number%"
+      ]
+    },
+    {
+      "id": "ExprMathsCubeRoot",
+      "name": "ExprMathsCubeRoot",
+      "return type": "double",
+      "patterns": [
+        "cube root of %number%",
+        "cbrt[ of] %number%"
+      ]
+    },
+    {
+      "id": "ExprMathsDegreesToRad",
+      "name": "ExprMathsDegreesToRad",
+      "return type": "double",
+      "patterns": [
+        "%number% deg[ree[s]][ converted] (to|in) rad[ian[s]]"
+      ]
+    },
+    {
+      "id": "ExprMathsExp",
+      "name": "ExprMathsExp",
+      "return type": "double",
+      "patterns": [
+        "exp[onential][ of] %number%"
+      ]
+    },
+    {
+      "id": "ExprMathsExpBase",
+      "name": "ExprMathsExpBase",
+      "return type": "double",
+      "patterns": [
+        "exp[onential] %number% in base %number%",
+        "exp[onential] in base %number% of %number%"
+      ]
+    },
+    {
+      "id": "ExprMathsLogBase",
+      "name": "ExprMathsLogBase",
+      "return type": "double",
+      "patterns": [
+        "log[arithm] %number% in base %number%",
+        "log[arithm] in base %number% of %number%"
+      ]
+    },
+    {
+      "id": "ExprMathsPi",
+      "name": "ExprMathsPi",
+      "return type": "double",
+      "patterns": [
+        "speed of[ the] light",
+        "light['s] speed"
+      ]
+    },
+    {
+      "id": "ExprMathsPi",
+      "name": "ExprMathsPi",
+      "return type": "double",
+      "patterns": [
+        "pi"
+      ]
+    },
+    {
+      "id": "ExprMathsRadToDegrees",
+      "name": "ExprMathsRadToDegrees",
+      "return type": "double",
+      "patterns": [
+        "%number% rad[ian[s]][ converted] (to|in) deg[ree[s]]"
+      ]
+    },
+    {
+      "id": "ExprMathsStatsAverage",
+      "name": "ExprMathsStatsAverage",
+      "return type": "double",
+      "patterns": [
+        "average of %numbers%"
+      ]
+    },
+    {
+      "id": "ExprMathsStatsMedian",
+      "name": "ExprMathsStatsMedian",
+      "return type": "double",
+      "patterns": [
+        "median of %numbers%"
+      ]
+    },
+    {
+      "id": "ExprRandomAlphaNumericString",
+      "name": "ExprRandomAlphaNumericString",
+      "return type": "Text",
+      "patterns": [
+        "[a ]random alpha[ ]numeric[al] (text|string) of length %integer%"
+      ]
+    },
+    {
+      "id": "ExprRandomLicenceCode",
+      "name": "ExprRandomLicenceCode",
+      "return type": "Text",
+      "patterns": [
+        "[a ]random license code"
+      ]
+    },
+    {
+      "id": "ExprRandomUUID",
+      "name": "ExprRandomUUID",
+      "return type": "Object",
+      "patterns": [
+        "[a ]random uuid"
+      ]
+    },
+    {
+      "id": "ExprReturnOfMethodWithParams",
+      "name": "ExprReturnOfMethodWithParams",
+      "return type": "Object",
+      "patterns": [
+        "return of (function|method) %string% with param[meter][s] %objects% in class[ named] %string%"
+      ]
+    },
+    {
+      "id": "ExprReturnOfMethodWithoutParams",
+      "name": "ExprReturnOfMethodWithoutParams",
+      "return type": "Object",
+      "patterns": [
+        "return of (function|method) %string% [without param[meter][s]] in class[ named] %string%"
+      ]
+    }
+  ]
+}

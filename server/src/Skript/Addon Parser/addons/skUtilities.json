@@ -1,0 +1,914 @@
+{
+  "events": [
+    {
+      "id": "downloadfile",
+      "name": "On DownloadFile",
+      "patterns": [
+        "[on] [skutil[ities] ]file download"
+      ],
+      "event values": [
+        "event-object",
+        "event-string"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "filecopy",
+      "name": "On FileCopy",
+      "patterns": [
+        "[on] [skutil[ities] ]file copy"
+      ],
+      "event values": [
+        "event-object",
+        "event-string"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "filecreation",
+      "name": "On FileCreation",
+      "patterns": [
+        "[on] [skutil[ities] ]file creat(ion|e)"
+      ],
+      "event values": [
+        "event-object"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "filedeletion",
+      "name": "On FileDeletion",
+      "patterns": [
+        "[on] [skutil[ities] ]file delet(ion|e)"
+      ],
+      "event values": [
+        "event-object"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "filemove",
+      "name": "On FileMove",
+      "patterns": [
+        "[on] [skutil[ities] ]file move"
+      ],
+      "event values": [
+        "event-object",
+        "event-string"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "filerename",
+      "name": "On FileRename",
+      "patterns": [
+        "[on] [skutil[ities] ]file rename"
+      ],
+      "event values": [
+        "event-object",
+        "event-string"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "filewipe",
+      "name": "On FileWipe",
+      "patterns": [
+        "[on] [skutil[ities] ]file (wipe|reset|clear)"
+      ],
+      "event values": [
+        "event-object"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "filewrite",
+      "name": "On FileWrite",
+      "patterns": [
+        "[on] [skutil[ities] ]file write"
+      ],
+      "event values": [
+        "event-object",
+        "event-string",
+        "event-number"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "filezip",
+      "name": "On FileZip",
+      "patterns": [
+        "[on] [skutil[ities] ]file zip"
+      ],
+      "event values": [
+        "event-object",
+        "event-string"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "runapp",
+      "name": "On RunApp",
+      "patterns": [
+        "[on] [skutil[ities] ](file|app|script) (run|execute)"
+      ],
+      "event values": [
+        "event-object"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "runcode",
+      "name": "On RunCode",
+      "patterns": [
+        "[on] [skutil[ities] ](bash|batch|sh) (command|cmd) (run|execute)"
+      ],
+      "event values": [
+        "event-string"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "unzip",
+      "name": "On Unzip",
+      "patterns": [
+        "[on] [skutil[ities] ]unzip"
+      ],
+      "event values": [
+        "event-object",
+        "event-string"
+      ],
+      "cancellable": true
+    }
+  ],
+  "conditions": [
+    {
+      "id": "CondFileExists",
+      "name": "CondFileExists",
+      "patterns": [
+        "[skutil[ities] ](script|program|app[lication]|file|dir[ectory]) %string% exists",
+        "[skutil[ities] ](script|program|app[lication]|file|dir[ectory]) %string% does(n't| not) exist"
+      ]
+    },
+    {
+      "id": "CondIsDirectory",
+      "name": "CondIsDirectory",
+      "patterns": [
+        "[skutil[ities] ]file %string% is a dir[ectory]",
+        "[skutil[ities] ]file %string% is(n'| no)t a dir[ectory]"
+      ]
+    },
+    {
+      "id": "CondIsExecutable",
+      "name": "CondIsExecutable",
+      "patterns": [
+        "[skutil[ities] ]file %string% is(n't| not) exec[utable]",
+        "[skutil[ities] ]file %string% is exec[utable]"
+      ]
+    },
+    {
+      "id": "CondIsFile",
+      "name": "CondIsFile",
+      "patterns": [
+        "[skutil[ities] ]file %string% is a file",
+        "[skutil[ities] ]file %string% is(n'| no)t a file"
+      ]
+    },
+    {
+      "id": "CondIsSymbolic",
+      "name": "CondIsSymbolic",
+      "patterns": [
+        "[skutil[ities] ]file %string% is (symbolic|shortcut)",
+        "[skutil[ities] ]file %string% is(n'| no)t (symbolic|shortcut)"
+      ]
+    },
+    {
+      "id": "CondStartsEndsWith",
+      "name": "CondStartsEndsWith",
+      "patterns": [
+        "[skutil[ities] ]%string% (starts|ends) with %string%",
+        "[skutil[ities] ]%string% does(n't| not) (start|end) with %string%"
+      ]
+    },
+    {
+      "id": "CondYamlExists",
+      "name": "CondYamlExists",
+      "patterns": [
+        "[skutil[ities] ]y[a]ml[ path] %string% in file %string% exists",
+        "[skutil[ities] ]y[a]ml[ path] %string% in file %string% does(n't| not) exist"
+      ]
+    },
+    {
+      "id": "CondisOS",
+      "name": "CondisOS",
+      "patterns": [
+        "[skutil[ities] ](operating system|os) is (windows|mac|linux|unix|solaris|sun os|hp ux|aix|irix|free bsd|open bsd|net bsd)",
+        "[skutil[ities] ](operating system|os) is(n'| no)t (windows|mac|linux|unix|solaris|sun os|hp ux|aix|irix|free bsd|open bsd|net bsd)"
+      ]
+    },
+    {
+      "id": "CondisTimeZone",
+      "name": "CondisTimeZone",
+      "patterns": [
+        "[skutil[ities] ]server is time[ ]zone %string%",
+        "[skutil[ities] ]server is(n'| no)t time[ ]zone %string%"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "EffCreateFile",
+      "name": "EffCreateFile",
+      "patterns": [
+        "[skutil[ities] ]create ((script|program|app[lication]|[zip ]file)|dir[ectory]) %string%"
+      ]
+    },
+    {
+      "id": "EffDeleteFile",
+      "name": "EffDeleteFile",
+      "patterns": [
+        "[skutil[ities] ]delete ((script|program|app[lication]|[zip ]file)|dir[ectory]) %string%"
+      ]
+    },
+    {
+      "id": "EffFileDownload",
+      "name": "EffFileDownload",
+      "patterns": [
+        "[skutil[ities] ]download file from %string% to file %string%"
+      ]
+    },
+    {
+      "id": "EffFileRenameMove",
+      "name": "EffFileRenameMove",
+      "patterns": [
+        "[skutil[ities] ](rename (file|dir[ectory])|move file|copy file|move dir[ectory]|copy dir[ectory]) %string% to %string%"
+      ]
+    },
+    {
+      "id": "EffInsertLine",
+      "name": "EffInsertLine",
+      "patterns": [
+        "[skutil[ities] ]write %string% at line %numbers% to file %string%"
+      ]
+    },
+    {
+      "id": "EffReloadConfig",
+      "name": "EffReloadConfig",
+      "patterns": [
+        "reload %string%'s config",
+        "reload config of %string%"
+      ]
+    },
+    {
+      "id": "EffReloadSkript",
+      "name": "EffReloadSkript",
+      "patterns": [
+        "[skutil[ities] ]reload s(k|c)ript %string%"
+      ]
+    },
+    {
+      "id": "EffRestartServer",
+      "name": "EffRestartServer",
+      "patterns": [
+        "[skutil[ities] ]re(start|load) server"
+      ]
+    },
+    {
+      "id": "EffRunApp",
+      "name": "EffRunApp",
+      "patterns": [
+        "[skutil[ities] ]run (script|program|app[lication]|file) at %string%"
+      ]
+    },
+    {
+      "id": "EffRunCmd",
+      "name": "EffRunCmd",
+      "patterns": [
+        "[skutil[ities] ]run (bash|batch|sh) (command|cmd) %string%"
+      ]
+    },
+    {
+      "id": "EffRunOpCmd",
+      "name": "EffRunOpCmd",
+      "patterns": [
+        "[skutil[ities] ](force|make) %player% run (cmd|command) %string% as op"
+      ]
+    },
+    {
+      "id": "EffSkReloadAliases",
+      "name": "EffSkReloadAliases",
+      "patterns": [
+        "[skutil[ities] ]skript reload aliases"
+      ]
+    },
+    {
+      "id": "EffUnzip",
+      "name": "EffUnzip",
+      "patterns": [
+        "[skutil[ities] ](unzip|extract) %string% to dir[ectory] %string%"
+      ]
+    },
+    {
+      "id": "EffZipDirectory",
+      "name": "EffZipDirectory",
+      "patterns": [
+        "[skutil[ities] ]zip dir[ectory] %string% to zip[ file] %string%"
+      ]
+    },
+    {
+      "id": "EffZipFiles",
+      "name": "EffZipFiles",
+      "patterns": [
+        "[skutil[ities] ]zip file[s] %strings% to zip[ file] %string%"
+      ]
+    }
+  ],
+  "expressions": [
+    {
+      "id": "ExprBase64",
+      "name": "ExprBase64",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ](en|de)code base[ ]64 %string%"
+      ]
+    },
+    {
+      "id": "ExprCaseLength",
+      "name": "ExprCaseLength",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ]number of (upper|lower)case char[acter]s in %string%"
+      ]
+    },
+    {
+      "id": "ExprClearAccented",
+      "name": "ExprClearAccented",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]clear accented chars from %string%"
+      ]
+    },
+    {
+      "id": "ExprCpuCores",
+      "name": "ExprCpuCores",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ]number of (cpu|processor) cores",
+        "[skutil[ities] ](cpu|processor) core count"
+      ]
+    },
+    {
+      "id": "ExprCpuSpec",
+      "name": "ExprCpuSpec",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ](name|arch[itecture]) of (cpu|processor)",
+        "[skutil[ities] ](cpu|processor) (name|arch[itecture])"
+      ]
+    },
+    {
+      "id": "ExprDateInner",
+      "name": "ExprDateInner",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ](year|month|month name|day of year|day of month|day of week|day name|hours|minutes|seconds) from date %date%",
+        "[skutil[ities] ]date %date%'s (year|month|month name|day of year|day of month|day of week|day name|hours|minutes|seconds)"
+      ]
+    },
+    {
+      "id": "ExprDateParsed",
+      "name": "ExprDateParsed",
+      "return type": "Date",
+      "patterns": [
+        "[skutil[ities] ]%string% parsed as date[ formatted as %string%]"
+      ]
+    },
+    {
+      "id": "ExprDateToUnix",
+      "name": "ExprDateToUnix",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ]convert date %date% to unix[ date]",
+        "[skutil[ities] ]date %date% as unix[ date]"
+      ]
+    },
+    {
+      "id": "ExprDirList",
+      "name": "ExprDirList",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]files in dir[ectory](| including sub dir[ectorie]s) %string%",
+        "[skutil[ities] ]dir[ectory](| including sub dir[ectorie]s) %string%'s files"
+      ]
+    },
+    {
+      "id": "ExprDiskSpace",
+      "name": "ExprDiskSpace",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]disk's (total|free|usable) space",
+        "[skutil[ities] ](total|free|usable) space on disk"
+      ]
+    },
+    {
+      "id": "ExprEncrypt",
+      "name": "ExprEncrypt",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ](en|de)crypt %string% using %string% with key %string%"
+      ]
+    },
+    {
+      "id": "ExprFile",
+      "name": "ExprFile",
+      "return type": "Object",
+      "patterns": [
+        "[event-]file"
+      ]
+    },
+    {
+      "id": "ExprFileDirSize",
+      "name": "ExprFileDirSize",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]size of (file|dir[ectory]) %string%",
+        "[skutil[ities] ](file|dir[ectory]) %string%'s size"
+      ]
+    },
+    {
+      "id": "ExprFileDirSizeBytes",
+      "name": "ExprFileDirSizeBytes",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ]size of (file|dir[ectory]) %string% in bytes",
+        "[skutil[ities] ](file|dir[ectory]) %string%'s size in bytes"
+      ]
+    },
+    {
+      "id": "ExprFileLines",
+      "name": "ExprFileLines",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ]line count of file %string%",
+        "[skutil[ities] ]file %string%'s line count"
+      ]
+    },
+    {
+      "id": "ExprFileNameExt",
+      "name": "ExprFileNameExt",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ](name|extension) of file %string%",
+        "[skutil[ities] ]file %string%'s (name|extension)"
+      ]
+    },
+    {
+      "id": "ExprFileTimeAttributes",
+      "name": "ExprFileTimeAttributes",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ]file %string%'s (last modified|creation|last access) value",
+        "[skutil[ities] ](last modified|creation|last access) value of file %string%"
+      ]
+    },
+    {
+      "id": "ExprFromBin",
+      "name": "ExprFromBin",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]convert bin[ary] %string% to ((text|string)|decimal|hexa[decimal]|octal)",
+        "[skutil[ities] ]bin[ary] %string% as ((text|string)|decimal|hexa[decimal]|octal)"
+      ]
+    },
+    {
+      "id": "ExprFromString",
+      "name": "ExprFromString",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]convert (text|string) %string% to (ascii|unicode)",
+        "[skutil[ities] ](text|string) %string% as (ascii|unicode)"
+      ]
+    },
+    {
+      "id": "ExprFromUnicode",
+      "name": "ExprFromUnicode",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]convert unicode %string% to ((text|string)|ascii)",
+        "[skutil[ities] ]unicode %string% as ((text|string)|ascii)"
+      ]
+    },
+    {
+      "id": "ExprGetJsonIDS",
+      "name": "ExprGetJsonIDS",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]content of json value( |'s) %strings% from text %string%",
+        "[skutil[ities] ]value's %strings%'s json contents from text %string%"
+      ]
+    },
+    {
+      "id": "ExprGetPathASR",
+      "name": "ExprGetPathASR",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]((absolute|complete)|short|relative) path of %string%",
+        "[skutil[ities] ]%string%'s ((absolute|complete)|short|relative) path"
+      ]
+    },
+    {
+      "id": "ExprGetRegion",
+      "name": "ExprGetRegion",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]region of server",
+        "[skutil[ities] ]server's region"
+      ]
+    },
+    {
+      "id": "ExprGetSysProp",
+      "name": "ExprGetSysProp",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]system property (os arch|os name|os version|java home|user dir|user home|user name|user lang[uage]|user timezone|line separator|file separator|path separator|file encoding)"
+      ]
+    },
+    {
+      "id": "ExprGetTimeZone",
+      "name": "ExprGetTimeZone",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]time[ ]zone of server",
+        "[skutil[ities] ]server's time[ ]zone"
+      ]
+    },
+    {
+      "id": "ExprHash",
+      "name": "ExprHash",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]hash[ed] %string% using %string%"
+      ]
+    },
+    {
+      "id": "ExprHexToRgb",
+      "name": "ExprHexToRgb",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]convert hex %string% to rgb",
+        "[skutil[ities] ]hex %string% as rgb"
+      ]
+    },
+    {
+      "id": "ExprHexaToNum",
+      "name": "ExprHexaToNum",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ]convert hexa[decimal] %string% to num[ber]",
+        "[skutil[ities] ]hexa[decimal] %string% as num[ber]"
+      ]
+    },
+    {
+      "id": "ExprLoaded",
+      "name": "ExprLoaded",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ]number of[ loaded] ((commands|cmds)|functions|s(c|k)ripts|triggers|statements|variables|aliases|events|effects|expressions|conditions)"
+      ]
+    },
+    {
+      "id": "ExprLoadedList",
+      "name": "ExprLoadedList",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ](plugins|addons) list",
+        "[skutil[ities] ]list of (plugins|addons)"
+      ]
+    },
+    {
+      "id": "ExprMirrorTxt",
+      "name": "ExprMirrorTxt",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ](mirror[ed]|flip[ped]|reverse[d]) %string%"
+      ]
+    },
+    {
+      "id": "ExprMorse",
+      "name": "ExprMorse",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ](en|de)code morse[ code] %string%"
+      ]
+    },
+    {
+      "id": "ExprNumToHexa",
+      "name": "ExprNumToHexa",
+      "return type": "Text",
+      "patterns": [
+        "convert num[ber] %number% to hexa[decimal]",
+        "[skutil[ities] ]num[ber] %number% as hexa[decimal]"
+      ]
+    },
+    {
+      "id": "ExprRam",
+      "name": "ExprRam",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ](free|total|max) (ram|memory)"
+      ]
+    },
+    {
+      "id": "ExprRandomizeString",
+      "name": "ExprRandomizeString",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]randomize %string%"
+      ]
+    },
+    {
+      "id": "ExprRgbToHex",
+      "name": "ExprRgbToHex",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]convert rgb %number%, %number%, %number% to hex",
+        "[skutil[ities] ]rgb %number%, %number%, %number% as hex"
+      ]
+    },
+    {
+      "id": "ExprRunCmdOutput",
+      "name": "ExprRunCmdOutput",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ][last ]output of executed (bash|batch|sh) (command|cmd)",
+        "[skutil[ities] ][last ]executed (bash|batch|sh) (command|cmd)'s output"
+      ]
+    },
+    {
+      "id": "ExprSysTime",
+      "name": "ExprSysTime",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ][current ]system (nanos[econds]|millis[econds]|seconds)"
+      ]
+    },
+    {
+      "id": "ExprTimeInTimeZone",
+      "name": "ExprTimeInTimeZone",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ][current ]time in time[ ]zone %string%",
+        "[skutil[ities] ][current ]time[ ]zone %string%'s time"
+      ]
+    },
+    {
+      "id": "ExprTimeZoneList",
+      "name": "ExprTimeZoneList",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ][all ]time[ ]zones"
+      ]
+    },
+    {
+      "id": "ExprToAscii",
+      "name": "ExprToAscii",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]convert ascii %numbers% to ((text|string)|unicode)",
+        "[skutil[ities] ]ascii %numbers% as ((text|string)|unicode)"
+      ]
+    },
+    {
+      "id": "ExprToBin",
+      "name": "ExprToBin",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]convert ((text|string)|decimal|hexa[decimal]|octal) %string% to bin[ary]",
+        "[skutil[ities] ]((text|string)|decimal|hexa[decimal]|octal) %string% as bin[ary]"
+      ]
+    },
+    {
+      "id": "ExprToUpperLower",
+      "name": "ExprToUpperLower",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]convert (text|string) %string% to (uppercase|lowercase)"
+      ]
+    },
+    {
+      "id": "ExprUnixToDate",
+      "name": "ExprUnixToDate",
+      "return type": "Date",
+      "patterns": [
+        "[skutil[ities] ]convert unix[ date] %number% to date",
+        "[skutil[ities] ]unix[ date] %number% as date"
+      ]
+    },
+    {
+      "id": "ExprUnixToFormattedDate",
+      "name": "ExprUnixToFormattedDate",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]convert unix[ date] %number% to date formatted as %string%",
+        "[skutil[ities] ]unix[ date] %number% as date formatted as %string%"
+      ]
+    },
+    {
+      "id": "ExprUrlContents",
+      "name": "ExprUrlContents",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]contents from url %string%",
+        "[skutil[ities] ]url %string%'s contents"
+      ]
+    },
+    {
+      "id": "ExprUrlLastModified",
+      "name": "ExprUrlLastModified",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ]last modified value of url %string%",
+        "[skutil[ities] ]url %string%'s last modified value"
+      ]
+    },
+    {
+      "id": "ExprUrlLines",
+      "name": "ExprUrlLines",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ]line count of url %string%",
+        "[skutil[ities] ]url %string%'s line count"
+      ]
+    },
+    {
+      "id": "ExprUrlOnlineState",
+      "name": "ExprUrlOnlineState",
+      "return type": "Boolean",
+      "patterns": [
+        "[skutil[ities] ]online stat(us|e) of url %string%",
+        "[skutil[ities] ]url %string%'s online stat(us|e)"
+      ]
+    },
+    {
+      "id": "ExprUrlReadLine",
+      "name": "ExprUrlReadLine",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]line %number% from url %string%",
+        "[skutil[ities] ]url %string%'s line %number%"
+      ]
+    },
+    {
+      "id": "ExprUrlResponseCode",
+      "name": "ExprUrlResponseCode",
+      "return type": "integer",
+      "patterns": [
+        "[skutil[ities] ]response code of url %string%",
+        "[skutil[ities] ]url %string%'s response code"
+      ]
+    },
+    {
+      "id": "ExprUrlSSLAlgorithm",
+      "name": "ExprUrlSSLAlgorithm",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]ssl algorithm of url %string%",
+        "[skutil[ities] ]url %string%'s ssl algorithm"
+      ]
+    },
+    {
+      "id": "ExprUrlSSLIssueExpire",
+      "name": "ExprUrlSSLIssueExpire",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ]ssl (issue|expire) value of url %string%",
+        "[skutil[ities] ]url %string%'s ssl (issue|expire) value"
+      ]
+    },
+    {
+      "id": "ExprUrlSSLSerialNumber",
+      "name": "ExprUrlSSLSerialNumber",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]ssl serial number of url %string%",
+        "[skutil[ities] ]url %string%'s ssl serial number"
+      ]
+    },
+    {
+      "id": "ExprUrlSSLVerifier",
+      "name": "ExprUrlSSLVerifier",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]ssl verifier of url %string%",
+        "[skutil[ities] ]url %string%'s ssl verifier"
+      ]
+    },
+    {
+      "id": "ExprUrlSSLVersion",
+      "name": "ExprUrlSSLVersion",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ]ssl version of url %string%",
+        "[skutil[ities] ]url %string%'s ssl version"
+      ]
+    },
+    {
+      "id": "ExprUrlSize",
+      "name": "ExprUrlSize",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]size of url %string%",
+        "[skutil[ities] ]url %string%'s size"
+      ]
+    },
+    {
+      "id": "ExprUrlSizeBytes",
+      "name": "ExprUrlSizeBytes",
+      "return type": "Number",
+      "patterns": [
+        "[skutil[ities] ]size of url %string% in bytes",
+        "[skutil[ities] ]url %string%'s size in bytes"
+      ]
+    },
+    {
+      "id": "ExprVersion",
+      "name": "ExprVersion",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]%string%'s version",
+        "[skutil[ities] ]version of %string%"
+      ]
+    },
+    {
+      "id": "ExprZipList",
+      "name": "ExprZipList",
+      "return type": "Text",
+      "patterns": [
+        "[skutil[ities] ]files in zip[ file] %string%",
+        "[skutil[ities] ]zip[ file] %string%'s files"
+      ]
+    },
+    {
+      "id": "SExprEditLine",
+      "name": "SExprEditLine",
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[skutil[ities] ]line %number% in file %string%",
+        "[skutil[ities] ]file %string%'s line %number%"
+      ]
+    },
+    {
+      "id": "SExprFileAttribute",
+      "name": "SExprFileAttribute",
+      "return type": "Boolean",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[skutil[ities] ](readable|writable|hidden) attribute of file %string%",
+        "[skutil[ities] ]file %string%'s (readable|writable|hidden) attribute"
+      ]
+    },
+    {
+      "id": "SExprFileContents",
+      "name": "SExprFileContents",
+      "return type": "Text",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[skutil[ities] ]file contents of %string%",
+        "[skutil[ities] ]%string%'s file contents"
+      ]
+    },
+    {
+      "id": "SExprFileOwner",
+      "name": "SExprFileOwner",
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[skutil[ities] ]owner of file %string%",
+        "[skutil[ities] ]file %string%'s owner"
+      ]
+    },
+    {
+      "id": "SExprYaml",
+      "name": "SExprYaml",
+      "return type": "Object",
+      "changers": [
+        "set",
+        "delete"
+      ],
+      "patterns": [
+        "[skutil[ities] ]y[a]ml (value|nodes|node[s with] keys|list) %string% (from|of) file %string%"
+      ]
+    }
+  ]
+}

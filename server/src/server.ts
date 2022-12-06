@@ -31,14 +31,17 @@ import {
 
 import {
 	SkriptFile
-} from "./Section/SkriptFile";
+} from "./Skript/Section/SkriptFile";
 
 import {
 	SkriptContext
-} from './SkriptContext';
-import { SkriptWorkSpace } from './Section/SkriptWorkSpace';
+} from './Skript/SkriptContext';
+import { SkriptWorkSpace } from './Skript/Section/SkriptWorkSpace';
 import assert = require('assert');
 import { TokenTypes } from './TokenTypes';
+import { AddonParser } from './Skript/Addon Parser/AddonParser';
+import * as fs from 'fs';
+import path = require('path');
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -240,6 +243,9 @@ connection.onInitialize((params: InitializeParams) => {
 });
 
 connection.onInitialized(async () => {
+
+	fs.writeFileSync('C:\\Users\\Eigenaar\\OneDrive\\Documenten\\test files\\Skript.sk',AddonParser.parseFile());
+
 	if (hasConfigurationCapability) {
 		// Register for all configuration changes.
 		connection.client.register(DidChangeConfigurationNotification.type, undefined);

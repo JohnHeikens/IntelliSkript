@@ -1,0 +1,1411 @@
+{
+  "events": [
+    {
+      "id": "crafting_click",
+      "name": "On Crafting Click",
+      "patterns": [
+        "[on] crafting click in slot %number%"
+      ],
+      "event values": [
+        "event-inventoryaction",
+        "event-clicktype",
+        "event-string",
+        "event-world",
+        "event-slot",
+        "event-inventory",
+        "event-player",
+        "event-itemstack",
+        "event-itemtype"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "npccitizen_death",
+      "name": "On NPC/Citizen Death",
+      "patterns": [
+        "[on] (NPC|Citizen) death"
+      ],
+      "event values": [
+        "event-object"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "npccitizen_left_click",
+      "name": "On NPC/Citizen Left Click",
+      "patterns": [
+        "[on] (NPC|Citizen) left click"
+      ],
+      "event values": [
+        "event-object",
+        "event-number",
+        "event-player"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "npccitizen_right_click",
+      "name": "On NPC/Citizen Right Click",
+      "patterns": [
+        "[on] (NPC|Citizen) right click"
+      ],
+      "event values": [
+        "event-object",
+        "event-number",
+        "event-player"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "on_store",
+      "name": "On On Store",
+      "patterns": [
+        "[on] (store|chest add)"
+      ],
+      "event values": [
+        "event-inventory",
+        "event-player",
+        "event-itemstack"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "on_unstore",
+      "name": "On On Unstore",
+      "patterns": [
+        "[on] (unstore|chest remove)"
+      ],
+      "event values": [
+        "event-inventory",
+        "event-player",
+        "event-itemstack"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "armorstand_damage",
+      "name": "On armorstand damage",
+      "patterns": [
+        "[on] armo[u]r stand damage"
+      ],
+      "event values": [
+        "event-player",
+        "event-entity"
+      ],
+      "cancellable": true
+    }
+  ],
+  "conditions": [
+    {
+      "id": "CondCitizenIs",
+      "name": "Citizen is",
+      "description": [
+        "Checks if a citizen has a certain ID."
+      ],
+      "patterns": [
+        "(NPC|Citizen) is %number%",
+        "%entity% is (citizen|npc) %number%",
+        "%entity% is [a] (npc|citizen)"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "CondIsNpcNamed",
+      "name": "Citizen is named",
+      "description": [
+        "Check citizen by:",
+        "* Name",
+        "A conditional check using citizens names over id numbers"
+      ],
+      "patterns": [
+        "(NPC|Citizen)['s] [is] name[d] [is] %string%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "CondIsGlowing",
+      "name": "Is Glowing",
+      "description": [
+        "Check to see if a player is currently glowing"
+      ],
+      "since": [
+        "1.9.13"
+      ],
+      "patterns": [
+        "%player% glowing"
+      ]
+    },
+    {
+      "id": "CondIsScoreboardSet",
+      "name": "Sidebar Is Set",
+      "description": [
+        "Check if sidebar:",
+        "* Is set",
+        "* For player",
+        "This will check if a sidebar is being displayed to a player"
+      ],
+      "patterns": [
+        "side bar is set for %player%"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "EffSetBossBar",
+      "name": "Add Player to ID Based Bossbar",
+      "description": [
+        "Add a player to an ID based Bossbar."
+      ],
+      "patterns": [
+        "(add|set) bossbar %string% for %player% ",
+        "(add|give) %players% [to] bossbar %string%"
+      ]
+    },
+    {
+      "id": "AddRemovePlayerFromGroupScore",
+      "name": "Add/Remove Players from Group Scores",
+      "description": [
+        "Add or removed a players group based score."
+      ],
+      "patterns": [
+        "add %player% to group score [with id] %string%",
+        "(delete|remove) %player% from group [id based] score %string%"
+      ]
+    },
+    {
+      "id": "EffBossBarAddFlag",
+      "name": "Add/Set Bossbar Flag",
+      "description": [
+        "Add a flag to a ID based Bossbar."
+      ],
+      "patterns": [
+        "(add|set) [a] [the] flag %bossbarflag% to [the] bossbar %string%"
+      ]
+    },
+    {
+      "id": "EffEffectLibAnimatedBallEffect",
+      "name": "Animated Ball Effect",
+      "description": [
+        "Creates an EffectLib animated ball effect."
+      ],
+      "patterns": [
+        "(spawn|create|apply) (a|the|an) animated ball (effect|formation) (at|on|for|to) %entity/location% with id %string% [with particle %visualeffects%] [offset by %number%, %number%(,| and) %number%]"
+      ]
+    },
+    {
+      "id": "EffEffectLibArc",
+      "name": "Arc Effect",
+      "description": [
+        "Creates an EffectLib arc effect."
+      ],
+      "patterns": [
+        "(spawn|create|apply) (a|the|an) arc (effect|formation) from %entity/location% to %entity/location% with id %string% [with particle[s] %visualeffects%] [%number% high] [and %number% particles]"
+      ]
+    },
+    {
+      "id": "EffEffectLibAtom",
+      "name": "Atom Effect",
+      "description": [
+        "Creates an EffectLib atom effect."
+      ],
+      "patterns": [
+        "(spawn|create|apply) (a|the|an) atom (effect|formation) (at|on|for|to) %entity/location% with id %string%"
+      ]
+    },
+    {
+      "id": "EffEffectLibBleed",
+      "name": "Bleed Effect",
+      "description": [
+        "Creates an EffectLib bleed effect."
+      ],
+      "examples": [
+        "command /bleedtest:",
+        "\ttrigger:",
+        "\t\tcreate a bleed effect to player with id \"test\"",
+        "\t\twait 10 seconds",
+        "\t\tmessage \"&cDelete\"",
+        "\t\tdelete effect \"test\""
+      ],
+      "patterns": [
+        "(spawn|create|apply) (a|the|an) bleed (effect|formation) (at|on|for|to) %entity/location% with id %string%"
+      ]
+    },
+    {
+      "id": "EffCitizenSetSkin",
+      "name": "Change Citizen Skin",
+      "description": [
+        "Change the skin of a citizen by:",
+        "* ID",
+        "* Minecraft Username",
+        "This will change the skin of an NPC to a given Minecraft username"
+      ],
+      "examples": [
+        "command /npcskin:",
+        "\ttrigger:",
+        "\t\tcreate a citizen named \"notch\" at location of player",
+        "\t\tchange citizen last created citizen skin to \"eyesniper2\""
+      ],
+      "patterns": [
+        "change citizen %number% skin to %string%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffEffectLibCircle",
+      "name": "Circle Effect",
+      "description": [
+        "Creates an EffectLib circle effect."
+      ],
+      "patterns": [
+        "(spawn|create|apply) (a|the|an) circle (effect|formation) (at|on|for) %entity/location% with id %string% [with particle[s] %visualeffects%] [(and|with) radius %number%]"
+      ]
+    },
+    {
+      "id": "EffCitizenHold",
+      "name": "Citizen Hold",
+      "description": [
+        "This will make a Citizen hold an object in their hand."
+      ],
+      "examples": [
+        "command /npcholdsword:",
+        "\ttrigger:",
+        "\t\tmake citizen last created citizen id hold iron sword"
+      ],
+      "patterns": [
+        "make citizen %number% hold [an] %itemstack%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffCitizenVulnerability",
+      "name": "Citizen Invulnerability",
+      "description": [
+        "Change if a citizen takes damage by:",
+        "* ID",
+        "* Invulnerable",
+        "* Vulnerable",
+        "This will allow you to choose if an NPC can receive damage"
+      ],
+      "patterns": [
+        "make citizen %number% (invulnerable|vulnerable)"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffCitizenLookTarget",
+      "name": "Citizen Look Targeting",
+      "description": [
+        "Change the view of a citizen by:",
+        "* ID",
+        "* Location",
+        "Pick a location for an NPC to look at"
+      ],
+      "patterns": [
+        "make citizen %number% look at %location%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffCitizenSetMaxHealth",
+      "name": "Citizen Max Health",
+      "description": [
+        "Modify citizens max health by:",
+        "* ID",
+        "* Number",
+        "Will allow you to modify the maximum amount of health an NPC can have. 0.5 = half a heart, 1 = a heart, etc..."
+      ],
+      "patterns": [
+        "(set|make) citizen[s] %number% max health [to] %number%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffCitizenNameVisible",
+      "name": "Citizen Nametag Visibility",
+      "description": [
+        "Modify citizen nametags by:",
+        "* ID",
+        "* Invisibility",
+        "* Visibility",
+        "For if you want to toggle the visibility of names above the NPC's head"
+      ],
+      "patterns": [
+        "(set|make) citizen[s] %number% nametag (invisible|visible)"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffGiveLookCloseTrait",
+      "name": "Citizens Look Close Trait",
+      "description": [
+        "Allow citizens to look at the closest player automatically. This effect is toggleable, so to disable this trait for a citizen run this effect again."
+      ],
+      "patterns": [
+        "(give|set) npc %number% the look close trait"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffRemoveLookCloseTrait",
+      "name": "Citizens Look Close Trait",
+      "description": [
+        "Allow citizens to look at the closest player automatically. This effect is toggleable, so to disable this trait for a citizen run this effect again."
+      ],
+      "patterns": [
+        "remove npc %number%['s] look close trait"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffCreateCitizen",
+      "name": "Create Citizen",
+      "description": [
+        "Create citizens with:",
+        "* Name",
+        "* Direction",
+        "* Location",
+        "* Entity Type",
+        "This will place an NPC in your world that can be modified"
+      ],
+      "examples": [
+        "command /createwolf <text>:",
+        "\ttrigger:",
+        "\t\tcreate a citizen named \"%arg 1%\" at location of player as a wolf"
+      ],
+      "patterns": [
+        "create [a] citizen named %string% (at|%direction%) %location% [as (a|an) %entitytypes%]"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffCreateGroupIdScore",
+      "name": "Create Group Based Score",
+      "description": [
+        "Create a group ID based score and assign it to a player or multiple players."
+      ],
+      "patterns": [
+        "(set|create) group id [based] score %string% in sidebar for %players% to %number% with id %string%"
+      ]
+    },
+    {
+      "id": "EffCreateModernBossBar",
+      "name": "Create ID based Bossbar",
+      "description": [
+        "Create a ID based Bossbar for a group of people."
+      ],
+      "patterns": [
+        "create (bossbar|boss bar) title[d] %string% and id %string% for %players% [with (value|progress) %number%] [with colors %bossbarcolor%] [with style %bossbarstyle%] [with flags %bossbarflag%]"
+      ]
+    },
+    {
+      "id": "EffDeleteIdScore",
+      "name": "Delete Group Score",
+      "description": [
+        "Deletes a group score."
+      ],
+      "patterns": [
+        "(delete|remove) score [with] id %string%"
+      ]
+    },
+    {
+      "id": "RemoveGroupIdScore",
+      "name": "Delete Group Score",
+      "description": [
+        "Deletes a group score."
+      ],
+      "patterns": [
+        "(delete|remove) score[s] [with] group id %string%"
+      ]
+    },
+    {
+      "id": "EffDeleteModernBossBar",
+      "name": "Delete ID based Bossbar",
+      "description": [
+        "Delete/destroy an ID based Bossbar."
+      ],
+      "patterns": [
+        "(remove|destroy) bossbar %string%"
+      ]
+    },
+    {
+      "id": "EffDeleteScore",
+      "name": "Delete Sidebar Score",
+      "description": [
+        "Delete a sidebar score by:",
+        "* Name",
+        "* Player",
+        "This will delete a specified score from a specified player"
+      ],
+      "patterns": [
+        "delete score %string% in sidebar of %player%"
+      ]
+    },
+    {
+      "id": "EffDeleteEffect",
+      "name": "Delete/Stop Effect",
+      "description": [
+        "Stops a EffectLib effect that matches the id value."
+      ],
+      "examples": [
+        "command /bleedtest:",
+        "\ttrigger:",
+        "\t\tcreate a bleed effect to player with id \"bleedtest\"",
+        "\t\twait 10 seconds",
+        "\t\tmessage \"&cDelete\"",
+        "\t\tdelete effect \"bleedtest\""
+      ],
+      "patterns": [
+        "(delete|stop) (effect|formation) %string%"
+      ]
+    },
+    {
+      "id": "EffDespawnCitizen",
+      "name": "Despawn Citizen",
+      "description": [
+        "Despawn citizens by:",
+        "* ID",
+        "Unlike delete a citizen this will just kill the NPC you can respawnit back at the created location with the respawn citizen effect."
+      ],
+      "patterns": [
+        "despawn citizen %number%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffEditIdScore",
+      "name": "Edit ID based score",
+      "description": [
+        "Edit an ID based score."
+      ],
+      "patterns": [
+        "(edit|update) score [with] id %string% to %string% and %number%"
+      ]
+    },
+    {
+      "id": "EffCitizenSleep",
+      "name": "EffCitizenSleep",
+      "patterns": [
+        "(make|force) (npc|citizen) with id %number% to sleep",
+        "(make|force) (npc|citizen) with id %number% to wake [up]"
+      ]
+    },
+    {
+      "id": "EffEquipCitizen",
+      "name": "Equip Citizen",
+      "description": [
+        "Give citizens:",
+        "* Tools",
+        "* Armo(u)r",
+        "Give citizens things to hold in their hands and wear"
+      ],
+      "patterns": [
+        "(equip|give) citizen %number% with [an] %itemstack%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffFakeFakeLightning",
+      "name": "Fake Lightning (No Sound)",
+      "description": [
+        "Creates a silent fake lightning strike at a location."
+      ],
+      "examples": [
+        "command /fakelightningtest:",
+        "\ttrigger:",
+        "\t\tcreate fake fake lightning at location of player"
+      ],
+      "patterns": [
+        "(create|strike) (fake|ultra|no sound) fake lightning at %location%"
+      ]
+    },
+    {
+      "id": "EffBossBarHide",
+      "name": "Hide BossBar",
+      "description": [
+        "Hide a ID based Bossbar."
+      ],
+      "patterns": [
+        "hide bossbar %string%"
+      ]
+    },
+    {
+      "id": "EffEffectLibLine",
+      "name": "Line Effect",
+      "description": [
+        "Creates a EffectLib line effect."
+      ],
+      "patterns": [
+        "(spawn|create|apply) (a|the|an) line (effect|formation) from %entity/location% to %entity/location% with id %string% [with particle[s] %visualeffects%]"
+      ]
+    },
+    {
+      "id": "EffCitizenAttack",
+      "name": "Make Citizen Attack",
+      "description": [
+        "Make citizens attack with:",
+        "* ID",
+        "* Mobs",
+        "* Players",
+        "Makes a citizen attack a living entity. The entity must be close enough to the NPC"
+      ],
+      "examples": [
+        "command /attack <integer>:",
+        "\ttrigger:",
+        "\t\tmake citizen arg 1 attack player",
+        "\t\tmake citizen arg 1 vulnerable"
+      ],
+      "patterns": [
+        "make citizen %number% (attack|fight) %entity%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffCitizenSetCrouch",
+      "name": "Make Citizen Crouch/Uncrouch/Stand",
+      "description": [
+        "Make a NPC/Citizen Crouch, Uncrouch or stand."
+      ],
+      "patterns": [
+        "(set|make) citizen %number% [to] [be] crouch[ed]",
+        "(set|make) citizen %number% [to] [be] (uncrouch[ed]|standing)"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffCitizenToggleCrouch",
+      "name": "Make Citizen Crouch/Uncrouch/Stand",
+      "description": [
+        "Make a NPC/Citizen Crouch, Uncrouch or stand."
+      ],
+      "patterns": [
+        "toggle citizen %number%['s] crouch"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffCitizenSwing",
+      "name": "Make Citizen Swing",
+      "description": [
+        "Force a citizens to play the arm swing animation"
+      ],
+      "examples": [
+        "command /npcarmswing:",
+        "\ttrigger:",
+        "\t\tmake citizen last created citizen swing arm    "
+      ],
+      "patterns": [
+        "make citizen %number% swing [arm]"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffCitizenSpeak",
+      "name": "Make Citizen Talk",
+      "description": [
+        "Make citizens communicate with:",
+        "* ID",
+        "* Messages",
+        "* Players",
+        "This will make an NPC speak to a player with a custom message"
+      ],
+      "examples": [
+        "command /npcspeak <integer> <text>:",
+        "\ttrigger:",
+        "\t\tmake citizen arg 1 say \"%arg 2%\" to player"
+      ],
+      "patterns": [
+        "make citizen %number% (say|communicate) %string% to %livingentities%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffMakePlayerGlow",
+      "name": "Make Player Glow",
+      "description": [
+        "Make a player glow. This is based on team color, will be white by default."
+      ],
+      "examples": [
+        "command /playerglow:",
+        "\ttrigger:",
+        "\t\tmake player glow",
+        "\t\twait 5 seconds",
+        "\t\tmake player stop glowing"
+      ],
+      "patterns": [
+        "make %player% glow"
+      ]
+    },
+    {
+      "id": "EffMaxHealth",
+      "name": "Max Health",
+      "description": [
+        "Set max health by:",
+        "* Entity",
+        "* Value",
+        "This will change the maximum health of an entity"
+      ],
+      "patterns": [
+        "set rf max[imum] h(p|ealth) of %livingentities% to %number%"
+      ]
+    },
+    {
+      "id": "EffCitizenMove",
+      "name": "Move Citizen",
+      "description": [
+        "Move citizens by:",
+        "* ID",
+        "* Location",
+        "* Speed",
+        "This will make a given NPC pathfind to a location"
+      ],
+      "examples": [
+        "command /movenpc:",
+        "\ttrigger:",
+        "\t\tmove citizen 1 to location of player at speed 2"
+      ],
+      "patterns": [
+        "move citizen %number% to %location% [at speed %number%]"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffPlayResourcePackSound",
+      "name": "Play Resource Pack Sound",
+      "description": [
+        "Play a sound from a resource pack."
+      ],
+      "patterns": [
+        "play (resource|[custom ]sound) [sound] pack %string% to %player% [at %location%] [(and|with) volume %number%] [(and|with) pitch %number%]"
+      ]
+    },
+    {
+      "id": "EffPlaySoundPacket",
+      "name": "Play Sound",
+      "description": [
+        "Play sound by:",
+        "* Player",
+        "* Client",
+        "* Volume",
+        "* This will play a sound to a player and nobody else",
+        "",
+        "If you want a list of skRayFall sounds go https://hub.spigotmc.org/javadocs/spigot/ click ctrl + f and type 'sound' then press the down arrow once and then click the sound that is shown in green text and that will list all the sounds for you"
+      ],
+      "patterns": [
+        "play %string% to %players% [at volume %number%]"
+      ]
+    },
+    {
+      "id": "EffSetPlayerListName",
+      "name": "Players Tab Name",
+      "description": [
+        "Lets you customize a players name within the tab menu. Please note the ['s] was added as of 1.9.18."
+      ],
+      "patterns": [
+        "set %player%['s] tab name to %string%"
+      ]
+    },
+    {
+      "id": "EffDeleteCitizen",
+      "name": "Remove Citizen",
+      "description": [
+        "Remove citizens by:",
+        "* ID",
+        "This will permanently remove a citizen"
+      ],
+      "examples": [
+        "command /removelastnpc:",
+        "\ttrigger:",
+        "\t\tdestroy citizen last created citizen"
+      ],
+      "patterns": [
+        "(remove|destroy) citizen %number%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffRemovePlayerFromBossBar",
+      "name": "Remove Player from BossBar",
+      "description": [
+        "Remove a player from a ID based Bossbar."
+      ],
+      "patterns": [
+        "remove %players% [from] bossbar %string%"
+      ]
+    },
+    {
+      "id": "EffBossBarRemoveFlag",
+      "name": "Remove/Delete Bossbar Flag",
+      "description": [
+        "Remove a flag from a ID based Bossbar."
+      ],
+      "patterns": [
+        "(remove|delete) [a] [the] flag %bossbarflag% [to] [from] [the] bossbar %string%"
+      ]
+    },
+    {
+      "id": "EffRespawnCitizen",
+      "name": "Respawn Citizen",
+      "description": [
+        "Respawn citizens by:",
+        "* ID",
+        "* Direction",
+        "* Location",
+        "This will force an NPC to come back to life if it was previously killed or despawned by the despawn citizen effect. This will not work if the citizen is already alive so it can't be used to duplicate citizens"
+      ],
+      "examples": [
+        "command /npcrespawn:",
+        "\ttrigger:\n",
+        "\t\trespawn citizen 0 at location of player"
+      ],
+      "patterns": [
+        "respawn citizen %number% (at|%direction%) %location%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffTitle",
+      "name": "Send Title",
+      "description": [
+        "Set title by:",
+        "* Name",
+        "* Subtitle",
+        "* Player",
+        "* Time",
+        "* Fadein",
+        "* Fadeout",
+        "This will send a title to a player with an optional subtitle and display time"
+      ],
+      "patterns": [
+        "send %players% title %string% [with subtitle %string%] [for %timespan%] [with %timespan% fade in and %timespan% fade out]"
+      ]
+    },
+    {
+      "id": "EffActionBar",
+      "name": "Set Action Bar",
+      "description": [
+        "Display Action Bar by:",
+        "* Player",
+        "* Text",
+        "This will display text above the player's hotbar for a few seconds. This is like the text you receive when changing the item in your hand"
+      ],
+      "patterns": [
+        "set action bar of %players% to %string%",
+        "set %player%['s] action bar to %string%"
+      ]
+    },
+    {
+      "id": "EffSetScoreBelowName",
+      "name": "Set Below Name Score",
+      "description": [
+        "Set score of a sidebar by:",
+        "* Name",
+        "* Value",
+        "* Player",
+        "* Target",
+        "This will change the name and score below a player's name"
+      ],
+      "patterns": [
+        "set score %string% below %player% to %number% for %players%"
+      ]
+    },
+    {
+      "id": "EffChangeBossBarColor",
+      "name": "Set Bossbar Color",
+      "description": [
+        "Set the color of an ID based Bossbar."
+      ],
+      "patterns": [
+        "(set|edit) bossbar %string% colo[u]r to %bossbarcolor%"
+      ]
+    },
+    {
+      "id": "EffChangeBossBarValue",
+      "name": "Set Bossbar Progress/Value",
+      "description": [
+        "Set the progress of an ID based bossbar."
+      ],
+      "patterns": [
+        "(set|edit) bossbar %string% (value|progress) to %number%"
+      ]
+    },
+    {
+      "id": "EffChangeBossBarStyle",
+      "name": "Set Bossbar Style",
+      "description": [
+        "Set the style of an ID based Bossbar."
+      ],
+      "patterns": [
+        "(set|edit) bossbar %string% style to %bossbarstyle%"
+      ]
+    },
+    {
+      "id": "EffChangeBossBarTitle",
+      "name": "Set Bossbar Title/Name",
+      "description": [
+        "Set the name of an ID based Bossbar."
+      ],
+      "patterns": [
+        "(set|edit) bossbar %string% (title|name) to %string%"
+      ]
+    },
+    {
+      "id": "EffSetCitizenName",
+      "name": "Set Citizens Name",
+      "description": [
+        "Set the name of a citizen/npc using their ID number."
+      ],
+      "examples": [
+        "set citizen 1 name to \"eyesniper2\""
+      ],
+      "patterns": [
+        "(set|make) citizen[s] %number% name to %string%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "EffSetIdBasedScore",
+      "name": "Set ID based Score",
+      "description": [
+        "Make an ID based score in a players scoreboard. This method is ideal for creating complex text based scoreboards."
+      ],
+      "patterns": [
+        "(set|create) id [based] score %string% in sidebar of %player% to %number% with id %string%"
+      ]
+    },
+    {
+      "id": "EffSetMetaData",
+      "name": "Set Meta Data",
+      "description": [
+        "Set a meta data on an entity to a value"
+      ],
+      "patterns": [
+        "set meta %string% for %entity% to %string%"
+      ]
+    },
+    {
+      "id": "EffNameOfScore",
+      "name": "Set Sidebar Name",
+      "description": [
+        "Change the sidebar name by:",
+        "* Scoreboard",
+        "* Name",
+        "* Players",
+        "This will change the name of a player's sidebar. The sidebar of the player must have at least one score in order for it to show on the sidebar"
+      ],
+      "patterns": [
+        "set name of sidebar (of|for) %players% to %string%"
+      ]
+    },
+    {
+      "id": "EffSetScore",
+      "name": "Set Sidebar Score",
+      "description": [
+        "Set score of a sidebar by:",
+        "* Scoreboard",
+        "* Name",
+        "* Value",
+        "* Player",
+        "This will change the score of a score in a player's sidebar or create a new score if it does not exist"
+      ],
+      "patterns": [
+        "set score %string% in sidebar of %player% to %number%"
+      ]
+    },
+    {
+      "id": "EffTabTitles",
+      "name": "Set Tab Header & Footer",
+      "description": [
+        "Modify Tab by:",
+        "* Header",
+        "* Footer",
+        "* Player",
+        "This will display a client side header and footer for a player"
+      ],
+      "patterns": [
+        "set tab header to %string% and footer to %string% for %player%"
+      ]
+    },
+    {
+      "id": "EffSetScoreTab",
+      "name": "Set Tablist Score",
+      "description": [
+        "Set the tablist score by:",
+        "* Scoreboard",
+        "* Value",
+        "* Player",
+        "* Target",
+        "This will change the score for a player in the tablist"
+      ],
+      "patterns": [
+        "set tab[list] score of %player% to %number% for %player%"
+      ]
+    },
+    {
+      "id": "EffParticles",
+      "name": "Show Particle",
+      "description": [
+        "Show particle by:",
+        "* Player",
+        "* Location",
+        "* Amount",
+        "* Particle Type",
+        "This will display a particle at a given location for a player. This is client side!",
+        "[List of particles](https://gist.github.com/eyesniper2/935315532ef05fc56656)"
+      ],
+      "patterns": [
+        "show %number% %string% particle[s] at %location% for %player% [offset by %number%, %number%( and|,) %number%]"
+      ]
+    },
+    {
+      "id": "EffBossBarShow",
+      "name": "Show/Unhide Bossbar",
+      "description": [
+        "Show a hidden ID based Bossbar."
+      ],
+      "patterns": [
+        "(show|display|unhide) bossbar %string%"
+      ]
+    },
+    {
+      "id": "EffEffectLibText",
+      "name": "Text Effect",
+      "description": [
+        "Creates an EffectLib text effect."
+      ],
+      "examples": [
+        "command /texteffect:",
+        "\ttrigger:",
+        "\t\tapply the text effect with text \"Text Effect\" as Redstone to player with id \"texteffecttest\""
+      ],
+      "patterns": [
+        "(spawn|create|apply) (a|the|an) text (effect|formation) with text %string% as %visualeffects% (at|on|for|to) %entities/location% with id %string%[(,| and) %number% large]"
+      ]
+    },
+    {
+      "id": "EffEffectTornado",
+      "name": "Tornado Effect",
+      "description": [
+        "Creates an EffectLib tornado effect."
+      ],
+      "patterns": [
+        "(spawn|create|apply) (a|the|an) tornado (effect|formation) at %entity/location% with id %string% [with tornado particle[s] %visualeffects% and cloud particle[s] %visualeffects%] [(set|and) radius %number%] [(set|and) max height %number%]"
+      ]
+    },
+    {
+      "id": "EffUnglowPlayer",
+      "name": "Unglow/Stop Glowing",
+      "description": [
+        "Remove the glowing effect from the player."
+      ],
+      "examples": [
+        "command /playerglow:",
+        "\ttrigger:",
+        "\t\tmake player glow",
+        "\t\twait 5 seconds",
+        "\t\tmake player stop glowing"
+      ],
+      "patterns": [
+        "make %player% (unglow|stop glowing)"
+      ]
+    },
+    {
+      "id": "EffEditGroupIdScore",
+      "name": "Update Group Score",
+      "description": [
+        "Updates a group based score."
+      ],
+      "patterns": [
+        "(edit|update) score [with][in] group [id] %string% to %string% and %number%"
+      ]
+    },
+    {
+      "id": "EffEffectLibWave",
+      "name": "Wave Effect",
+      "description": [
+        "Creates an EffectLib wave effect."
+      ],
+      "patterns": [
+        "(spawn|create|apply) (a|the|an) wave (effect|formation) at %entity/location% with id %string% [with particle[s] %visualeffects%]"
+      ]
+    },
+    {
+      "id": "EffRemoveScoreBelowName",
+      "name": "Wipe Below Name",
+      "description": [
+        "Wipe score below player by:",
+        "* Scoreboard",
+        "* Player",
+        "This will wipe the score below the player"
+      ],
+      "patterns": [
+        "(wipe|erase) below score[s] for %player%"
+      ]
+    },
+    {
+      "id": "EffRemoveScoreTab",
+      "name": "Wipe Tablist Score",
+      "description": [
+        "Wipe tablist score by:",
+        "* Scoreboard",
+        "* Player",
+        "This will remove the score from a player in the tablist"
+      ],
+      "patterns": [
+        "(wipe|erase|delete) %player%['s] tab[list]"
+      ]
+    },
+    {
+      "id": "EffRemoveScoreboard",
+      "name": "Wipe/Delete/Remove Sidebar",
+      "description": [
+        "Delete a sidebar by:",
+        "* Scoreboard",
+        "* Player",
+        "This will completely wipe a specified player's sidebar deleting all scores and the name of the sidebar."
+      ],
+      "patterns": [
+        "(wipe|erase|delete) %player%['s] sidebar"
+      ]
+    }
+  ],
+  "expressions": [
+    {
+      "id": "ExprAbsoluteInventoryCount",
+      "name": "Absolute Amount of Items",
+      "description": [
+        "Get the number of items in a player’s inventory that are an absolute match to a sample item. To match they must have the same enchants, name and lore."
+      ],
+      "return type": "Number",
+      "patterns": [
+        "(absolute|complex|abs) number of %itemstack% in %player%['s] (inventory|inv)"
+      ]
+    },
+    {
+      "id": "ExprArmorValue",
+      "name": "Armor Value",
+      "description": [
+        "Get a players armor value."
+      ],
+      "return type": "Number",
+      "patterns": [
+        "%player%['s] armo[u]r value"
+      ]
+    },
+    {
+      "id": "ExprCitizenIdFromEntity",
+      "name": "Citizen ID",
+      "description": [
+        "Get the id number of a citizen from an entity."
+      ],
+      "return type": "Number",
+      "patterns": [
+        "citizen id of %entity%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "ExprOwnerOfCitizen",
+      "name": "Citizen Owner",
+      "description": [
+        "Gets the owner of a citizen."
+      ],
+      "return type": "Text",
+      "patterns": [
+        "owner of (citizen|npc) %number%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "ExprTextToLocation",
+      "name": "Convert Text to Location",
+      "description": [
+        "Convert a comma separated string of x, y and z cords into a location. eg. \"1.3,4.5,1.5\" to a location"
+      ],
+      "return type": "Location",
+      "patterns": [
+        "%string% converted to location"
+      ]
+    },
+    {
+      "id": "ExprGeneralCitizen",
+      "name": "General Citizen",
+      "description": [
+        "Get the general entity for a citizen"
+      ],
+      "return type": "Entity",
+      "changers": [
+        "add",
+        "remove",
+        "remove all"
+      ],
+      "patterns": [
+        "citizen %number%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "GroupScoreValue",
+      "name": "Group Score Value",
+      "description": [
+        "These expressions will get either the name or value of a group based score."
+      ],
+      "return type": "Text",
+      "patterns": [
+        "group score (name|title) (of|from) id %string%",
+        "group score (value|number) (of|from) id %string%"
+      ]
+    },
+    {
+      "id": "ExprSpecificEnchantIndex",
+      "name": "Info of Enchantment",
+      "description": [
+        "Get the presentable info of a specific enchantment number of an item."
+      ],
+      "return type": "Text",
+      "patterns": [
+        "info of enchant[ment] %number% (of|on) %itemstack%"
+      ]
+    },
+    {
+      "id": "ExprLastCitizen",
+      "name": "Last Created Citizen ID",
+      "description": [
+        "Checks for:",
+        "* The last created citizen",
+        "You can use this to check the ID of the last created citizen good for if you want to check the unique ID of a citizen you just created"
+      ],
+      "examples": [
+        "command /npctest <text>:",
+        "\ttrigger:",
+        "\t\tcreate a citizen named \"%arg 1%\" at location of player as a player",
+        "\t\tmessage \"%last created citizen%\""
+      ],
+      "return type": "Number",
+      "patterns": [
+        "last created citizen [id]"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "ExprMetaData",
+      "name": "Meta Data",
+      "description": [
+        "Get the meta data value for an entity"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "meta %string% for %entity%"
+      ]
+    },
+    {
+      "id": "ExprNameOfCitizen",
+      "name": "Name of Citizen",
+      "description": [
+        "Used for:",
+        "* Checking citizen names",
+        "* Changing citizen names",
+        "This will allow you to check and set an NPC's name"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "name of citizen %number%"
+      ],
+      "required plugins": [
+        "Citizens"
+      ]
+    },
+    {
+      "id": "ExprScoreBoardTitle",
+      "name": "Name/Title of Sidebar",
+      "description": [
+        "Get the name/title of a players side bar."
+      ],
+      "return type": "Text",
+      "patterns": [
+        "sidebar (title|name) for %player%"
+      ]
+    },
+    {
+      "id": "ExprNoNbt",
+      "name": "No NBT",
+      "description": [
+        "Removes all NBT tags by:",
+        "Item Stack",
+        "Using this expression will remove all vanilla minecraft lore from an item. For example a diamond sword would not show the vanilla +7 damage in the lore anymore"
+      ],
+      "return type": "Item / Material",
+      "patterns": [
+        "%itemstacks% with no nbt"
+      ]
+    },
+    {
+      "id": "ExprNumberOfEnchants",
+      "name": "Number of Enchantments",
+      "description": [
+        "Get the number of enchantments on an item."
+      ],
+      "return type": "Number",
+      "patterns": [
+        "number of enchant[ment]s on %itemstack%"
+      ]
+    },
+    {
+      "id": "ExprShinyItem",
+      "name": "Shiny Item",
+      "description": [
+        "Show Items by:",
+        "* Glow",
+        "Makes an item glow as an enchanted item but without the lore"
+      ],
+      "examples": [
+        "give player shiny diamond"
+      ],
+      "return type": "Item / Material",
+      "patterns": [
+        "shiny %itemstacks%"
+      ]
+    },
+    {
+      "id": "SingleIDScoreValue",
+      "name": "Single ID Score Value",
+      "description": [
+        "These expressions will get either the name or value of a ID based score."
+      ],
+      "return type": "Text",
+      "patterns": [
+        "score (name|title) (of|from) id %string%",
+        "score (value|number) (of|from) id %string%"
+      ]
+    },
+    {
+      "id": "ExprBossBarTitle",
+      "name": "Title/Name of BossBar",
+      "description": [
+        "Get the name of an ID based Bossbar."
+      ],
+      "return type": "Text",
+      "patterns": [
+        "(title|name) of bossbar %string%"
+      ]
+    },
+    {
+      "id": "ExprBossBarValue",
+      "name": "Value/Progress of Bossbar",
+      "description": [
+        "Get the value of an ID based Bossbar."
+      ],
+      "return type": "Number",
+      "patterns": [
+        "(value|progress) of bossbar %string%"
+      ]
+    },
+    {
+      "id": "ExprRayfallOffhand",
+      "name": "skRayFall Offhand",
+      "description": [
+        "Manipulate items in the players offhand/secondary hand."
+      ],
+      "examples": [
+        "command /offhand:",
+        "\ttrigger:",
+        "\t\tbroadcast \"%player's offhand%\"",
+        "\t\tset player's offhand to 1 diamond block"
+      ],
+      "return type": "Item / Material",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "%player%['s] offhand",
+        "item in %player%['s] offhand"
+      ]
+    }
+  ],
+  "types": [
+    {
+      "id": "RayFallBarColor",
+      "name": "Bossbar Color",
+      "description": [
+        "A data type to call the colors for the new 1.9 bossbars."
+      ],
+      "usage": "blue, green, pink, purple, red, white or yellow",
+      "patterns": [
+        "bossbarcolor"
+      ]
+    },
+    {
+      "id": "RayFallBarFlag",
+      "name": "Bossbar Flag",
+      "description": [
+        "Bar Flags to support the new 1.9 bossbars."
+      ],
+      "usage": "create fog, darken sky or play boss music",
+      "patterns": [
+        "bossbarflag"
+      ]
+    },
+    {
+      "id": "RayFallBarStyle",
+      "name": "Bossbar Style",
+      "description": [
+        "Bossbar styles to support the new 1.9 BossBar."
+      ],
+      "usage": "segmented 10, segmented 12, segmented 20, segmented 6 and solid",
+      "patterns": [
+        "bossbarstyle"
+      ]
+    }
+  ]
+}

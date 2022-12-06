@@ -1,0 +1,250 @@
+{
+  "events": [
+    {
+      "id": "luckperms_-_demote_event",
+      "name": "On LuckPerms - Demote Event",
+      "description": [
+        "Called when a player is demoted."
+      ],
+      "examples": [
+        "on luckperms demote:",
+        "\tbroadcast \"%event-offlineplayer% was demoted from %event-string% to %luckperms group of player%!\""
+      ],
+      "patterns": [
+        "[on] [LuckPerm[s]] [player] demot(e|ion)"
+      ],
+      "event values": [
+        "event-offlineplayer",
+        "event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "luckperms_-_group_change",
+      "name": "On LuckPerms - Group Change",
+      "description": [
+        "Called when a player's group changes."
+      ],
+      "examples": [
+        "on luckperms group change:",
+        "\tbroadcast \"group of %event-offlineplayer% changed from %old group% to %new group%!\""
+      ],
+      "patterns": [
+        "[on] [LuckPerm[s]] [player] group change"
+      ],
+      "event values": [
+        "event-offlineplayer",
+        "event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "luckperms_-_promote_event",
+      "name": "On LuckPerms - Promote Event",
+      "description": [
+        "Called when a player is promoted."
+      ],
+      "examples": [
+        "on luckperms promote:",
+        "\tbroadcast \"%event-offlineplayer% was promoted from %event-string% to %luckperms group of player%!\""
+      ],
+      "patterns": [
+        "[on] [LuckPerm[s]] [player] promot(e|ion)"
+      ],
+      "event values": [
+        "event-offlineplayer",
+        "event-string"
+      ],
+      "cancellable": false
+    }
+  ],
+  "effects": [
+    {
+      "id": "EffAddPrefix",
+      "name": "LuckPerms - Add Prefix",
+      "description": [
+        "Adds prefix to player."
+      ],
+      "examples": [
+        "add \"[Owner]\" with priority 100 to the prefixes of player"
+      ],
+      "patterns": [
+        "add %string% with [a] priority [of] %number% to [the] [LuckPerm[s]] prefixes of %player%"
+      ]
+    },
+    {
+      "id": "EffAddSuffix",
+      "name": "LuckPerms - Add Suffix",
+      "description": [
+        "Adds suffix to player."
+      ],
+      "examples": [
+        "add \"[Owner]\" with priority 100 to the suffixes of player"
+      ],
+      "patterns": [
+        "add %string% with [a] priority [of] %number% to [the] [LuckPerm[s]] suffixes of %player%"
+      ]
+    },
+    {
+      "id": "EffRemovePrefix",
+      "name": "LuckPerms - Remove Prefix",
+      "description": [
+        "Removes prefix to player."
+      ],
+      "examples": [
+        "remove \"[Owner]\" with priority 100 from the prefixes of player"
+      ],
+      "patterns": [
+        "remove %string% with [a] priority [of] %number% from [the] [LuckPerm[s]] prefixes of %player%"
+      ]
+    },
+    {
+      "id": "EffRemoveSuffix",
+      "name": "LuckPerms - Remove Suffix",
+      "description": [
+        "Removes suffix from player."
+      ],
+      "examples": [
+        "remove \"[Owner]\" with priority 100 from the suffixes of player"
+      ],
+      "patterns": [
+        "remove %string% with [a] priority [of] %number% from [the] [LuckPerm[s]] suffixes of %player%"
+      ]
+    }
+  ],
+  "expressions": [
+    {
+      "id": "ExprAllGroups",
+      "name": "LuckPerms - All Groups",
+      "description": [
+        "Returns the names of all groups."
+      ],
+      "examples": [
+        "send \"%the luckperms groups%\""
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[[the] names of] [(all [[of] the]|the)] [LuckPerm[s]] groups"
+      ]
+    },
+    {
+      "id": "ExprGroupOfPlayer",
+      "name": "LuckPerms - Group of Player",
+      "description": [
+        "Returns the group of a player."
+      ],
+      "examples": [
+        "send \"%the luckperms group of player%\""
+      ],
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [LuckPerm[s]] [primary] group of %player%",
+        "%player%'s [primary] [LuckPerm[s]] group"
+      ]
+    },
+    {
+      "id": "ExprNewPlayerGroup",
+      "name": "LuckPerms - New Group",
+      "description": [
+        "Returns the new group of a player in the group change event."
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] new [LuckPerm[s]] group [of [the] player]",
+        "[the] player's new [LuckPerm[s]] group"
+      ]
+    },
+    {
+      "id": "ExprOldPlayerGroup",
+      "name": "LuckPerms - Old Group",
+      "description": [
+        "Returns the old group of a player in the group change event."
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] old [LuckPerm[s]] group [of [the] player]",
+        "[the] player's old [LuckPerm[s]] group"
+      ]
+    },
+    {
+      "id": "ExprGroupPermissions",
+      "name": "LuckPerms - Permissions of Group",
+      "description": [
+        "Returns the permissions of a group."
+      ],
+      "examples": [
+        "set {default::perms::*} to the permissions of the luckperms group \"default\""
+      ],
+      "return type": "Text",
+      "changers": [
+        "add",
+        "remove",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[(all [[of] the]|the)] perm[ission][s] of [the] [LuckPerm[s]] group [(named|with name)] %string%",
+        "[all of] [the] [LuckPerm[s]] group [(named|with name)] %string%'s perm[ission][s]"
+      ]
+    },
+    {
+      "id": "ExprPlayerPermissions",
+      "name": "LuckPerms - Permissions of Player",
+      "description": [
+        "Returns the permissions of a player."
+      ],
+      "examples": [
+        "send \"%the luckperms permissions of player%\""
+      ],
+      "return type": "Text",
+      "changers": [
+        "add",
+        "remove",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] [LuckPerm[s]] perm[ission][s] of [player] %player%",
+        "[player] %player%'s [LuckPerm[s]] perm[ission][s]"
+      ]
+    },
+    {
+      "id": "ExprPlayerPrefix",
+      "name": "LuckPerms - Prefix of Player",
+      "description": [
+        "Returns the prefix of a player."
+      ],
+      "examples": [
+        "send \"%the luckperms prefix of player%\""
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [active] [LuckPerm[s]] prefix of %player%",
+        "%player%'s [active] [LuckPerm[s]] prefix",
+        "[the] [active] [LuckPerm[s]] suffix of %player%",
+        "%player%'s [active] [LuckPerm[s]] suffix"
+      ]
+    },
+    {
+      "id": "ExprGroupWeight",
+      "name": "LuckPerms - Weight of Group",
+      "description": [
+        "Returns the weight of a group."
+      ],
+      "examples": [
+        "set {default::weight} to the weight of the luckperms group \"default\""
+      ],
+      "return type": "Number",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] (priority|weight) of [the] [LuckPerm[s]] group [(named|with name)] %string%",
+        "[the] [LuckPerm[s]] group [(named|with name)] %string%'s (priority|weight)"
+      ]
+    }
+  ]
+}

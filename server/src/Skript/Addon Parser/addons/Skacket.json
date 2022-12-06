@@ -1,0 +1,431 @@
+{
+  "events": [
+    {
+      "id": "anvil_gui_use",
+      "name": "On anvil gui use",
+      "patterns": [
+        "[on] anvil gui use"
+      ],
+      "event values": [
+        "event-string",
+        "event-world",
+        "event-anvilclick",
+        "event-player"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "named_sound",
+      "name": "On named sound",
+      "description": [
+        "Called when a sound is to be played to the client."
+      ],
+      "patterns": [
+        "[on] [named] sound [%sounds%] [(trigger|play)]",
+        "[on] player hear[ing] sound [%sounds%]"
+      ],
+      "event values": [
+        "event-sound",
+        "event-number",
+        "event-soundcategory",
+        "event-player",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "player_dig",
+      "name": "On player dig",
+      "description": [
+        "Called when a sound is to be played to the client."
+      ],
+      "patterns": [
+        "[on] [player] [(start|stop|abandon)] [block] (min(e|ing)|dig[ging]) [(for|of) %itemtypes%]",
+        "[on] player release (use item|(right mouse button|right[(-| )]click))"
+      ],
+      "event values": [
+        "event-direction",
+        "event-block",
+        "event-world",
+        "event-player",
+        "event-playerdigtype",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "server_sign_change",
+      "name": "On server sign change",
+      "description": [
+        "Called when the server sends a sign change event to a player.",
+        "Useful for sending lines on a sign to exact players, or permission based to see text on a sign."
+      ],
+      "examples": [
+        "on server sending sign change:",
+        "\tplayer doesn't have permission \"vip.sign.see\"",
+        "\tlocation of block is {signs::vipEvent}",
+        "\tcancel event"
+      ],
+      "patterns": [
+        "[on] server [sending] sign change"
+      ],
+      "event values": [
+        "event-block",
+        "event-world",
+        "event-player",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "steer_vehicle",
+      "name": "On steer vehicle",
+      "description": [
+        "Called when a player attempts to move the entity they're riding."
+      ],
+      "examples": [
+        "on steering vehicle left or right:"
+      ],
+      "patterns": [
+        "[on] (steering [vehicle] [%movements%]|vehicle steer[ing])"
+      ],
+      "event values": [
+        "event-player"
+      ],
+      "cancellable": true
+    }
+  ],
+  "conditions": [
+    {
+      "id": "CondAnvilClick",
+      "name": "Anvil Click",
+      "description": [
+        "Check the click type of the anvil click event."
+      ],
+      "patterns": [
+        "[the] anvil click[ed] [type] (was|is)(|n('|o)t) %anvilclicks%"
+      ]
+    },
+    {
+      "id": "CondSignOpen",
+      "name": "Sign Open",
+      "description": [
+        "Checks if a sign gui is open to a player. Skacket sign guis only."
+      ],
+      "patterns": [
+        "%players% (has|have) [a] sign [gui] open",
+        "%players% (doesn't|does not|do not|don't) have [a] sign [gui] open"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "EffArmourChange",
+      "name": "Armour Change Client Side",
+      "description": [
+        "Change what a player is wearing for another player, client side."
+      ],
+      "patterns": [
+        "make %livingentities% appear to be wearing %itemstacks% in slot %itemslots% [(for|to) %players%]",
+        "set armo[u]r of %livingentities% to %itemstacks% in slot %itemslots% [(for|to) %players%]"
+      ]
+    },
+    {
+      "id": "EffBlockBreakAnimation",
+      "name": "Block Break Animation",
+      "description": [
+        "Sends a block break animation at a stage to players. 0–9 are the displayable destroy stage any other number like -1 will reset it."
+      ],
+      "patterns": [
+        "show [%players%] [a] block break animation at %locations% with stage %number%",
+        "show [a] block break [animation] stage %number% at %locations% [for %players%]",
+        "show stacking block break [animation] stage %number% at %locations% [for %players%]"
+      ]
+    },
+    {
+      "id": "EffGlowing",
+      "name": "Client Glowing",
+      "description": [
+        "Make entities glow for players."
+      ],
+      "patterns": [
+        "set client glowing of %livingentities% to %boolean% [(for|to) %players%]"
+      ]
+    },
+    {
+      "id": "EffSetClientBorder",
+      "name": "EffSetClientBorder",
+      "patterns": [
+        "set client [side] [world] border of %players% to [(size|radius|diameter)] %number% and [center [at] [location]] %location%"
+      ]
+    },
+    {
+      "id": "EffToastNotification",
+      "name": "EffToastNotification",
+      "patterns": [
+        "send %players% [advancement] toast [notification] %string% with [icon] %itemstack% and frame %advancementframe%"
+      ]
+    },
+    {
+      "id": "EffRedScreenClientBorder",
+      "name": "Red Screen Effect",
+      "description": [
+        "Send the border warning red screen effect to someone. Time is required to reset it, otherwise it's forever."
+      ],
+      "patterns": [
+        "send red [world] [border] screen [effect] to %players% [for %timespan%]"
+      ]
+    },
+    {
+      "id": "EffSendClientBorder",
+      "name": "Send Client Border",
+      "description": [
+        "Send a border to a player. This effect is for 1.16.3 and lower. 1.16.4 and up use the set border effect."
+      ],
+      "patterns": [
+        "send client [side] [world] border %clientworldborder% to %players%",
+        "set client [side] [world] border of %players% to %clientworldborder%"
+      ]
+    }
+  ],
+  "expressions": [
+    {
+      "id": "ExprClientBorderCenter",
+      "name": "ExprClientBorderCenter",
+      "return type": "Location",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] client [side] [world] border center [location] of %clientworldborders%",
+        "%clientworldborders%'[s] client [side] [world] border center [location]"
+      ]
+    },
+    {
+      "id": "ExprClientBorderOldRadius",
+      "name": "ExprClientBorderOldRadius",
+      "return type": "Number",
+      "changers": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "patterns": [
+        "[the] client [side] [world] border old radius of %clientworldborders%",
+        "%clientworldborders%'[s] client [side] [world] border old radius"
+      ]
+    },
+    {
+      "id": "ExprClientBorderPortalTeleportBoundary",
+      "name": "ExprClientBorderPortalTeleportBoundary",
+      "return type": "Number",
+      "changers": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "patterns": [
+        "[the] client [side] [world] border [portal] teleport boundary of %clientworldborders%",
+        "%clientworldborders%'[s] client [side] [world] border [portal] teleport boundary"
+      ]
+    },
+    {
+      "id": "ExprClientBorderRadius",
+      "name": "ExprClientBorderRadius",
+      "return type": "Number",
+      "changers": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "patterns": [
+        "[the] client [side] [world] border radius of %clientworldborders%",
+        "%clientworldborders%'[s] client [side] [world] border radius"
+      ]
+    },
+    {
+      "id": "ExprClientBorderSpeed",
+      "name": "ExprClientBorderSpeed",
+      "return type": "Number",
+      "changers": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "patterns": [
+        "[the] client [side] [world] border speed of %clientworldborders%",
+        "%clientworldborders%'[s] client [side] [world] border speed"
+      ]
+    },
+    {
+      "id": "ExprClientBorderWarningDistance",
+      "name": "ExprClientBorderWarningDistance",
+      "return type": "Number",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] client [side] [world] border warning [block] distance of %clientworldborders%",
+        "%clientworldborders%'[s] client [side] [world] border warning [block] distance"
+      ]
+    },
+    {
+      "id": "ExprClientBorderWarningTime",
+      "name": "ExprClientBorderWarningTime",
+      "return type": "Timespan",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] client [side] [world] border warning [time] of %clientworldborders%",
+        "%clientworldborders%'[s] client [side] [world] border warning [time]"
+      ]
+    },
+    {
+      "id": "ExprClientWorldBorder",
+      "name": "ExprClientWorldBorder",
+      "return type": "Client World Border",
+      "patterns": [
+        "[a] new client [side] [world] border (with|for) %worlds%"
+      ]
+    },
+    {
+      "id": "ExprLines",
+      "name": "ExprLines",
+      "return type": "Text",
+      "patterns": [
+        "[the] lines"
+      ]
+    },
+    {
+      "id": "ExprMovement",
+      "name": "ExprMovement",
+      "return type": "Steer Movements",
+      "patterns": [
+        "[the] movements"
+      ]
+    },
+    {
+      "id": "ExprPitch",
+      "name": "ExprPitch",
+      "return type": "Number",
+      "patterns": [
+        "[the] pitch"
+      ]
+    },
+    {
+      "id": "ExprRawSlot",
+      "name": "ExprRawSlot",
+      "return type": "Number",
+      "patterns": [
+        "[the] [clicked] raw slot"
+      ]
+    },
+    {
+      "id": "ExprSoundLocation",
+      "name": "ExprSoundLocation",
+      "return type": "Number",
+      "patterns": [
+        "[the] sound location"
+      ]
+    },
+    {
+      "id": "ExprVolume",
+      "name": "ExprVolume",
+      "return type": "Number",
+      "patterns": [
+        "[the] volume"
+      ]
+    }
+  ],
+  "types": [
+    {
+      "id": "AdvancementFrame",
+      "name": "AdvancementFrame",
+      "usage": "advancementframe.task, advancementframe.goal, advancementframe.challenge",
+      "patterns": [
+        "advancementframe[s]"
+      ]
+    },
+    {
+      "id": "Click",
+      "name": "Anvil Click Type",
+      "usage": "anvilclick.left, anvilclick.right, anvilclick.complete",
+      "patterns": [
+        "anvil[ ]click[ type]"
+      ]
+    },
+    {
+      "id": "ClientWorldBorder",
+      "name": "Client World Border",
+      "patterns": [
+        "clientworldborder[s]"
+      ]
+    },
+    {
+      "id": "ItemSlot",
+      "name": "Item Slots Armour",
+      "usage": "itemslot.mainhand, itemslot.offhand, itemslot.feet, itemslot.legs, itemslot.chest, itemslot.head",
+      "patterns": [
+        "itemslot[s]"
+      ]
+    },
+    {
+      "id": "PlayerDigType",
+      "name": "Player Block Dig Type",
+      "description": [
+        "The different types that trigger a player block dig event."
+      ],
+      "usage": "playerdigtype.start_destroy_block, playerdigtype.abort_destroy_block, playerdigtype.stop_destroy_block, playerdigtype.drop_all_items, playerdigtype.drop_item, playerdigtype.release_use_item, playerdigtype.swap_held_items",
+      "patterns": [
+        "[block][ ]dig[ ]type[s]"
+      ]
+    },
+    {
+      "id": "Sound",
+      "name": "Sound",
+      "usage": "sound.ambient_basalt_deltas_additions, sound.ambient_basalt_deltas_loop, sound.ambient_basalt_deltas_mood, sound.ambient_cave, sound.ambient_crimson_forest_additions, sound.ambient_crimson_forest_loop, sound.ambient_crimson_forest_mood, sound.ambient_nether_wastes_additions, sound.ambient_nether_wastes_loop, sound.ambient_nether_wastes_mood, sound.ambient_soul_sand_valley_additions, sound.ambient_soul_sand_valley_loop, sound.ambient_soul_sand_valley_mood, sound.ambient_underwater_enter, sound.ambient_underwater_exit, sound.ambient_underwater_loop, sound.ambient_underwater_loop_additions, sound.ambient_underwater_loop_additions_rare, sound.ambient_underwater_loop_additions_ultra_rare, sound.ambient_warped_forest_additions, sound.ambient_warped_forest_loop, sound.ambient_warped_forest_mood, sound.block_amethyst_block_break, sound.block_amethyst_block_chime, sound.block_amethyst_block_fall, sound.block_amethyst_block_hit, sound.block_amethyst_block_place, sound.block_amethyst_block_step, sound.block_amethyst_cluster_break, sound.block_amethyst_cluster_fall, sound.block_amethyst_cluster_hit, sound.block_amethyst_cluster_place, sound.block_amethyst_cluster_step, sound.block_ancient_debris_break, sound.block_ancient_debris_fall, sound.block_ancient_debris_hit, sound.block_ancient_debris_place, sound.block_ancient_debris_step, sound.block_anvil_break, sound.block_anvil_destroy, sound.block_anvil_fall, sound.block_anvil_hit, sound.block_anvil_land, sound.block_anvil_place, sound.block_anvil_step, sound.block_anvil_use, sound.block_azalea_break, sound.block_azalea_fall, sound.block_azalea_hit, sound.block_azalea_leaves_break, sound.block_azalea_leaves_fall, sound.block_azalea_leaves_hit, sound.block_azalea_leaves_place, sound.block_azalea_leaves_step, sound.block_azalea_place, sound.block_azalea_step, sound.block_bamboo_break, sound.block_bamboo_fall, sound.block_bamboo_hit, sound.block_bamboo_place, sound.block_bamboo_sapling_break, sound.block_bamboo_sapling_hit, sound.block_bamboo_sapling_place, sound.block_bamboo_step, sound.block_barrel_close, sound.block_barrel_open, sound.block_basalt_break, sound.block_basalt_fall, sound.block_basalt_hit, sound.block_basalt_place, sound.block_basalt_step, sound.block_beacon_activate, sound.block_beacon_ambient, sound.block_beacon_deactivate, sound.block_beacon_power_select, sound.block_beehive_drip, sound.block_beehive_enter, sound.block_beehive_exit, sound.block_beehive_shear, sound.block_beehive_work, sound.block_bell_resonate, sound.block_bell_use, sound.block_big_dripleaf_break, sound.block_big_dripleaf_fall, sound.block_big_dripleaf_hit, sound.block_big_dripleaf_place, sound.block_big_dripleaf_step, sound.block_big_dripleaf_tilt_down, sound.block_big_dripleaf_tilt_up, sound.block_blastfurnace_fire_crackle, sound.block_bone_block_break, sound.block_bone_block_fall, sound.block_bone_block_hit, sound.block_bone_block_place, sound.block_bone_block_step, sound.block_brewing_stand_brew, sound.block_bubble_column_bubble_pop, sound.block_bubble_column_upwards_ambient, sound.block_bubble_column_upwards_inside, sound.block_bubble_column_whirlpool_ambient, sound.block_bubble_column_whirlpool_inside, sound.block_cake_add_candle, sound.block_calcite_break, sound.block_calcite_fall, sound.block_calcite_hit, sound.block_calcite_place, sound.block_calcite_step, sound.block_campfire_crackle, sound.block_candle_ambient, sound.block_candle_break, sound.block_candle_extinguish, sound.block_candle_fall, sound.block_candle_hit, sound.block_candle_place, sound.block_candle_step, sound.block_cave_vines_break, sound.block_cave_vines_fall, sound.block_cave_vines_hit, sound.block_cave_vines_pick_berries, sound.block_cave_vines_place, sound.block_cave_vines_step, sound.block_chain_break, sound.block_chain_fall, sound.block_chain_hit, sound.block_chain_place, sound.block_chain_step, sound.block_chest_close, sound.block_chest_locked, sound.block_chest_open, sound.block_chorus_flower_death, sound.block_chorus_flower_grow, sound.block_comparator_click, sound.block_composter_empty, sound.block_composter_fill, sound.block_composter_fill_success, sound.block_composter_ready, sound.block_conduit_activate, sound.block_conduit_ambient, sound.block_conduit_ambient_short, sound.block_conduit_attack_target, sound.block_conduit_deactivate, sound.block_copper_break, sound.block_copper_fall, sound.block_copper_hit, sound.block_copper_place, sound.block_copper_step, sound.block_coral_block_break, sound.block_coral_block_fall, sound.block_coral_block_hit, sound.block_coral_block_place, sound.block_coral_block_step, sound.block_crop_break, sound.block_deepslate_break, sound.block_deepslate_bricks_break, sound.block_deepslate_bricks_fall, sound.block_deepslate_bricks_hit, sound.block_deepslate_bricks_place, sound.block_deepslate_bricks_step, sound.block_deepslate_fall, sound.block_deepslate_hit, sound.block_deepslate_place, sound.block_deepslate_step, sound.block_deepslate_tiles_break, sound.block_deepslate_tiles_fall, sound.block_deepslate_tiles_hit, sound.block_deepslate_tiles_place, sound.block_deepslate_tiles_step, sound.block_dispenser_dispense, sound.block_dispenser_fail, sound.block_dispenser_launch, sound.block_dripstone_block_break, sound.block_dripstone_block_fall, sound.block_dripstone_block_hit, sound.block_dripstone_block_place, sound.block_dripstone_block_step, sound.block_enchantment_table_use, sound.block_ender_chest_close, sound.block_ender_chest_open, sound.block_end_gateway_spawn, sound.block_end_portal_frame_fill, sound.block_end_portal_spawn, sound.block_fence_gate_close, sound.block_fence_gate_open, sound.block_fire_ambient, sound.block_fire_extinguish, sound.block_flowering_azalea_break, sound.block_flowering_azalea_fall, sound.block_flowering_azalea_hit, sound.block_flowering_azalea_place, sound.block_flowering_azalea_step, sound.block_fungus_break, sound.block_fungus_fall, sound.block_fungus_hit, sound.block_fungus_place, sound.block_fungus_step, sound.block_furnace_fire_crackle, sound.block_gilded_blackstone_break, sound.block_gilded_blackstone_fall, sound.block_gilded_blackstone_hit, sound.block_gilded_blackstone_place, sound.block_gilded_blackstone_step, sound.block_glass_break, sound.block_glass_fall, sound.block_glass_hit, sound.block_glass_place, sound.block_glass_step, sound.block_grass_break, sound.block_grass_fall, sound.block_grass_hit, sound.block_grass_place, sound.block_grass_step, sound.block_gravel_break, sound.block_gravel_fall, sound.block_gravel_hit, sound.block_gravel_place, sound.block_gravel_step, sound.block_grindstone_use, sound.block_hanging_roots_break, sound.block_hanging_roots_fall, sound.block_hanging_roots_hit, sound.block_hanging_roots_place, sound.block_hanging_roots_step, sound.block_honey_block_break, sound.block_honey_block_fall, sound.block_honey_block_hit, sound.block_honey_block_place, sound.block_honey_block_slide, sound.block_honey_block_step, sound.block_iron_door_close, sound.block_iron_door_open, sound.block_iron_trapdoor_close, sound.block_iron_trapdoor_open, sound.block_ladder_break, sound.block_ladder_fall, sound.block_ladder_hit, sound.block_ladder_place, sound.block_ladder_step, sound.block_lantern_break, sound.block_lantern_fall, sound.block_lantern_hit, sound.block_lantern_place, sound.block_lantern_step, sound.block_large_amethyst_bud_break, sound.block_large_amethyst_bud_place, sound.block_lava_ambient, sound.block_lava_extinguish, sound.block_lava_pop, sound.block_lever_click, sound.block_lily_pad_place, sound.block_lodestone_break, sound.block_lodestone_fall, sound.block_lodestone_hit, sound.block_lodestone_place, sound.block_lodestone_step, sound.block_medium_amethyst_bud_break, sound.block_medium_amethyst_bud_place, sound.block_metal_break, sound.block_metal_fall, sound.block_metal_hit, sound.block_metal_place, sound.block_metal_pressure_plate_click_off, sound.block_metal_pressure_plate_click_on, sound.block_metal_step, sound.block_moss_break, sound.block_moss_carpet_break, sound.block_moss_carpet_fall, sound.block_moss_carpet_hit, sound.block_moss_carpet_place, sound.block_moss_carpet_step, sound.block_moss_fall, sound.block_moss_hit, sound.block_moss_place, sound.block_moss_step, sound.block_netherite_block_break, sound.block_netherite_block_fall, sound.block_netherite_block_hit, sound.block_netherite_block_place, sound.block_netherite_block_step, sound.block_netherrack_break, sound.block_netherrack_fall, sound.block_netherrack_hit, sound.block_netherrack_place, sound.block_netherrack_step, sound.block_nether_bricks_break, sound.block_nether_bricks_fall, sound.block_nether_bricks_hit, sound.block_nether_bricks_place, sound.block_nether_bricks_step, sound.block_nether_gold_ore_break, sound.block_nether_gold_ore_fall, sound.block_nether_gold_ore_hit, sound.block_nether_gold_ore_place, sound.block_nether_gold_ore_step, sound.block_nether_ore_break, sound.block_nether_ore_fall, sound.block_nether_ore_hit, sound.block_nether_ore_place, sound.block_nether_ore_step, sound.block_nether_sprouts_break, sound.block_nether_sprouts_fall, sound.block_nether_sprouts_hit, sound.block_nether_sprouts_place, sound.block_nether_sprouts_step, sound.block_nether_wart_break, sound.block_note_block_banjo, sound.block_note_block_basedrum, sound.block_note_block_bass, sound.block_note_block_bell, sound.block_note_block_bit, sound.block_note_block_chime, sound.block_note_block_cow_bell, sound.block_note_block_didgeridoo, sound.block_note_block_flute, sound.block_note_block_guitar, sound.block_note_block_harp, sound.block_note_block_hat, sound.block_note_block_iron_xylophone, sound.block_note_block_pling, sound.block_note_block_snare, sound.block_note_block_xylophone, sound.block_nylium_break, sound.block_nylium_fall, sound.block_nylium_hit, sound.block_nylium_place, sound.block_nylium_step, sound.block_piston_contract, sound.block_piston_extend, sound.block_pointed_dripstone_break, sound.block_pointed_dripstone_drip_lava, sound.block_pointed_dripstone_drip_lava_into_cauldron, sound.block_pointed_dripstone_drip_water, sound.block_pointed_dripstone_drip_water_into_cauldron, sound.block_pointed_dripstone_fall, sound.block_pointed_dripstone_hit, sound.block_pointed_dripstone_land, sound.block_pointed_dripstone_place, sound.block_pointed_dripstone_step, sound.block_polished_deepslate_break, sound.block_polished_deepslate_fall, sound.block_polished_deepslate_hit, sound.block_polished_deepslate_place, sound.block_polished_deepslate_step, sound.block_portal_ambient, sound.block_portal_travel, sound.block_portal_trigger, sound.block_powder_snow_break, sound.block_powder_snow_fall, sound.block_powder_snow_hit, sound.block_powder_snow_place, sound.block_powder_snow_step, sound.block_pumpkin_carve, sound.block_redstone_torch_burnout, sound.block_respawn_anchor_ambient, sound.block_respawn_anchor_charge, sound.block_respawn_anchor_deplete, sound.block_respawn_anchor_set_spawn, sound.block_rooted_dirt_break, sound.block_rooted_dirt_fall, sound.block_rooted_dirt_hit, sound.block_rooted_dirt_place, sound.block_rooted_dirt_step, sound.block_roots_break, sound.block_roots_fall, sound.block_roots_hit, sound.block_roots_place, sound.block_roots_step, sound.block_sand_break, sound.block_sand_fall, sound.block_sand_hit, sound.block_sand_place, sound.block_sand_step, sound.block_scaffolding_break, sound.block_scaffolding_fall, sound.block_scaffolding_hit, sound.block_scaffolding_place, sound.block_scaffolding_step, sound.block_sculk_sensor_break, sound.block_sculk_sensor_clicking, sound.block_sculk_sensor_clicking_stop, sound.block_sculk_sensor_fall, sound.block_sculk_sensor_hit, sound.block_sculk_sensor_place, sound.block_sculk_sensor_step, sound.block_shroomlight_break, sound.block_shroomlight_fall, sound.block_shroomlight_hit, sound.block_shroomlight_place, sound.block_shroomlight_step, sound.block_shulker_box_close, sound.block_shulker_box_open, sound.block_slime_block_break, sound.block_slime_block_fall, sound.block_slime_block_hit, sound.block_slime_block_place, sound.block_slime_block_step, sound.block_small_amethyst_bud_break, sound.block_small_amethyst_bud_place, sound.block_small_dripleaf_break, sound.block_small_dripleaf_fall, sound.block_small_dripleaf_hit, sound.block_small_dripleaf_place, sound.block_small_dripleaf_step, sound.block_smithing_table_use, sound.block_smoker_smoke, sound.block_snow_break, sound.block_snow_fall, sound.block_snow_hit, sound.block_snow_place, sound.block_snow_step, sound.block_soul_sand_break, sound.block_soul_sand_fall, sound.block_soul_sand_hit, sound.block_soul_sand_place, sound.block_soul_sand_step, sound.block_soul_soil_break, sound.block_soul_soil_fall, sound.block_soul_soil_hit, sound.block_soul_soil_place, sound.block_soul_soil_step, sound.block_spore_blossom_break, sound.block_spore_blossom_fall, sound.block_spore_blossom_hit, sound.block_spore_blossom_place, sound.block_spore_blossom_step, sound.block_stem_break, sound.block_stem_fall, sound.block_stem_hit, sound.block_stem_place, sound.block_stem_step, sound.block_stone_break, sound.block_stone_button_click_off, sound.block_stone_button_click_on, sound.block_stone_fall, sound.block_stone_hit, sound.block_stone_place, sound.block_stone_pressure_plate_click_off, sound.block_stone_pressure_plate_click_on, sound.block_stone_step, sound.block_sweet_berry_bush_break, sound.block_sweet_berry_bush_pick_berries, sound.block_sweet_berry_bush_place, sound.block_tripwire_attach, sound.block_tripwire_click_off, sound.block_tripwire_click_on, sound.block_tripwire_detach, sound.block_tuff_break, sound.block_tuff_fall, sound.block_tuff_hit, sound.block_tuff_place, sound.block_tuff_step, sound.block_vine_break, sound.block_vine_fall, sound.block_vine_hit, sound.block_vine_place, sound.block_vine_step, sound.block_wart_block_break, sound.block_wart_block_fall, sound.block_wart_block_hit, sound.block_wart_block_place, sound.block_wart_block_step, sound.block_water_ambient, sound.block_weeping_vines_break, sound.block_weeping_vines_fall, sound.block_weeping_vines_hit, sound.block_weeping_vines_place, sound.block_weeping_vines_step, sound.block_wet_grass_break, sound.block_wet_grass_fall, sound.block_wet_grass_hit, sound.block_wet_grass_place, sound.block_wet_grass_step, sound.block_wooden_button_click_off, sound.block_wooden_button_click_on, sound.block_wooden_door_close, sound.block_wooden_door_open, sound.block_wooden_pressure_plate_click_off, sound.block_wooden_pressure_plate_click_on, sound.block_wooden_trapdoor_close, sound.block_wooden_trapdoor_open, sound.block_wood_break, sound.block_wood_fall, sound.block_wood_hit, sound.block_wood_place, sound.block_wood_step, sound.block_wool_break, sound.block_wool_fall, sound.block_wool_hit, sound.block_wool_place, sound.block_wool_step, sound.enchant_thorns_hit, sound.entity_armor_stand_break, sound.entity_armor_stand_fall, sound.entity_armor_stand_hit, sound.entity_armor_stand_place, sound.entity_arrow_hit, sound.entity_arrow_hit_player, sound.entity_arrow_shoot, sound.entity_axolotl_attack, sound.entity_axolotl_death, sound.entity_axolotl_hurt, sound.entity_axolotl_idle_air, sound.entity_axolotl_idle_water, sound.entity_axolotl_splash, sound.entity_axolotl_swim, sound.entity_bat_ambient, sound.entity_bat_death, sound.entity_bat_hurt, sound.entity_bat_loop, sound.entity_bat_takeoff, sound.entity_bee_death, sound.entity_bee_hurt, sound.entity_bee_loop, sound.entity_bee_loop_aggressive, sound.entity_bee_pollinate, sound.entity_bee_sting, sound.entity_blaze_ambient, sound.entity_blaze_burn, sound.entity_blaze_death, sound.entity_blaze_hurt, sound.entity_blaze_shoot, sound.entity_boat_paddle_land, sound.entity_boat_paddle_water, sound.entity_cat_ambient, sound.entity_cat_beg_for_food, sound.entity_cat_death, sound.entity_cat_eat, sound.entity_cat_hiss, sound.entity_cat_hurt, sound.entity_cat_purr, sound.entity_cat_purreow, sound.entity_cat_stray_ambient, sound.entity_chicken_ambient, sound.entity_chicken_death, sound.entity_chicken_egg, sound.entity_chicken_hurt, sound.entity_chicken_step, sound.entity_cod_ambient, sound.entity_cod_death, sound.entity_cod_flop, sound.entity_cod_hurt, sound.entity_cow_ambient, sound.entity_cow_death, sound.entity_cow_hurt, sound.entity_cow_milk, sound.entity_cow_step, sound.entity_creeper_death, sound.entity_creeper_hurt, sound.entity_creeper_primed, sound.entity_dolphin_ambient, sound.entity_dolphin_ambient_water, sound.entity_dolphin_attack, sound.entity_dolphin_death, sound.entity_dolphin_eat, sound.entity_dolphin_hurt, sound.entity_dolphin_jump, sound.entity_dolphin_play, sound.entity_dolphin_splash, sound.entity_dolphin_swim, sound.entity_donkey_ambient, sound.entity_donkey_angry, sound.entity_donkey_chest, sound.entity_donkey_death, sound.entity_donkey_eat, sound.entity_donkey_hurt, sound.entity_dragon_fireball_explode, sound.entity_drowned_ambient, sound.entity_drowned_ambient_water, sound.entity_drowned_death, sound.entity_drowned_death_water, sound.entity_drowned_hurt, sound.entity_drowned_hurt_water, sound.entity_drowned_shoot, sound.entity_drowned_step, sound.entity_drowned_swim, sound.entity_egg_throw, sound.entity_elder_guardian_ambient, sound.entity_elder_guardian_ambient_land, sound.entity_elder_guardian_curse, sound.entity_elder_guardian_death, sound.entity_elder_guardian_death_land, sound.entity_elder_guardian_flop, sound.entity_elder_guardian_hurt, sound.entity_elder_guardian_hurt_land, sound.entity_enderman_ambient, sound.entity_enderman_death, sound.entity_enderman_hurt, sound.entity_enderman_scream, sound.entity_enderman_stare, sound.entity_enderman_teleport, sound.entity_endermite_ambient, sound.entity_endermite_death, sound.entity_endermite_hurt, sound.entity_endermite_step, sound.entity_ender_dragon_ambient, sound.entity_ender_dragon_death, sound.entity_ender_dragon_flap, sound.entity_ender_dragon_growl, sound.entity_ender_dragon_hurt, sound.entity_ender_dragon_shoot, sound.entity_ender_eye_death, sound.entity_ender_eye_launch, sound.entity_ender_pearl_throw, sound.entity_evoker_ambient, sound.entity_evoker_cast_spell, sound.entity_evoker_celebrate, sound.entity_evoker_death, sound.entity_evoker_fangs_attack, sound.entity_evoker_hurt, sound.entity_evoker_prepare_attack, sound.entity_evoker_prepare_summon, sound.entity_evoker_prepare_wololo, sound.entity_experience_bottle_throw, sound.entity_experience_orb_pickup, sound.entity_firework_rocket_blast, sound.entity_firework_rocket_blast_far, sound.entity_firework_rocket_large_blast, sound.entity_firework_rocket_large_blast_far, sound.entity_firework_rocket_launch, sound.entity_firework_rocket_shoot, sound.entity_firework_rocket_twinkle, sound.entity_firework_rocket_twinkle_far, sound.entity_fishing_bobber_retrieve, sound.entity_fishing_bobber_splash, sound.entity_fishing_bobber_throw, sound.entity_fish_swim, sound.entity_fox_aggro, sound.entity_fox_ambient, sound.entity_fox_bite, sound.entity_fox_death, sound.entity_fox_eat, sound.entity_fox_hurt, sound.entity_fox_screech, sound.entity_fox_sleep, sound.entity_fox_sniff, sound.entity_fox_spit, sound.entity_fox_teleport, sound.entity_generic_big_fall, sound.entity_generic_burn, sound.entity_generic_death, sound.entity_generic_drink, sound.entity_generic_eat, sound.entity_generic_explode, sound.entity_generic_extinguish_fire, sound.entity_generic_hurt, sound.entity_generic_small_fall, sound.entity_generic_splash, sound.entity_generic_swim, sound.entity_ghast_ambient, sound.entity_ghast_death, sound.entity_ghast_hurt, sound.entity_ghast_scream, sound.entity_ghast_shoot, sound.entity_ghast_warn, sound.entity_glow_item_frame_add_item, sound.entity_glow_item_frame_break, sound.entity_glow_item_frame_place, sound.entity_glow_item_frame_remove_item, sound.entity_glow_item_frame_rotate_item, sound.entity_glow_squid_ambient, sound.entity_glow_squid_death, sound.entity_glow_squid_hurt, sound.entity_glow_squid_squirt, sound.entity_goat_ambient, sound.entity_goat_death, sound.entity_goat_eat, sound.entity_goat_hurt, sound.entity_goat_long_jump, sound.entity_goat_milk, sound.entity_goat_prepare_ram, sound.entity_goat_ram_impact, sound.entity_goat_screaming_ambient, sound.entity_goat_screaming_death, sound.entity_goat_screaming_eat, sound.entity_goat_screaming_hurt, sound.entity_goat_screaming_long_jump, sound.entity_goat_screaming_milk, sound.entity_goat_screaming_prepare_ram, sound.entity_goat_screaming_ram_impact, sound.entity_goat_step, sound.entity_guardian_ambient, sound.entity_guardian_ambient_land, sound.entity_guardian_attack, sound.entity_guardian_death, sound.entity_guardian_death_land, sound.entity_guardian_flop, sound.entity_guardian_hurt, sound.entity_guardian_hurt_land, sound.entity_hoglin_ambient, sound.entity_hoglin_angry, sound.entity_hoglin_attack, sound.entity_hoglin_converted_to_zombified, sound.entity_hoglin_death, sound.entity_hoglin_hurt, sound.entity_hoglin_retreat, sound.entity_hoglin_step, sound.entity_horse_ambient, sound.entity_horse_angry, sound.entity_horse_armor, sound.entity_horse_breathe, sound.entity_horse_death, sound.entity_horse_eat, sound.entity_horse_gallop, sound.entity_horse_hurt, sound.entity_horse_jump, sound.entity_horse_land, sound.entity_horse_saddle, sound.entity_horse_step, sound.entity_horse_step_wood, sound.entity_hostile_big_fall, sound.entity_hostile_death, sound.entity_hostile_hurt, sound.entity_hostile_small_fall, sound.entity_hostile_splash, sound.entity_hostile_swim, sound.entity_husk_ambient, sound.entity_husk_converted_to_zombie, sound.entity_husk_death, sound.entity_husk_hurt, sound.entity_husk_step, sound.entity_illusioner_ambient, sound.entity_illusioner_cast_spell, sound.entity_illusioner_death, sound.entity_illusioner_hurt, sound.entity_illusioner_mirror_move, sound.entity_illusioner_prepare_blindness, sound.entity_illusioner_prepare_mirror, sound.entity_iron_golem_attack, sound.entity_iron_golem_damage, sound.entity_iron_golem_death, sound.entity_iron_golem_hurt, sound.entity_iron_golem_repair, sound.entity_iron_golem_step, sound.entity_item_break, sound.entity_item_frame_add_item, sound.entity_item_frame_break, sound.entity_item_frame_place, sound.entity_item_frame_remove_item, sound.entity_item_frame_rotate_item, sound.entity_item_pickup, sound.entity_leash_knot_break, sound.entity_leash_knot_place, sound.entity_lightning_bolt_impact, sound.entity_lightning_bolt_thunder, sound.entity_lingering_potion_throw, sound.entity_llama_ambient, sound.entity_llama_angry, sound.entity_llama_chest, sound.entity_llama_death, sound.entity_llama_eat, sound.entity_llama_hurt, sound.entity_llama_spit, sound.entity_llama_step, sound.entity_llama_swag, sound.entity_magma_cube_death, sound.entity_magma_cube_death_small, sound.entity_magma_cube_hurt, sound.entity_magma_cube_hurt_small, sound.entity_magma_cube_jump, sound.entity_magma_cube_squish, sound.entity_magma_cube_squish_small, sound.entity_minecart_inside, sound.entity_minecart_inside_underwater, sound.entity_minecart_riding, sound.entity_mooshroom_convert, sound.entity_mooshroom_eat, sound.entity_mooshroom_milk, sound.entity_mooshroom_shear, sound.entity_mooshroom_suspicious_milk, sound.entity_mule_ambient, sound.entity_mule_angry, sound.entity_mule_chest, sound.entity_mule_death, sound.entity_mule_eat, sound.entity_mule_hurt, sound.entity_ocelot_ambient, sound.entity_ocelot_death, sound.entity_ocelot_hurt, sound.entity_painting_break, sound.entity_painting_place, sound.entity_panda_aggressive_ambient, sound.entity_panda_ambient, sound.entity_panda_bite, sound.entity_panda_cant_breed, sound.entity_panda_death, sound.entity_panda_eat, sound.entity_panda_hurt, sound.entity_panda_pre_sneeze, sound.entity_panda_sneeze, sound.entity_panda_step, sound.entity_panda_worried_ambient, sound.entity_parrot_ambient, sound.entity_parrot_death, sound.entity_parrot_eat, sound.entity_parrot_fly, sound.entity_parrot_hurt, sound.entity_parrot_imitate_blaze, sound.entity_parrot_imitate_creeper, sound.entity_parrot_imitate_drowned, sound.entity_parrot_imitate_elder_guardian, sound.entity_parrot_imitate_endermite, sound.entity_parrot_imitate_ender_dragon, sound.entity_parrot_imitate_evoker, sound.entity_parrot_imitate_ghast, sound.entity_parrot_imitate_guardian, sound.entity_parrot_imitate_hoglin, sound.entity_parrot_imitate_husk, sound.entity_parrot_imitate_illusioner, sound.entity_parrot_imitate_magma_cube, sound.entity_parrot_imitate_phantom, sound.entity_parrot_imitate_piglin, sound.entity_parrot_imitate_piglin_brute, sound.entity_parrot_imitate_pillager, sound.entity_parrot_imitate_ravager, sound.entity_parrot_imitate_shulker, sound.entity_parrot_imitate_silverfish, sound.entity_parrot_imitate_skeleton, sound.entity_parrot_imitate_slime, sound.entity_parrot_imitate_spider, sound.entity_parrot_imitate_stray, sound.entity_parrot_imitate_vex, sound.entity_parrot_imitate_vindicator, sound.entity_parrot_imitate_witch, sound.entity_parrot_imitate_wither, sound.entity_parrot_imitate_wither_skeleton, sound.entity_parrot_imitate_zoglin, sound.entity_parrot_imitate_zombie, sound.entity_parrot_imitate_zombie_villager, sound.entity_parrot_step, sound.entity_phantom_ambient, sound.entity_phantom_bite, sound.entity_phantom_death, sound.entity_phantom_flap, sound.entity_phantom_hurt, sound.entity_phantom_swoop, sound.entity_piglin_admiring_item, sound.entity_piglin_ambient, sound.entity_piglin_angry, sound.entity_piglin_brute_ambient, sound.entity_piglin_brute_angry, sound.entity_piglin_brute_converted_to_zombified, sound.entity_piglin_brute_death, sound.entity_piglin_brute_hurt, sound.entity_piglin_brute_step, sound.entity_piglin_celebrate, sound.entity_piglin_converted_to_zombified, sound.entity_piglin_death, sound.entity_piglin_hurt, sound.entity_piglin_jealous, sound.entity_piglin_retreat, sound.entity_piglin_step, sound.entity_pig_ambient, sound.entity_pig_death, sound.entity_pig_hurt, sound.entity_pig_saddle, sound.entity_pig_step, sound.entity_pillager_ambient, sound.entity_pillager_celebrate, sound.entity_pillager_death, sound.entity_pillager_hurt, sound.entity_player_attack_crit, sound.entity_player_attack_knockback, sound.entity_player_attack_nodamage, sound.entity_player_attack_strong, sound.entity_player_attack_sweep, sound.entity_player_attack_weak, sound.entity_player_big_fall, sound.entity_player_breath, sound.entity_player_burp, sound.entity_player_death, sound.entity_player_hurt, sound.entity_player_hurt_drown, sound.entity_player_hurt_freeze, sound.entity_player_hurt_on_fire, sound.entity_player_hurt_sweet_berry_bush, sound.entity_player_levelup, sound.entity_player_small_fall, sound.entity_player_splash, sound.entity_player_splash_high_speed, sound.entity_player_swim, sound.entity_polar_bear_ambient, sound.entity_polar_bear_ambient_baby, sound.entity_polar_bear_death, sound.entity_polar_bear_hurt, sound.entity_polar_bear_step, sound.entity_polar_bear_warning, sound.entity_puffer_fish_ambient, sound.entity_puffer_fish_blow_out, sound.entity_puffer_fish_blow_up, sound.entity_puffer_fish_death, sound.entity_puffer_fish_flop, sound.entity_puffer_fish_hurt, sound.entity_puffer_fish_sting, sound.entity_rabbit_ambient, sound.entity_rabbit_attack, sound.entity_rabbit_death, sound.entity_rabbit_hurt, sound.entity_rabbit_jump, sound.entity_ravager_ambient, sound.entity_ravager_attack, sound.entity_ravager_celebrate, sound.entity_ravager_death, sound.entity_ravager_hurt, sound.entity_ravager_roar, sound.entity_ravager_step, sound.entity_ravager_stunned, sound.entity_salmon_ambient, sound.entity_salmon_death, sound.entity_salmon_flop, sound.entity_salmon_hurt, sound.entity_sheep_ambient, sound.entity_sheep_death, sound.entity_sheep_hurt, sound.entity_sheep_shear, sound.entity_sheep_step, sound.entity_shulker_ambient, sound.entity_shulker_bullet_hit, sound.entity_shulker_bullet_hurt, sound.entity_shulker_close, sound.entity_shulker_death, sound.entity_shulker_hurt, sound.entity_shulker_hurt_closed, sound.entity_shulker_open, sound.entity_shulker_shoot, sound.entity_shulker_teleport, sound.entity_silverfish_ambient, sound.entity_silverfish_death, sound.entity_silverfish_hurt, sound.entity_silverfish_step, sound.entity_skeleton_ambient, sound.entity_skeleton_converted_to_stray, sound.entity_skeleton_death, sound.entity_skeleton_horse_ambient, sound.entity_skeleton_horse_ambient_water, sound.entity_skeleton_horse_death, sound.entity_skeleton_horse_gallop_water, sound.entity_skeleton_horse_hurt, sound.entity_skeleton_horse_jump_water, sound.entity_skeleton_horse_step_water, sound.entity_skeleton_horse_swim, sound.entity_skeleton_hurt, sound.entity_skeleton_shoot, sound.entity_skeleton_step, sound.entity_slime_attack, sound.entity_slime_death, sound.entity_slime_death_small, sound.entity_slime_hurt, sound.entity_slime_hurt_small, sound.entity_slime_jump, sound.entity_slime_jump_small, sound.entity_slime_squish, sound.entity_slime_squish_small, sound.entity_snowball_throw, sound.entity_snow_golem_ambient, sound.entity_snow_golem_death, sound.entity_snow_golem_hurt, sound.entity_snow_golem_shear, sound.entity_snow_golem_shoot, sound.entity_spider_ambient, sound.entity_spider_death, sound.entity_spider_hurt, sound.entity_spider_step, sound.entity_splash_potion_break, sound.entity_splash_potion_throw, sound.entity_squid_ambient, sound.entity_squid_death, sound.entity_squid_hurt, sound.entity_squid_squirt, sound.entity_stray_ambient, sound.entity_stray_death, sound.entity_stray_hurt, sound.entity_stray_step, sound.entity_strider_ambient, sound.entity_strider_death, sound.entity_strider_eat, sound.entity_strider_happy, sound.entity_strider_hurt, sound.entity_strider_retreat, sound.entity_strider_saddle, sound.entity_strider_step, sound.entity_strider_step_lava, sound.entity_tnt_primed, sound.entity_tropical_fish_ambient, sound.entity_tropical_fish_death, sound.entity_tropical_fish_flop, sound.entity_tropical_fish_hurt, sound.entity_turtle_ambient_land, sound.entity_turtle_death, sound.entity_turtle_death_baby, sound.entity_turtle_egg_break, sound.entity_turtle_egg_crack, sound.entity_turtle_egg_hatch, sound.entity_turtle_hurt, sound.entity_turtle_hurt_baby, sound.entity_turtle_lay_egg, sound.entity_turtle_shamble, sound.entity_turtle_shamble_baby, sound.entity_turtle_swim, sound.entity_vex_ambient, sound.entity_vex_charge, sound.entity_vex_death, sound.entity_vex_hurt, sound.entity_villager_ambient, sound.entity_villager_celebrate, sound.entity_villager_death, sound.entity_villager_hurt, sound.entity_villager_no, sound.entity_villager_trade, sound.entity_villager_work_armorer, sound.entity_villager_work_butcher, sound.entity_villager_work_cartographer, sound.entity_villager_work_cleric, sound.entity_villager_work_farmer, sound.entity_villager_work_fisherman, sound.entity_villager_work_fletcher, sound.entity_villager_work_leatherworker, sound.entity_villager_work_librarian, sound.entity_villager_work_mason, sound.entity_villager_work_shepherd, sound.entity_villager_work_toolsmith, sound.entity_villager_work_weaponsmith, sound.entity_villager_yes, sound.entity_vindicator_ambient, sound.entity_vindicator_celebrate, sound.entity_vindicator_death, sound.entity_vindicator_hurt, sound.entity_wandering_trader_ambient, sound.entity_wandering_trader_death, sound.entity_wandering_trader_disappeared, sound.entity_wandering_trader_drink_milk, sound.entity_wandering_trader_drink_potion, sound.entity_wandering_trader_hurt, sound.entity_wandering_trader_no, sound.entity_wandering_trader_reappeared, sound.entity_wandering_trader_trade, sound.entity_wandering_trader_yes, sound.entity_witch_ambient, sound.entity_witch_celebrate, sound.entity_witch_death, sound.entity_witch_drink, sound.entity_witch_hurt, sound.entity_witch_throw, sound.entity_wither_ambient, sound.entity_wither_break_block, sound.entity_wither_death, sound.entity_wither_hurt, sound.entity_wither_shoot, sound.entity_wither_skeleton_ambient, sound.entity_wither_skeleton_death, sound.entity_wither_skeleton_hurt, sound.entity_wither_skeleton_step, sound.entity_wither_spawn, sound.entity_wolf_ambient, sound.entity_wolf_death, sound.entity_wolf_growl, sound.entity_wolf_howl, sound.entity_wolf_hurt, sound.entity_wolf_pant, sound.entity_wolf_shake, sound.entity_wolf_step, sound.entity_wolf_whine, sound.entity_zoglin_ambient, sound.entity_zoglin_angry, sound.entity_zoglin_attack, sound.entity_zoglin_death, sound.entity_zoglin_hurt, sound.entity_zoglin_step, sound.entity_zombie_ambient, sound.entity_zombie_attack_iron_door, sound.entity_zombie_attack_wooden_door, sound.entity_zombie_break_wooden_door, sound.entity_zombie_converted_to_drowned, sound.entity_zombie_death, sound.entity_zombie_destroy_egg, sound.entity_zombie_horse_ambient, sound.entity_zombie_horse_death, sound.entity_zombie_horse_hurt, sound.entity_zombie_hurt, sound.entity_zombie_infect, sound.entity_zombie_step, sound.entity_zombie_villager_ambient, sound.entity_zombie_villager_converted, sound.entity_zombie_villager_cure, sound.entity_zombie_villager_death, sound.entity_zombie_villager_hurt, sound.entity_zombie_villager_step, sound.entity_zombified_piglin_ambient, sound.entity_zombified_piglin_angry, sound.entity_zombified_piglin_death, sound.entity_zombified_piglin_hurt, sound.event_raid_horn, sound.item_armor_equip_chain, sound.item_armor_equip_diamond, sound.item_armor_equip_elytra, sound.item_armor_equip_generic, sound.item_armor_equip_gold, sound.item_armor_equip_iron, sound.item_armor_equip_leather, sound.item_armor_equip_netherite, sound.item_armor_equip_turtle, sound.item_axe_scrape, sound.item_axe_strip, sound.item_axe_wax_off, sound.item_bone_meal_use, sound.item_book_page_turn, sound.item_book_put, sound.item_bottle_empty, sound.item_bottle_fill, sound.item_bottle_fill_dragonbreath, sound.item_bucket_empty, sound.item_bucket_empty_axolotl, sound.item_bucket_empty_fish, sound.item_bucket_empty_lava, sound.item_bucket_empty_powder_snow, sound.item_bucket_fill, sound.item_bucket_fill_axolotl, sound.item_bucket_fill_fish, sound.item_bucket_fill_lava, sound.item_bucket_fill_powder_snow, sound.item_chorus_fruit_teleport, sound.item_crop_plant, sound.item_crossbow_hit, sound.item_crossbow_loading_end, sound.item_crossbow_loading_middle, sound.item_crossbow_loading_start, sound.item_crossbow_quick_charge_1, sound.item_crossbow_quick_charge_2, sound.item_crossbow_quick_charge_3, sound.item_crossbow_shoot, sound.item_dye_use, sound.item_elytra_flying, sound.item_firecharge_use, sound.item_flintandsteel_use, sound.item_glow_ink_sac_use, sound.item_hoe_till, sound.item_honeycomb_wax_on, sound.item_honey_bottle_drink, sound.item_ink_sac_use, sound.item_lodestone_compass_lock, sound.item_nether_wart_plant, sound.item_shield_block, sound.item_shield_break, sound.item_shovel_flatten, sound.item_spyglass_stop_using, sound.item_spyglass_use, sound.item_totem_use, sound.item_trident_hit, sound.item_trident_hit_ground, sound.item_trident_return, sound.item_trident_riptide_1, sound.item_trident_riptide_2, sound.item_trident_riptide_3, sound.item_trident_throw, sound.item_trident_thunder, sound.music_creative, sound.music_credits, sound.music_disc_11, sound.music_disc_13, sound.music_disc_blocks, sound.music_disc_cat, sound.music_disc_chirp, sound.music_disc_far, sound.music_disc_mall, sound.music_disc_mellohi, sound.music_disc_pigstep, sound.music_disc_stal, sound.music_disc_strad, sound.music_disc_wait, sound.music_disc_ward, sound.music_dragon, sound.music_end, sound.music_game, sound.music_menu, sound.music_nether_basalt_deltas, sound.music_nether_crimson_forest, sound.music_nether_nether_wastes, sound.music_nether_soul_sand_valley, sound.music_nether_warped_forest, sound.music_under_water, sound.particle_soul_escape, sound.ui_button_click, sound.ui_cartography_table_take_result, sound.ui_loom_select_pattern, sound.ui_loom_take_result, sound.ui_stonecutter_select_recipe, sound.ui_stonecutter_take_result, sound.ui_toast_challenge_complete, sound.ui_toast_in, sound.ui_toast_out, sound.weather_rain, sound.weather_rain_above",
+      "patterns": [
+        "sound[s]"
+      ]
+    },
+    {
+      "id": "Movement",
+      "name": "Steer Movements",
+      "description": [
+        "Movements define direction in the steer vehicle event."
+      ],
+      "usage": "movement.left, movement.right, movement.forwards, movement.backwards, movement.jump, movement.unmount",
+      "patterns": [
+        "movement[s]"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "SecOpenAnvil",
+      "name": "Open Anvil",
+      "patterns": [
+        "open [an] anvil [gui] (named|with title) %string% to %players% with left item %itemstack% [and [right] item %itemstack%]",
+        "open [an] anvil [gui] (named|with title) %string% to %players% with [items] %itemstacks%",
+        "open [an] anvil [gui] (named|with title) %string% to %players% with left item %itemstack% [and [right] item %itemstack%] [[and] exclud(e|ing) left and right clicks]"
+      ]
+    },
+    {
+      "id": "SecOpenSign",
+      "name": "SecOpenSign",
+      "patterns": [
+        "open [a] sign [gui] to %players% [with [(text|lines)] %strings%]"
+      ]
+    }
+  ]
+}

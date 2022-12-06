@@ -1,0 +1,576 @@
+{
+  "events": [
+    {
+      "id": "consent",
+      "name": "Consent",
+      "patterns": [
+        "skript-(mirror|reflect), I know what I'm doing"
+      ]
+    },
+    {
+      "id": "define_condition",
+      "name": "Define Condition",
+      "patterns": [
+        "[(local)] condition <.+>",
+        "[(local)] condition",
+        "[(local)] %*classinfos% property condition <.+>"
+      ]
+    },
+    {
+      "id": "define_constant",
+      "name": "Define Constant",
+      "patterns": [
+        "option <.+>"
+      ]
+    },
+    {
+      "id": "define_effect",
+      "name": "Define Effect",
+      "patterns": [
+        "[(local)] effect <.+>",
+        "[(local)] effect"
+      ]
+    },
+    {
+      "id": "define_event",
+      "name": "Define Event",
+      "patterns": [
+        "[(local)] [custom] event %string%"
+      ]
+    },
+    {
+      "id": "define_expression",
+      "name": "Define Expression",
+      "patterns": [
+        "[(local)] [((plural|non(-|[ ])single))] expression <.+>",
+        "[(local)] [((plural|non(-|[ ])single))] expression",
+        "[(local)] [((plural|non(-|[ ])single))] %*classinfos% property <.+>"
+      ]
+    },
+    {
+      "id": "import",
+      "name": "Import",
+      "patterns": [
+        "import"
+      ]
+    },
+    {
+      "id": "bukkit",
+      "name": "On Bukkit",
+      "patterns": [
+        "[on] [(all)] %javatypes% [(at|on|with) priority <.+>]"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "custom_event",
+      "name": "On custom event",
+      "patterns": [
+        "[on] [on] first network join",
+        "[on] [on] citizen interact",
+        "[on] [on] redis command",
+        "[on] [on] network (leave|quit)",
+        "[on] [on] network join"
+      ],
+      "cancellable": true
+    }
+  ],
+  "conditions": [
+    {
+      "id": "CondEventCancelled",
+      "name": "CondEventCancelled",
+      "patterns": [
+        "%events% (is|are) cancelled",
+        "%events% (isn't|is not|aren't|are not) cancelled"
+      ]
+    },
+    {
+      "id": "CondExpressionStatement",
+      "name": "CondExpressionStatement",
+      "patterns": [
+        "[(await)] %javaobject%"
+      ]
+    },
+    {
+      "id": "CondIsInstanceOf",
+      "name": "CondIsInstanceOf",
+      "patterns": [
+        "%objects% (is|are) [a[n]] instance[s] of %javatypes%",
+        "%objects% (is not|isn't|are not|aren't) [a[n]] instance[s] of %javatypes%"
+      ]
+    },
+    {
+      "id": "CondParseLater",
+      "name": "CondParseLater",
+      "patterns": [
+        "(parse[d] later) <.+>"
+      ]
+    },
+    {
+      "id": "CustomCondition",
+      "name": "CustomCondition",
+      "patterns": [
+        "%object% has offline permission %string%",
+        "%offlineplayer% is a bedrock user",
+        "%offlineplayer% is friends with %offlineplayer%",
+        "%entity% is ticking",
+        "axoserver named %string% exists",
+        "%offlineplayer% isn't on this server",
+        "%offlineplayer% doesn't have offline permission %string%",
+        "%offlineplayer% is on [the] network",
+        "%offlineplayer% is on this server",
+        "axoserver named %string% is online"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "CustomEffect",
+      "name": "CustomEffect",
+      "patterns": [
+        "wait non async [for] %timespan%",
+        "chuckle read %string% from %player% in network %boolean%",
+        "[make|let] chuckle note %string%",
+        "[let|make] chuckle wait for reaction",
+        "chuckle execute command %string%",
+        "[let|make] chuckle greet %player% in network %boolean%",
+        "register %offlineplayer% to the database",
+        "make %entity% damage %entity% by %number% using %damagecause%",
+        "make server named %string% execute [console] command %string%",
+        "play chat notification",
+        "send %offlineplayer% to axoserver [named] %string%",
+        "send %offlineplayer% to [a] backup server",
+        "set line %number% of network motd to %string%",
+        "make server named %string% execute code %string%",
+        "play chat notification to %player%",
+        "run bash lines %strings%",
+        "senddebug %string%",
+        "softkick %player%",
+        "create void world named %string%",
+        "wait for typing %string%",
+        "axosend %string% to %offlineplayer%",
+        "stop [the] server safely",
+        "play notification %string% [with volume %number%] [with pitch %number%] to %player% [in channel %string%]",
+        "run bash lines %strings% as root",
+        "play notification %string% [with pitch %number%]",
+        "set line matching %string% in file %string% to %string%",
+        "send lag notification because [of] %string%",
+        "make all servers execute [console] command %string%",
+        "[let|make] chuckle message %string% to %player%",
+        "make bungee[cord] execute [console] command %string%",
+        "react to kill of %entity% by %entity%",
+        "[let|make] chuckle say %string% in network %boolean%",
+        "tame %entities% to %player%"
+      ]
+    },
+    {
+      "id": "EffCallEvent",
+      "name": "EffCallEvent",
+      "patterns": [
+        "call [event] %events%"
+      ]
+    },
+    {
+      "id": "EffContinue",
+      "name": "EffContinue",
+      "patterns": [
+        "continue"
+      ]
+    },
+    {
+      "id": "EffDelayEffect",
+      "name": "EffDelayEffect",
+      "patterns": [
+        "delay [the] [current] effect"
+      ]
+    },
+    {
+      "id": "EffExpressionStatement",
+      "name": "EffExpressionStatement",
+      "patterns": [
+        "[(await)] %javaobject%"
+      ]
+    },
+    {
+      "id": "EffImport",
+      "name": "EffImport",
+      "patterns": [
+        "import <((?:[_a-zA-Z$][\\w$]*\\.)*(?:[_a-zA-Z$][\\w$]*))(?:\\s+as ([_a-zA-Z$][\\w$]*))?>"
+      ]
+    },
+    {
+      "id": "EffNegateCondition",
+      "name": "EffNegateCondition",
+      "patterns": [
+        "negate [the] [current] condition"
+      ]
+    },
+    {
+      "id": "EffReturn",
+      "name": "EffReturn",
+      "patterns": [
+        "return [%objects%]"
+      ]
+    },
+    {
+      "id": "EffRunSection",
+      "name": "EffRunSection",
+      "patterns": [
+        "run section %section% [(sync|async)] [with [arguments] %objects%] [and store [the] result in %objects%] [(and wait)]"
+      ]
+    }
+  ],
+  "expressions": [
+    {
+      "id": "CustomExpression",
+      "name": "CustomExpression",
+      "return type": "Object",
+      "patterns": [
+        "%players%'[s] ignorars",
+        "network wide list %string%",
+        "%offlineplayers%'[s] profile %string%",
+        "%offlineplayers%'[s] profile name",
+        "[the] offline prefix of %offlineplayers%",
+        "[the] profile name of %offlineplayers%",
+        "%number% axp as levels",
+        "%number% rounded randomly",
+        "%entities%'[s] collidability",
+        "%offlineplayers%'[s] offline suffix",
+        "[the] chat channel of %players%",
+        "[the] colorized name of %objects%",
+        "%string% repeated %number% times",
+        "[the] collidability of %entities%",
+        "[all] players [online] (at|on) [the] network",
+        "%offlineplayers%'[s] axoserver",
+        "warp [named|with name] %string%",
+        "[the] axo nickname of %offlineplayers%",
+        "[the] full axo name of %offlineplayers%",
+        "url encoded %string%",
+        "%offlineplayers%'[s] axo nickname",
+        "%offlineplayers%'[s] full axo name",
+        "player [named|with name] %string%",
+        "url from %string% with parameters %strings%",
+        "[the] profile %string% of %offlineplayers%",
+        "[the] axoserver of %offlineplayers%",
+        "[all] players [online] (at|on) [the] [axo]server [named|with name] %string%",
+        "bold %string%",
+        "%entities%'[s] collision exemptions",
+        "%offlineplayers%'[s] axp",
+        "%offlineplayers%'[s] chuckle name",
+        "%objects%'[s] colorized name",
+        "%number% axp levels as axp",
+        "network wide variable %string%",
+        "[the] offline suffix of %offlineplayers%",
+        "%offlineplayers%'[s] offline prefix",
+        "%number% notes higher",
+        "[the] ignorars of %players%",
+        "%string% as essentialscolors",
+        "placeholder replaced %string% for %offlineplayer%",
+        "%numbers%'[s] sign",
+        "[the] sign of %numbers%",
+        "[the] axp of %offlineplayers%",
+        "%players%'[s] chat channel",
+        "all registered players",
+        "[the] collision exemptions of %entities%",
+        "[the] chuckle name of %offlineplayers%"
+      ]
+    },
+    {
+      "id": "ExprArrayAccess",
+      "name": "ExprArrayAccess",
+      "return type": "Object",
+      "changers": [
+        "set",
+        "delete"
+      ],
+      "patterns": [
+        "%javaobject%\\[%number%\\]"
+      ]
+    },
+    {
+      "id": "ExprBits",
+      "name": "ExprBits",
+      "return type": "Number",
+      "changers": [
+        "unknown"
+      ],
+      "patterns": [
+        "[the] (bit %number%|bit(s| range) [from] %number%( to |[ ]-[ ])%number%) of %numbers%",
+        "%numbers%'[s] (bit %number%|bit(s| range) [from] %number%( to |[ ]-[ ])%number%)"
+      ]
+    },
+    {
+      "id": "ExprChangeValue",
+      "name": "ExprChangeValue",
+      "return type": "Object",
+      "patterns": [
+        "[the] change value[(s)]"
+      ]
+    },
+    {
+      "id": "ExprClassReference",
+      "name": "ExprClassReference",
+      "return type": "javaobject",
+      "patterns": [
+        "(<(boolean|byte|double|char|short|float|int|long)>|%javatype%).class"
+      ]
+    },
+    {
+      "id": "ExprCollect",
+      "name": "ExprCollect",
+      "return type": "javaobject",
+      "patterns": [
+        "\\[%objects%[ as %javatype%[ ]]\\]"
+      ]
+    },
+    {
+      "id": "ExprCustomEvent",
+      "name": "ExprCustomEvent",
+      "return type": "event",
+      "patterns": [
+        "[a] [new] custom event %string% [(with|using)] data %objects%",
+        "[a] [new] custom event %string% [(with|using) [[event-]values] %objects%] [[and] [(with|using)] data %objects%]"
+      ]
+    },
+    {
+      "id": "ExprCustomEventValue",
+      "name": "ExprCustomEventValue",
+      "return type": "Object",
+      "changers": [
+        "unknown"
+      ],
+      "patterns": [
+        "[the] [event-]<.+>"
+      ]
+    },
+    {
+      "id": "ExprEvent",
+      "name": "ExprEvent",
+      "return type": "event",
+      "patterns": [
+        "[the] event"
+      ]
+    },
+    {
+      "id": "ExprEventClasses",
+      "name": "ExprEventClasses",
+      "return type": "javatype",
+      "patterns": [
+        "event-classes"
+      ]
+    },
+    {
+      "id": "ExprEventData",
+      "name": "ExprEventData",
+      "return type": "Object",
+      "patterns": [
+        "[extra] [event(-| )]data %string%"
+      ]
+    },
+    {
+      "id": "ExprExpression",
+      "name": "ExprExpression",
+      "return type": "Object",
+      "patterns": [
+        "[the] expr[ession][(s)](-| )<\\d+>"
+      ]
+    },
+    {
+      "id": "ExprFunction",
+      "name": "ExprFunction",
+      "return type": "Object",
+      "patterns": [
+        "[the] function(s| [reference[s]]) %strings% [called with [[the] [arg[ument][s]]] %objects%]"
+      ]
+    },
+    {
+      "id": "ExprJavaCall",
+      "name": "ExprJavaCall",
+      "return type": "Object",
+      "patterns": [
+        "[(try)] %object%..%string%[(([%objects%]))]",
+        "[(try)] %object%.<(\\[[\\w.$]*])?([^0-9. \\[\\]][^. \\[\\]]*\\b)(\\[[\\w.$, ]*])?>[(([%objects%]))]",
+        "[(try)] [a] new %javatype%([%objects%])"
+      ]
+    },
+    {
+      "id": "ExprJavaError",
+      "name": "ExprJavaError",
+      "return type": "Object",
+      "patterns": [
+        "[the] [last] [java] (throwable|exception|error)"
+      ]
+    },
+    {
+      "id": "ExprJavaType",
+      "name": "ExprJavaType",
+      "return type": "javatype",
+      "patterns": [
+        "[the] [java] class %string%"
+      ]
+    },
+    {
+      "id": "ExprJavaTypeOf",
+      "name": "ExprJavaTypeOf",
+      "return type": "javatype",
+      "patterns": [
+        "[the] [java] class[es] of %objects%",
+        "%objects%'[s] [java] class[es]"
+      ]
+    },
+    {
+      "id": "ExprMatchedPattern",
+      "name": "ExprMatchedPattern",
+      "return type": "Number",
+      "patterns": [
+        "[the] [matched] pattern"
+      ]
+    },
+    {
+      "id": "ExprMemberNames",
+      "name": "ExprMemberNames",
+      "return type": "Text",
+      "patterns": [
+        "[the] (field|method) names of %objects%",
+        "%objects%'[s] (field|method) names"
+      ]
+    },
+    {
+      "id": "ExprMembers",
+      "name": "ExprMembers",
+      "return type": "Text",
+      "patterns": [
+        "[the] (fields|methods|constructors) of %objects%",
+        "%objects%'[s] (fields|methods|constructors)"
+      ]
+    },
+    {
+      "id": "ExprNewArray",
+      "name": "ExprNewArray",
+      "return type": "javaobject",
+      "patterns": [
+        "new (<(boolean|byte|double|char|short|float|int|long)>|%javatype%)\\[%number%\\]"
+      ]
+    },
+    {
+      "id": "ExprParseMark",
+      "name": "ExprParseMark",
+      "return type": "Number",
+      "patterns": [
+        "[the] [parse[r]] mark"
+      ]
+    },
+    {
+      "id": "ExprParseRegex",
+      "name": "ExprParseRegex",
+      "return type": "Text",
+      "patterns": [
+        "[the] [parse[r]] (regex|regular expression)(-| )<\\d+>"
+      ]
+    },
+    {
+      "id": "ExprParseTags",
+      "name": "ExprParseTags",
+      "return type": "Text",
+      "patterns": [
+        "[the] parse[r] tags"
+      ]
+    },
+    {
+      "id": "ExprProxy",
+      "name": "ExprProxy",
+      "return type": "Object",
+      "patterns": [
+        "[a] [new] proxy [instance] of %javatypes% (using|from) %objects%"
+      ]
+    },
+    {
+      "id": "ExprRawExpression",
+      "name": "ExprRawExpression",
+      "return type": "Object",
+      "patterns": [
+        "[the] raw %objects%"
+      ]
+    },
+    {
+      "id": "ExprSpread",
+      "name": "ExprSpread",
+      "return type": "Object",
+      "patterns": [
+        "...%object%"
+      ]
+    },
+    {
+      "id": "ImportHandler",
+      "name": "ImportHandler",
+      "return type": "javatype",
+      "patterns": [
+        "ChatChannel",
+        "LuckPerms",
+        "Player",
+        "Set",
+        "User",
+        "LuckPermsProvider",
+        "MineverseChatAPI",
+        "MineverseChatPlayer",
+        "IWarps",
+        "Essentials",
+        "ServerCommandEvent",
+        "VaultHook",
+        "PlaceholderAPI",
+        "EntityDamageByEntityEvent",
+        "JavaString",
+        "UUID",
+        "Bukkit",
+        "World"
+      ]
+    },
+    {
+      "id": "LitNullObject",
+      "name": "LitNullObject",
+      "return type": "null",
+      "patterns": [
+        "null"
+      ]
+    }
+  ],
+  "types": [
+    {
+      "id": "Event",
+      "name": "event",
+      "patterns": [
+        "event[s]"
+      ]
+    },
+    {
+      "id": "ObjectWrapper",
+      "name": "javaobject",
+      "patterns": [
+        "javaobject[s]"
+      ]
+    },
+    {
+      "id": "JavaType",
+      "name": "javatype",
+      "patterns": [
+        "javatype[s]"
+      ]
+    },
+    {
+      "id": "Null",
+      "name": "null",
+      "patterns": [
+        "null"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "SecSection",
+      "name": "SecSection",
+      "patterns": [
+        "create [new] section [with [arguments variables] %objects%] (and store it|stored) in %objects%"
+      ]
+    }
+  ]
+}

@@ -3,15 +3,17 @@ import {
 } from 'vscode-languageserver-textdocument';
 
 import {
-	Diagnostic, DiagnosticSeverity, SemanticTokensBuilder
+	Diagnostic, DiagnosticSeverity
 } from 'vscode-languageserver/node';
-import { SkriptNestHierarchy } from './Nesting/SkriptNestHierarchy';
+import { SkriptNestHierarchy } from '../Nesting/SkriptNestHierarchy';
 
 import {
 	SkriptSection
 } from "./Section/SkriptSection";
-import { TokenModifiers } from './TokenModifiers';
-import { TokenTypes } from './TokenTypes';
+import { SemanticToken, UnOrderedSemanticTokensBuilder } from './Section/UnOrderedSemanticTokensBuilder';
+import { TokenModifiers } from '../TokenModifiers';
+import { TokenTypes } from '../TokenTypes';
+import { SkriptFile } from './Section/SkriptFile';
 
 //TOODO: make context able to 'push' and 'pop' (make a function able to modify the context or create an instance while keeping reference to the same diagnostics list
 export class SkriptContext {
@@ -25,8 +27,9 @@ export class SkriptContext {
 	public set currentSection(newValue: SkriptSection | undefined) { this.referenceFields.currentSection = newValue; }
 
 	//reference variables
+	currentSkriptFile: SkriptFile | undefined;
 	currentDocument: TextDocument;
-	currentBuilder: SemanticTokensBuilder = new SemanticTokensBuilder();
+	currentBuilder: UnOrderedSemanticTokensBuilder = new UnOrderedSemanticTokensBuilder();
 	diagnostics: Diagnostic[] = [];
 
 	//variables which can change in push()
@@ -34,19 +37,20 @@ export class SkriptContext {
 	currentString = "";
 	currentPosition = 0;
 	hierarchy: SkriptNestHierarchy | undefined = undefined;
-	constructor(currentDocument: TextDocument, currentString: string | undefined = undefined, currentBuilder: SemanticTokensBuilder = new SemanticTokensBuilder()) {
+	constructor(currentDocument: TextDocument, currentString: string | undefined = undefined, currentBuilder: UnOrderedSemanticTokensBuilder = new UnOrderedSemanticTokensBuilder()) {
 		this.currentString = currentString == undefined ? currentDocument.getText() : currentString;
 		this.currentDocument = currentDocument;
 		this.currentBuilder = currentBuilder;
 	}
 
 	//no popping as the popping will be done automatically (the garbage collector will clean it up
-	push(newPosition: number, newSize: number): SkriptContext {
+	push(newPosition: number, newSize: number = this.currentString.length - newPosition): SkriptContext {
 		const subContext = new SkriptContext(
 			this.currentDocument,
 			this.currentString.substring(newPosition, newPosition + newSize),
 			this.currentBuilder);
 
+		subContext.currentSkriptFile = this.currentSkriptFile;
 		subContext.referenceFields = this.referenceFields;
 		subContext.currentPosition = this.currentPosition + newPosition;
 		subContext.diagnostics = this.diagnostics;
@@ -58,7 +62,7 @@ export class SkriptContext {
 	//CAUTION! HIGHLIGHTING SHOULD BE DONE IN ORDER
 	addToken(relativePosition: number, length: number, type: TokenTypes, modifier: TokenModifiers = TokenModifiers.abstract): void {
 		const absolutePosition = this.currentDocument.positionAt(this.currentPosition + relativePosition);
-		this.currentBuilder.push(absolutePosition.line, absolutePosition.character, length, type, modifier);
+		this.currentBuilder.push(new SemanticToken(absolutePosition, length, type, modifier));
 	}
 
 	addDiagnostic(relativePosition: number, length: number, message: string, severity: DiagnosticSeverity = DiagnosticSeverity.Error, code: string | undefined = undefined, data: unknown = undefined): void {
@@ -130,7 +134,7 @@ export class SkriptContext {
 					}
 				}
 				else {
-					node.children.push(new SkriptNestHierarchy(i, '"'));//push
+					node.children.push(new SkriptNestHierarchy(i + 1, '"'));//push
 				}
 				//currentNestLevel++;
 
@@ -142,12 +146,12 @@ export class SkriptContext {
 				}
 				else if (node.character == "") {
 					if ((i == 0) || (this.currentString[i - 1].match(/[0-9]/) == null)) {//don't push for percentages
-						node.children.push(new SkriptNestHierarchy(i, '%'));//push
+						node.children.push(new SkriptNestHierarchy(i + 1, '%'));//push
 					}
 				}
 				//order is important here! "example".includes("") will return true!
 				else if ("{\"".includes(node.character)) {
-					node.children.push(new SkriptNestHierarchy(i, '%'));//push
+					node.children.push(new SkriptNestHierarchy(i + 1, node.character));//push
 				}
 				//else if(node.character.length > 0){
 				//	// % is also needed for definition of effects so when node.character == "" then we'll allow the %'s
@@ -157,14 +161,14 @@ export class SkriptContext {
 			else if (openBraces.includes(this.currentString[i])) {
 				const node = this.hierarchy.getActiveNode();
 				if (node.character != '"') {//braces don't count in a string
-					node.children.push(new SkriptNestHierarchy(i, this.currentString[i]));//push
+					node.children.push(new SkriptNestHierarchy(i + 1, this.currentString[i]));//push
 				}
 			}
 			else if (closingBraces.includes(this.currentString[i])) {
 				const node = this.hierarchy.getActiveNode();
 
 				if (node.character != '"') {//braces don't count in a string
-					if (closingBraces.indexOf(this.currentString[i]) == openBraces.indexOf(node.character)) {
+					if (node.character.length && (closingBraces.indexOf(this.currentString[i]) == openBraces.indexOf(node.character))) {
 						node.end = i;//pop
 					}
 					else if (addDiagnostics) {

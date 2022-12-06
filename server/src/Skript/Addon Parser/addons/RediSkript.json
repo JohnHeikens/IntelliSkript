@@ -1,0 +1,65 @@
+{
+  "events": [
+    {
+      "id": "redis_message",
+      "name": "On redis message",
+      "patterns": [
+        "[on] redis message"
+      ],
+      "event values": [
+        "event-string",
+        "event-date"
+      ],
+      "cancellable": false
+    }
+  ],
+  "effects": [
+    {
+      "id": "EffSendMessage",
+      "name": "EffSendMessage",
+      "patterns": [
+        "send redis message[s] %strings% to [channel] %string%"
+      ]
+    }
+  ],
+  "expressions": [
+    {
+      "id": "ExprChannel",
+      "name": "ExprChannel",
+      "return type": "Text",
+      "patterns": [
+        "redis channel"
+      ]
+    },
+    {
+      "id": "ExprMessage",
+      "name": "ExprMessage",
+      "return type": "Text",
+      "patterns": [
+        "redis message"
+      ]
+    },
+    {
+      "id": "ExprMessageDate",
+      "name": "ExprMessageDate",
+      "return type": "Date",
+      "patterns": [
+        "redis message date"
+      ]
+    },
+    {
+      "id": "ExprVariableInChannel",
+      "name": "ExprVariableInChannel",
+      "return type": "Object",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "delete"
+      ],
+      "patterns": [
+        "variable[s] %strings% in [redis] [channel] %string%"
+      ]
+    }
+  ]
+}

@@ -8,13 +8,21 @@ import {
 	SkriptContext
 } from '../SkriptContext';
 import { SkriptCommand } from './SkriptCommand';
-import { SkriptEffect } from './SkriptEffect';
+import { SkriptEffect } from './Reflect/SkriptEffect';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { SkriptWorkSpace } from './SkriptWorkSpace';
-import { SkriptImportSection } from './SkriptImportSection';
-import { DiagnosticSeverity, SemanticTokensBuilder } from 'vscode-languageserver/node';
-import { TokenTypes } from '../TokenTypes';
+import { SkriptImportSection } from './Reflect/SkriptImportSection';
+import { DiagnosticSeverity } from 'vscode-languageserver/node';
+import { TokenTypes } from '../../TokenTypes';
+import { UnOrderedSemanticTokensBuilder } from './UnOrderedSemanticTokensBuilder';
+import { SkriptPatternContainerSection } from './Reflect/SkriptPatternContainerSection';
+import { SkriptConditionSection } from './Reflect/SkriptConditionSection';
 import assert = require('assert');
+import { SkriptEventSection } from './Reflect/SkriptEventSection';
+import { SkriptExpressionSection } from './Reflect/SkriptExpressionSection';
+import { SkriptPattern } from '../SkriptPattern';
+import { SkriptOptionsSection } from './SkriptOptionsSection';
+import { SkriptOption } from '../SkriptOption';
 
 function removeRemainder(toDivide: number, toDivideBy: number): number {
 	return Math.floor(toDivide / toDivideBy) * toDivideBy;
@@ -23,11 +31,26 @@ function removeRemainder(toDivide: number, toDivideBy: number): number {
 export class SkriptFile extends SkriptSection {
 	document: TextDocument;
 	workSpace: SkriptWorkSpace | undefined;
-	builder: SemanticTokensBuilder;
+	builder: UnOrderedSemanticTokensBuilder;
+
+	options: SkriptOption[] = [];
+
+	getPatternSection(pattern: string): SkriptPatternContainerSection | undefined {
+		this.children.forEach(section => {
+			if (section instanceof SkriptPatternContainerSection) {
+				section.patterns.forEach(pattern => {
+
+					return section;
+				});
+			}
+		});
+		return undefined;
+	}
 
 	createSection(context: SkriptContext): SkriptSection {
 		const spaceIndex = context.currentString.indexOf(" ");
 		const sectionKeyword = spaceIndex == -1 ? context.currentString : context.currentString.substring(0, spaceIndex);
+		context.addToken(0, sectionKeyword.length, TokenTypes.keyword);
 		if (sectionKeyword == "function") {
 			const s = new SkriptFunction(context, this);
 
@@ -39,10 +62,29 @@ export class SkriptFile extends SkriptSection {
 		}
 		else if (sectionKeyword == "effect") {
 			const s = new SkriptEffect(context, this);
+			if (spaceIndex != -1) {
+				s.patterns.push(new SkriptPattern(context.push(spaceIndex + 1)));
+			}
 			return s;
 		}
 		else if (sectionKeyword == "import") {
 			const s = new SkriptImportSection(context, this);
+			return s;
+		}
+		else if (sectionKeyword == "condition") {
+			const s = new SkriptConditionSection(context, this);
+			return s;
+		}
+		else if (sectionKeyword == "event") {
+			const s = new SkriptEventSection(context, this);
+			return s;
+		}
+		else if (sectionKeyword == "expression") {
+			const s = new SkriptExpressionSection(context, this);
+			return s;
+		}
+		else if (sectionKeyword == "options") {
+			const s = new SkriptOptionsSection(context, this);
 			return s;
 		}
 		else {
@@ -62,6 +104,7 @@ export class SkriptFile extends SkriptSection {
 
 	constructor(workSpace: SkriptWorkSpace | undefined, context: SkriptContext) {
 		super(context, undefined);
+		context.currentSkriptFile = this;
 		this.builder = context.currentBuilder;
 		this.workSpace = workSpace;
 		this.document = context.currentDocument;
@@ -123,9 +166,9 @@ export class SkriptFile extends SkriptSection {
 				const indentationEndIndex = SkriptFile.getIndentationEndIndex(currentLine);
 				//context.currentPosition = currentLineStartPosition + indentationEndIndex;
 				const indentationString = currentLine.substring(0, indentationEndIndex);
-				const inverseIndentationType = (indentationString[0] == " ") ? "\t" : " ";
+				const inverseCurrentIndentationCharacter = (indentationString[0] == " ") ? "\t" : " ";
 				const currentExpectedIndentationcharacterCount = expectedIndentationCount * currentIndentationString.length;
-				if (indentationString.includes(inverseIndentationType)) {
+				if (indentationString.includes(inverseCurrentIndentationCharacter)) {
 					context.addDiagnostic(
 						currentLineStartPosition,
 						currentLineStartPosition + indentationEndIndex,
@@ -136,6 +179,7 @@ export class SkriptFile extends SkriptSection {
 					);
 				}
 				else {
+
 					if (currentIndentationString == "") {
 						currentIndentationString = indentationString;
 						if (indentationString == "") {
@@ -144,48 +188,61 @@ export class SkriptFile extends SkriptSection {
 						}
 					}
 					else {
-						if ((indentationEndIndex > currentExpectedIndentationcharacterCount) || (indentationEndIndex % currentIndentationString.length) != 0) {
-							const difference = indentationEndIndex - removeRemainder(indentationEndIndex, currentIndentationString.length);
+						const inverseExpectedIndentationCharacter = currentIndentationString[0] == " " ? "\t" : " ";
+						if (indentationString[0] == inverseExpectedIndentationCharacter) {
 							context.addDiagnostic(
-								currentLineStartPosition + removeRemainder(indentationEndIndex, currentIndentationString.length),
-								difference,
-								`indentation error: expected ` + currentExpectedIndentationcharacterCount + (currentIndentationString[0] == " " ? " space" : " tab") + (currentExpectedIndentationcharacterCount == 1 ? "" : "s") + ` but found ` + indentationEndIndex,
+								currentLineStartPosition,
+								indentationEndIndex,
+								`indentation error: expected ` + currentExpectedIndentationcharacterCount + (currentIndentationString[0] == " " ? " space" : " tab") + (currentExpectedIndentationcharacterCount == 1 ? "" : "s") + ` but found ` + indentationEndIndex + (indentationString[0] == " " ? " space" : " tab") + ((indentationString.length == 1) ? "" : "s"),
 								DiagnosticSeverity.Error,
-								"IntelliSkript->Indent->Amount",
+								"IntelliSkript->Indent->Charachter",
 								currentIndentationString.repeat(expectedIndentationCount)
 							);
-							//process the line like normally. this way the next lines will not all generate errors messages.
-							//break cont;
 						}
 						else {
-							const currentIndentationCount = indentationEndIndex / currentIndentationString.length;
-							const StacksToPop = expectedIndentationCount - currentIndentationCount;
-							popStacks(StacksToPop);
-							expectedIndentationCount = currentIndentationCount;
+							if ((indentationEndIndex > currentExpectedIndentationcharacterCount) || (indentationEndIndex % currentIndentationString.length) != 0) {
+								const difference = indentationEndIndex - removeRemainder(indentationEndIndex, currentIndentationString.length);
+								context.addDiagnostic(
+									currentLineStartPosition + removeRemainder(indentationEndIndex, currentIndentationString.length),
+									difference,
+									`indentation error: expected ` + currentExpectedIndentationcharacterCount + (currentIndentationString[0] == " " ? " space" : " tab") + (currentExpectedIndentationcharacterCount == 1 ? "" : "s") + ` but found ` + indentationEndIndex,
+									DiagnosticSeverity.Error,
+									"IntelliSkript->Indent->Amount",
+									currentIndentationString.repeat(expectedIndentationCount)
+								);
+								//process the line like normally. this way the next lines will not all generate errors messages.
+								//break cont;
+							}
+							else {
+								const currentIndentationCount = indentationEndIndex / currentIndentationString.length;
+								const StacksToPop = expectedIndentationCount - currentIndentationCount;
+								popStacks(StacksToPop);
+								expectedIndentationCount = currentIndentationCount;
+							}
 						}
 					}
-					const trimmedContext = context.push(currentLineStartPosition + indentationEndIndex, trimmedLine.length);
-					trimmedContext.createHierarchy(true);
-					assert(trimmedContext.hierarchy != undefined);
-					trimmedContext.highLightRecursively(trimmedContext.hierarchy);
+				}
+				const trimmedContext = context.push(currentLineStartPosition + indentationEndIndex, trimmedLine.length);
+				trimmedContext.createHierarchy(true);
+				assert(trimmedContext.hierarchy != undefined);
+				trimmedContext.highLightRecursively(trimmedContext.hierarchy);
 
-					if (trimmedLine.endsWith(":")) {
+				if (trimmedLine.endsWith(":")) {
 
-						const contextWithoutColon = trimmedContext.push(0, trimmedContext.currentString.length - 1);
-						//context.currentString = trimmedLine.substring(0, trimmedLine.length - 1);
-						//contextWithoutColon.createHierarchy(true);
-						const newSection: SkriptSection | undefined = context.currentSection?.createSection?.(contextWithoutColon);
-						if (newSection != undefined) context.currentSection?.childSections.push(newSection);
-						context.currentSection = newSection;
-						if (indentationEndIndex == 0) {
-							currentIndentationString = "";
-						}
-						expectedIndentationCount++;
+					const contextWithoutColon = trimmedContext.push(0, trimmedContext.currentString.length - 1);
+					//context.currentString = trimmedLine.substring(0, trimmedLine.length - 1);
+					//contextWithoutColon.createHierarchy(true);
+					const newSection: SkriptSection | undefined = context.currentSection?.createSection?.(contextWithoutColon);
+					if (newSection != undefined) context.currentSection?.children.push(newSection);
+					context.currentSection = newSection;
+					if (indentationEndIndex == 0) {
+						currentIndentationString = "";
 					}
-					else {
-						//context.currentString = trimmedLine;
-						trimmedContext.currentSection?.processLine?.(trimmedContext);
-					}
+					expectedIndentationCount++;
+				}
+				else {
+					//context.currentString = trimmedLine;
+					trimmedContext.currentSection?.processLine?.(trimmedContext);
 				}
 			}
 			if (commentIndex != -1) {

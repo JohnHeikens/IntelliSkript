@@ -1,0 +1,92 @@
+{
+  "events": [
+    {
+      "id": "[player]_advancement_(award|get|complete)",
+      "name": "On [player] advancement (award|get|complete)",
+      "patterns": [
+        "[on] [AdvancementsAddon] [player] advancement (award|get|complete)"
+      ],
+      "event values": [
+        "event-world",
+        "event-advancement",
+        "event-player",
+        "event-namespacedkey"
+      ],
+      "cancellable": false
+    }
+  ],
+  "effects": [
+    {
+      "id": "EffAwardAdvancement",
+      "name": "EffAwardAdvancement",
+      "patterns": [
+        "(award|give) [all criteria of] advancement %advancement% to %player%"
+      ]
+    },
+    {
+      "id": "EffCreateAdvancement",
+      "name": "EffCreateAdvancement",
+      "patterns": [
+        "(make|create) [a[n]] advancement [[with] name[d]] %string%[[(,| and)] [with]] title %string%[[(,| and)] [with]] desc[ription] %string%[[(,| and)] [with]] icon %string%[[(,| and)] [with]] trigger %string%[[(,| and)] [with]] background %string%[[(,| and)] [for]] world %string%[[(,| and)] [with]] item %itemtype%"
+      ]
+    },
+    {
+      "id": "EffRevokeAdvancement",
+      "name": "EffRevokeAdvancement",
+      "patterns": [
+        "(revoke|take|remove) [all criteria of] advancement %advancement% from %player%"
+      ]
+    }
+  ],
+  "expressions": [
+    {
+      "id": "ExprAdvancementCriteria",
+      "name": "ExprAdvancementCriteria",
+      "return type": "Text",
+      "patterns": [
+        "advancement criteria of %advancement%",
+        "%advancement%'s advancement criteria"
+      ]
+    },
+    {
+      "id": "ExprAdvancementKey",
+      "name": "ExprAdvancementKey",
+      "return type": "NamespacedKey",
+      "patterns": [
+        "advancement [name[ ]spaced] key of %advancement%",
+        "%advancement%'s advancement [name[ ]spaced] key"
+      ]
+    },
+    {
+      "id": "ExprAdvancementProgress",
+      "name": "ExprAdvancementProgress",
+      "return type": "Object",
+      "patterns": [
+        "advancement progress of %advancement% (for|of|from) %player%",
+        "%player%'s advancement progress for %advancement%"
+      ]
+    }
+  ],
+  "types": [
+    {
+      "id": "Advancement",
+      "name": "Advancement",
+      "description": [
+        "A type that represents the Advancement class from Spigot."
+      ],
+      "patterns": [
+        "advancement[s]"
+      ]
+    },
+    {
+      "id": "NamespacedKey",
+      "name": "NamespacedKey",
+      "description": [
+        "A type that represents the NamespacedKey class from Spigot."
+      ],
+      "patterns": [
+        "namespacedkey|key"
+      ]
+    }
+  ]
+}

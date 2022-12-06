@@ -1,0 +1,5393 @@
+{
+  "events": [
+    {
+      "id": "bot_creation_scope",
+      "name": "On Bot Creation Scope",
+      "patterns": [
+        "[on] define [the] [new] bot (with name|named) %string%"
+      ],
+      "cancellable": false,
+      "entries": [
+        {
+          "name": "auto reconnect",
+          "isRequired": false,
+          "isSection": false
+        },
+        {
+          "name": "intents",
+          "isRequired": false,
+          "isSection": false
+        },
+        {
+          "name": "on ready",
+          "isRequired": false,
+          "isSection": true
+        },
+        {
+          "name": "application",
+          "isRequired": false,
+          "isSection": true
+        },
+        {
+          "name": "on guild ready",
+          "isRequired": false,
+          "isSection": true
+        },
+        {
+          "name": "on shutdown",
+          "isRequired": false,
+          "isSection": true
+        },
+        {
+          "name": "force reload",
+          "isRequired": false,
+          "isSection": false
+        },
+        {
+          "name": "compression",
+          "isRequired": false,
+          "isSection": false
+        },
+        {
+          "name": "token",
+          "isRequired": true,
+          "isSection": false
+        },
+        {
+          "name": "cache flags",
+          "isRequired": false,
+          "isSection": false
+        },
+        {
+          "name": "policy",
+          "isRequired": false,
+          "isSection": false
+        }
+      ]
+    },
+    {
+      "id": "bot_join_event",
+      "name": "On Bot Join Event",
+      "description": [
+        "Fired when any bot join a new guild."
+      ],
+      "patterns": [
+        "[on] bot [guild] join[ed] [seen by %string%]"
+      ],
+      "event values": [
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "button_click",
+      "name": "On Button Click",
+      "description": [
+        "Fired when any button sent by the button is clicked.",
+        "Use 'event-button' to get the button id. Don't forget to either reply or defer the interaction.",
+        "Modal can be shown in this interaction."
+      ],
+      "patterns": [
+        "[on] button click[ed] [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-threadchannel",
+        "event-member",
+        "event-newschannel",
+        "event-message",
+        "event-textchannel",
+        "event-guildchannel",
+        "event-channel",
+        "event-button",
+        "event-privatechannel",
+        "event-string",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "disky_error_exception",
+      "name": "On DiSky Error / Exception",
+      "description": [
+        "Fired when any DiSky error occur.",
+        "Since DiSky exception are per-event only, this regroup every exception occurred in every events."
+      ],
+      "patterns": [
+        "[on] disky (error|exception)"
+      ],
+      "event values": [
+        "event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "discord_command",
+      "name": "On Discord Command",
+      "description": [
+        "Custom DiSky discord command system. Arguments works like the normal skript's one and accept both optional and require arguments."
+      ],
+      "examples": [
+        "discord command move <member> <voicechannel>:\n\tprefixes: !\n\ttrigger:\n\t\treply with mention tag of arg-2\n\t\tmove arg-1 to arg-2"
+      ],
+      "since": [
+        "3.0"
+      ],
+      "patterns": [
+        "[on] discord command <([^\\s]+)( .+)?$>"
+      ],
+      "event values": [
+        "event-user",
+        "event-guildchannel",
+        "event-channel",
+        "event-member",
+        "event-string",
+        "event-discordcommand",
+        "event-message",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": true,
+      "entries": [
+        {
+          "name": "permission message",
+          "isRequired": false,
+          "isSection": false
+        },
+        {
+          "name": "prefixes",
+          "isRequired": false,
+          "isSection": false
+        },
+        {
+          "name": "bots",
+          "isRequired": false,
+          "isSection": false
+        },
+        {
+          "name": "aliases",
+          "isRequired": false,
+          "isSection": false
+        },
+        {
+          "name": "executable in",
+          "isRequired": false,
+          "isSection": false
+        },
+        {
+          "name": "permissions",
+          "isRequired": false,
+          "isSection": false
+        },
+        {
+          "name": "usage",
+          "isRequired": false,
+          "isSection": false
+        },
+        {
+          "name": "roles",
+          "isRequired": false,
+          "isSection": false
+        },
+        {
+          "name": "description",
+          "isRequired": false,
+          "isSection": false
+        },
+        {
+          "name": "trigger",
+          "isRequired": true,
+          "isSection": true
+        },
+        {
+          "name": "category",
+          "isRequired": false,
+          "isSection": false
+        }
+      ]
+    },
+    {
+      "id": "disky_command",
+      "name": "On Disky Command",
+      "description": [
+        "Fired when a disky/discord command is executed."
+      ],
+      "examples": [
+        "on disky command:"
+      ],
+      "patterns": [
+        "[on] disky command [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-member",
+        "event-discordcommand",
+        "event-message",
+        "event-textchannel",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "entity_dropdown_click",
+      "name": "On Entity Dropdown Click",
+      "description": [
+        "Fired when an user select one or more choice in an entity dropdown.",
+        "Use 'event-dropdown' to get the dropdown id. Don't forget to either reply or defer the interaction.",
+        "Use 'selected entities' to get the selected entities.",
+        "Modal can be shown in this interaction."
+      ],
+      "patterns": [
+        "[on] entit(y|ies) drop[( |-)]down click[ed] [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-threadchannel",
+        "event-member",
+        "event-newschannel",
+        "event-message",
+        "event-textchannel",
+        "event-guildchannel",
+        "event-channel",
+        "event-privatechannel",
+        "event-dropdown",
+        "event-string",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "guild_afk_channel_event",
+      "name": "On Guild AFK Channel Event",
+      "description": [
+        "Fired when a afk channel of a guild changes can be used to get the old/new channel, the author and the guild."
+      ],
+      "examples": [
+        "on guild afk channel change:"
+      ],
+      "patterns": [
+        "[on] [discord] guild afk channel (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-voicechannel",
+        "event-voicechannel",
+        "event-bot",
+        "event-guild",
+        "future event-voicechannel"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "guild_afk_timeout_event",
+      "name": "On Guild AFK Timeout Event",
+      "description": [
+        "Fired when a afk timeout of a guild changes can be used to get the old/new timeout value, the author and the guild."
+      ],
+      "examples": [
+        "on guild afk timeout change:"
+      ],
+      "patterns": [
+        "[on] [discord] guild afk timeout (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-object",
+        "event-object",
+        "event-bot",
+        "event-guild",
+        "future event-object"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "guild_ban_event",
+      "name": "On Guild Ban Event",
+      "description": [
+        "Fired when a user is banned from a guild. A member doesn't exist here because the member is not in the guild anymore! Can be used to get the banned user, the author and the guild."
+      ],
+      "examples": [
+        "on guild ban:"
+      ],
+      "patterns": [
+        "[on] [discord] guild [user] ban [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "guild_banner_event",
+      "name": "On Guild Banner Event",
+      "description": [
+        "Fired when a banner of a guild changes can be used to get the old/new banner, the author and the guild."
+      ],
+      "examples": [
+        "on guild banner change:"
+      ],
+      "patterns": [
+        "[on] [discord] guild banner (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-string",
+        "event-string",
+        "event-bot",
+        "event-guild",
+        "future event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "guild_boost_count_update",
+      "name": "On Guild Boost Count Update",
+      "description": [
+        "Fired when a boost count of a guild changes - can be used to get the old/new count, and the guild."
+      ],
+      "examples": [
+        "on guild boost count change:"
+      ],
+      "patterns": [
+        "[on] [discord] guild boost count (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-integer",
+        "event-integer",
+        "event-bot",
+        "event-guild",
+        "future event-integer"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "guild_boost_tier_update",
+      "name": "On Guild Boost Tier Update",
+      "description": [
+        "Fired when a boost tier of a guild changes - can be used to get the old/new tier, and the guild."
+      ],
+      "examples": [
+        "on guild boost tier change:"
+      ],
+      "patterns": [
+        "[on] [discord] guild boost tier (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-string",
+        "event-string",
+        "event-bot",
+        "event-guild",
+        "future event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "guild_icon_event",
+      "name": "On Guild Icon Event",
+      "description": [
+        "Fired when the icon of a guild changes can be used to get the old/new icon, the author and the guild."
+      ],
+      "examples": [
+        "on guild icon change:"
+      ],
+      "patterns": [
+        "[on] [discord] guild icon (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-string",
+        "event-string",
+        "event-bot",
+        "event-guild",
+        "future event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "guild_join_event",
+      "name": "On Guild Join Event",
+      "description": [
+        "Fired when the bot joins in a guild."
+      ],
+      "examples": [
+        "on bot join guild:"
+      ],
+      "patterns": [
+        "[on] [discord] bot join guild [seen by %string%]"
+      ],
+      "event values": [
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "guild_name_event",
+      "name": "On Guild Name Event",
+      "description": [
+        "Fired when the name of a guild is changed can be used to get the old/new name."
+      ],
+      "examples": [
+        "on guild name change:"
+      ],
+      "patterns": [
+        "[on] [discord] guild name (update|change) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-string",
+        "event-string",
+        "event-bot",
+        "event-guild",
+        "future event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "guild_owner_event",
+      "name": "On Guild Owner Event",
+      "description": [
+        "Fired when a owner of a guild changes can be used to get the old/new owner, the author and the guild."
+      ],
+      "examples": [
+        "on guild owner change:"
+      ],
+      "patterns": [
+        "[on] [discord] guild owner (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-member",
+        "event-member",
+        "event-bot",
+        "event-guild",
+        "future event-member"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "guild_ready_event",
+      "name": "On Guild Ready Event",
+      "description": [
+        "Fired when a guild is fully loaded."
+      ],
+      "patterns": [
+        "[on] guild (ready|load[ed]) [seen by %string%]"
+      ],
+      "event values": [
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "guild_splash_event",
+      "name": "On Guild Splash Event",
+      "description": [
+        "Fired when a banner of a guild changes can be used to get the old/new banner, the author and the guild."
+      ],
+      "examples": [
+        "on guild splash change:"
+      ],
+      "patterns": [
+        "[on] [discord] guild splash (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-string",
+        "event-string",
+        "event-bot",
+        "event-guild",
+        "future event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "guild_unban_event",
+      "name": "On Guild Unban Event",
+      "description": [
+        "Fired when a user is unbanned can be used to get the unbanned user, the author and the guild."
+      ],
+      "examples": [
+        "on guild unban:"
+      ],
+      "patterns": [
+        "[on] [discord] guild [user] unban [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "invite_create_event",
+      "name": "On Invite Create Event",
+      "description": [
+        "Fired when a invite is created in a guild can be used to get the invite property, the author and the guild."
+      ],
+      "examples": [
+        "on guild invite create:"
+      ],
+      "patterns": [
+        "[on] [discord] guild invite create [seen by %string%]"
+      ],
+      "event values": [
+        "event-invite",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "invite_delete_event",
+      "name": "On Invite Delete Event",
+      "description": [
+        "Fired when a invite is deleted from a guild can be used to get the invite property, the author and the guild."
+      ],
+      "examples": [
+        "on guild invite delete:"
+      ],
+      "patterns": [
+        "[on] [discord] guild invite delete [seen by %string%]"
+      ],
+      "event values": [
+        "event-channel",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "member_accept_screen_event",
+      "name": "On Member Accept Screen Event",
+      "description": [
+        "Fired when a member has agreed to membership screen requirements it can be useful for adding roles since the member is not available if they haven't accepted it yet."
+      ],
+      "examples": [
+        "on member screen accept:"
+      ],
+      "patterns": [
+        "[on] [discord] [guild] member screen accept [seen by %string%]"
+      ],
+      "event values": [
+        "past event-boolean",
+        "event-member",
+        "event-boolean",
+        "event-bot",
+        "event-guild",
+        "future event-boolean"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "member_avatar_event",
+      "name": "On Member Avatar Event",
+      "description": [
+        "Fired when a member changes their avatar."
+      ],
+      "examples": [
+        "on member avatar change:"
+      ],
+      "patterns": [
+        "[on] [discord] [guild] member avatar (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-string",
+        "event-string",
+        "event-member",
+        "event-bot",
+        "event-guild",
+        "future event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "member_boost_event",
+      "name": "On Member Boost Event",
+      "description": [
+        "Fired when a member starts or stops boosting a guild can be used to get the old/new boosting time and the guild."
+      ],
+      "examples": [
+        "member boost change:"
+      ],
+      "patterns": [
+        "[on] [discord] [guild] member boost (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-object",
+        "event-bot",
+        "event-object",
+        "event-guild",
+        "future event-object"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "member_join_event",
+      "name": "On Member Join Event",
+      "description": [
+        "Fired when a member joins a guild."
+      ],
+      "examples": [
+        "on member join:"
+      ],
+      "patterns": [
+        "[on] [discord] member join[ed] [guild] [seen by %string%]"
+      ],
+      "event values": [
+        "event-member",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "member_leave_event",
+      "name": "On Member Leave Event",
+      "description": [
+        "Fired when a member is removed from a guild either by leaving or being punished. Use the ban/kick event instead to check the exact reason"
+      ],
+      "examples": [
+        "on member leave:"
+      ],
+      "patterns": [
+        "[on] [discord] member (leave|left) [guild] [seen by %string%]"
+      ],
+      "event values": [
+        "event-member",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "member_nickname_event",
+      "name": "On Member Nickname Event",
+      "description": [
+        "Fired when a member changes their nickname."
+      ],
+      "examples": [
+        "on member nickname change:"
+      ],
+      "patterns": [
+        "[on] [discord] [guild] member nickname (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-string",
+        "event-string",
+        "event-member",
+        "event-bot",
+        "event-guild",
+        "future event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "member_voice_join_event",
+      "name": "On Member Voice Join Event",
+      "description": [
+        "Fired when a member joins a voice or a stage channel, also fires when a member moves to another channel"
+      ],
+      "examples": [
+        "on voice channel join:"
+      ],
+      "patterns": [
+        "[on] [discord] [member] voice [channel] join [seen by %string%]"
+      ],
+      "event values": [
+        "past event-stagechannel",
+        "past event-voicechannel",
+        "past event-audiohannel",
+        "event-member",
+        "event-stagechannel",
+        "event-voicechannel",
+        "event-bot",
+        "event-audiohannel",
+        "event-guild",
+        "future event-stagechannel",
+        "future event-voicechannel",
+        "future event-audiohannel"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "member_voice_leave_event",
+      "name": "On Member Voice Leave Event",
+      "description": [
+        "Fired when a member leaves a voice or a stage channel"
+      ],
+      "examples": [
+        "on voice channel leave:"
+      ],
+      "patterns": [
+        "[on] [discord] [member] voice [channel] leave [seen by %string%]"
+      ],
+      "event values": [
+        "event-member",
+        "event-stagechannel",
+        "event-voicechannel",
+        "event-bot",
+        "event-audiohannel",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "message_command",
+      "name": "On Message Command",
+      "description": [
+        "Fired when someone click on a message application command.",
+        "Use 'event-string' to get the command name. Don't forget to either reply to the interaction. Defer doesn't work here.",
+        "Modal can be shown in this interaction."
+      ],
+      "patterns": [
+        "[on] message command [receive[d]] [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-guildchannel",
+        "event-channel",
+        "event-threadchannel",
+        "event-privatechannel",
+        "event-member",
+        "event-string",
+        "event-newschannel",
+        "event-message",
+        "event-textchannel",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "message_delete",
+      "name": "On Message Delete",
+      "description": [
+        "Fired when any message is deleted.",
+        "Use 'event-string' to get the old message content, only works if this message was cached by DiSky before hand.",
+        "This will be fired, by default, both guild & private messages, use the 'event is from guild' condition to avoid confusion."
+      ],
+      "patterns": [
+        "[on] message delete[d] [seen by %string%]"
+      ],
+      "event values": [
+        "event-guildchannel",
+        "event-channel",
+        "event-threadchannel",
+        "event-privatechannel",
+        "event-newschannel",
+        "event-string",
+        "event-textchannel",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "message_edit",
+      "name": "On Message Edit",
+      "description": [
+        "Fired when any message is edited / updated.",
+        "Use 'event-string' to get the old message content, only works if this message was cached by DiSky before hand.",
+        "This will be fired, by default, both guild & private messages, use the 'event is from guild' condition to avoid confusion."
+      ],
+      "patterns": [
+        "[on] message edit[ed] [seen by %string%]"
+      ],
+      "event values": [
+        "event-guildchannel",
+        "event-channel",
+        "event-threadchannel",
+        "event-privatechannel",
+        "event-newschannel",
+        "event-string",
+        "event-message",
+        "event-textchannel",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "message_receive",
+      "name": "On Message Receive",
+      "description": [
+        "Fired when any bot receive an actual message.",
+        "This will be fired, by default, both guild & private messages, use the 'event is from guild' condition to avoid confusion."
+      ],
+      "examples": [
+        "on message received:",
+        "\tif message is from guild:",
+        "\t\treply with \"I just received '%event-message%' from %mention tag of event-channel%!\"",
+        "\telse:",
+        "\t\treply with \"I just received '%event-message%' from %mention tag of event-user%!\""
+      ],
+      "patterns": [
+        "[on] message receive[d] [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-guildchannel",
+        "event-channel",
+        "event-threadchannel",
+        "event-privatechannel",
+        "event-member",
+        "event-newschannel",
+        "event-message",
+        "event-textchannel",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "modal_receive",
+      "name": "On Modal Receive",
+      "description": [
+        "Fired when a modal has been sent to the bot from any user.",
+        "Use 'event-string' to get the modal id. Don't forget to either reply or defer the interaction.",
+        "Modal can NOT be shown in this interaction."
+      ],
+      "patterns": [
+        "[on] modal (click[ed]|receive[d]) [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-guildchannel",
+        "event-channel",
+        "event-threadchannel",
+        "event-privatechannel",
+        "event-member",
+        "event-string",
+        "event-newschannel",
+        "event-textchannel",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "reaction_add",
+      "name": "On Reaction Add",
+      "description": [
+        "Fired when a message, that can be seen by the bot, receive a reaction.",
+        "This will be fired, by default, both guild & private messages, use the 'event is from guild' condition to avoid confusion."
+      ],
+      "patterns": [
+        "[on] (reaction|emote)[s] add[ed] [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-guildchannel",
+        "event-channel",
+        "event-threadchannel",
+        "event-emote",
+        "event-privatechannel",
+        "event-member",
+        "event-newschannel",
+        "event-textchannel",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "reaction_remove",
+      "name": "On Reaction Remove",
+      "description": [
+        "Fired when an user remove a reaction from a specific message.",
+        "This will be fired, by default, both guild & private messages, use the 'event is from guild' condition to avoid confusion."
+      ],
+      "patterns": [
+        "[on] (reaction|emote)[s] remove[d] [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-guildchannel",
+        "event-channel",
+        "event-threadchannel",
+        "event-emote",
+        "event-privatechannel",
+        "event-member",
+        "event-newschannel",
+        "event-textchannel",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "reaction_remove_all",
+      "name": "On Reaction Remove All",
+      "description": [
+        "Fired when an user remove every reactions from a message.",
+        "This will be fired, by default, both guild & private messages, use the 'event is from guild' condition to avoid confusion."
+      ],
+      "patterns": [
+        "[on] (reaction|emote)[s] (remove[d] all|clear|reset) [seen by %string%]"
+      ],
+      "event values": [
+        "event-guildchannel",
+        "event-channel",
+        "event-threadchannel",
+        "event-privatechannel",
+        "event-newschannel",
+        "event-textchannel",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "ready_event",
+      "name": "On Ready Event",
+      "description": [
+        "Fired when a bot is fully loaded. 'guild ready' should be called before this one."
+      ],
+      "patterns": [
+        "[on] (ready|bot load[ed]) [seen by %string%]"
+      ],
+      "event values": [
+        "event-bot"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "role_add_event",
+      "name": "On Role Add Event",
+      "description": [
+        "Fired when a member adds roles to another member, it's a log action so event-author returns who made the action event-roles returns a list of added roles"
+      ],
+      "examples": [
+        "on role add:"
+      ],
+      "patterns": [
+        "[on] [discord] [member] role add[ed] [seen by %string%]"
+      ],
+      "event values": [
+        "event-member",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "role_color_change",
+      "name": "On Role Color Change",
+      "description": [
+        "Fired when the color of a role changes."
+      ],
+      "examples": [
+        "on role color change:"
+      ],
+      "patterns": [
+        "[on] [discord] [guild] role color (update|change) [seen by %string%]"
+      ],
+      "event values": [
+        "event-guild",
+        "event-role",
+        "future event-color"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "role_create",
+      "name": "On Role Create",
+      "description": [
+        "Fired when a role is created in a guild"
+      ],
+      "examples": [
+        "on role create:"
+      ],
+      "patterns": [
+        "[on] [discord] [guild] role create[d] [seen by %string%]"
+      ],
+      "event values": [
+        "event-bot",
+        "event-guild",
+        "event-role"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "role_delete",
+      "name": "On Role Delete",
+      "description": [
+        "Fired when a role is deleted from a guild."
+      ],
+      "examples": [
+        "on role delete:"
+      ],
+      "patterns": [
+        "[on] [discord] [guild] role delete [seen by %string%]"
+      ],
+      "event values": [
+        "event-bot",
+        "event-guild",
+        "event-role"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "role_hoist_change",
+      "name": "On Role Hoist Change",
+      "description": [
+        "Fired when the hoist state of a role changes."
+      ],
+      "examples": [
+        "on role hoist change:"
+      ],
+      "patterns": [
+        "[on] [discord] [guild] role hoist[ed] (update|change) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-boolean",
+        "event-boolean",
+        "event-bot",
+        "event-guild",
+        "event-role",
+        "future event-boolean"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "role_icon_change",
+      "name": "On Role Icon Change",
+      "description": [
+        "Fired when the icon of a role changes."
+      ],
+      "examples": [
+        "on role icon change:"
+      ],
+      "patterns": [
+        "[on] [discord] [guild] role icon (update|change) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-string",
+        "event-string",
+        "event-bot",
+        "event-guild",
+        "event-role",
+        "future event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "role_name_change",
+      "name": "On Role Name Change",
+      "description": [
+        "Fired when the name of a role changes."
+      ],
+      "examples": [
+        "on role name change:"
+      ],
+      "patterns": [
+        "[on] [discord] [guild] role name (update|change) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-string",
+        "event-string",
+        "event-bot",
+        "event-guild",
+        "event-role",
+        "future event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "role_permission_change",
+      "name": "On Role Permission Change",
+      "description": [
+        "Fired when the permissions of a role changes."
+      ],
+      "examples": [
+        "on role permissions change:"
+      ],
+      "patterns": [
+        "[on] [discord] [guild] role permission[s] (update|change) [seen by %string%]"
+      ],
+      "event values": [
+        "event-bot",
+        "event-guild",
+        "event-role"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "role_position_change",
+      "name": "On Role Position Change",
+      "description": [
+        "Fired when the position of a role changes."
+      ],
+      "examples": [
+        "on role position change:"
+      ],
+      "patterns": [
+        "[on] [discord] [guild] role position (update|change) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-integer",
+        "event-integer",
+        "event-bot",
+        "event-guild",
+        "event-role",
+        "future event-integer"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "role_remove_event",
+      "name": "On Role Remove Event",
+      "description": [
+        "Fired when a member removes roles from another member, it's a log action so event-author returns who made the action event-roles returns a list of removed roles"
+      ],
+      "examples": [
+        "on role remove:"
+      ],
+      "patterns": [
+        "[on] [discord] [member] role remove[d] [seen by %string%]"
+      ],
+      "event values": [
+        "event-member",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "shutdown_event",
+      "name": "On Shutdown Event",
+      "description": [
+        "Fired when a bot is stopped."
+      ],
+      "patterns": [
+        "[on] bot (shutdown|stop) [seen by %string%]"
+      ],
+      "event values": [
+        "event-bot"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "slash_command",
+      "name": "On Slash Command",
+      "description": [
+        "Fired when a user execute a specific slash command.",
+        "Use 'event-string' to get the command name. Don't forget to either reply or defer the interaction, You can only defer using the wait pattern  e.g: 'defer the interaction and wait [silently].",
+        "Modal can be shown in this interaction.",
+        "You can get value of arguments using 'argument \"name\" as string' for example."
+      ],
+      "patterns": [
+        "[on] slash command [receive[d]] [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-guildchannel",
+        "event-channel",
+        "event-threadchannel",
+        "event-privatechannel",
+        "event-member",
+        "event-string",
+        "event-newschannel",
+        "event-textchannel",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "slash_completion",
+      "name": "On Slash Completion",
+      "description": [
+        "Fired when Discord ask an argument completion.",
+        "Use 'event-string' to get the command name. Use normal return effect to return the actual completions.",
+        "Modal can NOT be shown in this interaction."
+      ],
+      "patterns": [
+        "[on] slash completion [receive[d]] [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-guildchannel",
+        "event-channel",
+        "event-threadchannel",
+        "event-privatechannel",
+        "event-member",
+        "event-string",
+        "event-newschannel",
+        "event-textchannel",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "string_dropdown_click",
+      "name": "On String Dropdown Click",
+      "description": [
+        "Fired when an user select one or more choice in a string dropdown.",
+        "Use 'event-dropdown' to get the dropdown id. Don't forget to either reply or defer the interaction.",
+        "Use 'selected values' to get the selected string values.",
+        "Modal can be shown in this interaction."
+      ],
+      "patterns": [
+        "[on] drop[( |-)]down click[ed] [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-threadchannel",
+        "event-member",
+        "event-newschannel",
+        "event-message",
+        "event-textchannel",
+        "event-guildchannel",
+        "event-channel",
+        "event-privatechannel",
+        "event-dropdown",
+        "event-string",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "thread_join_event",
+      "name": "On Thread Join Event",
+      "description": [
+        "Fired when a member joins a tread, either by joining itself or by a moderator can be used to get the thread, the guild and the member."
+      ],
+      "examples": [
+        "on thread join:"
+      ],
+      "patterns": [
+        "[on] [discord] thread join [seen by %string%]"
+      ],
+      "event values": [
+        "event-threadchannel",
+        "event-member",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "thread_leave_event",
+      "name": "On Thread Leave Event",
+      "description": [
+        "Fired when a member leaves a thread, either by leaving itself or by a moderator can be used to get the thread, the guild and the member."
+      ],
+      "examples": [
+        "on thread leave:"
+      ],
+      "patterns": [
+        "[on] [discord] thread leave [seen by %string%]"
+      ],
+      "event values": [
+        "event-threadchannel",
+        "event-member",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "user_activity_order_event",
+      "name": "On User Activity Order Event",
+      "description": [
+        "Fired when a user in a guild changes its activity. Ex: by playing something different can be used to get the old/new activities."
+      ],
+      "examples": [
+        "on user activity change:"
+      ],
+      "patterns": [
+        "[on] [discord] user activity [order] (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-member",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "user_avatar_event",
+      "name": "On User Avatar Event",
+      "description": [
+        "Fired when a user changes its avatar."
+      ],
+      "examples": [
+        "on user avatar change:"
+      ],
+      "patterns": [
+        "[on] [discord] user avatar (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-string",
+        "event-user",
+        "event-string",
+        "event-bot",
+        "future event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "user_command",
+      "name": "On User Command",
+      "description": [
+        "Fired when someone click on an user application command.",
+        "Use 'event-string' to get the command name. Don't forget to either reply to the interaction. Defer doesn't work here.",
+        "Modal can be shown in this interaction."
+      ],
+      "patterns": [
+        "[on] user command [receive[d]] [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-guildchannel",
+        "event-channel",
+        "event-threadchannel",
+        "event-privatechannel",
+        "event-member",
+        "event-string",
+        "event-newschannel",
+        "event-textchannel",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "user_discriminator_event",
+      "name": "On User Discriminator Event",
+      "description": [
+        "Fired when a user changes its discriminator."
+      ],
+      "examples": [
+        "on user discriminator change:"
+      ],
+      "patterns": [
+        "[on] [discord] user discriminator (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-string",
+        "event-user",
+        "event-string",
+        "event-bot",
+        "future event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "user_name_event",
+      "name": "On User Name Event",
+      "description": [
+        "Fired when a user changes its name (not nickname)."
+      ],
+      "examples": [
+        "on user name change:"
+      ],
+      "patterns": [
+        "[on] [discord] user name (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-string",
+        "event-user",
+        "event-string",
+        "event-bot",
+        "future event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "user_online_status_event",
+      "name": "On User Online Status Event",
+      "description": [
+        "Fired when a user changes its online status."
+      ],
+      "examples": [
+        "on user online status change:"
+      ],
+      "patterns": [
+        "[on] [discord] user online status (change|update) [seen by %string%]"
+      ],
+      "event values": [
+        "past event-onlinestatus",
+        "event-user",
+        "event-onlinestatus",
+        "event-member",
+        "event-bot",
+        "event-guild",
+        "future event-onlinestatus"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "user_typing_event",
+      "name": "On User Typing Event",
+      "description": [
+        "Fired when a user starts typing in a channel."
+      ],
+      "examples": [
+        "on user typing:"
+      ],
+      "patterns": [
+        "[on] [discord] user typ[e|ing] [seen by %string%]"
+      ],
+      "event values": [
+        "event-user",
+        "event-member",
+        "event-bot",
+        "event-guild"
+      ],
+      "cancellable": false
+    }
+  ],
+  "conditions": [
+    {
+      "id": "BotIsLoaded",
+      "name": "BotIsLoaded",
+      "patterns": [
+        "%string% (is|are) [been] loaded (in|on|from|over) discord",
+        "%string% (isn't|is not|aren't|are not) [been] loaded (in|on|from|over) discord"
+      ]
+    },
+    {
+      "id": "ChannelType",
+      "name": "ChannelType",
+      "patterns": [
+        "%channel% is of [the] %channeltype% type",
+        "%channel% is of [the] type %channeltype%"
+      ]
+    },
+    {
+      "id": "EmoteIsAnimated",
+      "name": "EmoteIsAnimated",
+      "patterns": [
+        "%emote% (is|are) animated",
+        "%emote% (isn't|is not|aren't|are not) animated"
+      ]
+    },
+    {
+      "id": "EmoteIsEmote",
+      "name": "EmoteIsEmote",
+      "patterns": [
+        "%emote% (is|are) [a[n]] emote",
+        "%emote% (isn't|is not|aren't|are not) [a[n]] emote"
+      ]
+    },
+    {
+      "id": "CondIsImage",
+      "name": "Is Attachment Image",
+      "description": [
+        "See if a specific attachment is an image."
+      ],
+      "since": [
+        "1.7"
+      ],
+      "patterns": [
+        "att[achment[s]] %attachment% is [an] (image|img)",
+        "att[achment[s]] %attachment% (isn't|is not|wasn't|was not) [an] (image|img)"
+      ]
+    },
+    {
+      "id": "CondIsSpoiler",
+      "name": "Is Attachment Spoiler",
+      "description": [
+        "See if a specific attachment is marked as a spoil."
+      ],
+      "since": [
+        "1.7"
+      ],
+      "patterns": [
+        "att[achment[s]] %attachment% is [a] spoil[er]",
+        "att[achment[s]] %attachment% (isn't|is not|wasn't|was not) [a] spoil[er]"
+      ]
+    },
+    {
+      "id": "CondIsVideo",
+      "name": "Is Attachment Video",
+      "description": [
+        "See if a specific attachment is a video."
+      ],
+      "since": [
+        "1.7"
+      ],
+      "patterns": [
+        "att[achment[s]] %attachment% is [a] (vdo|video)",
+        "att[achment[s]] %attachment% (isn't|is not|wasn't|was not) [a] (vdo|video)"
+      ]
+    },
+    {
+      "id": "MessageIsEdited",
+      "name": "Is Edited",
+      "description": [
+        "Return true if the message was edited. Because of discord limitations, we cannot get the editing date."
+      ],
+      "examples": [
+        "event-message is edited"
+      ],
+      "patterns": [
+        "%message% (is|are) edited",
+        "%message% (isn't|is not|aren't|are not) edited"
+      ]
+    },
+    {
+      "id": "MessageIsEphemeral",
+      "name": "Is Ephemeral",
+      "description": [
+        "Return true if the message was ephemeral, e.g. private / hidden.",
+        "Action on hidden messages are limited."
+      ],
+      "examples": [
+        "event-message is ephemeral"
+      ],
+      "patterns": [
+        "%message% (is|are) ephemeral",
+        "%message% (isn't|is not|aren't|are not) ephemeral"
+      ]
+    },
+    {
+      "id": "MessageIsPinned",
+      "name": "Is Pinned",
+      "description": [
+        "Return true if the message is pinned."
+      ],
+      "examples": [
+        "event-message is pinned"
+      ],
+      "patterns": [
+        "%message% (is|are) pin[ned]",
+        "%message% (isn't|is not|aren't|are not) pin[ned]"
+      ]
+    },
+    {
+      "id": "MessageIsPosted",
+      "name": "Is Posted",
+      "description": [
+        "Return true if the message is posted, means sent in every guild that follow this news channel."
+      ],
+      "examples": [
+        "event-message is posted"
+      ],
+      "patterns": [
+        "%message% (is|are) (publish|post|crosspost)ed",
+        "%message% (isn't|is not|aren't|are not) (publish|post|crosspost)ed"
+      ]
+    },
+    {
+      "id": "MessageIsTTS",
+      "name": "Is TTS",
+      "description": [
+        "Return true if the message is TTS (TextToSpeech)."
+      ],
+      "examples": [
+        "event-message is tts"
+      ],
+      "patterns": [
+        "%message% (is|are) (tts|text to speech)",
+        "%message% (isn't|is not|aren't|are not) (tts|text to speech)"
+      ]
+    },
+    {
+      "id": "BotMemberIsInThread",
+      "name": "Member / Bot is in Thread",
+      "description": [
+        "Check if a specific member or bot is in a guild thread.",
+        "Useful to avoid exception while using join & leave effects."
+      ],
+      "patterns": [
+        "%member/bot% (is|are) in [the] thread %threadchannel%",
+        "%member/bot% (isn't|is not|aren't|are not) in [the] thread %threadchannel%"
+      ]
+    },
+    {
+      "id": "HasPermissions",
+      "name": "Member Has Permissions",
+      "description": [
+        "Check if a member has permissions in an optional channel."
+      ],
+      "examples": [
+        "if event-member has discord permission administrator: # global permission",
+        "if event-member has discord permission send message in event-channel: # channel specific permission"
+      ],
+      "patterns": [
+        "%member% (has|have) discord permission[s] %permissions% [in [the] [channel] %guildchannel%]",
+        "%member% (doesn't|does not|do not|don't) have discord permission[s] %permissions% [in [the] [channel] %guildchannel%]"
+      ]
+    },
+    {
+      "id": "HasRole",
+      "name": "Member Has Role",
+      "description": [
+        "Check if a member has a specific role."
+      ],
+      "examples": [
+        "if event-member has discord role with id \"000\":"
+      ],
+      "patterns": [
+        "%member% (has|have) discord [role] %role%",
+        "%member% (doesn't|does not|do not|don't) have discord [role] %role%"
+      ]
+    },
+    {
+      "id": "MessageOrigin",
+      "name": "Message is From Guild",
+      "description": [
+        "Check either a message(related event come from a guild or from private messages.",
+        "This condition work with every event where a message is sent / received."
+      ],
+      "examples": [
+        "if event is from guild:",
+        "if message come from private message:"
+      ],
+      "patterns": [
+        "[the] (message|event) (is coming|come from|is from) guild [channel]",
+        "[the] (message|event) (is coming|come from|is from) (dm|(private|direct) message) [channel]"
+      ]
+    },
+    {
+      "id": "HasBanner",
+      "name": "Profile Has Banner",
+      "description": [
+        "Check if the specified profile have a custom banner set or not.",
+        "Useful to manage either its banner URL of color accent."
+      ],
+      "patterns": [
+        "%userprofile% (has|have) [custom] banner",
+        "%userprofile% (doesn't|does not|do not|don't) have [custom] banner"
+      ]
+    },
+    {
+      "id": "CondTagRequired",
+      "name": "Tag Required",
+      "description": [
+        "Check if a forum channel require a tag to be set when creating a new post.",
+        "Can be changed using the 'tag required' expression."
+      ],
+      "examples": [
+        "if event-forumchannel is tag required:",
+        "set tag required of event-forumchannel to false"
+      ],
+      "patterns": [
+        "%forumchannel% (is|are) tag required",
+        "%forumchannel% (isn't|is not|aren't|are not) tag required"
+      ]
+    },
+    {
+      "id": "IsBot",
+      "name": "User is Bot",
+      "description": [
+        "Check either the provided user is a discord bot or not."
+      ],
+      "examples": [
+        "event-user is a discord bot",
+        "event-member is not a discord bot"
+      ],
+      "patterns": [
+        "%users% (is|are) [a] discord bot",
+        "%users% (isn't|is not|aren't|are not) [a] discord bot"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "ArchiveUnarchiveThread",
+      "name": "Archive / Unarchive Thread",
+      "description": [
+        "Archive or unarchive a specific thread."
+      ],
+      "examples": [
+        "archive event-threadchannel",
+        "unarchive thread channel with id \"000\""
+      ],
+      "since": [
+        "4.4.0"
+      ],
+      "patterns": [
+        "archive [the] [thread] %threadchannel%",
+        "unarchive [the] [thread] %threadchannel%"
+      ]
+    },
+    {
+      "id": "BanMember",
+      "name": "Ban Member",
+      "description": [
+        "Bans a member from a guild."
+      ],
+      "examples": [
+        "ban event-member because of \"being lame\" and delete 10 days' worth of messages"
+      ],
+      "patterns": [
+        "[discord] ban [the] discord [member] %member% [(due to|because of|with [the] reason) %string%] [and (delete|remove) %timespan% [worth ]of messages]"
+      ]
+    },
+    {
+      "id": "Change",
+      "name": "Change",
+      "patterns": [
+        "(add|give) %objects% to (%objects%) (with|using) %bot%",
+        "increase %objects% by (%objects%) (with|using) %bot%",
+        "give %objects% (%objects%) (with|using) %bot%",
+        "set %objects% to (%objects%) (with|using) %bot%",
+        "remove (all|every) %objects% from (%objects%) (with|using) %bot%",
+        "(remove|subtract) %objects% from (%objects%) (with|using) %bot%",
+        "reduce %objects% by (%objects%) (with|using) %bot%",
+        "(delete|clear) (%objects%) (with|using) %bot%",
+        "reset (%objects%) (with|using) %bot%"
+      ]
+    },
+    {
+      "id": "CreateEmote",
+      "name": "Create Emote",
+      "description": [
+        "Create a new emote in a specific guild.",
+        "The name must be between 2 and 32 chars and the guild should not have an emote with the same name.",
+        "The URL will represent the image, and can be either a web URL or a local path."
+      ],
+      "examples": [
+        "create new emote named \"test\" with url \"https://static.wikia.nocookie.net/leagueoflegends/images/a/ae/This_Changes_Everything_Emote.png/revision/latest/scale-to-width-down/250?cb=20211019231749\" in event-guild and store it in {_emote}",
+        "make emote with name \"test2\" with path \"plugins/path/image.png\" in event-guild and store it in {_emote}"
+      ],
+      "patterns": [
+        "(make|create) [the] [new] emote (named|with name) %string% with [the] (url|path) %string% in [the] [guild] %guild% and store (it|the emote) in %object%"
+      ]
+    },
+    {
+      "id": "CreatePost",
+      "name": "Create Post",
+      "description": [
+        "Create a new post in a forum channel. The output value will be the newly created thread channel."
+      ],
+      "examples": [
+        "create a new post in forum channel with id \"000\" named \"I need help!\" with message \"please help me!\"",
+        "create a new post in forum channel with id \"000\" named \"I need help!\" with message \"please help me!\" with tags \"help\" and \"support\""
+      ],
+      "since": [
+        "4.4.4"
+      ],
+      "patterns": [
+        "create [a] [new] post in [channel] %forumchannel% (with name|named) %string% [with message] %string/messagecreatebuilder/embedbuilder% [with [the] tags %strings%] [and store (it|the thread) in %object%]"
+      ]
+    },
+    {
+      "id": "CreateThread",
+      "name": "Create Thread",
+      "description": [
+        "Create a new thread in a text channel with a base name.",
+        "The bot used in that effect will automatically join the thread, so you don't have to make it join yourself.",
+        "If you create a private thread, then you cannot specify a message.",
+        "Else, the Thread will be created based on the specified message.",
+        "Creating private thread need the guild to be level 2 or more, else it'll throw an exception."
+      ],
+      "patterns": [
+        "(make|create) [the] [new] [private] thread (named|with name) %string% in [the] [channel] %channel/textchannel% [(with|using) [the] [message] [as reference] %message%] [(with|using) [the] [bot] %bot%] and store (it|the thread) in %object%"
+      ]
+    },
+    {
+      "id": "CreateAction",
+      "name": "CreateAction",
+      "patterns": [
+        "create [the] [(action|manager)] %roleaction/channelaction% and store (it|the (role|channel)) in %object%"
+      ]
+    },
+    {
+      "id": "CreateInvite",
+      "name": "CreateInvite",
+      "patterns": [
+        "(make|create) [the] [new] invite in [the] [(guild|channel)] %guild/channel% [with max us(e|age)[s] %number%] [with max (time|age) %number%] and store (it|the invite) in %object%"
+      ]
+    },
+    {
+      "id": "DeferInteraction",
+      "name": "Defer Interaction",
+      "description": [
+        "Only usable in interaction event, currently button click/dropdown update/modal event!",
+        "This will force the interaction to be acknowledge, you have 3 seconds to do so, the effect will send a success message to Discord or hold the interaction to send a message later.",
+        "Keep in mind that replying in an interaction event will automatically defer the interaction, and therefore you don't need to defer it.",
+        "If you need to wait more than 3 seconds use the and wait pattern",
+        "An interaction can only be deferred once!"
+      ],
+      "examples": [
+        "defer the interaction",
+        "defer the interaction and wait",
+        "defer the interaction and wait silently"
+      ],
+      "patterns": [
+        "(acknowledge|defer) [the] interaction [and wait [(silently)]]"
+      ]
+    },
+    {
+      "id": "DestroyEntity",
+      "name": "Destroy Discord Entity",
+      "description": [
+        "Destroy on Discord the wanted entity."
+      ],
+      "examples": [
+        "destroy event-channel",
+        "destroy event-message"
+      ],
+      "patterns": [
+        "destroy %guild/message/role/channel/emote%"
+      ]
+    },
+    {
+      "id": "EffAttDownload",
+      "name": "Download Attachment",
+      "description": [
+        "Download the specific attachment to a file path."
+      ],
+      "examples": [
+        "download {_attachment} in folder \"plugins/data/attachments/\""
+      ],
+      "patterns": [
+        "(download|dl) [the] [attachment] %attachment% (in|to) [the] [(folder|path)] %string%"
+      ]
+    },
+    {
+      "id": "EditMessage",
+      "name": "Edit Message",
+      "description": [
+        "Edit a specific message/interaction hook to show a new rich or simple message.",
+        "The interaction hook will only be editable for the next 15 minutes once it's sent!"
+      ],
+      "examples": [
+        "# We are in a slash command event!\nreply with hidden \"Wanna see a magic trick? ...\" and store it in {_msg}\nwait a second\n# The variable does not contains a 'real' message, it contains the interaction hook.edit {_msg} to show \"Abracadabra!\""
+      ],
+      "since": [
+        "4.4.0"
+      ],
+      "patterns": [
+        "edit [the] [message] %message/interactionhook% (with|to show) %string/messagecreatebuilder/embedbuilder%"
+      ]
+    },
+    {
+      "id": "EffAddField",
+      "name": "EffAddField",
+      "patterns": [
+        "add field (named|with name) %string% [and] with [the] value %string% to [fields of] %embedbuilder%",
+        "add inline field (named|with name) %string% [and] with [the] value %string% to [fields of] %embedbuilder%"
+      ]
+    },
+    {
+      "id": "EffUpdateCommand",
+      "name": "EffUpdateCommand",
+      "patterns": [
+        "(update|register) [the] [command[s]] %slashcommands% [(globally|locally)] in [the] [(bot|guild)] %bot/guild%"
+      ]
+    },
+    {
+      "id": "BaseBotEffect",
+      "name": "Execute X Using Bot",
+      "description": [
+        "This effect is for utilities purpose.",
+        "It will wrap the actual effect from DiSky and execute it using the specified bot.",
+        "The syntax MUST come from DiSky, and at least ONE bot MUST be loaded (if the specified one is wrong / not loaded)"
+      ],
+      "patterns": [
+        "execute (with|using) [the] %bot% <.+>",
+        "execute <.+> (with|using) [the] %bot%"
+      ]
+    },
+    {
+      "id": "KickMember",
+      "name": "Kick Member",
+      "description": [
+        "Kick a specific member out of its guild. You can also specify a reason if needed."
+      ],
+      "examples": [
+        "kick discord event-member due to \"ur bad guys!\""
+      ],
+      "patterns": [
+        "kick [the] discord [member] %member% [(due to|because of|with [the] reason) %string%]"
+      ]
+    },
+    {
+      "id": "LoadMembers",
+      "name": "Load Members",
+      "description": [
+        "Load every members of a guild.",
+        "This effect will also cache members that were not, so execution may be delayed.",
+        "consider calling this effect once, then use the default member expression to get the members."
+      ],
+      "examples": [
+        "load members of event-guild and store them in {_members::*}"
+      ],
+      "since": [
+        "4.0.0"
+      ],
+      "patterns": [
+        "load [all] members (of|from) [the] %guild% and store (them|the members) in %objects%"
+      ]
+    },
+    {
+      "id": "LockUnlockThread",
+      "name": "Lock / Unlock Thread",
+      "description": [
+        "Lock or unlock a specific thread."
+      ],
+      "examples": [
+        "lock event-threadchannel",
+        "unlock thread channel with id \"000\""
+      ],
+      "since": [
+        "4.4.0"
+      ],
+      "patterns": [
+        "lock [the] [thread] %threadchannel%",
+        "unlock [the] [thread] %threadchannel%"
+      ]
+    },
+    {
+      "id": "EffEnableDisableCommand",
+      "name": "Manage Command Permissions",
+      "description": [
+        "This effect allows you to manage the permissions of slash commands, with the following rules:",
+        " - By default, the command is marked as ENABLED, and anyone can see & use it.",
+        " - You can DISABLE completely the command (first pattern), only admins will be able to use it.",
+        " - Or you can ENABLE the commands for specific PERMISSIONS (second pattern)."
+      ],
+      "examples": [
+        "disable command{_cmd1} # disable the command for everyone, except the admins.",
+        "enable command {_cmd2} for manage server # enable the command only for the users who have the 'manage server' permission."
+      ],
+      "patterns": [
+        "disable [the] [command] %slashcommand%",
+        "enable [the] [command] %slashcommands% (for|to) [the] [permissions] %permissions%"
+      ]
+    },
+    {
+      "id": "MoveMember",
+      "name": "Move Member",
+      "description": [
+        "Move a member to another voice chat.",
+        "You can only move a member if they were previously in a voice channel."
+      ],
+      "examples": [
+        "move event-member to {_voice}"
+      ],
+      "patterns": [
+        "[voice] move [the] discord [member] %member% to [a] [voice[( |-)channel]] %voicechannel%"
+      ]
+    },
+    {
+      "id": "MoveRole",
+      "name": "Move Role Above/Under Role",
+      "description": [
+        "Move a specific role above or under another role within the same guild.",
+        "The indexes will be updated automatically."
+      ],
+      "examples": [
+        "move role {_role} above role with id \"000\""
+      ],
+      "patterns": [
+        "move [the] [discord] role %role% above [the] [discord] %role%",
+        "move [the] [discord] role %role% under [the] [discord] %role%"
+      ]
+    },
+    {
+      "id": "MuteMember",
+      "name": "Mute Member",
+      "description": [
+        "Mute or unmute a member in their guild."
+      ],
+      "examples": [
+        "voice mute event-member",
+        "unmute member event-member"
+      ],
+      "patterns": [
+        "[voice] mute [the] [discord] [member] %member%",
+        "[voice] un[ |-]mute [the] [discord] [member] %member%"
+      ]
+    },
+    {
+      "id": "OpenPrivateChannel",
+      "name": "Open Private Channel",
+      "description": [
+        "Opens a private channel with a specific user.",
+        "The opened channel can be null and an exception can be thrown if the user does not accept message."
+      ],
+      "examples": [
+        "open private channel of event-user and store it in {_channel}",
+        "if {_channel} is not set:",
+        "\treply with \"Please enable your private messages!\"",
+        "else:",
+        "\tpost \"Hello world!\" to {_channel}"
+      ],
+      "patterns": [
+        "open [the] private (channel|message[s]) of [the] [member] %user% and store (it|the [private] channel) in %objects%"
+      ]
+    },
+    {
+      "id": "OpenModal",
+      "name": "OpenModal",
+      "patterns": [
+        "(show|enable) [the] [modal] %modal% [to [the] [event[( |-)]]user]"
+      ]
+    },
+    {
+      "id": "PostMessage",
+      "name": "Post Message",
+      "description": [
+        "Posts a message to a message-channel.",
+        "You can send messages in a text, private, news, post or thread channel."
+      ],
+      "examples": [
+        "post \"Hello world!\" to text channel with id \"000\"",
+        "post last embed to thread channel with id \"000\" and store it in {_message"
+      ],
+      "since": [
+        "4.4.0"
+      ],
+      "patterns": [
+        "(post|dispatch) %string/messagecreatebuilder/sticker/embedbuilder% (in|to) [the] %channel% [and store (it|the message) in %objects%]"
+      ]
+    },
+    {
+      "id": "PurgeMessages",
+      "name": "Purge Messages",
+      "description": [
+        "Discord provide a better way to delete multiple messages at once.",
+        "This effect only works with messages, and a list is recommended here.",
+        "If you want to delete a single message, use the destroy effect."
+      ],
+      "examples": [
+        "retrieve last 50 messages from event-channel and store them in {_msg::*}",
+        "purge {_msg::*}"
+      ],
+      "patterns": [
+        "purge [the] [message[s]] %messages%"
+      ]
+    },
+    {
+      "id": "ReplyWith",
+      "name": "Reply With",
+      "description": [
+        "Reply with a specific message to the channel where a message-event was triggered.",
+        "It can also be used to acknowledge & reply to an interaction, such as button click or slash command.",
+        "In interaction only, you can use the keyword 'hidden' to reply with an ephemeral message (only the executor can see it).",
+        "Therefore, the value stored in the variable, if specified, will be an interaction hook, and not a compete message.",
+        "You can also provide a message as reference. The replied message be linked with the provided one."
+      ],
+      "examples": [
+        "reply with \"Hello world!\"",
+        "reply with last embed with reference event-message",
+        "reply with hidden \"Hello ...\" and store it in {_msg}\nwait a second",
+        "edit {_msg} to show \"... world!\""
+      ],
+      "since": [
+        "4.4.0"
+      ],
+      "patterns": [
+        "reply with [hidden] %string/messagecreatebuilder/sticker/embedbuilder% [with [the] reference[d] [message] %message%] [and store (it|the message) in %objects%]"
+      ]
+    },
+    {
+      "id": "RetrieveMessages",
+      "name": "Retrieve Messages",
+      "description": [
+        "Retrieve last X messages from a specific message channel.",
+        "You can retrieve up to 100 last messages, others will be ignored.",
+        "Don't forget to use 'purge' effect to delete a lot of messages the most enhanced way ever."
+      ],
+      "examples": [
+        "retrieve last 30 messages from event-channel and store them in {_msg::*}"
+      ],
+      "patterns": [
+        "retrieve [last] %number% [amount of] message[s] (of|in|from) %channel% and store (them|the messages) in %objects%"
+      ]
+    },
+    {
+      "id": "RetrieveProfile",
+      "name": "Retrieve Profile",
+      "description": [
+        "Retrieve the profile of the specified user.",
+        "Profile represent mainly the banner of the user, could return the accent color if non set."
+      ],
+      "patterns": [
+        "retrieve profile (with|from) id %string% (from|with|of|in) %user% [(with|using) [the] [bot] %bot%] and store (it|the profile) in %object%"
+      ]
+    },
+    {
+      "id": "RetrieveSticker",
+      "name": "Retrieve Sticker",
+      "description": [
+        "Retrieve a sticker from a guild using its per-guild name.",
+        "This will return a sticker from the guild, not a global one."
+      ],
+      "patterns": [
+        "retrieve sticker (with|from) id %string% (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (it|the sticker) in %object%"
+      ]
+    },
+    {
+      "id": "RetrieveStickers",
+      "name": "Retrieve Stickers",
+      "description": [
+        "Retrieve every stickers (and cache them) from a specific guild."
+      ],
+      "patterns": [
+        "retrieve [(all|every)] stickers (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (them|the stickers) in %objects%"
+      ]
+    },
+    {
+      "id": "RetrieveThreads",
+      "name": "Retrieve Threads",
+      "description": [
+        "Retrieve every threads (and cache them) from a specific guild.",
+        "This effect will only get back the ACTIVE thread, and will pass on the archived ones."
+      ],
+      "patterns": [
+        "retrieve [(all|every)] thread[s] (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (them|the thread[s]) in %objects%"
+      ]
+    },
+    {
+      "id": "RetrieveBans",
+      "name": "RetrieveBans",
+      "patterns": [
+        "retrieve [(all|every)] bans (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (them|the bans) in %objects%"
+      ]
+    },
+    {
+      "id": "RetrieveEmotes",
+      "name": "RetrieveEmotes",
+      "patterns": [
+        "retrieve [(all|every)] emotes (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (them|the emotes) in %objects%"
+      ]
+    },
+    {
+      "id": "RetrieveEventValue",
+      "name": "RetrieveEventValue",
+      "patterns": [
+        "retrieve [the] [event[(-| )]]value %string% and store (it|the value) in %objects%"
+      ]
+    },
+    {
+      "id": "RetrieveInvite",
+      "name": "RetrieveInvite",
+      "patterns": [
+        "retrieve invite (with|from) id %string% (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (it|the invite) in %object%"
+      ]
+    },
+    {
+      "id": "RetrieveInvites",
+      "name": "RetrieveInvites",
+      "patterns": [
+        "retrieve [(all|every)] invites (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (them|the invites) in %objects%"
+      ]
+    },
+    {
+      "id": "RetrieveMember",
+      "name": "RetrieveMember",
+      "patterns": [
+        "retrieve member (with|from) id %string% (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (it|the member) in %object%"
+      ]
+    },
+    {
+      "id": "RetrieveMessage",
+      "name": "RetrieveMessage",
+      "patterns": [
+        "retrieve message (with|from) id %string% (from|with|of|in) %channel% [(with|using) [the] [bot] %bot%] and store (it|the message) in %object%"
+      ]
+    },
+    {
+      "id": "RetrieveOwner",
+      "name": "RetrieveOwner",
+      "patterns": [
+        "retrieve owner (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (it|the owner) in %object%"
+      ]
+    },
+    {
+      "id": "RetrieveUser",
+      "name": "RetrieveUser",
+      "patterns": [
+        "retrieve user (with|from) id %string% (from|with|of|in) %bot% and store (it|the user) in %object%"
+      ]
+    },
+    {
+      "id": "Return",
+      "name": "Return",
+      "patterns": [
+        "return %slashchoices%"
+      ]
+    },
+    {
+      "id": "SendTyping",
+      "name": "Send typing",
+      "description": [
+        "Sends the typing status to discord. This is what is used to make the message \"X is typing...\" appear.",
+        "Typing status lasts for 10 seconds."
+      ],
+      "examples": [
+        "show typing status in event-channel"
+      ],
+      "patterns": [
+        "[discord] (send|show) typing [status] (in|to) [[text[ |-]]channel] %channel%"
+      ]
+    },
+    {
+      "id": "StopBot",
+      "name": "Shutdown Bot",
+      "description": [
+        "Stop and disconnect a loaded bot from DiSky & discord.",
+        "If any requests was still remaining, they will be executed before the actual bot shutdown",
+        "Using the force pattern will cancel all requests and shutdown the bot instantly."
+      ],
+      "examples": [
+        "shutdown bot named \"name\"",
+        "stop bot \"name\""
+      ],
+      "patterns": [
+        "[force] (stop|shutdown) [the] [bot] %bot%"
+      ]
+    },
+    {
+      "id": "SuppressReaction",
+      "name": "Suppress Reaction",
+      "description": [
+        "Suppress one or more reactions of a message.",
+        "You can also specific the user who added the emote to remove it one time.",
+        "Without any specified user, it will be the bot's self user that removes the emote."
+      ],
+      "examples": [
+        "suppress reaction \"x\" of event-user from event-message",
+        "suppress reaction \"joy\" from event-message # Remove the reaction ADDED BY THE BOT"
+      ],
+      "since": [
+        "4.1.1"
+      ],
+      "patterns": [
+        "suppress [the] %emotes% [(of|from) [the] %user%] (of|from) [the] %message%"
+      ]
+    },
+    {
+      "id": "TimeOutMember",
+      "name": "TimeOut Member",
+      "description": [
+        "Timeout a member (temporal exclusion) for a specific duration and with an optional reason.",
+        "You can either timeout UNTIL a specific date (Skript date), or FOR a specific timespan (Skript timespan).",
+        "This also can be used to remove the current time out, if the bot has the permission to do so."
+      ],
+      "examples": [
+        "timeout event-member for 5 minutes due to \"ur so bad\"",
+        "time out event-member until {_date}",
+        "stop time out of event-member"
+      ],
+      "patterns": [
+        "time[( |-)]out %member% for %timespan% [(for [the reason]|due to) %string%]",
+        "time[( |-)]out %member% until %date% [(for [the reason]|due to) %string%]",
+        "(stop|remove) time[( |-)]out (from|of) %member%"
+      ]
+    },
+    {
+      "id": "UnbanMember",
+      "name": "Unban User",
+      "description": [
+        "Unbans a user from a guild."
+      ],
+      "examples": [
+        "unban event-user in guild with id \"818182471140114432\""
+      ],
+      "patterns": [
+        "[discord] un[-| ]ban [the] [discord] [user] %user% (from|in) [guild] %guild%"
+      ]
+    },
+    {
+      "id": "UnregisterCommand",
+      "name": "Unregister Command",
+      "description": [
+        "Unregister a specific slash command from local or global context of a bot.",
+        "You must provide the command's name. Keep in mind this **SHOULD NOT** be used!",
+        "The best way remains to update bot's commands without the command you want to delete!"
+      ],
+      "examples": [
+        "unregister command \"test\" locally in guild with id \"000\""
+      ],
+      "patterns": [
+        "unregister [the] [command[s]] %strings% [(globally|locally)] (in|from|of) [the] [(bot|guild)] %bot/guild%"
+      ]
+    }
+  ],
+  "expressions": [
+    {
+      "id": "ActivityEmote",
+      "name": "ActivityEmote",
+      "return type": "emote",
+      "patterns": [
+        "[the] activity emo(ji|te) of %activity%",
+        "%activity%'[s] activity emo(ji|te)"
+      ]
+    },
+    {
+      "id": "ActivityText",
+      "name": "ActivityText",
+      "return type": "Text",
+      "patterns": [
+        "[the] activity (text|content|name) of %activity%",
+        "%activity%'[s] activity (text|content|name)"
+      ]
+    },
+    {
+      "id": "ActivityType",
+      "name": "ActivityType",
+      "return type": "Text",
+      "patterns": [
+        "[the] activity type of %activity%",
+        "%activity%'[s] activity type"
+      ]
+    },
+    {
+      "id": "ActivityURL",
+      "name": "ActivityURL",
+      "return type": "Text",
+      "patterns": [
+        "[the] activity ur(i|l) of %activity%",
+        "%activity%'[s] activity ur(i|l)"
+      ]
+    },
+    {
+      "id": "GuildGuildChannels",
+      "name": "All Guild Guild Channels",
+      "description": [
+        "Get every guild channel in the guild, including text, voice, stage, news, and thread channels."
+      ],
+      "examples": [
+        "guild channels of event-guild"
+      ],
+      "return type": "guildchannel",
+      "patterns": [
+        "[all] [the] [guild] [all] guild[( |-)]channels of %guild%",
+        "[all] [the] %guild%'[s] [guild] [all] guild[( |-)]channels"
+      ]
+    },
+    {
+      "id": "GuildStageChannels",
+      "name": "All Guild Stage Channels",
+      "description": [
+        "Returns all stage channels of a guild."
+      ],
+      "examples": [
+        "all stage channels of event-guild"
+      ],
+      "return type": "stagechannel",
+      "patterns": [
+        "[all] [the] [guild] [all] stage[( |-)]channels of %guild%",
+        "[all] [the] %guild%'[s] [guild] [all] stage[( |-)]channels"
+      ]
+    },
+    {
+      "id": "GuildTextChannels",
+      "name": "All Guild Text Channels",
+      "description": [
+        "Returns all text channels of a guild."
+      ],
+      "examples": [
+        "all text channels of event-guild"
+      ],
+      "return type": "textchannel",
+      "patterns": [
+        "[all] [the] [guild] [all] text[( |-)]channels of %guild%",
+        "[all] [the] %guild%'[s] [guild] [all] text[( |-)]channels"
+      ]
+    },
+    {
+      "id": "ExprAttFileExt",
+      "name": "Attachments File Extension",
+      "description": [
+        "Get the file extension of an attachment."
+      ],
+      "since": [
+        "1.7"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [discord] file ext[ension] of %attachment%",
+        "%attachment%'[s] [discord] file ext[ension]"
+      ]
+    },
+    {
+      "id": "ExprAttFileName",
+      "name": "Attachments File Name",
+      "description": [
+        "Get the file name of an attachment."
+      ],
+      "since": [
+        "1.7"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [discord] file name of %attachment%",
+        "%attachment%'[s] [discord] file name"
+      ]
+    },
+    {
+      "id": "ExprAttURL",
+      "name": "Attachments URL",
+      "description": [
+        "Get the url of an attachment."
+      ],
+      "since": [
+        "1.7"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [discord] [attachment] ur(l|i) of %attachment%",
+        "%attachment%'[s] [discord] [attachment] ur(l|i)"
+      ]
+    },
+    {
+      "id": "BanReason",
+      "name": "Ban Reason",
+      "description": [
+        "The optional reason which say why the user of this ban was banned."
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [ban[ned]] reason of %ban%",
+        "%ban%'[s] [ban[ned]] reason"
+      ]
+    },
+    {
+      "id": "BanUser",
+      "name": "Ban User",
+      "description": [
+        "The user linked to this ban."
+      ],
+      "return type": "user",
+      "patterns": [
+        "[the] [banned] user of %ban%",
+        "%ban%'[s] [banned] user"
+      ]
+    },
+    {
+      "id": "BotGuilds",
+      "name": "BotGuilds",
+      "return type": "guild",
+      "patterns": [
+        "[all] [the] guilds of %bot%",
+        "[all] [the] %bot%'[s] guilds"
+      ]
+    },
+    {
+      "id": "BotName",
+      "name": "BotName",
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [discord] bot name of %bot%",
+        "%bot%'[s] [discord] bot name"
+      ]
+    },
+    {
+      "id": "BotPing",
+      "name": "BotPing",
+      "return type": "Number",
+      "patterns": [
+        "[the] [discord] bot ping of %bot%",
+        "%bot%'[s] [discord] bot ping"
+      ]
+    },
+    {
+      "id": "BotPresence",
+      "name": "BotPresence",
+      "return type": "activity",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [discord] presence of %bot%",
+        "%bot%'[s] [discord] presence"
+      ]
+    },
+    {
+      "id": "BotToken",
+      "name": "BotToken",
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [discord] bot token of %bot%",
+        "%bot%'[s] [discord] bot token"
+      ]
+    },
+    {
+      "id": "BotUptime",
+      "name": "BotUptime",
+      "return type": "Timespan",
+      "patterns": [
+        "[the] [discord] [bot] uptime of %bot%",
+        "%bot%'[s] [discord] [bot] uptime"
+      ]
+    },
+    {
+      "id": "ChannelJumpURL",
+      "name": "Channel Jump URL",
+      "description": [
+        "Returns the jump-to URL for this channel.",
+        "Clicking this URL in the Discord client will cause the client to jump to the specified channel."
+      ],
+      "examples": [
+        "reply with channel url of event-channel"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] channel [jump] url of %channel%",
+        "%channel%'[s] channel [jump] url"
+      ]
+    },
+    {
+      "id": "ChannelBitrate",
+      "name": "ChannelBitrate",
+      "return type": "Number",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [channel] bitrate of %channel/channelaction%",
+        "%channel/channelaction%'[s] [channel] bitrate"
+      ]
+    },
+    {
+      "id": "ChannelChannels",
+      "name": "ChannelChannels",
+      "return type": "textchannel",
+      "patterns": [
+        "[all] [the] [discord] channel[s] of %category%",
+        "[all] [the] %category%'[s] [discord] channel[s]"
+      ]
+    },
+    {
+      "id": "ChannelMaxUser",
+      "name": "ChannelMaxUser",
+      "return type": "Number",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [channel] max[imum] user[s] of %channel/channelaction%",
+        "%channel/channelaction%'[s] [channel] max[imum] user[s]"
+      ]
+    },
+    {
+      "id": "ChannelNSFW",
+      "name": "ChannelNSFW",
+      "return type": "Boolean",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [channel] nsfw of %channel/channelaction%",
+        "%channel/channelaction%'[s] [channel] nsfw"
+      ]
+    },
+    {
+      "id": "ChannelName",
+      "name": "ChannelName",
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] channel name of %channel/channelaction%",
+        "%channel/channelaction%'[s] channel name"
+      ]
+    },
+    {
+      "id": "ChannelParent",
+      "name": "ChannelParent",
+      "return type": "category",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [channel] parent of %channel/channelaction%",
+        "%channel/channelaction%'[s] [channel] parent"
+      ]
+    },
+    {
+      "id": "ChannelPosition",
+      "name": "ChannelPosition",
+      "return type": "Number",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [channel] position of %channel/channelaction%",
+        "%channel/channelaction%'[s] [channel] position"
+      ]
+    },
+    {
+      "id": "ChannelRegion",
+      "name": "ChannelRegion",
+      "return type": "Object",
+      "patterns": [
+        "[the] [channel] region of %channel/channelaction%",
+        "%channel/channelaction%'[s] [channel] region"
+      ]
+    },
+    {
+      "id": "ChannelSlowmode",
+      "name": "ChannelSlowmode",
+      "return type": "Number",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [channel] slow[( |-)]mode of %channel/channelaction%",
+        "%channel/channelaction%'[s] [channel] slow[( |-)]mode"
+      ]
+    },
+    {
+      "id": "ChannelTopic",
+      "name": "ChannelTopic",
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [channel] topic of %channel/channelaction%",
+        "%channel/channelaction%'[s] [channel] topic"
+      ]
+    },
+    {
+      "id": "ColorFromHex",
+      "name": "Color from Hex",
+      "description": [
+        "Get a color from a hexadecimal string.",
+        "Do not include the # in the string."
+      ],
+      "examples": [
+        "set embed color of embed to hex \"ff0000\""
+      ],
+      "return type": "Colour",
+      "patterns": [
+        "[the] (hex|color) %string%"
+      ]
+    },
+    {
+      "id": "PropLocalization",
+      "name": "Command Localization",
+      "description": [
+        "Represents the localization of the name or the description of a slash/sub command.",
+        "You can add **Locale Data** (check for expression) to them.",
+        "Basically, the command's name & description will be according to the client's language code.",
+        "Documentation: https://docs.disky.me/advanced-stuff/slash-commands#using-localizations-v4.3.0+"
+      ],
+      "return type": "Object",
+      "patterns": [
+        "[all] [the] (name|description)['s] (localization[s]|locale[s]) of %slashcommand/subslashcommand%",
+        "[all] [the] %slashcommand/subslashcommand%'[s] (name|description)['s] (localization[s]|locale[s])"
+      ]
+    },
+    {
+      "id": "CreationDate",
+      "name": "Creation Date",
+      "description": [
+        "Get the creation date (as Skript date) of any ISnowFlake entity, including, but not limited to:",
+        "- Member",
+        "- User",
+        "- Role",
+        "- Guild",
+        "- Channel",
+        "- etc..."
+      ],
+      "examples": [
+        "creation date of event-user",
+        "created date of event-member"
+      ],
+      "return type": "Date",
+      "patterns": [
+        "[the] creat(ion|ed) date of %guild/member/user/role/channel%",
+        "%guild/member/user/role/channel%'[s] creat(ion|ed) date"
+      ]
+    },
+    {
+      "id": "CurrentArgument",
+      "name": "Current Argument",
+      "description": [
+        "The current argument being completed."
+      ],
+      "examples": [
+        "current argument"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "current( |-)arg[ument] [name]"
+      ]
+    },
+    {
+      "id": "DefaultEmoji",
+      "name": "Default Forum Emoji",
+      "description": [
+        "Represent the default emoji of a forum channel.",
+        "It's the mote that is added automatically once a new post is created.",
+        "Can return none and can be changed."
+      ],
+      "examples": [
+        "set default emoji of event-forumchannel to reaction \"smile\""
+      ],
+      "return type": "emote",
+      "patterns": [
+        "[the] default [forum] emoji of %forumchannel%",
+        "%forumchannel%'[s] default [forum] emoji"
+      ]
+    },
+    {
+      "id": "ExprArgument",
+      "name": "Discord Command Argument",
+      "description": [
+        "Works same as Skript's command argument. You can specify the argument number or the argument type (in case there's only one user or member for example) to get the selected value."
+      ],
+      "return type": "Object",
+      "changers": [
+        "unknown"
+      ],
+      "patterns": [
+        "[][the] last arg[ument][s]",
+        "[][the] arg[ument][s](-| )<(\\d+)>",
+        "[][the] <(\\d*1)st|(\\d*2)nd|(\\d*3)rd|(\\d*[4-90])th> arg[ument][s]",
+        "[][the] arg[ument][s]",
+        "[][the] %*classinfo%( |-)arg[ument][( |-)<\\d+>]",
+        "[][the] arg[ument]( |-)%*classinfo%[( |-)<\\d+>]"
+      ]
+    },
+    {
+      "id": "DiscordId",
+      "name": "Discord ID",
+      "description": [
+        "Get the unique long value (ID) that represent a discord entity."
+      ],
+      "examples": [
+        "discord id of event-channel",
+        "discord id of event-guild"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] discord id of %channel/role/user/member/sticker/message/dropdown/button/guild%",
+        "%channel/role/user/member/sticker/message/dropdown/button/guild%'[s] discord id"
+      ]
+    },
+    {
+      "id": "DiscordMembersOf",
+      "name": "Discord Members of Guild / Channel",
+      "description": [
+        "Returns a list of members.",
+        "For Message text-related channel & category, it returns members with permission to view the channel",
+        "For Audio Channels it returns the currently connected members of the channel."
+      ],
+      "examples": [
+        "members of event-channel",
+        "members of voice channel with id \"0000\""
+      ],
+      "return type": "member",
+      "patterns": [
+        "[all] [the] discord member[s] [list] of %guildchannel/guild%",
+        "[all] [the] %guildchannel/guild%'[s] discord member[s] [list]"
+      ]
+    },
+    {
+      "id": "PermissionsOf",
+      "name": "Discord Permissions Of",
+      "description": [
+        "Get or change the permissions of a specific member or role in an optional channel."
+      ],
+      "examples": [
+        "add (manage server) to permissions of event-member in event-channel",
+        "remove (administrator) from permissions of event-role"
+      ],
+      "since": [
+        "4.0.0"
+      ],
+      "return type": "permission",
+      "changers": [
+        "add",
+        "remove"
+      ],
+      "patterns": [
+        "permissions of %member/role% [in %channel%]"
+      ]
+    },
+    {
+      "id": "ColorOf",
+      "name": "Embed Color",
+      "description": [
+        "Get or change the color of an embed builder.",
+        "The color input must come from Skript, and will be converted by DiSky."
+      ],
+      "examples": [
+        "set embed color of embed to red"
+      ],
+      "return type": "Colour",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] (embed|discord) colo[u]r of %embedbuilder%",
+        "%embedbuilder%'[s] (embed|discord) colo[u]r"
+      ]
+    },
+    {
+      "id": "EmbedAuthor",
+      "name": "EmbedAuthor",
+      "return type": "Text",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] author of %embedbuilder%",
+        "%embedbuilder%'[s] author"
+      ]
+    },
+    {
+      "id": "EmbedAuthorIcon",
+      "name": "EmbedAuthorIcon",
+      "return type": "Text",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] author icon of %embedbuilder%",
+        "%embedbuilder%'[s] author icon"
+      ]
+    },
+    {
+      "id": "EmbedAuthorURL",
+      "name": "EmbedAuthorURL",
+      "return type": "Text",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] author url of %embedbuilder%",
+        "%embedbuilder%'[s] author url"
+      ]
+    },
+    {
+      "id": "EmbedDescription",
+      "name": "EmbedDescription",
+      "return type": "Text",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] description of %embedbuilder%",
+        "%embedbuilder%'[s] description"
+      ]
+    },
+    {
+      "id": "EmbedFooter",
+      "name": "EmbedFooter",
+      "return type": "Text",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] footer of %embedbuilder%",
+        "%embedbuilder%'[s] footer"
+      ]
+    },
+    {
+      "id": "EmbedFooterIcon",
+      "name": "EmbedFooterIcon",
+      "return type": "Text",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] footer icon of %embedbuilder%",
+        "%embedbuilder%'[s] footer icon"
+      ]
+    },
+    {
+      "id": "EmbedImage",
+      "name": "EmbedImage",
+      "return type": "Text",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] image of %embedbuilder%",
+        "%embedbuilder%'[s] image"
+      ]
+    },
+    {
+      "id": "EmbedThumbnail",
+      "name": "EmbedThumbnail",
+      "return type": "Text",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] thumbnail of %embedbuilder%",
+        "%embedbuilder%'[s] thumbnail"
+      ]
+    },
+    {
+      "id": "EmbedTimeStamp",
+      "name": "EmbedTimeStamp",
+      "return type": "Date",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] time[( |-)]stamp of %embedbuilder%",
+        "%embedbuilder%'[s] time[( |-)]stamp"
+      ]
+    },
+    {
+      "id": "EmbedTitle",
+      "name": "EmbedTitle",
+      "return type": "Text",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] title of %embedbuilder%",
+        "%embedbuilder%'[s] title"
+      ]
+    },
+    {
+      "id": "EmbedTitleURL",
+      "name": "EmbedTitleURL",
+      "return type": "Text",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] title url of %embedbuilder%",
+        "%embedbuilder%'[s] title url"
+      ]
+    },
+    {
+      "id": "ExprEmoji",
+      "name": "Emoji / Emote",
+      "description": [
+        "Get an emoji or an emote from its name, ID or unicode.",
+        "- An emoji is discord-side only, can be used everywhere, and don't have any attached guild.",
+        "- An emote is guild-side only, have a custom long ID and are attached to a guild.",
+        "It the specified reaction doesn't exist, DiSky will simply return null and say it in console.",
+        "We highly recommend the specification of the guild when retrieving an emote, to avoid conflicts with other that potentially have the same name."
+      ],
+      "examples": [
+        "reaction \"joy\"",
+        "emoji \"sparkles\"",
+        "emote \"disky\" in event-guild"
+      ],
+      "return type": "emote",
+      "patterns": [
+        "(emoji|emote|reaction)[s] %strings% [(from|in) %guild%]"
+      ]
+    },
+    {
+      "id": "EmoteURL",
+      "name": "Emote Image URL",
+      "description": [
+        "Get the URL of this emote.",
+        "Only emote have image URL, emoji are from Discord and will therefore return none here."
+      ],
+      "examples": [
+        "emote url of event-emote",
+        "emote image of reaction \"disky\" # Custom emoji only"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [the] emo(te|ji) (ur(i|l)|image [url]) of %emote%",
+        "%emote%'[s] [the] emo(te|ji) (ur(i|l)|image [url])"
+      ]
+    },
+    {
+      "id": "EmoteName",
+      "name": "Emote Name",
+      "description": [
+        "Get the name of this emote.",
+        "This, instead of 'discord name of %emote%' will return the name of an emote, and not an emoji.",
+        "You can change this property to change the emote's name itself."
+      ],
+      "examples": [
+        "emote name of event-emote",
+        "set emote name of reaction \"disky\" to \"disky2\" # Will now be 'reaction \"disky2\"' to get it back"
+      ],
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] emo(te|ji) name of %emote%",
+        "%emote%'[s] emo(te|ji) name"
+      ]
+    },
+    {
+      "id": "EnumBotStatus",
+      "name": "EnumBotStatus",
+      "return type": "onlinestatus",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [discord] [online] status of %bot%",
+        "%bot%'[s] [discord] [online] status"
+      ]
+    },
+    {
+      "id": "GuildEveryone",
+      "name": "Everyone Role",
+      "description": [
+        "Represent the @everyone role of a guild.",
+        "Even if it's not a real role, it share multiple properties such as permissions."
+      ],
+      "examples": [
+        "reply with mention tag of everyone role of event-guild"
+      ],
+      "return type": "role",
+      "patterns": [
+        "[the] [discord] (public|everyone) role of %guild%",
+        "%guild%'[s] [discord] (public|everyone) role"
+      ]
+    },
+    {
+      "id": "ExprArgumentChoices",
+      "name": "ExprArgumentChoices",
+      "return type": "slashchoice",
+      "changers": [
+        "add"
+      ],
+      "patterns": [
+        "[all] [the] [option] choices of %slashoption%",
+        "[all] [the] %slashoption%'[s] [option] choices"
+      ]
+    },
+    {
+      "id": "ExprEventValues",
+      "name": "ExprEventValues",
+      "return type": "Object",
+      "changers": [
+        "unknown"
+      ],
+      "patterns": [
+        "(multiple|list|array) event-<.+>"
+      ]
+    },
+    {
+      "id": "ExprMaxRange",
+      "name": "ExprMaxRange",
+      "return type": "Number",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] max[imum] range of %dropdown/textinput%",
+        "%dropdown/textinput%'[s] max[imum] range"
+      ]
+    },
+    {
+      "id": "ExprMinRange",
+      "name": "ExprMinRange",
+      "return type": "Number",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] min[imum] range of %dropdown/textinput%",
+        "%dropdown/textinput%'[s] min[imum] range"
+      ]
+    },
+    {
+      "id": "ExprNewInput",
+      "name": "ExprNewInput",
+      "return type": "textinput",
+      "patterns": [
+        "[a] [new] text[( |-)]input [with] [the] [id] %string% (named|with name) %string%",
+        "[a] [new] short text[( |-)]input [with] [the] [id] %string% (named|with name) %string%"
+      ]
+    },
+    {
+      "id": "ExprNewModal",
+      "name": "ExprNewModal",
+      "return type": "modal",
+      "patterns": [
+        "[a] [new] modal [with] [the] [id] %string% (named|with name) %string%"
+      ]
+    },
+    {
+      "id": "ExprNewSlashCommand",
+      "name": "ExprNewSlashCommand",
+      "return type": "Object",
+      "changers": [
+        "unknown"
+      ],
+      "patterns": [
+        "[a] [new] slash[( |-)]command [with] [(the name|named)] %string% [and] with [the] desc[ription] %string%",
+        "[a] [new] sub [slash][( |-)]command [with] [(the name|named)] %string% [and] with [the] desc[ription] %string%",
+        "[a] [new] [slash][( |-)][command] group [with] [(the name|named)] %string% [and] with [the] desc[ription] %string%"
+      ]
+    },
+    {
+      "id": "ExprNewSlashOption",
+      "name": "ExprNewSlashOption",
+      "return type": "slashoption",
+      "patterns": [
+        "[a] [new] [slash[( |-)]command] [(required)] [(auto[( |-)]complete)] %optiontype% option [(named|with name)] %string% with [the] desc[ription] %string%"
+      ]
+    },
+    {
+      "id": "ExprPlaceholder",
+      "name": "ExprPlaceholder",
+      "return type": "Text",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] [discord] place[( |-)]holder of %dropdown/textinput%",
+        "%dropdown/textinput%'[s] [discord] place[( |-)]holder"
+      ]
+    },
+    {
+      "id": "ExprPresence",
+      "name": "ExprPresence",
+      "return type": "activity",
+      "patterns": [
+        "listening [to] %string%",
+        "watching [to] %string%",
+        "playing [to] %string%",
+        "streaming [to] %string% with [the] url %string%",
+        "competing [to] %string%"
+      ]
+    },
+    {
+      "id": "ExprRequireState",
+      "name": "ExprRequireState",
+      "return type": "Boolean",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] require[d] state of %textinput%",
+        "%textinput%'[s] require[d] state"
+      ]
+    },
+    {
+      "id": "ExprValue",
+      "name": "ExprValue",
+      "return type": "Text",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] [default] value of %textinput%",
+        "%textinput%'[s] [default] value"
+      ]
+    },
+    {
+      "id": "GetAudioChannel",
+      "name": "Get Audio Channel",
+      "description": [
+        "This is an utility expression.",
+        "It will returns an Audio Channel out of the provided ID.",
+        "It will returns either the voice or stage channel corresponding to the provided ID.",
+        "This expression cannot be changed."
+      ],
+      "examples": [
+        "audio channel with id \"000\""
+      ],
+      "since": [
+        "4.0.0"
+      ],
+      "return type": "audiohannel",
+      "patterns": [
+        "audio channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]"
+      ]
+    },
+    {
+      "id": "GetBot",
+      "name": "Get Bot / Bot Named X",
+      "description": [
+        "Get a cached bot from DiSky using its unique name.",
+        "If the desired bot does not exist or is not loaded yet, this expression will return none.",
+        "This expression cannot be changed."
+      ],
+      "examples": [
+        "get bot \"name\"",
+        "bot named \"name\""
+      ],
+      "return type": "bot",
+      "patterns": [
+        "[get] [the] bot [(named|with name)] %string%"
+      ]
+    },
+    {
+      "id": "GetCategory",
+      "name": "Get Category",
+      "description": [
+        "Get a category from a guild using its unique ID.",
+        "Categories are global on discord, means different categories cannot have the same ID.",
+        "This expression cannot be changed."
+      ],
+      "examples": [
+        "category with id \"000\""
+      ],
+      "return type": "category",
+      "patterns": [
+        "category (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]"
+      ]
+    },
+    {
+      "id": "GetChannel",
+      "name": "Get Channel",
+      "description": [
+        "A generic expression to get any channel from its ID.",
+        "This can return a text, private, news, voice, category, stage, thread or post channel."
+      ],
+      "examples": [
+        "post last embed to channel with id \"000\""
+      ],
+      "since": [
+        "4.4.2"
+      ],
+      "return type": "channel",
+      "patterns": [
+        "channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]"
+      ]
+    },
+    {
+      "id": "GetGuildChannel",
+      "name": "Get Channel",
+      "description": [
+        "Get a channel from a guild using its unique ID.",
+        "Channels are global on discord, means different channels cannot have the same ID.",
+        "This expression cannot be changed."
+      ],
+      "examples": [
+        "channel with id \"000\""
+      ],
+      "return type": "guildchannel",
+      "patterns": [
+        "channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]"
+      ]
+    },
+    {
+      "id": "GetForumChannel",
+      "name": "Get Forum Channel",
+      "description": [
+        "Get a forum channel from a guild using its unique ID.",
+        "Channels are global on discord, means different forum channels cannot have the same ID.",
+        "This expression cannot be changed."
+      ],
+      "examples": [
+        "forum channel with id \"000\""
+      ],
+      "return type": "forumchannel",
+      "patterns": [
+        "text channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]"
+      ]
+    },
+    {
+      "id": "GetGuild",
+      "name": "Get Guild",
+      "description": [
+        "Get a guild from a guild using its unique ID.",
+        "This expression cannot be changed."
+      ],
+      "examples": [
+        "guild with id \"000\""
+      ],
+      "return type": "guild",
+      "patterns": [
+        "guild (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]"
+      ]
+    },
+    {
+      "id": "GetMember",
+      "name": "Get Member",
+      "description": [
+        "Get a cached member from its unique ID",
+        "This expression could return null, according to if the actual member was cached or not.",
+        "To be sure it will return the corresponding member, use the retrieve member effect.",
+        "This expression cannot be changed"
+      ],
+      "examples": [
+        "member with id \"000\" in event-guild"
+      ],
+      "return type": "member",
+      "patterns": [
+        "[get] [the] member with id %string% (from|in|of) [the] [guild] %guild%"
+      ]
+    },
+    {
+      "id": "GetMessageChannel",
+      "name": "Get Message Channel",
+      "description": [
+        "This is an utility expression.",
+        "It will returns a Message Channel (text, news or thread) out of the provided ID.",
+        "This expression cannot be changed."
+      ],
+      "examples": [
+        "message channel with id \"000\""
+      ],
+      "since": [
+        "4.0.0"
+      ],
+      "return type": "guildchannel",
+      "patterns": [
+        "message channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]"
+      ]
+    },
+    {
+      "id": "GetNewsChannel",
+      "name": "Get News Channel",
+      "description": [
+        "Get a news channel from a guild using its unique ID.",
+        "Channels are global on discord, means different channels cannot have the same ID.",
+        "This expression cannot be changed."
+      ],
+      "examples": [
+        "news channel with id \"000\""
+      ],
+      "return type": "newschannel",
+      "patterns": [
+        "news channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]"
+      ]
+    },
+    {
+      "id": "GetRole",
+      "name": "Get Role",
+      "description": [
+        "Get a role from a guild using its unique ID.",
+        "Role are global on discord, means two role from two different guild could never have the same ID.",
+        "This expression cannot be changed."
+      ],
+      "examples": [
+        "role with id \"000\""
+      ],
+      "return type": "role",
+      "patterns": [
+        "role (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]"
+      ]
+    },
+    {
+      "id": "GetStageChannel",
+      "name": "Get Stage Channel",
+      "description": [
+        "Get a stage channel from a guild using its unique ID.",
+        "Channels are global on discord, means different channels cannot have the same ID.",
+        "This expression cannot be changed."
+      ],
+      "examples": [
+        "stage channel with id \"000\""
+      ],
+      "return type": "stagechannel",
+      "patterns": [
+        "stage channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]"
+      ]
+    },
+    {
+      "id": "GetSticker",
+      "name": "Get Sticker",
+      "description": [
+        "Get a cached sticker from its per-guild name",
+        "This expression is here to get a sticker from its name.",
+        "If you success to get a sticker's ID, use the retrieve sticker effect instead!",
+        "This expression cannot be changed"
+      ],
+      "examples": [
+        "sticker with named \"meliodas\" from event-guild"
+      ],
+      "return type": "sticker",
+      "patterns": [
+        "[get] [the] sticker (with name|named) %string% (from|in|of) [the] [guild] %guild%"
+      ]
+    },
+    {
+      "id": "GetTag",
+      "name": "Get Tag",
+      "description": [
+        "Get a tag from a forum channel using its name."
+      ],
+      "examples": [
+        "tag named \"v4\" from forum channel with id \"000\""
+      ],
+      "since": [
+        "4.4.4"
+      ],
+      "return type": "forumtag",
+      "patterns": [
+        "[forum] tag ((from|with) name|named) %string% (of|from|in) %forumchannel%"
+      ]
+    },
+    {
+      "id": "GetTextChannel",
+      "name": "Get Text Channel",
+      "description": [
+        "Get a text channel from a guild using its unique ID.",
+        "Channels are global on discord, means different text channels cannot have the same ID.",
+        "This expression cannot be changed."
+      ],
+      "examples": [
+        "text channel with id \"000\""
+      ],
+      "return type": "textchannel",
+      "patterns": [
+        "text channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]"
+      ]
+    },
+    {
+      "id": "GetThread",
+      "name": "Get Thread Channel",
+      "description": [
+        "Get a thread channel from a guild using its unique ID.",
+        "Threads are global on discord, means different threads cannot have the same ID.",
+        "This expression cannot be changed."
+      ],
+      "examples": [
+        "thread with id \"000\""
+      ],
+      "return type": "threadchannel",
+      "patterns": [
+        "thread [channel] (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]"
+      ]
+    },
+    {
+      "id": "GetVoiceChannel",
+      "name": "Get Voice Channel",
+      "description": [
+        "Get a voice channel from a guild using its unique ID.",
+        "Channels are global on discord, means different channels cannot have the same ID.",
+        "This expression cannot be changed."
+      ],
+      "examples": [
+        "voice channel with id \"000\""
+      ],
+      "return type": "voicechannel",
+      "patterns": [
+        "voice channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]"
+      ]
+    },
+    {
+      "id": "GetUser",
+      "name": "GetUser",
+      "return type": "textchannel",
+      "patterns": [
+        "user (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]"
+      ]
+    },
+    {
+      "id": "ExprGroupCommands",
+      "name": "Group / Command Sub-Commands",
+      "description": [
+        "Represent every sub-slash-command a slash-command or a group have.",
+        "You can add sub-slash-commands to a group or a core slash-command, then add this group into the base slash command."
+      ],
+      "return type": "subslashcommand",
+      "changers": [
+        "add",
+        "set",
+        "remove all",
+        "reset"
+      ],
+      "patterns": [
+        "[all] [the] sub[( |-)]command[s] of %slashcommandgroup/slashcommand%",
+        "[all] [the] %slashcommandgroup/slashcommand%'[s] sub[( |-)]command[s]"
+      ]
+    },
+    {
+      "id": "DiscordRoles",
+      "name": "Guild / Member Roles",
+      "description": [
+        "Represent the roles that a guild or a member currently have.",
+        "Can be changed, SET and ADD ChangeMode can be used when passing a member.",
+        "To modify guild's roles, check delete and create role effects."
+      ],
+      "examples": [
+        "add role with id \"000\" to roles of event-member",
+        "remove event-role from roles of event-member",
+        "reply with \"Amount of roles in the guild: %size of roles of event-guild%\""
+      ],
+      "return type": "role",
+      "changers": [
+        "add",
+        "remove"
+      ],
+      "patterns": [
+        "[all] [the] roles of %guild/member%",
+        "[all] [the] %guild/member%'[s] roles"
+      ]
+    },
+    {
+      "id": "GuildBoostCount",
+      "name": "Guild Boost Count",
+      "description": [
+        "Represent how many people are boosting the guild currently."
+      ],
+      "examples": [
+        "reply with \"There's %boost amount of event-guild% booster(s)!\""
+      ],
+      "return type": "Number",
+      "patterns": [
+        "[the] [guild] boost[(ing|er)] (amount|number|size) of %guild%",
+        "%guild%'[s] [guild] boost[(ing|er)] (amount|number|size)"
+      ]
+    },
+    {
+      "id": "GuildBoostRole",
+      "name": "Guild Booster Role",
+      "description": [
+        "Represent the booster role of this guild.",
+        "Any member that got this role is actually a booster of the guild."
+      ],
+      "examples": [
+        "reply with \"Thanks to our %mention tag of boost role of event-guild%!\""
+      ],
+      "return type": "role",
+      "patterns": [
+        "[the] [guild] boost[(ing|er)] role[s] of %guild%",
+        "%guild%'[s] [guild] boost[(ing|er)] role[s]"
+      ]
+    },
+    {
+      "id": "GuildBoosters",
+      "name": "Guild Boosters",
+      "description": [
+        "Represent the current members booster of the guild."
+      ],
+      "examples": [
+        "reply with \"Boosters: %boosters of event-guild%!\""
+      ],
+      "return type": "member",
+      "patterns": [
+        "[all] [the] [guild] booster[s] [member[s]] of %guild%",
+        "[all] [the] %guild%'[s] [guild] booster[s] [member[s]]"
+      ]
+    },
+    {
+      "id": "GuildNewsChannels",
+      "name": "Guild News Channels",
+      "description": [
+        "Gets all news channels of a guild."
+      ],
+      "examples": [
+        "all news channels of event-guild"
+      ],
+      "return type": "newschannel",
+      "patterns": [
+        "[all] [the] [guild] [all] news[( |-)]channels of %guild%",
+        "[all] [the] %guild%'[s] [guild] [all] news[( |-)]channels"
+      ]
+    },
+    {
+      "id": "GuildOf",
+      "name": "Guild Of",
+      "description": [
+        "Return the guild of a specific entity.",
+        "This can return null if the entity is not guild-based, like private message channel or message."
+      ],
+      "examples": [
+        "guild of event-member",
+        "guild of event-channel"
+      ],
+      "return type": "guild",
+      "patterns": [
+        "[the] guild of %channel/role/sticker/member/message%",
+        "%channel/role/sticker/member/message%'[s] guild"
+      ]
+    },
+    {
+      "id": "GuildVerificationLevel",
+      "name": "Guild Verification Level",
+      "description": [
+        "Represent the verification level of the guild. It can either be:",
+        "- None",
+        "- Low",
+        "- Medium",
+        "- High",
+        "- Very High"
+      ],
+      "examples": [
+        "reply with verification level of event-guild"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [guild] verification level[s] of %guild%",
+        "%guild%'[s] [guild] verification level[s]"
+      ]
+    },
+    {
+      "id": "GuildVoiceChannels",
+      "name": "Guild Voice Channels",
+      "description": [
+        "Gets all voice channels of a guild."
+      ],
+      "examples": [
+        "all voice channels of event-guild"
+      ],
+      "return type": "voicechannel",
+      "patterns": [
+        "[all] [the] [guild] [all] voice[( |-)]channels of %guild%",
+        "[all] [the] %guild%'[s] [guild] [all] voice[( |-)]channels"
+      ]
+    },
+    {
+      "id": "GuildAFKChannel",
+      "name": "GuildAFKChannel",
+      "return type": "voicechannel",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [discord] afk [voice( |-)] channel of %guild%",
+        "%guild%'[s] [discord] afk [voice( |-)] channel"
+      ]
+    },
+    {
+      "id": "GuildAFKTimeout",
+      "name": "GuildAFKTimeout",
+      "return type": "Number",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [discord] afk time[( |-)]out [second[s]] of %guild%",
+        "%guild%'[s] [discord] afk time[( |-)]out [second[s]]"
+      ]
+    },
+    {
+      "id": "GuildBanner",
+      "name": "GuildBanner",
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [discord] banner of %guild%",
+        "%guild%'[s] [discord] banner"
+      ]
+    },
+    {
+      "id": "InlineMessageBuilder",
+      "name": "Inline Rich Message Builder",
+      "description": [
+        "Create a new rich message in one line only.",
+        "WARNING: This could slow a lot the Skript's parsing time if used too many times!",
+        "We still recommend to use the create message section instead!",
+        "You can also use the second pattern to send component-only messages."
+      ],
+      "examples": [
+        "reply with message \"hello world\" with embed last embed with components {_row}",
+        "post components new danger button with id \"id\" named \"Hey\" to event-channel"
+      ],
+      "since": [
+        "4.4.1, 4.4.3 (component-only)"
+      ],
+      "return type": "messagecreatebuilder",
+      "patterns": [
+        "[rich] message %string/embedbuilder% [with embed[s] %embedbuilders%] [with (component[s]|row[s]) %rows/buttons/dropdowns%] [with (file|attachment)[s] %strings%]",
+        "[rich] component[s] %rows/buttons/dropdowns%"
+      ]
+    },
+    {
+      "id": "InviteCode",
+      "name": "Invite Code",
+      "description": [
+        "Represent the unique invite code used in the Discord URL."
+      ],
+      "examples": [
+        "reply with invite code of event-invite"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] invite code of %invite%",
+        "%invite%'[s] invite code"
+      ]
+    },
+    {
+      "id": "InviteInviter",
+      "name": "Invite Inviter",
+      "description": [
+        "Represent the user who created the invite."
+      ],
+      "examples": [
+        "reply with mention tag of invite inviter of event-invite"
+      ],
+      "return type": "user",
+      "patterns": [
+        "[the] invite (inviter|author) of %invite%",
+        "%invite%'[s] invite (inviter|author)"
+      ]
+    },
+    {
+      "id": "InviteMaxAge",
+      "name": "Invite Max Age",
+      "description": [
+        "Represent the max age time this invite can be used."
+      ],
+      "examples": [
+        "reply with invite max age of event-invite"
+      ],
+      "return type": "Number",
+      "patterns": [
+        "[the] invite max age[s] of %invite%",
+        "%invite%'[s] invite max age[s]"
+      ]
+    },
+    {
+      "id": "InviteMaxUses",
+      "name": "Invite Max Uses",
+      "description": [
+        "Represent the max amount of times this invite can be used."
+      ],
+      "examples": [
+        "reply with invite max use of event-invite"
+      ],
+      "return type": "Number",
+      "patterns": [
+        "[the] invite max use[s] of %invite%",
+        "%invite%'[s] invite max use[s]"
+      ]
+    },
+    {
+      "id": "InviteURL",
+      "name": "Invite URL",
+      "description": [
+        "Represent the plain Discord URL that people have to click on in order to join the invite's guild."
+      ],
+      "examples": [
+        "reply with invite url of event-invite"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] invite url of %invite%",
+        "%invite%'[s] invite url"
+      ]
+    },
+    {
+      "id": "InviteUses",
+      "name": "Invite Uses",
+      "description": [
+        "Represent the amount of times this invite has been used."
+      ],
+      "examples": [
+        "reply with invite uses of event-invite"
+      ],
+      "return type": "Number",
+      "patterns": [
+        "[the] invite use[s] of %invite%",
+        "%invite%'[s] invite use[s]"
+      ]
+    },
+    {
+      "id": "LastDiSkyException",
+      "name": "Last DiSky Exception",
+      "description": [
+        "Return the last occurred DiSky or Discord exception in the current event.",
+        "This expression is event-based, means you cannot get the last error that happened on another event.",
+        "Once this has been called, it will remove the returned value from the errors list to avoid having two times the same error message."
+      ],
+      "examples": [
+        "if last disky exception is set: # an error occurred"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] last (disky|discord) (error|exception)"
+      ]
+    },
+    {
+      "id": "ExprLastEmbed",
+      "name": "Last Embed",
+      "description": [
+        "This expression returns the last generated embed using the embed builder."
+      ],
+      "since": [
+        "1.0"
+      ],
+      "return type": "embedbuilder",
+      "patterns": [
+        "[the] [last] [(made|created|generated)] embed"
+      ]
+    },
+    {
+      "id": "message",
+      "name": "Last Message Builder",
+      "description": [
+        "Represents the last message builder created within a section."
+      ],
+      "return type": "messagecreatebuilder",
+      "patterns": [
+        "[the] [last] message [builder]"
+      ]
+    },
+    {
+      "id": "row",
+      "name": "Last Row Builder",
+      "description": [
+        "Represents the last row builder created within a section."
+      ],
+      "return type": "row",
+      "patterns": [
+        "[the] [last] row [builder]"
+      ]
+    },
+    {
+      "id": "MemberEffectiveName",
+      "name": "Member Effective Name",
+      "description": [
+        "Simple way to get the effective name of a member in a guild:",
+        "If the nickname is not set, it will return the discord name of the member, else its nickname."
+      ],
+      "examples": [
+        "reply with effective name of event-member"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [member] effective name[s] of %member%",
+        "%member%'[s] [member] effective name[s]"
+      ]
+    },
+    {
+      "id": "MemberJoinDate",
+      "name": "Member Join Date",
+      "description": [
+        "Represent the skript's date of the member's join date.",
+        "It cannot be changed.",
+        "This is a specific element of the bot, so it can be used in the bots event."
+      ],
+      "examples": [
+        "reply with member join date of event-member"
+      ],
+      "return type": "Date",
+      "patterns": [
+        "[the] [member] [member] join date of %member%",
+        "%member%'[s] [member] [member] join date"
+      ]
+    },
+    {
+      "id": "MemberNickname",
+      "name": "Member Nickname",
+      "description": [
+        "Represent the member nickname. Can be none if the member doesn't have any nickname currently.",
+        "USe 'effective name' expression to get member's name of its nickname is not set."
+      ],
+      "examples": [
+        "reply with member nickname of event-member",
+        "set member nickname of event-member to \"ayo?!\""
+      ],
+      "return type": "Text",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] [member] nick[( |-)]name[s] of %member%",
+        "%member%'[s] [member] nick[( |-)]name[s]"
+      ]
+    },
+    {
+      "id": "MemberStatus",
+      "name": "Member Status",
+      "description": [
+        "Represent the member's online status.",
+        "The online status is represented by the following values:",
+        "• `online`",
+        "• `offline`",
+        "• `idle`",
+        "• `do not disturb`",
+        "• `invisible`"
+      ],
+      "examples": [
+        "reply with member online status of event-member"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [member] [member] online[( |-)]status of %member%",
+        "%member%'[s] [member] [member] online[( |-)]status"
+      ]
+    },
+    {
+      "id": "MemberVoiceChannel",
+      "name": "MemberVoiceChannel",
+      "return type": "audiohannel",
+      "patterns": [
+        "[the] [member] (voice|audio) channel of %member%",
+        "%member%'[s] [member] (voice|audio) channel"
+      ]
+    },
+    {
+      "id": "MentionTag",
+      "name": "Mention Tag",
+      "description": [
+        "Get the mention name of the discord entity.",
+        "It will return the similar format that when you are doing @ (roles, users) or # (channels) followed by names."
+      ],
+      "examples": [
+        "mention tag of event-channel",
+        "mention tag of channel with id \"000\""
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] mention [tag] of %channel/role/user/emote/member%",
+        "%channel/role/user/emote/member%'[s] mention [tag]"
+      ]
+    },
+    {
+      "id": "MessageAttachments",
+      "name": "Message Attachment",
+      "description": [
+        "Get every attachment as custom object of a message"
+      ],
+      "examples": [
+        "attachments of event-message"
+      ],
+      "return type": "attachment",
+      "patterns": [
+        "[all] [the] [discord] [message] attachment[s] of %message%",
+        "[all] [the] %message%'[s] [discord] [message] attachment[s]"
+      ]
+    },
+    {
+      "id": "MessageAttachments",
+      "name": "Message Builder Attachments",
+      "description": [
+        "Attachments of a message builder",
+        "Supports SkImage's images if the addon is installed.",
+        "See also: 'Create (rich) Message'"
+      ],
+      "return type": "Object",
+      "changers": [
+        "add",
+        "remove"
+      ],
+      "patterns": [
+        "[all] [the] (attachment|image)[s] of %messagecreatebuilder%",
+        "[all] [the] %messagecreatebuilder%'[s] (attachment|image)[s]"
+      ]
+    },
+    {
+      "id": "MessageModalRows",
+      "name": "Message Builder Component Rows",
+      "description": [
+        "Component rows of a message builder",
+        "See also: 'Creator Components Row'"
+      ],
+      "return type": "Object",
+      "changers": [
+        "add"
+      ],
+      "patterns": [
+        "[all] [the] [component[s]] row[s] of %messagecreatebuilder/modal%",
+        "[all] [the] %messagecreatebuilder/modal%'[s] [component[s]] row[s]"
+      ]
+    },
+    {
+      "id": "MessageContent",
+      "name": "Message Builder Content",
+      "description": [
+        "Text content of a message builder",
+        "See also: 'Create (rich) Message'"
+      ],
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] content of %messagecreatebuilder%",
+        "%messagecreatebuilder%'[s] content"
+      ]
+    },
+    {
+      "id": "MessageEmbeds",
+      "name": "Message Builder Embeds",
+      "description": [
+        "Embeds of a message builder",
+        "See also: 'Create (rich) Message'"
+      ],
+      "return type": "embedbuilder",
+      "changers": [
+        "add",
+        "remove"
+      ],
+      "patterns": [
+        "[all] [the] embed[s] of %messagecreatebuilder%",
+        "[all] [the] %messagecreatebuilder%'[s] embed[s]"
+      ]
+    },
+    {
+      "id": "MessageContent",
+      "name": "Message Content",
+      "description": [
+        "Get the raw (non formatted) content of a sent message."
+      ],
+      "examples": [
+        "content of event-message"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [discord] [message] content of %message%",
+        "%message%'[s] [discord] [message] content"
+      ]
+    },
+    {
+      "id": "MessageEmbeds",
+      "name": "Message Embeds",
+      "description": [
+        "Get every embeds of a specific messages. Keep in mind only webhook are allowed to send more than one embed!"
+      ],
+      "examples": [
+        "embeds of event-message"
+      ],
+      "return type": "embedbuilder",
+      "patterns": [
+        "[all] [the] [discord] [message] embeds of %message%",
+        "[all] [the] %message%'[s] [discord] [message] embeds"
+      ]
+    },
+    {
+      "id": "MessageMentionedEmotes",
+      "name": "Message Emotes",
+      "description": [
+        "Get every mentioned emotes in a message.",
+        "This will only return custom emote, and will therefore not include discord emotes."
+      ],
+      "examples": [
+        "mentioned emotes of event-message"
+      ],
+      "return type": "emote",
+      "patterns": [
+        "[all] [the] [discord] [message] mentioned emote[s] of %message%",
+        "[all] [the] %message%'[s] [discord] [message] mentioned emote[s]"
+      ]
+    },
+    {
+      "id": "MessageGuild",
+      "name": "Message Guild",
+      "description": [
+        "Get the guild where the message was sent. Can be null if it's in PM or not in guild!"
+      ],
+      "examples": [
+        "guild of event-message"
+      ],
+      "return type": "guild",
+      "patterns": [
+        "[the] [discord] [message] guild of %message%",
+        "%message%'[s] [discord] [message] guild"
+      ]
+    },
+    {
+      "id": "MessageJumpURL",
+      "name": "Message Jump URL",
+      "description": [
+        "Get the jump URL of the specific message."
+      ],
+      "examples": [
+        "jump url of event-message"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [discord] [message] [jump] url of %message%",
+        "%message%'[s] [discord] [message] [jump] url"
+      ]
+    },
+    {
+      "id": "MessageMember",
+      "name": "Message Member Author",
+      "description": [
+        "Get the member instance of the message's author. Can be null if it's in PM or not in guild!"
+      ],
+      "examples": [
+        "member writer of event-message"
+      ],
+      "return type": "member",
+      "patterns": [
+        "[the] [discord] [message] member (author|writer) of %message%",
+        "%message%'[s] [discord] [message] member (author|writer)"
+      ]
+    },
+    {
+      "id": "MessageMentionedMembers",
+      "name": "Message Mentioned Members",
+      "description": [
+        "Get every mentioned members in a message. If the message doesn't come from a guild it will return an empty array!"
+      ],
+      "examples": [
+        "mentioned members of event-message"
+      ],
+      "return type": "member",
+      "patterns": [
+        "[all] [the] [discord] [message] mentioned members of %message%",
+        "[all] [the] %message%'[s] [discord] [message] mentioned members"
+      ]
+    },
+    {
+      "id": "MessageMentionedRoles",
+      "name": "Message Mentioned Roles",
+      "description": [
+        "Get every mentioned Roles in a message. If the message doesn't come from a guild it will return an empty array!"
+      ],
+      "examples": [
+        "mentioned roles of event-message"
+      ],
+      "return type": "role",
+      "patterns": [
+        "[all] [the] [discord] [message] mentioned roles of %message%",
+        "[all] [the] %message%'[s] [discord] [message] mentioned roles"
+      ]
+    },
+    {
+      "id": "MessageMentionedUsers",
+      "name": "Message Mentioned Users",
+      "description": [
+        "Get every mentioned users in a message."
+      ],
+      "examples": [
+        "mentioned users of event-message"
+      ],
+      "return type": "user",
+      "patterns": [
+        "[all] [the] [discord] [message] mentioned users of %message%",
+        "[all] [the] %message%'[s] [discord] [message] mentioned users"
+      ]
+    },
+    {
+      "id": "MessageReactions",
+      "name": "Message Reactions",
+      "description": [
+        "Get every reactions of a message.",
+        "Because of Discord's limitation, we cannot get which user reacted with which reaction, you'll have to count them yourself."
+      ],
+      "examples": [
+        "reactions of event-message"
+      ],
+      "return type": "emote",
+      "patterns": [
+        "[all] [the] [discord] [message] (emo(te|ji)|reaction)[s] of %message%",
+        "[all] [the] %message%'[s] [discord] [message] (emo(te|ji)|reaction)[s]"
+      ]
+    },
+    {
+      "id": "MessageChannel",
+      "name": "Message Text Channel",
+      "description": [
+        "Get the text channel were the message was sent. Can be null if it's in PM or not in guild!"
+      ],
+      "examples": [
+        "channel of event-message"
+      ],
+      "return type": "textchannel",
+      "patterns": [
+        "[the] [discord] [message] [text]( |-)channel of %message%",
+        "%message%'[s] [discord] [message] [text]( |-)channel"
+      ]
+    },
+    {
+      "id": "MessageMentionedChannels",
+      "name": "Message Text Channels",
+      "description": [
+        "Get every mentioned text channels in a message."
+      ],
+      "examples": [
+        "mentioned text channels of event-message"
+      ],
+      "return type": "textchannel",
+      "patterns": [
+        "[all] [the] [discord] [message] mentioned text channels of %message%",
+        "[all] [the] %message%'[s] [discord] [message] mentioned text channels"
+      ]
+    },
+    {
+      "id": "MessageAuthor",
+      "name": "Message User Author",
+      "description": [
+        "Get the user instance of the message's author. Can be null in case of the message was sent by a webhook."
+      ],
+      "examples": [
+        "author of event-message"
+      ],
+      "return type": "user",
+      "patterns": [
+        "[the] [discord] [message] (user|author|writer) of %message%",
+        "%message%'[s] [discord] [message] (user|author|writer)"
+      ]
+    },
+    {
+      "id": "MessageMentionedVoiceChannels",
+      "name": "Message Voice Channels",
+      "description": [
+        "Get every mentioned voice channels in a message."
+      ],
+      "examples": [
+        "mentioned voice channels of event-message"
+      ],
+      "return type": "voicechannel",
+      "patterns": [
+        "[all] [the] [discord] [message] mentioned voice channels of %message%",
+        "[all] [the] %message%'[s] [discord] [message] mentioned voice channels"
+      ]
+    },
+    {
+      "id": "MessageReferenced",
+      "name": "MessageReferenced",
+      "return type": "message",
+      "patterns": [
+        "[the] [discord] [message] referenc(ing|ed) message of %message%",
+        "%message%'[s] [discord] [message] referenc(ing|ed) message"
+      ]
+    },
+    {
+      "id": "ComponentValue",
+      "name": "Modal Component Value / Values",
+      "description": [
+        "Get the current value(s) of a sent component, currently only working in modals with text input & select menus.",
+        "You have to precise what type of component you are trying to get, either 'textinput' or 'dropdown'."
+      ],
+      "examples": [
+        "values of dropdown with id \"XXX\"",
+        "value of textinput with id \"XXX\""
+      ],
+      "return type": "Object",
+      "changers": [
+        "unknown"
+      ],
+      "patterns": [
+        "[the] [current] value[s] of [the] (text[( |-)]input|drop[( |-)]down) [with [the] id] %string%"
+      ]
+    },
+    {
+      "id": "DiscordName",
+      "name": "Name of Discord Entity",
+      "description": [
+        "This represent the current name of any discord entity that can hold one.",
+        "You can change name of every entity except member and user by defining a new text.",
+        "Check for 'nickname of member' if you want to check / change custom member's name."
+      ],
+      "examples": [
+        "discord name of event-guild"
+      ],
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [the] discord name of %channel/user/member/sticker/emote/role/guild%",
+        "%channel/user/member/sticker/emote/role/guild%'[s] [the] discord name"
+      ]
+    },
+    {
+      "id": "ExprNewButton",
+      "name": "New Button",
+      "description": [
+        "Create a new button with an ID and some optional options. It can be either enabled or disabled, and either link or action. If the button is a link-type, then the ID will be the URL that the user will be redirect to."
+      ],
+      "examples": [
+        "set {_btn} to new enabled danger button with id \"button-id\" named \"Hello world :p\""
+      ],
+      "return type": "button",
+      "patterns": [
+        "[a] new [(enabled|disabled)] %buttonstyle% [link] button [with (id|url)] %string% [(named|with label) %string%][,] [with [emoji] %emote%]"
+      ]
+    },
+    {
+      "id": "ExprNewButtonsRow",
+      "name": "New Components Row",
+      "description": [
+        "Create a new (empty) components row.",
+        "You can add either max 5 buttons or one dropdown to it.",
+        "A single message can hold 5 components rows."
+      ],
+      "return type": "row",
+      "patterns": [
+        "[a] new component[s] row"
+      ]
+    },
+    {
+      "id": "ExprNewDropdown",
+      "name": "New Dropdown",
+      "description": [
+        "Create a new dropdown menu with different properties.",
+        "There's two type of dropdown available:",
+        "- String, only text values are accepted & pre-defined",
+        "- Entity, only the specified entity type (role, channel and/or user) are accepted",
+        "Therefore, you cannot add user, channel or role to a string dropdown and vice-versa.",
+        "For entity dropdown, you can accept each type independently, or mix roles & users.",
+        ":warning: YOU CANNOT MIX CHANNELS WITH ROLES OR USERS!"
+      ],
+      "examples": [
+        "new dropdown with id \"string\" # Default string dropdown",
+        "new entity dropdown with id \"entities\" targeting \"user\" and \"role\" # Only user and role are accepted",
+        "new entity dropdown with id \"channels\" targeting \"channel\" # Only channel are accepted"
+      ],
+      "since": [
+        "4.6.0"
+      ],
+      "return type": "dropdown",
+      "patterns": [
+        "[a] [new] [string] drop[( |-)]down [with] [the] [id] %string%",
+        "[a] [new] entit(y|ies) drop[( |-)]down [with] [the] [id] %string% targeting %strings%"
+      ]
+    },
+    {
+      "id": "ExprNewDropdownOption",
+      "name": "New Dropdown Option",
+      "description": [
+        "Create a new dropdown option with different properties.",
+        "This is a predefined option holding a string value. It can only be used in string dropdowns.",
+        "The value represent the returned string that this dropdown will return if this option is selected.",
+        "The name / label is the actual shown name on the option.",
+        "Description and emote are optional."
+      ],
+      "examples": [
+        "set {_btn} to new enabled danger button with id \"button-id\" named \"Hello world :p\""
+      ],
+      "return type": "selectoption",
+      "patterns": [
+        "[a] new [default] [dropdown] option with value %string% (named|with label) %string% [with description [%string%]] [with [emoji] %emote%]"
+      ]
+    },
+    {
+      "id": "NewTag",
+      "name": "New Forum Tag",
+      "description": [
+        "Create a new forum tag with a specific name & optional emoji.",
+        "You can also specify if the tag is 'moderate' or not."
+      ],
+      "examples": [
+        "new forum tag named \"solved\" with reaction \"white_check_mark\"",
+        "new moderated forum tag named \"internal\""
+      ],
+      "since": [
+        "4.4.4"
+      ],
+      "return type": "Object",
+      "patterns": [
+        "new [forum] tag [named] %string% [with %emote%]",
+        "new moderated [forum] tag [named] %string% [with %emote%]"
+      ]
+    },
+    {
+      "id": "ExprNewLocaleData",
+      "name": "New Locale Data",
+      "description": [
+        "Returns the a new locale data for the given locale and the given value.",
+        "You have to provide the locale using its code (list can be found here: https://discord.com/developers/docs/reference#locales) and the value to set.",
+        "Documentation: https://docs.disky.me/advanced-stuff/slash-commands#using-localizations-v4.3.0+"
+      ],
+      "examples": [
+        "new locale data for \"FR\" as \"niveau\""
+      ],
+      "return type": "Object",
+      "patterns": [
+        "new local[e] [data] for %string% (as|with [value]) %string%"
+      ]
+    },
+    {
+      "id": "ExprNewMessageCommand",
+      "name": "New Message Command",
+      "description": [
+        "Create a new message command, to be updated on discord later.",
+        "This will create a context command of MESSAGE type.",
+        "Once created, you can execute it by right-clicking on a message, then going in 'Applications' -> <your message command name>"
+      ],
+      "examples": [
+        "new message command named \"Warn Message\""
+      ],
+      "return type": "Object",
+      "patterns": [
+        "[a] [new] message[( |-)]command [with] [(the name|named)] %string%"
+      ]
+    },
+    {
+      "id": "ExprNewOptionChoice",
+      "name": "New Option Choice",
+      "description": [
+        "Create a new slash command option choice with an unique name and a string or number value.",
+        "Choices are only available for STRING, NUMBER and INTEGER slash command option type.",
+        "Of course, the provided value type must be compatible with the option type (you cannot add string choice to a NUMBER option)."
+      ],
+      "examples": [
+        "add new choice named \"Example choice\" with value 100 to choices of {_option} # it's a NUMBER option"
+      ],
+      "return type": "slashchoice",
+      "patterns": [
+        "[a] new [option] choice [(named|with name)] %string% with [the] value %string/number%"
+      ]
+    },
+    {
+      "id": "ExprNewUserCommand",
+      "name": "New User Command",
+      "description": [
+        "Create a new user command, to be updated on discord later.",
+        "This will create a context command of USER type.",
+        "Once created, you can execute it by right-clicking on a user, then going in 'Applications' -> <your user command name>"
+      ],
+      "examples": [
+        "new user command named \"Warn User\""
+      ],
+      "return type": "Object",
+      "patterns": [
+        "[a] [new] user[( |-)]command [with] [(the name|named)] %string%"
+      ]
+    },
+    {
+      "id": "NewCategoryAction",
+      "name": "NewCategoryAction",
+      "return type": "channelaction",
+      "patterns": [
+        "[a] new category (action|manager) in [the] [guild] %guild% [(using|with) [the] [bot] %bot%]"
+      ]
+    },
+    {
+      "id": "NewNewsChannel",
+      "name": "NewNewsChannel",
+      "return type": "channelaction",
+      "patterns": [
+        "[a] new news[( |-)]channel (action|manager) in [the] [guild] %guild% [(using|with) [the] [bot] %bot%]"
+      ]
+    },
+    {
+      "id": "NewRoleAction",
+      "name": "NewRoleAction",
+      "return type": "roleaction",
+      "patterns": [
+        "[a] new role (action|manager) in [the] [guild] %guild% [(using|with) [the] [bot] %bot%]"
+      ]
+    },
+    {
+      "id": "NewStageChannel",
+      "name": "NewStageChannel",
+      "return type": "channelaction",
+      "patterns": [
+        "[a] new stage[( |-)]channel (action|manager) in [the] [guild] %guild% [(using|with) [the] [bot] %bot%]"
+      ]
+    },
+    {
+      "id": "NewTextAction",
+      "name": "NewTextAction",
+      "return type": "channelaction",
+      "patterns": [
+        "[a] new text[( |-)]channel (action|manager) in [the] [guild] %guild% [(using|with) [the] [bot] %bot%]"
+      ]
+    },
+    {
+      "id": "NewThreadAction",
+      "name": "NewThreadAction",
+      "return type": "channelaction",
+      "patterns": [
+        "[a] new category (action|manager) in [the] [channel] %textchannel% [(using|with) [the] [bot] %bot%]"
+      ]
+    },
+    {
+      "id": "NewVoiceAction",
+      "name": "NewVoiceAction",
+      "return type": "channelaction",
+      "patterns": [
+        "[a] new voice[( |-)]channel (action|manager) in [the] [guild] %guild% [(using|with) [the] [bot] %bot%]"
+      ]
+    },
+    {
+      "id": "ThreadTags",
+      "name": "Post / Forum Tags",
+      "description": [
+        "Get all tags of a forum channel or a thread channel.",
+        "You can also add or remove tags from a thread channel using this expression.",
+        "You must add the tag to the forum itself before adding it to the post."
+      ],
+      "examples": [
+        "set {_tags::*} to tags of event-forumchannel",
+        "add new tag named \"resolved\" with reaction \"x\" to tags of forum with id \"000\""
+      ],
+      "return type": "Object",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "reset"
+      ],
+      "patterns": [
+        "[all] [the] tags of %threadchannel/forumchannel%",
+        "[all] [the] %threadchannel/forumchannel%'[s] tags"
+      ]
+    },
+    {
+      "id": "ProfileBanner",
+      "name": "Profile Banner",
+      "description": [
+        "Get the profile banner URL. If the user doesn't have a custom banner, this will return none.",
+        "Use the 'profile color' expression to get the color instead of the banner URL in that case!"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] profile banner [ur(l|i)] of %userprofile%",
+        "%userprofile%'[s] profile banner [ur(l|i)]"
+      ]
+    },
+    {
+      "id": "ProfileColor",
+      "name": "Profile Color",
+      "description": [
+        "Get the profile color accent. If the user have a custom banner, this will return none.",
+        "Use the 'profile banner' expression to get the avatar URL instead of the color accent in that case!"
+      ],
+      "return type": "Colour",
+      "patterns": [
+        "[the] profile color [accent] of %userprofile%",
+        "%userprofile%'[s] profile color [accent]"
+      ]
+    },
+    {
+      "id": "PropOptions",
+      "name": "PropOptions",
+      "return type": "Object",
+      "changers": [
+        "add"
+      ],
+      "patterns": [
+        "[all] [the] option[s] [mapping[s]] of %slashcommand/subslashcommand/dropdown%",
+        "[all] [the] %slashcommand/subslashcommand/dropdown%'[s] option[s] [mapping[s]]"
+      ]
+    },
+    {
+      "id": "RoleColor",
+      "name": "RoleColor",
+      "return type": "Colour",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] role color of %role/roleaction%",
+        "%role/roleaction%'[s] role color"
+      ]
+    },
+    {
+      "id": "RoleName",
+      "name": "RoleName",
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] role name of %role/roleaction%",
+        "%role/roleaction%'[s] role name"
+      ]
+    },
+    {
+      "id": "RolePosition",
+      "name": "RolePosition",
+      "return type": "Number",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [discord] [role] position of %role/roleaction%",
+        "%role/roleaction%'[s] [discord] [role] position"
+      ]
+    },
+    {
+      "id": "RowComponents",
+      "name": "Row Builder Components",
+      "description": [
+        "Components of a row builder",
+        "See also: 'Create (rich) Message'"
+      ],
+      "return type": "Object",
+      "changers": [
+        "add",
+        "set"
+      ],
+      "patterns": [
+        "[all] [the] component[s] of %row%",
+        "[all] [the] %row%'[s] component[s]"
+      ]
+    },
+    {
+      "id": "SelectedValues",
+      "name": "Selected Entities",
+      "description": [
+        "The list of the selected entities, in the current entity dropdown update event."
+      ],
+      "examples": [
+        "selected entities"
+      ],
+      "return type": "Object",
+      "patterns": [
+        "select[ed] entit(y|ies)"
+      ]
+    },
+    {
+      "id": "SelectedValues",
+      "name": "Selected Values",
+      "description": [
+        "The list of the selected values' IDs, in the current dropdown update event."
+      ],
+      "examples": [
+        "selected values"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "select[ed] value[s]"
+      ]
+    },
+    {
+      "id": "ArgValue",
+      "name": "Slash Command Argument",
+      "description": [
+        "Represents a slash command argument.",
+        "The name is the ID used when defining the slash command.",
+        "Specify the type, so that Skript can parse it correctly. (if it's a number, operation wil be allowed for example)",
+        "The type should be the same used when defining the argument in the command."
+      ],
+      "examples": [
+        "# I'm doing /ban time:30 user:*user id*, so:",
+        "set {_time} to argument \"time\" as integer",
+        "set {_user} to argument \"user\" as user"
+      ],
+      "return type": "Object",
+      "changers": [
+        "unknown"
+      ],
+      "patterns": [
+        "[the] arg[ument] [(named|with name)] %string% as %optiontype%",
+        "[the] arg[ument] [(named|with name)] %string% as %optiontype%"
+      ]
+    },
+    {
+      "id": "ExprCommandGroup",
+      "name": "Sub-command Groups",
+      "description": [
+        "Represent every sub-slash-command groups a slash command have.",
+        "You can add sub-slash-commands to a group, then add this group into the base slash command."
+      ],
+      "return type": "slashcommandgroup",
+      "changers": [
+        "add",
+        "set",
+        "remove all",
+        "reset"
+      ],
+      "patterns": [
+        "[all] [the] sub[[( |-)]command[s]] group[s] of %slashcommand%",
+        "[all] [the] %slashcommand%'[s] sub[[( |-)]command[s]] group[s]"
+      ]
+    },
+    {
+      "id": "TagEmoji",
+      "name": "Tag Emoji",
+      "description": [
+        "Gets the emoji of a forum tag. Can be null if the tag has no emoji."
+      ],
+      "since": [
+        "4.4.4"
+      ],
+      "return type": "emote",
+      "patterns": [
+        "[the] tag emo(te|ji) of %forumtag%",
+        "%forumtag%'[s] tag emo(te|ji)"
+      ]
+    },
+    {
+      "id": "ExprTagRequired",
+      "name": "Tag Required",
+      "description": [
+        "Get a true/false value of the tag required state of a forum channel.",
+        "This property can be changed, and we recommend the tag required condition for checks."
+      ],
+      "examples": [
+        "set tag required of event-forumchannel to true"
+      ],
+      "return type": "Boolean",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [the] tag required of %forumchannel%",
+        "%forumchannel%'[s] [the] tag required"
+      ]
+    },
+    {
+      "id": "TargetMessage",
+      "name": "Target Message",
+      "description": [
+        "Represent the target message in a message command event.",
+        "It basically represent the message that was clicked on."
+      ],
+      "examples": [
+        "target message"
+      ],
+      "return type": "message",
+      "patterns": [
+        "[the] target message"
+      ]
+    },
+    {
+      "id": "TargetUser",
+      "name": "Target User",
+      "description": [
+        "Represent the target user in a user command event.",
+        "It basically represent the user that was clicked on."
+      ],
+      "examples": [
+        "target user"
+      ],
+      "return type": "user",
+      "patterns": [
+        "[the] target user"
+      ]
+    },
+    {
+      "id": "ChannelThreads",
+      "name": "Threads of Channel / Guild",
+      "description": [
+        "Gets the threads of a specific forum/text channel or a guild."
+      ],
+      "examples": [
+        "threads of event-guild"
+      ],
+      "since": [
+        "4.0.0, 4.4.4 (threads of forum channel)"
+      ],
+      "return type": "threadchannel",
+      "patterns": [
+        "[all] [the] threads of %forumchannel/textchannel/guild%",
+        "[all] [the] %forumchannel/textchannel/guild%'[s] threads"
+      ]
+    },
+    {
+      "id": "UsedAlias",
+      "name": "Used Alias",
+      "description": [
+        "Return the used alias in a discord command trigger section.",
+        "It can only be used here, and will throw an error if not."
+      ],
+      "examples": [
+        "set {_alias} to the used alias"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] use[d]( |-)alias[es]"
+      ]
+    },
+    {
+      "id": "UsedArgument",
+      "name": "Used Argument",
+      "description": [
+        "Return the plain formatter of the discord command's argument",
+        "You should however use (arg-1) for example which will return the argument value directly.",
+        "This is intended to be for test purpose only, and therefore only return a String formatted containing every used arguments."
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] use[d]( |-)arg[ument][s]"
+      ]
+    },
+    {
+      "id": "UsedPrefix",
+      "name": "Used Prefix",
+      "description": [
+        "Return the used prefix in a discord command trigger section."
+      ],
+      "examples": [
+        "set {_p} to the used prefix"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] use[d]( |-)prefix[es]"
+      ]
+    },
+    {
+      "id": "AvatarURL",
+      "name": "User / Bot / Guild Avatar",
+      "description": [
+        "Return the avatar URL of any user, guild or bot.",
+        "This can be changed for guilds and bots only!"
+      ],
+      "examples": [
+        "avatar of event-guild",
+        "avatar of event-user"
+      ],
+      "return type": "Text",
+      "changers": [
+        "set",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] avatar [url] of %guild/user/sticker/member/bot%",
+        "%guild/user/sticker/member/bot%'[s] avatar [url]"
+      ]
+    },
+    {
+      "id": "UserBadges",
+      "name": "User Badges",
+      "description": [
+        "Represent every badges' name a user have.",
+        "This does not and cannot contain any intro-related badges (nitro membership or nitro boosting), it need OAuth2 to be enabled."
+      ],
+      "examples": [
+        "reply with \"Whoa! You got all of them? %join badges of event-user with nl%\""
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[all] [the] [user] badge[s] of %user%",
+        "[all] [the] %user%'[s] [user] badge[s]"
+      ]
+    },
+    {
+      "id": "UserDiscriminator",
+      "name": "User Discriminator",
+      "description": [
+        "Represent the four digit number after the # of a user's name.",
+        "These, mixed with the user name itself, are unique.",
+        "This **DOES NOT** include the `#` char, so you have to add it yourself."
+      ],
+      "examples": [
+        "reply with discriminator of event-user"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [user] discriminator of %user%",
+        "%user%'[s] [user] discriminator"
+      ]
+    },
+    {
+      "id": "UserLocal",
+      "name": "User Locale",
+      "description": [
+        "Get the language code defined as user-side client of Discord.",
+        "Basically, return the language user's client is loaded in.",
+        "This expression only works in interactions event, and cannot be used outside of them."
+      ],
+      "examples": [
+        "the user locale"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] user['s] local[e] [(code|language)]"
+      ]
+    },
+    {
+      "id": "UserMutualGuilds",
+      "name": "User Mutual Guilds",
+      "description": [
+        "Represent every guild that the bot and the user have in common."
+      ],
+      "examples": [
+        "reply with \"Oh boi, we have %size of mutual guilds event-user% mutual guilds!\""
+      ],
+      "return type": "guild",
+      "patterns": [
+        "[all] [the] [user] mutual[s] guild[s] of %user%",
+        "[all] [the] %user%'[s] [user] mutual[s] guild[s]"
+      ]
+    },
+    {
+      "id": "GetUserInGuild",
+      "name": "User in Guild",
+      "description": [
+        "Get the member related to the specified user in a specific guild.",
+        "Users are common to whole Discord, two user cannot have the same instance.",
+        "Members are common to guilds, but also holding an user as reference.",
+        "User can have multiple instance according to which guild they are in, therefore they are considered as member."
+      ],
+      "return type": "member",
+      "patterns": [
+        "%user% in [the] [guild] %guild%"
+      ]
+    },
+    {
+      "id": "ChannelMembers",
+      "name": "Voice Channel Members",
+      "description": [
+        "The list of members that are connected to this actual voice channel."
+      ],
+      "examples": [
+        "audio members of event-channel",
+        "voice members of voice channel with id \"0000\""
+      ],
+      "return type": "member",
+      "patterns": [
+        "[all] [the] (audio|stage|voice) member[s] [list] of %voicechannel%",
+        "[all] [the] %voicechannel%'[s] (audio|stage|voice) member[s] [list]"
+      ]
+    }
+  ],
+  "types": [
+    {
+      "id": "Activity",
+      "name": "activity",
+      "patterns": [
+        "activity"
+      ]
+    },
+    {
+      "id": "Attachment",
+      "name": "attachment",
+      "patterns": [
+        "attachment"
+      ]
+    },
+    {
+      "id": "AudioChannel",
+      "name": "audiohannel",
+      "patterns": [
+        "audiohannel"
+      ]
+    },
+    {
+      "id": "AuditLogEntry",
+      "name": "auditlogentry",
+      "patterns": [
+        "auditlogentry"
+      ]
+    },
+    {
+      "id": "Ban",
+      "name": "ban",
+      "patterns": [
+        "ban"
+      ]
+    },
+    {
+      "id": "Bot",
+      "name": "bot",
+      "patterns": [
+        "bot"
+      ]
+    },
+    {
+      "id": "Button",
+      "name": "button",
+      "patterns": [
+        "button"
+      ]
+    },
+    {
+      "id": "ButtonStyle",
+      "name": "buttonstyle",
+      "examples": [
+        "unknown, primary, secondary, success, danger, link"
+      ],
+      "patterns": [
+        "buttonstyle"
+      ]
+    },
+    {
+      "id": "Category",
+      "name": "category",
+      "patterns": [
+        "category"
+      ]
+    },
+    {
+      "id": "Channel",
+      "name": "channel",
+      "patterns": [
+        "channel"
+      ]
+    },
+    {
+      "id": "ChannelAction",
+      "name": "channelaction",
+      "patterns": [
+        "channelaction"
+      ]
+    },
+    {
+      "id": "ChannelType",
+      "name": "channeltype",
+      "patterns": [
+        "channeltype"
+      ]
+    },
+    {
+      "id": "CommandObject",
+      "name": "discordcommand",
+      "patterns": [
+        "discordcommand"
+      ]
+    },
+    {
+      "id": "Builder",
+      "name": "dropdown",
+      "patterns": [
+        "dropdown"
+      ]
+    },
+    {
+      "id": "EmbedBuilder",
+      "name": "embedbuilder",
+      "patterns": [
+        "embedbuilder"
+      ]
+    },
+    {
+      "id": "Emote",
+      "name": "emote",
+      "patterns": [
+        "emote"
+      ]
+    },
+    {
+      "id": "ForumChannel",
+      "name": "forumchannel",
+      "patterns": [
+        "forumchannel"
+      ]
+    },
+    {
+      "id": "ForumTag",
+      "name": "forumtag",
+      "patterns": [
+        "forumtag"
+      ]
+    },
+    {
+      "id": "Guild",
+      "name": "guild",
+      "patterns": [
+        "guild"
+      ]
+    },
+    {
+      "id": "GuildChannel",
+      "name": "guildchannel",
+      "patterns": [
+        "guildchannel"
+      ]
+    },
+    {
+      "id": "InteractionHook",
+      "name": "interactionhook",
+      "patterns": [
+        "interactionhook"
+      ]
+    },
+    {
+      "id": "Invite",
+      "name": "invite",
+      "patterns": [
+        "invite"
+      ]
+    },
+    {
+      "id": "Member",
+      "name": "member",
+      "patterns": [
+        "member"
+      ]
+    },
+    {
+      "id": "Message",
+      "name": "message",
+      "patterns": [
+        "message"
+      ]
+    },
+    {
+      "id": "MessageCreateBuilder",
+      "name": "messagecreatebuilder",
+      "patterns": [
+        "messagecreatebuilder"
+      ]
+    },
+    {
+      "id": "Builder",
+      "name": "modal",
+      "patterns": [
+        "modal"
+      ]
+    },
+    {
+      "id": "NewsChannel",
+      "name": "newschannel",
+      "patterns": [
+        "newschannel"
+      ]
+    },
+    {
+      "id": "OnlineStatus",
+      "name": "onlinestatus",
+      "examples": [
+        "online, idle, do not disturb, invisible, offline, unknown"
+      ],
+      "patterns": [
+        "onlinestatus"
+      ]
+    },
+    {
+      "id": "OptionType",
+      "name": "optiontype",
+      "examples": [
+        "unknown, sub command, sub command group, string, integer, boolean, user, channel, role, mentionable, number, attachment"
+      ],
+      "patterns": [
+        "optiontype"
+      ]
+    },
+    {
+      "id": "Permission",
+      "name": "permission",
+      "examples": [
+        "manage channel, manage server, view audit logs, view channel, view guild insights, manage roles, manage permissions, manage webhooks, manage emojis and stickers, manage events, create instant invite, kick members, ban members, nickname change, nickname manage, moderate members, message add reaction, message send, message tts, message manage, message embed links, message attach files, message history, message mention everyone, message ext emoji, use application commands, message ext sticker, manage threads, create public threads, create private threads, message send in threads, priority speaker, voice stream, voice connect, voice speak, voice mute others, voice deaf others, voice move others, voice use vad, voice start activities, request to speak, administrator, unknown"
+      ],
+      "patterns": [
+        "permission"
+      ]
+    },
+    {
+      "id": "PrivateChannel",
+      "name": "privatechannel",
+      "patterns": [
+        "privatechannel"
+      ]
+    },
+    {
+      "id": "Role",
+      "name": "role",
+      "patterns": [
+        "role"
+      ]
+    },
+    {
+      "id": "RoleAction",
+      "name": "roleaction",
+      "patterns": [
+        "roleaction"
+      ]
+    },
+    {
+      "id": "ComponentRow",
+      "name": "row",
+      "patterns": [
+        "row"
+      ]
+    },
+    {
+      "id": "ScheduledEvent",
+      "name": "scheduledevent",
+      "patterns": [
+        "scheduledevent"
+      ]
+    },
+    {
+      "id": "SelectOption",
+      "name": "selectoption",
+      "patterns": [
+        "selectoption"
+      ]
+    },
+    {
+      "id": "Choice",
+      "name": "slashchoice",
+      "patterns": [
+        "slashchoice"
+      ]
+    },
+    {
+      "id": "SlashCommandData",
+      "name": "slashcommand",
+      "patterns": [
+        "slashcommand"
+      ]
+    },
+    {
+      "id": "SubcommandGroupData",
+      "name": "slashcommandgroup",
+      "patterns": [
+        "slashcommandgroup"
+      ]
+    },
+    {
+      "id": "OptionData",
+      "name": "slashoption",
+      "patterns": [
+        "slashoption"
+      ]
+    },
+    {
+      "id": "StageChannel",
+      "name": "stagechannel",
+      "patterns": [
+        "stagechannel"
+      ]
+    },
+    {
+      "id": "Sticker",
+      "name": "sticker",
+      "patterns": [
+        "sticker"
+      ]
+    },
+    {
+      "id": "SubcommandData",
+      "name": "subslashcommand",
+      "patterns": [
+        "subslashcommand"
+      ]
+    },
+    {
+      "id": "TextChannel",
+      "name": "textchannel",
+      "patterns": [
+        "textchannel"
+      ]
+    },
+    {
+      "id": "Builder",
+      "name": "textinput",
+      "patterns": [
+        "textinput"
+      ]
+    },
+    {
+      "id": "ThreadChannel",
+      "name": "threadchannel",
+      "patterns": [
+        "threadchannel"
+      ]
+    },
+    {
+      "id": "User",
+      "name": "user",
+      "patterns": [
+        "user"
+      ]
+    },
+    {
+      "id": "Profile",
+      "name": "userprofile",
+      "patterns": [
+        "userprofile"
+      ]
+    },
+    {
+      "id": "VoiceChannel",
+      "name": "voicechannel",
+      "patterns": [
+        "voicechannel"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "CreateMessage",
+      "name": "Create (rich) Message",
+      "description": [
+        "Creates a rich message.",
+        "A rich message can receive the following data:",
+        " - Content",
+        " - Embed[s] (default max is 1, webhooks can send up to 5)",
+        " - Attachment(s) (supports images if SkImage is installed)",
+        " - Components",
+        "This will be used to both post & edit a message. ",
+        "Simply change what you want and pass the result of the section to the edit effect."
+      ],
+      "examples": [
+        "create a new message and store it in {_message}:\n    set the content of the message to \"hello world\"\n\n\n    # we create a new component row that'll hold multiple buttons\n    create a new row and store it in {_row}:\n\n        add new danger button with id \"test\" named \"Hello World\" with reaction \"smile\" to the components of the row\n        add new success button with id \"test2\" named \"yuss\" to the components of the row\n    # we add the row containing two buttons\n    add {_row} to the rows of message\n        \n    # row with one button only\n    add new secondary button with id \"test3\" named \"Another row!\" to the rows of message\n\n    set {_dp} to new dropdown with id \"selector\"\n    set min range of {_dp} to 1\n    set max range of {_dp} to 2\n    set placeholder of {_dp} to \"Dropdown\"\n    loop \"one\", \"two\" and \"three\":\n        add new option with value (loop-value) named \"Value: %loop-value%\" with description \"Click to select\" with reaction \"sparkles\" to options of {_dp}\n    add {_dp} to the rows of message\n\n    make embed:\n        set title of embed to \"hello there!\"\n        set embed color of embed to red\n        set image of embed to \"attachment://image1.png\"\n    add last embed to the embeds of message\n\n    # SkImage's image. Images are named as: 'imageX.png' where X is the attachment's index.\n    set {_image} to new image with size 500, 500\n    set {_font} to new font style with name \"Arial Black\" and with size 60\n    set {_text} to new text \"Hello World\" with color from rgb 255, 255, 255 with font {_font} centered vertically centered horizontally\n    draw {_text} at 0, 0 on {_image}\n\n    add {_image} to attachments of message\n\nreply with {_message}"
+      ],
+      "patterns": [
+        "(make|create) [a] [new] message and store (it|the result) in %objects%"
+      ]
+    },
+    {
+      "id": "CreateRow",
+      "name": "Creator Components Row",
+      "description": [
+        "Creates a row of components.",
+        "The specified variable will contains the created row once the section is executed.",
+        "For now, a row can only hold multiple components of type Button!",
+        "Use 'the last row builder' expression (within the section) to change the values of the row!"
+      ],
+      "examples": [
+        "create a new row and store it in {_row}:\n        \n    add new danger button with id \"test\" named \"Hello World\" with reaction \"smile\" to the components of the row\n    add new success button with id \"test2\" named \"yuss\" to the components of the row"
+      ],
+      "patterns": [
+        "(make|create) [a] [new] [component[s]] row and store (it|the result) in %objects%"
+      ]
+    },
+    {
+      "id": "EmbedSection",
+      "name": "Embed Builder",
+      "description": [
+        "This builder allow you to make embed easily. You can specify the template used, you must register this template before use it!"
+      ],
+      "examples": [
+        "discord command embed:\n\tprefixes: !\n\ttrigger:\n\t\tmake embed:\n\t\t\tset title of embed to \"Title\"\n\t\t\tset description of embed to \"Description%nl%The title leads to the URL, if given\"\n\t\t\tset author of the embed to \"Author name (Can point to URL)\"\n\t\t\tset author icon of embed to \"https://cdn.discordapp.com/emojis/825811394963177533.png?v=1\"\n\t\t\tset author url of embed to \"https://www.youtube.com/watch?v=i33DB6R8YUY\"\n\t\t\tset embed color of the embed to orange\n\t\t\tadd inline field named \"Field Name\" with value \"Colour sets %nl%< that\" to fields of embed\n\t\t\tadd inline field named \"Field Name\" with value \"Color is a java Color%nl%Not a string\" to fields of embed\n\t\t\tadd inline field named \"Field Name\" with value \"Field value\" to fields of embed\n\t\t\tadd field named \"Non-inline field name\" with value \"The number of fields that can be shown on the same row is limited to 3, but is limited to 2 when an image is included\" to fields of embed\n\t\t\tset image of embed to \"https://media.discordapp.net/attachments/237757030708936714/390520880242884608/8xAac.png?width=508&height=522\"\n\t\t\tset thumbnail of embed to \"https://cdn.discordapp.com/emojis/825811394963177533.png?v=1\"\n\t\t\tset title url of embed to \"https://www.crunchyroll.com/fr/tonikawa-over-the-moon-for-you\"\n\t\t\tset footer of embed to \"Footer text\"\n\t\t\tset footer icon of embed to \"https://cdn.discordapp.com/emojis/825811394963177533.png?v=1\"\n\t\t\tset timestamp of embed to now\n\t\treply with last embed"
+      ],
+      "since": [
+        "3.0"
+      ],
+      "patterns": [
+        "make [new] [discord] [message] embed [using [the] [template] [(named|with name|with id)] %string%]"
+      ]
+    },
+    {
+      "id": "ReactSection",
+      "name": "ReactSection",
+      "patterns": [
+        "react to [the] [message] %message% with [the] %emote% [to run [(one time)] [[and] wait for %user%]]"
+      ]
+    }
+  ]
+}

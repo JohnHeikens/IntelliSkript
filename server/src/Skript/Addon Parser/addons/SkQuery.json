@@ -1,0 +1,1438 @@
+{
+  "events": [
+    {
+      "id": "lambda_when",
+      "name": "Lambda when",
+      "patterns": [
+        "when %predicate% [[with] limit[(ing|er)] %boolean%]"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "book_editing",
+      "name": "On Book Editing",
+      "patterns": [
+        "[on] [book] edit"
+      ],
+      "event values": [
+        "event-world",
+        "event-player",
+        "event-itemtype"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "close_inventory",
+      "name": "On Close Inventory",
+      "patterns": [
+        "[on] inventory [window] close"
+      ],
+      "event values": [
+        "event-inventory",
+        "event-player"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "enchant",
+      "name": "On Enchant",
+      "patterns": [
+        "[on] enchant"
+      ],
+      "event values": [
+        "event-block",
+        "event-player",
+        "event-itemtype",
+        "event-itemstack"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "falling_block_land",
+      "name": "On Falling Block Land",
+      "patterns": [
+        "[on] block land"
+      ],
+      "event values": [
+        "event-block",
+        "event-world",
+        "event-commandsender",
+        "event-entity",
+        "event-itemstack",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "flight_toggle",
+      "name": "On Flight Toggle",
+      "patterns": [
+        "[on] [player] toggl(e|ing) (flight|fly)",
+        "[on] [player] (flight|fly) toggl(e|ing)"
+      ],
+      "event values": [
+        "event-world",
+        "event-player"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "generic_move",
+      "name": "On Generic Move",
+      "patterns": [
+        "[on] any move[ment]"
+      ],
+      "event values": [
+        "past event-location",
+        "event-block",
+        "event-teleportcause",
+        "event-world",
+        "event-player"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "horse_jump",
+      "name": "On Horse Jump",
+      "patterns": [
+        "[on] horse jump"
+      ],
+      "event values": [
+        "event-world",
+        "event-commandsender",
+        "event-entity",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "inventory_click",
+      "name": "On Inventory Click",
+      "patterns": [
+        "[on] inventory click"
+      ],
+      "event values": [
+        "event-inventoryaction",
+        "event-clicktype",
+        "event-string",
+        "event-world",
+        "event-slot",
+        "event-inventory",
+        "event-player",
+        "event-itemstack",
+        "event-itemtype"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "item_projectile_hit",
+      "name": "On Item Projectile Hit",
+      "patterns": [
+        "[on] item [projectile] hit"
+      ],
+      "event values": [
+        "event-livingentity",
+        "event-itemtype",
+        "event-location"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "server_ping",
+      "name": "On Server Ping",
+      "patterns": [
+        "[on] [server] [list] ping"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "sheep_dye",
+      "name": "On Sheep Dye",
+      "patterns": [
+        "[on] sheep dye"
+      ],
+      "event values": [
+        "event-world",
+        "event-commandsender",
+        "event-entity",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "vehicle_collide_with_block",
+      "name": "On Vehicle Collide With Block",
+      "patterns": [
+        "[on] vehicle (block collide|collide with block)"
+      ],
+      "event values": [
+        "event-entity",
+        "event-block",
+        "event-world",
+        "event-entity"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "vehicle_collide_with_entity",
+      "name": "On Vehicle Collide With Entity",
+      "patterns": [
+        "[on] vehicle (entity collide|collide with entity)"
+      ],
+      "event values": [
+        "event-entity",
+        "event-block",
+        "event-world",
+        "event-entity"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "script_options_header",
+      "name": "Script Options Header",
+      "patterns": [
+        "script options"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "tab_complete",
+      "name": "Tab Complete",
+      "patterns": [
+        "tab complet(er|ion) [for [command]] %string%"
+      ],
+      "event values": [
+        "event-player"
+      ],
+      "cancellable": true
+    }
+  ],
+  "conditions": [
+    {
+      "id": "CondBoolean",
+      "name": "CondBoolean",
+      "patterns": [
+        "%booleans%"
+      ]
+    },
+    {
+      "id": "CondHasPotion",
+      "name": "Entity has Potion",
+      "patterns": [
+        "%livingentities% (has|have) [potion [effect]] %potioneffecttypes%",
+        "%livingentities% (doesn't|does not|do not|don't) have [potion [effect]] %potioneffecttypes%"
+      ]
+    },
+    {
+      "id": "CondFileExistance",
+      "name": "File existance",
+      "description": [
+        "Checks whether or not a file at the defined path(s) exist."
+      ],
+      "patterns": [
+        "file %string% (does|does(n't| not)) exist",
+        "existance of [file] %string% is %boolean%"
+      ]
+    },
+    {
+      "id": "CondIsBlock",
+      "name": "Is Block",
+      "patterns": [
+        "%itemtype% is [a] block",
+        "%itemtype% (isn't|is not) [a] block"
+      ]
+    },
+    {
+      "id": "CondIsDivisible",
+      "name": "Is Divisible",
+      "patterns": [
+        "%numbers% (is|are) divisible by %number%",
+        "%number% (isn't|is not|aren't|are not) divisible by %number%"
+      ]
+    },
+    {
+      "id": "CondIsPrime",
+      "name": "Is Prime",
+      "patterns": [
+        "%numbers% (is|are) [a] prime [number]",
+        "%numbers% (isn't|is not|aren't|are not) [a] prime [number]"
+      ]
+    },
+    {
+      "id": "CondIsWithin",
+      "name": "Is Within Cuboid",
+      "patterns": [
+        "%locations% (is|are) within %location% (to|and) %location%",
+        "%locations% (are|is)(n't| not) within %location% (to|and) %location%"
+      ]
+    },
+    {
+      "id": "CondMidi",
+      "name": "Midi is playing",
+      "patterns": [
+        "midi [ids] %strings% (are|is) playing",
+        "midi [ids] %strings% (are|is)(n't| not) playing"
+      ]
+    },
+    {
+      "id": "CondWithinBorder",
+      "name": "Within Border",
+      "patterns": [
+        "%locations% is [with]in [world[ ]border[s]] %worldborder%",
+        "%locations% (isn't|is not) [with]in [world[ ]border[s]] %worldborder%"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "EffBranch",
+      "name": "Branch",
+      "patterns": [
+        "branch %number%"
+      ]
+    },
+    {
+      "id": "EffClientBlock",
+      "name": "Client Block",
+      "patterns": [
+        "make %players% see %blocks% as %itemtype%"
+      ]
+    },
+    {
+      "id": "EffClientSign",
+      "name": "Client Sign",
+      "patterns": [
+        "make %players% see lines of %blocks% as %string%, %string%, %string%( and|,) %string%"
+      ]
+    },
+    {
+      "id": "EffOptionDeveloperMode",
+      "name": "Developer Mode Option",
+      "patterns": [
+        "$ developer mode"
+      ]
+    },
+    {
+      "id": "EffExecuteLambda",
+      "name": "EffExecuteLambda",
+      "patterns": [
+        "(do|execute) [%number% time[s]] %lambda%"
+      ]
+    },
+    {
+      "id": "EffOptionSQLPool",
+      "name": "EffOptionSQLPool",
+      "patterns": [
+        "$ pool <.+>"
+      ]
+    },
+    {
+      "id": "EffSQLUpdate",
+      "name": "EffSQLUpdate",
+      "patterns": [
+        "update %string%"
+      ]
+    },
+    {
+      "id": "EffShootItemProjectile",
+      "name": "EffShootItemProjectile",
+      "patterns": [
+        "make %livingentitys% shoot [an] item projectile [of] %itemtype% [at speed %number%]"
+      ]
+    },
+    {
+      "id": "EffShowCredits",
+      "name": "EffShowCredits",
+      "patterns": [
+        "display credits to %player%"
+      ]
+    },
+    {
+      "id": "EffStopServer",
+      "name": "EffStopServer",
+      "patterns": [
+        "(stop|shutdown) server"
+      ]
+    },
+    {
+      "id": "EffTame",
+      "name": "EffTame",
+      "patterns": [
+        "tame %entities% to %player%"
+      ]
+    },
+    {
+      "id": "EffTexture",
+      "name": "EffTexture",
+      "patterns": [
+        "send [(resource|texture)] pack from %string% to %players%"
+      ]
+    },
+    {
+      "id": "EffHoming",
+      "name": "Entity Homing",
+      "patterns": [
+        "make %entity% home towards %location%",
+        "make %entities% home towards %location% normally"
+      ]
+    },
+    {
+      "id": "EffEscape",
+      "name": "Escape Lines",
+      "patterns": [
+        "escape %number% [(level[s]|line[s])]"
+      ]
+    },
+    {
+      "id": "EffEvaluateEffect",
+      "name": "Evaluate Input Effect",
+      "patterns": [
+        "evaluate %string/markup%",
+        "^%markup%"
+      ]
+    },
+    {
+      "id": "EffFormatSlot",
+      "name": "Format Inventory Slot",
+      "patterns": [
+        "format slot %number% of %players% with %itemstack% to close then run %string/lambda%",
+        "format slot %number% of %players% with %itemstack% to run %string/lambda%",
+        "format slot %number% of %players% with %itemstack% to close",
+        "format slot %number% of %players% with %itemstack% to (be|act) unstealable",
+        "unformat slot %number% of %players%"
+      ]
+    },
+    {
+      "id": "EffLeash",
+      "name": "Leash Entities",
+      "patterns": [
+        "make %entities% (leash|lead) %livingentities%",
+        "(leash|lead) %livingentities% to %entities%"
+      ]
+    },
+    {
+      "id": "EffMakeDamage",
+      "name": "Make Damage",
+      "patterns": [
+        "(make|force) %livingentities% [to] damage %livingentities% by %number%"
+      ]
+    },
+    {
+      "id": "EffMakeSay",
+      "name": "Make Say",
+      "patterns": [
+        "(make|force) %players% say %strings%"
+      ]
+    },
+    {
+      "id": "EffMakeSleep",
+      "name": "Make Sleep",
+      "patterns": [
+        "(make|force) %player% [to] sleep at %location%"
+      ]
+    },
+    {
+      "id": "EffPathfind",
+      "name": "Pathfind",
+      "patterns": [
+        "make %livingentities% pathfind to %location% (with|at) speed %number%"
+      ]
+    },
+    {
+      "id": "EffMIDI",
+      "name": "Play MIDI",
+      "patterns": [
+        "play midi [from] %string% (for|to) %players% [at [tempo] %number%] [with id %string%]",
+        "play midi from (website|link) %string% (for|to) %players% [at [tempo] %number%] [with id %string%]"
+      ]
+    },
+    {
+      "id": "EffOptionSQLInit",
+      "name": "Preinit Driver Option",
+      "patterns": [
+        "$ init <.+>"
+      ]
+    },
+    {
+      "id": "EffDeserializeInventory",
+      "name": "Restore Inventory",
+      "patterns": [
+        "restore %inventories% (to|from) %string%"
+      ]
+    },
+    {
+      "id": "EffOptionSQLPassword",
+      "name": "SQL Password Option",
+      "patterns": [
+        "$ db password <.+>"
+      ]
+    },
+    {
+      "id": "EffOptionSQLURL",
+      "name": "SQL URL Option",
+      "patterns": [
+        "$ db url <.+>"
+      ]
+    },
+    {
+      "id": "EffOptionSQLUsername",
+      "name": "SQL Username Option",
+      "patterns": [
+        "$ db username <.+>"
+      ]
+    },
+    {
+      "id": "EffOptionThread",
+      "name": "Safely Execute Thread",
+      "patterns": [
+        "$ thread"
+      ]
+    },
+    {
+      "id": "EffSetBlock",
+      "name": "Set Block Without Updates",
+      "patterns": [
+        "@noupdate::set %blocks% to %itemtype%"
+      ]
+    },
+    {
+      "id": "EffBlockFall",
+      "name": "Spawn Falling Block",
+      "patterns": [
+        "spawn falling block of %itemtype% at %locations%",
+        "spawn damaging falling block of %itemtype% at %locations%",
+        "spawn undroppable falling block of %itemtype% at %locations%",
+        "spawn damaging undroppable falling block of %itemtype% at %locations%",
+        "spawn undroppable damaging falling block of %itemtype% at %locations%"
+      ]
+    },
+    {
+      "id": "EffMIDIStop",
+      "name": "Stop MIDI",
+      "patterns": [
+        "stop midi[s] [[with] id] %strings%"
+      ]
+    },
+    {
+      "id": "EffTrail",
+      "name": "Trail Projectile",
+      "patterns": [
+        "trail projectile with %particles%"
+      ]
+    },
+    {
+      "id": "EffOptionSkriptPermissionsManager",
+      "name": "skQueryPerms Option",
+      "patterns": [
+        "$ use permissions"
+      ]
+    }
+  ],
+  "expressions": [
+    {
+      "id": "ExprArrayValue",
+      "name": "ExprArrayValue",
+      "return type": "Object",
+      "patterns": [
+        "index %number% of %objects%"
+      ]
+    },
+    {
+      "id": "ExprArrowCrit",
+      "name": "ExprArrowCrit",
+      "return type": "Boolean",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] critical arrow (state|ability|mode) of %entities%",
+        "%entities%'[s] critical arrow (state|ability|mode)"
+      ]
+    },
+    {
+      "id": "ExprArrowKnockback",
+      "name": "ExprArrowKnockback",
+      "return type": "Number",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] arrow knockback [amount] of %entities%",
+        "%entities%'[s] arrow knockback [amount]"
+      ]
+    },
+    {
+      "id": "ExprArt",
+      "name": "ExprArt",
+      "return type": "art",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] [displayed] art of %entities%",
+        "%entities%'[s] [displayed] art"
+      ]
+    },
+    {
+      "id": "ExprBlankInventories",
+      "name": "ExprBlankInventories",
+      "return type": "Inventory",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete"
+      ],
+      "patterns": [
+        "inventory of %inventorytype%",
+        "chest with %number% row[s]",
+        "chest with %number% row[s] named %string%"
+      ]
+    },
+    {
+      "id": "ExprBlastRadius",
+      "name": "ExprBlastRadius",
+      "return type": "Number",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] (blast|explosion) (radius|size|yield) of %entities%",
+        "%entities%'[s] (blast|explosion) (radius|size|yield)"
+      ]
+    },
+    {
+      "id": "ExprBlockChunk",
+      "name": "ExprBlockChunk",
+      "return type": "Block",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete"
+      ],
+      "patterns": [
+        "blocks within %chunk%"
+      ]
+    },
+    {
+      "id": "ExprBlockCube",
+      "name": "ExprBlockCube",
+      "return type": "Block",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete"
+      ],
+      "patterns": [
+        "blocks within %location% (to|and) %location%"
+      ]
+    },
+    {
+      "id": "ExprBlockInChunk",
+      "name": "ExprBlockInChunk",
+      "return type": "Block",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete"
+      ],
+      "patterns": [
+        "[the] block at %number%, %number%, %number% in [chunk] %chunk%"
+      ]
+    },
+    {
+      "id": "ExprBorder",
+      "name": "ExprBorder",
+      "return type": "worldborder",
+      "changers": [
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] world[ ]border[s] of %worlds%",
+        "%worlds%'[s] world[ ]border[s]"
+      ]
+    },
+    {
+      "id": "ExprBorderCenter",
+      "name": "ExprBorderCenter",
+      "return type": "Location",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [world[ ]border[s]] center of %worldborders%",
+        "%worldborders%'[s] [world[ ]border[s]] center"
+      ]
+    },
+    {
+      "id": "ExprBorderDamageAmount",
+      "name": "ExprBorderDamageAmount",
+      "return type": "Number",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [world[ ]border[s]] damage [amount] of %worldborders%",
+        "%worldborders%'[s] [world[ ]border[s]] damage [amount]"
+      ]
+    },
+    {
+      "id": "ExprBorderDamageBuffer",
+      "name": "ExprBorderDamageBuffer",
+      "return type": "Number",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [world[ ]border[s]] [damage] buffer of %worldborders%",
+        "%worldborders%'[s] [world[ ]border[s]] [damage] buffer"
+      ]
+    },
+    {
+      "id": "ExprBorderSize",
+      "name": "ExprBorderSize",
+      "return type": "Number",
+      "changers": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "patterns": [
+        "(size|diameter) of world[ ]border[s] %worldborders% [over [a [(time|period) of]] %timespan%]"
+      ]
+    },
+    {
+      "id": "ExprBorderWarningDistance",
+      "name": "ExprBorderWarningDistance",
+      "return type": "Number",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [world[ ]border[s]] warning distance of %worldborders%",
+        "%worldborders%'[s] [world[ ]border[s]] warning distance"
+      ]
+    },
+    {
+      "id": "ExprBorderWarningTime",
+      "name": "ExprBorderWarningTime",
+      "return type": "Number",
+      "changers": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "patterns": [
+        "[the] [world[ ]border[s]] warning time of %worldborders%",
+        "%worldborders%'[s] [world[ ]border[s]] warning time"
+      ]
+    },
+    {
+      "id": "ExprCharacterIndex",
+      "name": "ExprCharacterIndex",
+      "return type": "Text",
+      "patterns": [
+        "char[acter][s] at [index] %numbers% (within|in) %strings%"
+      ]
+    },
+    {
+      "id": "ExprCheck",
+      "name": "ExprCheck",
+      "return type": "Boolean",
+      "patterns": [
+        "check[ed] %predicate%"
+      ]
+    },
+    {
+      "id": "ExprColoredPotion",
+      "name": "ExprColoredPotion",
+      "return type": "Item / Material",
+      "patterns": [
+        "blank %potioneffecttype% [colo[u]r[ed]] potion"
+      ]
+    },
+    {
+      "id": "ExprComparisons",
+      "name": "ExprComparisons",
+      "return type": "Boolean",
+      "patterns": [
+        "%object%[ ]===[ ]%object%",
+        "%object%[ ]==[ ]%object%",
+        "%object%[ ]\\>[ ]%object%",
+        "%object%[ ]\\<[ ]%object%",
+        "%object%[ ]\\>=[ ]%object%",
+        "%object%[ ]\\<=[ ]%object%"
+      ]
+    },
+    {
+      "id": "ExprComplicatedMath",
+      "name": "ExprComplicatedMath",
+      "return type": "Number",
+      "patterns": [
+        "sin[e] %number%",
+        "cos[ine] %number%",
+        "tan[gent] %number%",
+        "arc sin[e] %number%",
+        "arc cos[ine] %number%",
+        "arc tan[gent] %number%",
+        "hyperbolic sin[e] %number%",
+        "hyperbolic cos[ine] %number%",
+        "hyperbolic tan[gent] %number%",
+        "[natural ]log[arithm] %number%",
+        "base(-| )10 log[arithm] %number%",
+        "signum %number%",
+        "(sqrt|square root)[ of] %number%",
+        "(%number% factorial|%number%!)"
+      ]
+    },
+    {
+      "id": "ExprDefaultValue",
+      "name": "ExprDefaultValue",
+      "return type": "Object",
+      "patterns": [
+        "%object%[ ]?[ ]%object%"
+      ]
+    },
+    {
+      "id": "ExprDirectionFromTo",
+      "name": "ExprDirectionFromTo",
+      "return type": "Direction",
+      "patterns": [
+        "direction from %location% to %location%"
+      ]
+    },
+    {
+      "id": "ExprEnchantLevel",
+      "name": "ExprEnchantLevel",
+      "return type": "integer",
+      "patterns": [
+        "[the] enchant(ing|ment|) level"
+      ]
+    },
+    {
+      "id": "ExprEntities",
+      "name": "ExprEntities",
+      "return type": "Entity",
+      "changers": [
+        "add",
+        "remove",
+        "remove all"
+      ],
+      "patterns": [
+        "[the] entities of %chunks%",
+        "%chunks%'[s] entities"
+      ]
+    },
+    {
+      "id": "ExprExplodedBlocks",
+      "name": "ExprExplodedBlocks",
+      "return type": "Block",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete"
+      ],
+      "patterns": [
+        "[the] (destroyed|exploded|boom boomed) blocks"
+      ]
+    },
+    {
+      "id": "ExprFlightMode",
+      "name": "ExprFlightMode",
+      "return type": "Boolean",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] fl(y|ight) (state|ability|mode) of %players%",
+        "%players%'[s] fl(y|ight) (state|ability|mode)"
+      ]
+    },
+    {
+      "id": "ExprFormerLocation",
+      "name": "ExprFormerLocation",
+      "return type": "Location",
+      "patterns": [
+        "[the] (past|former) move[ment] [location]"
+      ]
+    },
+    {
+      "id": "ExprGlowingItemStack",
+      "name": "ExprGlowingItemStack",
+      "return type": "Item / Material",
+      "patterns": [
+        "[skquery] glowing %itemstacks%"
+      ]
+    },
+    {
+      "id": "ExprHealthScale",
+      "name": "ExprHealthScale",
+      "return type": "Number",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] scaled health of %players%",
+        "%players%'[s] scaled health"
+      ]
+    },
+    {
+      "id": "ExprHealthScaleMode",
+      "name": "ExprHealthScaleMode",
+      "return type": "Boolean",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] scaled health (state|ability|mode) of %players%",
+        "%players%'[s] scaled health (state|ability|mode)"
+      ]
+    },
+    {
+      "id": "ExprHotbarSlot",
+      "name": "ExprHotbarSlot",
+      "return type": "Number",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "reset"
+      ],
+      "patterns": [
+        "[the] (current|selected) hotbar slot [id] of %players%",
+        "%players%'[s] (current|selected) hotbar slot [id]"
+      ]
+    },
+    {
+      "id": "ExprIIf",
+      "name": "ExprIIf",
+      "return type": "Object",
+      "patterns": [
+        "%boolean%[ ]?[ ]%object%[ ]:[ ]%object%"
+      ]
+    },
+    {
+      "id": "ExprImageLocal",
+      "name": "ExprImageLocal",
+      "return type": "Object",
+      "patterns": [
+        "[the] [buffered[ ]]image stored as %string%"
+      ]
+    },
+    {
+      "id": "ExprImageURL",
+      "name": "ExprImageURL",
+      "return type": "Object",
+      "patterns": [
+        "[the] [buffered[ ]]image from [url] %string%"
+      ]
+    },
+    {
+      "id": "ExprIncendiaryExplosion",
+      "name": "ExprIncendiaryExplosion",
+      "return type": "Boolean",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] (blast|explosion) fire (state|ability|mode) of %entities%",
+        "%entities%'[s] (blast|explosion) fire (state|ability|mode)"
+      ]
+    },
+    {
+      "id": "ExprInput",
+      "name": "ExprInput",
+      "return type": "Object",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "%*classinfo% input"
+      ]
+    },
+    {
+      "id": "ExprInventoryName",
+      "name": "ExprInventoryName",
+      "return type": "Text",
+      "patterns": [
+        "inventory (title|name)"
+      ]
+    },
+    {
+      "id": "ExprInventoryNameContainer",
+      "name": "ExprInventoryNameContainer",
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] inventory (title|name)[s] of %inventories%",
+        "%inventories%'[s] inventory (title|name)[s]"
+      ]
+    },
+    {
+      "id": "ExprInventorySerials",
+      "name": "ExprInventorySerials",
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] serialized contents of %inventory%",
+        "%inventory%'[s] serialized contents"
+      ]
+    },
+    {
+      "id": "ExprItemStackSize",
+      "name": "ExprItemStackSize",
+      "return type": "Number",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] [global] [max] stack size of %inventories%",
+        "%inventories%'[s] [global] [max] stack size"
+      ]
+    },
+    {
+      "id": "ExprKeyString",
+      "name": "ExprKeyString",
+      "return type": "Text",
+      "patterns": [
+        "random %number% (char|long|length) string from [charset] %markup%"
+      ]
+    },
+    {
+      "id": "ExprLambdaConcatenate",
+      "name": "ExprLambdaConcatenate",
+      "return type": "Object",
+      "patterns": [
+        "%lambda%\\>%lambda%",
+        "%predicate%\\>%predicate%"
+      ]
+    },
+    {
+      "id": "ExprLandBoats",
+      "name": "ExprLandBoats",
+      "return type": "Boolean",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] land boat (state|mode|ability) of %entities%",
+        "%entities%'[s] land boat (state|mode|ability)"
+      ]
+    },
+    {
+      "id": "ExprLoadedChunks",
+      "name": "ExprLoadedChunks",
+      "return type": "Chunk",
+      "patterns": [
+        "[the] loaded chunks of %worlds%",
+        "%worlds%'[s] loaded chunks"
+      ]
+    },
+    {
+      "id": "ExprMaxSpeed",
+      "name": "ExprMaxSpeed",
+      "return type": "Number",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] [maximum] minecart speed of %entities%",
+        "%entities%'[s] [maximum] minecart speed"
+      ]
+    },
+    {
+      "id": "ExprMessageFormat",
+      "name": "ExprMessageFormat",
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "message format"
+      ]
+    },
+    {
+      "id": "ExprModulus",
+      "name": "ExprModulus",
+      "return type": "Number",
+      "patterns": [
+        "%number% mod %number%"
+      ]
+    },
+    {
+      "id": "ExprMoonPhase",
+      "name": "ExprMoonPhase",
+      "return type": "moonphase",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] [current] moon phase of %world%",
+        "%world%'[s] [current] moon phase"
+      ]
+    },
+    {
+      "id": "ExprNewLine",
+      "name": "ExprNewLine",
+      "return type": "Text",
+      "patterns": [
+        "(nl|new[ ]line)"
+      ]
+    },
+    {
+      "id": "ExprNotBoolean",
+      "name": "ExprNotBoolean",
+      "return type": "Boolean",
+      "patterns": [
+        "(!|not )%boolean%"
+      ]
+    },
+    {
+      "id": "ExprNthPrime",
+      "name": "ExprNthPrime",
+      "return type": "integer",
+      "patterns": [
+        "%number%(st|nd|rd|th) prime"
+      ]
+    },
+    {
+      "id": "ExprNull",
+      "name": "ExprNull",
+      "return type": "Object",
+      "patterns": [
+        "null"
+      ]
+    },
+    {
+      "id": "ExprOpenInventory",
+      "name": "ExprOpenInventory",
+      "return type": "Inventory",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete"
+      ],
+      "patterns": [
+        "[the] (current|open) inventory of %player%",
+        "%player%'[s] (current|open) inventory"
+      ]
+    },
+    {
+      "id": "ExprPluginVersion",
+      "name": "ExprPluginVersion",
+      "return type": "Text",
+      "patterns": [
+        "[the] version of %string%",
+        "%string%'[s] version"
+      ]
+    },
+    {
+      "id": "ExprPrimer",
+      "name": "ExprPrimer",
+      "return type": "Entity",
+      "changers": [
+        "add",
+        "remove",
+        "remove all"
+      ],
+      "patterns": [
+        "[the] (primer|fuse lighting piece of shit) of %entities%",
+        "%entities%'[s] (primer|fuse lighting piece of shit)"
+      ]
+    },
+    {
+      "id": "ExprRadix",
+      "name": "ExprRadix",
+      "return type": "Text",
+      "patterns": [
+        "radix %number% of %number%"
+      ]
+    },
+    {
+      "id": "ExprRegexMatches",
+      "name": "ExprRegexMatches",
+      "return type": "Text",
+      "patterns": [
+        "groups %number% of %string% matched (to|with|against) %string%"
+      ]
+    },
+    {
+      "id": "ExprRomanNumeralFrom",
+      "name": "ExprRomanNumeralFrom",
+      "return type": "Number",
+      "patterns": [
+        "[the] arabic num(ber|eral) of %strings%",
+        "%strings%'[s] arabic num(ber|eral)"
+      ]
+    },
+    {
+      "id": "ExprRomanNumeralTo",
+      "name": "ExprRomanNumeralTo",
+      "return type": "Text",
+      "patterns": [
+        "[the] roman num(ber|eral) of %numbers%",
+        "%numbers%'[s] roman num(ber|eral)"
+      ]
+    },
+    {
+      "id": "ExprSQLQuery",
+      "name": "ExprSQLQuery",
+      "return type": "queryresult",
+      "patterns": [
+        "result of query %string%"
+      ]
+    },
+    {
+      "id": "ExprSQLQueryObjects",
+      "name": "ExprSQLQueryObjects",
+      "return type": "Object",
+      "patterns": [
+        "objects in column %string% from %queryresult%"
+      ]
+    },
+    {
+      "id": "ExprSerial",
+      "name": "ExprSerial",
+      "return type": "Text",
+      "patterns": [
+        "[the] serialized inventory of %player%",
+        "%player%'[s] serialized inventory"
+      ]
+    },
+    {
+      "id": "ExprTabCompleteArgument",
+      "name": "ExprTabCompleteArgument",
+      "return type": "Text",
+      "patterns": [
+        "arg[ument] at %number%"
+      ]
+    },
+    {
+      "id": "ExprTabCompletions",
+      "name": "ExprTabCompletions",
+      "return type": "Text",
+      "changers": [
+        "add"
+      ],
+      "patterns": [
+        "[tab] (completions|suggestions)"
+      ]
+    },
+    {
+      "id": "ExprTameOwner",
+      "name": "ExprTameOwner",
+      "return type": "Player",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] (tamer|[pet] owner) of %entities%",
+        "%entities%'[s] (tamer|[pet] owner)"
+      ]
+    },
+    {
+      "id": "ExprTileEntities",
+      "name": "ExprTileEntities",
+      "return type": "Block",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete"
+      ],
+      "patterns": [
+        "[the] tile entities of %chunks%",
+        "%chunks%'[s] tile entities"
+      ]
+    },
+    {
+      "id": "ExprTimeAbs",
+      "name": "ExprTimeAbs",
+      "return type": "Time",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] time of %players%",
+        "%players%'[s] time"
+      ]
+    },
+    {
+      "id": "ExprTimeRel",
+      "name": "ExprTimeRel",
+      "return type": "Time",
+      "changers": [
+        "set",
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "(relative|player) time of %player% [with relative %boolean%]",
+        "%player%'s (relative|player) time [with relative %boolean%]"
+      ]
+    },
+    {
+      "id": "ExprTntSource",
+      "name": "ExprTntSource",
+      "return type": "Entity",
+      "changers": [
+        "add",
+        "remove",
+        "remove all"
+      ],
+      "patterns": [
+        "[the] (primer|fuse lighting piece of shit) of %entities%",
+        "%entities%'[s] (primer|fuse lighting piece of shit)"
+      ]
+    },
+    {
+      "id": "ExprURLText",
+      "name": "ExprURLText",
+      "return type": "Text",
+      "patterns": [
+        "text from [url] %string%"
+      ]
+    },
+    {
+      "id": "ExprValues",
+      "name": "ExprValues",
+      "return type": "Text",
+      "patterns": [
+        "[all ]enum values of %classinfo%"
+      ]
+    },
+    {
+      "id": "ExprVillagerJob",
+      "name": "ExprVillagerJob",
+      "return type": "profession",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] villager (profession|job) of %entities%",
+        "%entities%'[s] villager (profession|job)"
+      ]
+    },
+    {
+      "id": "ExprWhere",
+      "name": "ExprWhere",
+      "return type": "Object",
+      "patterns": [
+        "%objects% where %predicate%"
+      ]
+    },
+    {
+      "id": "ExprYaml",
+      "name": "ExprYaml",
+      "return type": "Object",
+      "changers": [
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "yaml (value|nodes|nodes with keys|list) %string% from [file] %string%"
+      ]
+    }
+  ],
+  "types": [
+    {
+      "id": "Art",
+      "name": "art",
+      "patterns": [
+        "art[s]"
+      ]
+    },
+    {
+      "id": "DisplaySlot",
+      "name": "displayslot",
+      "patterns": [
+        "displayslot[s]"
+      ]
+    },
+    {
+      "id": "LambdaEffect",
+      "name": "lambda",
+      "patterns": [
+        "lambda"
+      ]
+    },
+    {
+      "id": "Markup",
+      "name": "markup",
+      "patterns": [
+        "markup"
+      ]
+    },
+    {
+      "id": "MoonPhase",
+      "name": "moonphase",
+      "patterns": [
+        "moonphase[s]"
+      ]
+    },
+    {
+      "id": "LambdaCondition",
+      "name": "predicate",
+      "patterns": [
+        "predicate"
+      ]
+    },
+    {
+      "id": "Profession",
+      "name": "profession",
+      "patterns": [
+        "profession[s]"
+      ]
+    },
+    {
+      "id": "ResultSet",
+      "name": "queryresult",
+      "patterns": [
+        "queryresult[s]"
+      ]
+    },
+    {
+      "id": "WorldBorder",
+      "name": "worldborder",
+      "patterns": [
+        "worldborder[s]"
+      ]
+    }
+  ]
+}

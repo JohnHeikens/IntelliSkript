@@ -1,0 +1,1394 @@
+{
+  "events": [
+    {
+      "id": "bungee_command",
+      "name": "On bungee command",
+      "description": [
+        "When a command is executed on the network, this could be a Spigot command or a Bungee command"
+      ],
+      "examples": [
+        "on bungee command:",
+        "\tset {_command} to event-string",
+        "\tset {_player} to event-bungeeplayer"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "patterns": [
+        "[on] bungee command"
+      ],
+      "event values": [
+        "event-bungeeplayer",
+        "event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "bungee_custom_request",
+      "name": "On bungee custom request",
+      "description": [
+        "When a custom request is asked from another BungeeServer"
+      ],
+      "examples": [
+        "broadcast custom request \"hello\" from bungee server named \"lobby\"",
+        "",
+        "#On the other server",
+        "on custom request:",
+        "\tif event-string is \"hello\":",
+        "\t\tset custom request response to \"hi !\""
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "patterns": [
+        "[on] [bungee] custom request"
+      ],
+      "event values": [
+        "event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "bungee_message_receive",
+      "name": "On bungee message receive",
+      "description": [
+        "When a bungee message is received"
+      ],
+      "examples": [
+        "on bungee message receive:",
+        "\tset {_server} to event-bungeeserver",
+        "\tset {_message} to event-string"
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "patterns": [
+        "[on] bungee [custom] message receive"
+      ],
+      "event values": [
+        "event-string",
+        "event-bungeeserver"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "bungee_player_join",
+      "name": "On bungee player join",
+      "description": [
+        "When a bungee player joins the network"
+      ],
+      "examples": [
+        "on bungee player join:",
+        "\tset {_player} to event-bungeeplayer"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "[on] bungee [player] join"
+      ],
+      "event values": [
+        "event-bungeeplayer"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "bungee_player_leave",
+      "name": "On bungee player leave",
+      "description": [
+        "When a bungee player leaves the network"
+      ],
+      "examples": [
+        "on bungee player leave:",
+        "\tset {_player} to event-bungeeplayer"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "[on] bungee [player] (leave|quit)"
+      ],
+      "event values": [
+        "event-bungeeplayer"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "bungee_server_start",
+      "name": "On bungee server start",
+      "description": [
+        "When a bungee server is started / connected to BungeeSK"
+      ],
+      "examples": [
+        "on bungee server start:",
+        "\tset {_server} to event-bungeeserver"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "patterns": [
+        "[on] bungee server (start|connect)"
+      ],
+      "event values": [
+        "event-bungeeserver"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "bungee_server_stop",
+      "name": "On bungee server stop",
+      "description": [
+        "When a bungee server is stop / disconnected from BungeeSK"
+      ],
+      "examples": [
+        "on bungee server stop:",
+        "\tset {_server} to event-bungeeserver"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "patterns": [
+        "[on] bungee server (stop|disconnect)"
+      ],
+      "event values": [
+        "event-bungeeserver"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "client_connect",
+      "name": "On client connect",
+      "description": [
+        "When the client connects to a server"
+      ],
+      "examples": [
+        "on bungee client connect:",
+        "\tbroadcast \"&aClient connected !\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "[on] [bungee] client connect"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "client_disconnect",
+      "name": "On client disconnect",
+      "description": [
+        "When the client disconnects from the server"
+      ],
+      "examples": [
+        "on bungee client disconnect:",
+        "\tbroadcast \"&cClient disconnected !\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "[on] [bungee] client disconnect"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "global_script_receive",
+      "name": "On global script receive",
+      "description": [
+        "When a global script is received"
+      ],
+      "examples": [
+        "on global script receive:",
+        "\tset {_name} to event-string"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "patterns": [
+        "[on] (bungee|global) script receive"
+      ],
+      "event values": [
+        "event-string"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "proxy_ping",
+      "name": "On proxy ping",
+      "description": [
+        "When the proxy is being ping by a player. Need to inform the proxy that this server is listening to this event with the 'Listen to proxy ping' effect"
+      ],
+      "examples": [
+        "on proxy ping:",
+        "\tset max players to 10",
+        "\tset connected players to 5",
+        "\t#And so on..."
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "patterns": [
+        "[on] (proxy|bungee) ping"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "server_switch",
+      "name": "On server switch",
+      "description": [
+        "When the player switches between 2 servers"
+      ],
+      "examples": [
+        "on server switch:",
+        "\tbroadcast \"&6%event-bungeeplayer% &7switched from server &c%past-server% &7to &a%event-bungeeplayer's server% &7!\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "[on] [bungee] server switch"
+      ],
+      "event values": [
+        "event-bungeeplayer",
+        "event-bungeeserver"
+      ],
+      "cancellable": false
+    }
+  ],
+  "conditions": [
+    {
+      "id": "ScopeConnectToServer",
+      "name": "Connect to server",
+      "description": [
+        "This scope allows you to connect to your bungeecord server easily !"
+      ],
+      "examples": [
+        "on load:\n\tcreate new bungee connection:\n\t\tset address of connection to \"127.0.0.1\"\n\t\tset port of connection to 20000\n\t\tset password of connection to \"abcd\"\n\tstart new connection with connection"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "(create|init) new bungee connection"
+      ]
+    },
+    {
+      "id": "CondBungeePlayerHasPermission",
+      "name": "Does bungee player have / doesn't have permission",
+      "description": [
+        "Check if a bungee player has a specific permission on the bungeecord"
+      ],
+      "examples": [
+        "broadcast \"Notch has the BungeeSK permission ! :o\" if bungee player named \"Notch\" has permission \"bungeesk.perm\""
+      ],
+      "since": [
+        "1.1.1"
+      ],
+      "patterns": [
+        "%bungeeplayer% has permission %string%",
+        "%bungeeplayer% (doesn't|does not) have permission %string%"
+      ]
+    },
+    {
+      "id": "CondBungeePlayerConnected",
+      "name": "Is bungee player connected",
+      "description": [
+        "Checks if a bungee player is connected"
+      ],
+      "examples": [
+        "broadcast \"Notch is connected ! :o\" if bungee player named \"Notch\" is connected"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "%bungeeplayer% is connected",
+        "%bungeeplayer% is(n't| not) connected"
+      ]
+    },
+    {
+      "id": "CondBungeeServerStarted",
+      "name": "Is bungee server started",
+      "description": [
+        "Checks if a bungee server is started"
+      ],
+      "examples": [
+        "broadcast \"Lobby 2 is started\" if bungee server named \"lobby2\" is started"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "patterns": [
+        "%bungeeserver% is (started|online)",
+        "%bungeeserver% is(n't| not) (started|online)"
+      ]
+    },
+    {
+      "id": "CondClientConnected",
+      "name": "Is bungeecord connected",
+      "description": [
+        "Checks if the server and the bungeecord are linked"
+      ],
+      "examples": [
+        "command /isconnected:\n\ttrigger:\n\t\tif client is not connected:\n\t\t\tsend \"Not connected !\"\n\t\tif client is connected:\n\t\t\tsend \"Connected as well !\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "client is connected",
+        "client is(n't| not) connected"
+      ]
+    },
+    {
+      "id": "ScopeCreateBungeeServer",
+      "name": "ScopeCreateBungeeServer",
+      "patterns": [
+        "create new bungee server"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "EffBroadcastMessageToServer",
+      "name": "Broadcast message to server",
+      "description": [
+        "Broadcasts a message to a server in the network"
+      ],
+      "examples": [
+        "broadcast bungee message \"&aHello world !\" to bungee server named \"hub\""
+      ],
+      "since": [
+        "1.0.3 - 1.1.0: Usage of BungeeServer type"
+      ],
+      "patterns": [
+        "broadcast bungee message %string% to %bungeeserver%"
+      ]
+    },
+    {
+      "id": "EffBroadcastMessageToNetwork",
+      "name": "Broadcast message to the network",
+      "description": [
+        "Broadcast message to the network, like the /alert command does but with more personalization (the messages will not appear in the spigot consoles)"
+      ],
+      "examples": [
+        "broadcast \"&6Hello everyone\" to network"
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "patterns": [
+        "broadcast %string% to [the] network"
+      ]
+    },
+    {
+      "id": "EffDeleteServerFromBungee",
+      "name": "Delete dynamic server from Bungeecord",
+      "description": [
+        "Delete a dynamic server from Bungeecord."
+      ],
+      "examples": [
+        "delete server named \"lobby2\" from bungeecord"
+      ],
+      "since": [
+        "1.1.1"
+      ],
+      "patterns": [
+        "delete server named %string% from [the] bungeecord"
+      ]
+    },
+    {
+      "id": "EffDisconnectClient",
+      "name": "Disconnect client from Bungeecord",
+      "description": [
+        "Disconnect client from the Bungeecord server"
+      ],
+      "examples": [
+        "disconnect this client"
+      ],
+      "since": [
+        "1.1.1"
+      ],
+      "patterns": [
+        "disconnect (the|this) client"
+      ]
+    },
+    {
+      "id": "EffAddServerToBungee",
+      "name": "EffAddServerToBungee",
+      "patterns": [
+        "put [dynamic server] %serverbuilder% into bungeecord"
+      ]
+    },
+    {
+      "id": "EffSendMessageToBungeeConsole",
+      "name": "EffSendMessageToBungeeConsole",
+      "patterns": [
+        "send %string% to bungee console"
+      ]
+    },
+    {
+      "id": "EffExecuteCommand",
+      "name": "Execute console command",
+      "description": [
+        "Make bungee or spigot execute command"
+      ],
+      "examples": [
+        "make bungee execute console command \"alert This is an alert !\"",
+        "make bungee server named \"hub\" execute console command \"say Hi everyone !\""
+      ],
+      "since": [
+        "1.0.0 - 1.1.0: Usage of BungeeServer type"
+      ],
+      "patterns": [
+        "make bungee[cord] [server] execute console command %string%",
+        "make %bungeeserver% execute console command %string%",
+        "make all servers execute console command %string%"
+      ]
+    },
+    {
+      "id": "EffKickBungeePlayer",
+      "name": "Kick bungee player",
+      "description": [
+        "Kicks a player on the network from the network"
+      ],
+      "examples": [
+        "kick bungee player named \"Notch\" from bungeecord due to \"&cYou're the fake Notch !\""
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "patterns": [
+        "kick %bungeeplayer% from bungee[cord] [(due to|because of) %string%]"
+      ]
+    },
+    {
+      "id": "EffListenToProxyPing",
+      "name": "Listen to proxy ping",
+      "description": [
+        "Inform the Bungeecord server that this bungee server is listening to the proxy ping event"
+      ],
+      "examples": [
+        "on client connect:\n\tlisten to bungee proxy ping"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "patterns": [
+        "listen to bungee proxy ping"
+      ]
+    },
+    {
+      "id": "EffMakeBungeePlayerExecuteBungeeCommand",
+      "name": "Make bungee player execute bungee command",
+      "description": [
+        "Make a player on the bungeecord execute a specific bungeecord-sided command"
+      ],
+      "examples": [
+        "make bungee player named \"Notch\" execute bungee command \"glist\""
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "patterns": [
+        "make %bungeeplayer% execute bungee command %string%"
+      ]
+    },
+    {
+      "id": "EffMakeBungeePlayerExecuteCommand",
+      "name": "Make bungee player execute command",
+      "description": [
+        "Make a player on the bungeecord execute a specific command"
+      ],
+      "examples": [
+        "make bungee player named \"Notch\" execute command \"say What's up people !\""
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "patterns": [
+        "make %bungeeplayer% execute command %string%"
+      ]
+    },
+    {
+      "id": "EffRetrieveScripts",
+      "name": "Retrieve scripts",
+      "description": [
+        "Retrieve every script from the bungee"
+      ],
+      "examples": [
+        "retrieve all scripts from bungee"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "retrieve all (scripts|skripts) from bungee"
+      ]
+    },
+    {
+      "id": "EffSendTitle",
+      "name": "Send Bungeecord title to bungee player",
+      "description": [
+        "Send a Bungeecord title to a player on the network"
+      ],
+      "examples": [
+        "send bungeecord title \"&cHey you !\" with subtitle \"&6How are you ? :)\" for 3 seconds to bungee player named \"Notch\" with fade-in 10 ticks and fade-out 2 seconds"
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "patterns": [
+        "send bungee[cord] title %string% [with subtitle %string%] [for %timespan%] to %bungeeplayer% [with fade-in %timespan%] [(and|with) fade-out %timespan%]"
+      ]
+    },
+    {
+      "id": "EffSendActionBar",
+      "name": "Send action bar message",
+      "description": [
+        "Send an action bar message to a player on the bungeecord network"
+      ],
+      "examples": [
+        "send bungee player named \"Notch\" action bar \"&6Welcome ! :)\""
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "patterns": [
+        "send %bungeeplayer% action bar [message] %string%"
+      ]
+    },
+    {
+      "id": "EffSendBungeePlayerToServer",
+      "name": "Send bungee player to server",
+      "description": [
+        "Send a player on the network to a specific server"
+      ],
+      "examples": [
+        "send bungee player named \"Zorg_btw\" to bungee server named \"lobby2\""
+      ],
+      "since": [
+        "1.0.0 - 1.1.0: Usage of BungeeServer type"
+      ],
+      "patterns": [
+        "send %bungeeplayer% to %bungeeserver%"
+      ]
+    },
+    {
+      "id": "EffSendCustomBungeeMessage",
+      "name": "Send custom bungee message to a server",
+      "description": [
+        "Sends a custom bungee message in string form to one or more servers"
+      ],
+      "examples": [
+        "send custom message \"This is an example\" to bungee server named \"lobby2\""
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "patterns": [
+        "send custom message %string% to %bungeeservers%"
+      ]
+    },
+    {
+      "id": "EffSendMessage",
+      "name": "Send message to bungee player",
+      "description": [
+        "Send a message to a bungee player on the network"
+      ],
+      "examples": [
+        "send bungee message \"&6Hello !\" to bungee player named \"Notch\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "send bungee message %string% to %bungeeplayer%"
+      ]
+    },
+    {
+      "id": "EffStartConnection",
+      "name": "Start new connection",
+      "description": [
+        "Start a new connection to bungeecord"
+      ],
+      "examples": [
+        "on load:\n\tcreate new bungee connection:\n\t\tset address of connection to \"127.0.0.1\"\n\t\tset port of connection to 20000\n\t\tset password of connection to \"abcd\"\n\tstart new connection with connection"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "start new connection with %bungeeconn%"
+      ]
+    },
+    {
+      "id": "EffStopBungeeServer",
+      "name": "Stop bungee server",
+      "description": [
+        "Stop a bungee server remotely"
+      ],
+      "examples": [
+        "stop bungee server named \"lobby\""
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "patterns": [
+        "stop %bungeeserver%"
+      ]
+    }
+  ],
+  "expressions": [
+    {
+      "id": "ExprAddress",
+      "name": "Address of bungee server builder",
+      "description": [
+        "Set the address of a bungee server builder"
+      ],
+      "examples": [
+        "set address of server builder to \"127.0.0.1\""
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] (ip|address) of %serverbuilder%",
+        "%serverbuilder%'[s] (ip|address)"
+      ]
+    },
+    {
+      "id": "ExprAddress",
+      "name": "Address of connection",
+      "description": [
+        "Set the address of a connection"
+      ],
+      "examples": [
+        "set address of {_connection} to \"127.0.0.1\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] (ip|address) of %bungeeconn%",
+        "%bungeeconn%'[s] (ip|address)"
+      ]
+    },
+    {
+      "id": "ExprAllBungeePlayers",
+      "name": "All of the bungee players",
+      "description": [
+        "Returns every bungee player on the network"
+      ],
+      "examples": [
+        "loop all bungee players:\n\tsend \"%loop-value%\" is connected !"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Bungee player",
+      "patterns": [
+        "[(all [[of] the]|the)] bungee players"
+      ]
+    },
+    {
+      "id": "ExprAllPlayersOnServer",
+      "name": "All of the bungee players on specific server",
+      "description": [
+        "Returns every bungee player on a specific server"
+      ],
+      "examples": [
+        "loop all bungee players on bungee server named \"lobby\":\n\tsend \"%loop-bungeeplayer%\""
+      ],
+      "since": [
+        "1.0.2"
+      ],
+      "return type": "Bungee player",
+      "patterns": [
+        "[(all [[of] the]|the)] bungee players on %bungeeserver%"
+      ]
+    },
+    {
+      "id": "ExprAllBungeeServers",
+      "name": "All of the bungee servers",
+      "description": [
+        "Returns every server in the bungeecord config"
+      ],
+      "examples": [
+        "loop all bungee servers:\n\tsend \"%loop-bungeeserver%\""
+      ],
+      "since": [
+        "1.0.0, 1.1.0: Returns BungeeServer"
+      ],
+      "return type": "Bungee player",
+      "patterns": [
+        "[(all [[of] the]|the)] [bungee] servers"
+      ]
+    },
+    {
+      "id": "ExprAddressOfBungeeServer",
+      "name": "Bungee address of bungee server",
+      "description": [
+        "Get the address of a server precised in the Bungeecord config"
+      ],
+      "examples": [
+        "broadcast bungee address of bungee server named \"lobby\""
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] bungee address of %bungeeserver%",
+        "%bungeeserver%'[s] bungee address"
+      ]
+    },
+    {
+      "id": "ExprMOTDOfBungeeServer",
+      "name": "Bungee motd of bungee server",
+      "description": [
+        "Get the MOTD of a server precised in the Bungeecord config"
+      ],
+      "examples": [
+        "broadcast bungee motd of bungee server named \"lobby\""
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] bungee motd of %bungeeserver%",
+        "%bungeeserver%'[s] bungee motd"
+      ]
+    },
+    {
+      "id": "ExprNameOfBungeeServer",
+      "name": "Bungee name of bungee server",
+      "description": [
+        "Get the name of a server precised in the Bungeecord config"
+      ],
+      "examples": [
+        "broadcast bungee name of bungee server named \"lobby\""
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] bungee name of %bungeeserver%",
+        "%bungeeserver%'[s] bungee name"
+      ]
+    },
+    {
+      "id": "ExprBungeePlayerFromName",
+      "name": "Bungee player from name",
+      "description": [
+        "Get bungee player from his name"
+      ],
+      "examples": [
+        "set {_player} to bungee player named \"Notch\""
+      ],
+      "since": [
+        "1.0.0, 1.1.0: Add of 'named'"
+      ],
+      "return type": "Bungee player",
+      "patterns": [
+        "bungee[ ]player (with name|named) %string%"
+      ]
+    },
+    {
+      "id": "ExprBungeePlayerFromUuid",
+      "name": "Bungee player from uuid",
+      "description": [
+        "Get bungee player from his uuid"
+      ],
+      "examples": [
+        "set {_player} to bungee player with uuid \"06c80842-1780-4c51-97bf-d37759bc4ed1\""
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "return type": "Bungee player",
+      "patterns": [
+        "bungee[ ]player with uuid %string%"
+      ]
+    },
+    {
+      "id": "ExprPortOfBungeeServer",
+      "name": "Bungee port of bungee server",
+      "description": [
+        "Get the port of a server precised in the Bungeecord config"
+      ],
+      "examples": [
+        "broadcast bungee port of bungee server named \"lobby\""
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "return type": "long",
+      "patterns": [
+        "[the] bungee port of %bungeeserver%",
+        "%bungeeserver%'[s] bungee port"
+      ]
+    },
+    {
+      "id": "ExprBungeeServerFromName",
+      "name": "Bungee server from its name",
+      "description": [
+        "Get bungee server from its name"
+      ],
+      "examples": [
+        "set {_server} to bungee server named \"Hub\""
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "return type": "Bungee player",
+      "patterns": [
+        "bungee[ ]server (with name|named) %string%"
+      ]
+    },
+    {
+      "id": "ExprCustomRequest",
+      "name": "Custom request from other Bungee server",
+      "description": [
+        "Send a custom request to another Bungee server, and get the response. This can be any value, as long as it could be stored in a variable"
+      ],
+      "examples": [
+        "broadcast custom request \"hello\" from bungee server named \"lobby\"\n\n#On the other server\non custom request:\n\tif event-string is \"hello\":\n\t\tset custom request response to \"hi !\""
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "Object",
+      "patterns": [
+        "custom request [named] %string% from [server] %bungeeserver%"
+      ]
+    },
+    {
+      "id": "ExprCustomRequestResponse",
+      "name": "Custom request response",
+      "description": [
+        "Set the response of a custom request"
+      ],
+      "examples": [
+        "broadcast custom request \"hello\" from bungee server named \"lobby\"\n\n#On the other server\non custom request:\n\tif event-string is \"hello\":\n\t\tset custom request response to \"hi !\""
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "Object",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "custom request response"
+      ]
+    },
+    {
+      "id": "ExprBungeeServerFromAddress",
+      "name": "Get a bungee server from its address and port",
+      "description": [
+        "Get one of the servers precised in the Bungeecord config whose address and port match"
+      ],
+      "examples": [
+        "set {_server} to bungee server with address \"127.0.0.1\" and port 25566"
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "return type": "Bungee player",
+      "patterns": [
+        "bungee[ ]server with address %string% and port %integer%"
+      ]
+    },
+    {
+      "id": "ExprGetSelfBungeeServer",
+      "name": "Get bungee server from Spigot",
+      "description": [
+        "Get the bungee server associated to the Spigot server"
+      ],
+      "examples": [
+        "set {_server} to this bungee server"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "Bungee player",
+      "patterns": [
+        "this bungee[ ]server"
+      ]
+    },
+    {
+      "id": "ExprGlobalVariables",
+      "name": "Global variables stored on the Bungeecord",
+      "description": [
+        "Set, get and delete a global variable stored on the Bungeecord. Value can be boolean, number or string."
+      ],
+      "examples": [
+        "set global variable \"rank.%player%\" to \"Admin\"\nset {_rank} to global variable \"rank.%player%\"\nset global variable \"money.%player%\" to 1000\nset global variable \"test.%player%\" to true"
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "return type": "Object",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "delete"
+      ],
+      "patterns": [
+        "global var[iable] [named] %string%"
+      ]
+    },
+    {
+      "id": "ExprBungeePlayerIP",
+      "name": "IP address of BungeePlayer",
+      "description": [
+        "Gets the IP address of a BungeePlayer"
+      ],
+      "examples": [
+        "send (bungee player named \"Notch\")'s ip"
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] ip [address] of %bungeeplayer%",
+        "%bungeeplayer%'[s] ip [address]"
+      ]
+    },
+    {
+      "id": "ExprLastServerBuilder",
+      "name": "Last created bungee server builder",
+      "description": [
+        "Returns the last created bungee server builder inside of a scope"
+      ],
+      "examples": [
+        "create new bungee server:\n\tset name of server builder to \"lobby2\"\n\tset address of server builder to \"127.0.0.1\"\n\tset port of server builder to 25567\n\tset motd of server builder to \"This is lobby number 2\"\nput server into bungeecord"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "Bungee server builder",
+      "patterns": [
+        "[the] [last] [(generated|created)] [bungee] server [builder]"
+      ]
+    },
+    {
+      "id": "ExprLastConnection",
+      "name": "Last created connection",
+      "description": [
+        "Returns the last created connection inside of a scope"
+      ],
+      "examples": [
+        "on load:\n\tcreate new bungee connection:\n\t\tset address of connection to \"127.0.0.1\"\n\t\tset port of connection to 20000\n\t\tset password of connection to \"abcd\"\n\tstart new connection with connection"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Bungee connection",
+      "patterns": [
+        "[the] [last] [(generated|created)] (connection|server)"
+      ]
+    },
+    {
+      "id": "ExprMotd",
+      "name": "MOTD of bungee server builder",
+      "description": [
+        "Set the MOTD of a bungee server builder"
+      ],
+      "examples": [
+        "set motd of server builder to \"This is a dynamic server\""
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] motd of %serverbuilder%",
+        "%serverbuilder%'[s] motd"
+      ]
+    },
+    {
+      "id": "ExprBungeePlayerName",
+      "name": "Name of BungeePlayer",
+      "description": [
+        "Gets the name of a BungeePlayer"
+      ],
+      "examples": [
+        "send (bungee player named \"Notch\")'s name #returns 'Notch'"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [user]name of %bungeeplayer%",
+        "%bungeeplayer%'[s] [user]name"
+      ]
+    },
+    {
+      "id": "ExprName",
+      "name": "Name of bungee server builder",
+      "description": [
+        "Set the name of a bungee server builder"
+      ],
+      "examples": [
+        "set name of server builder to \"lobby2\""
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] name of %serverbuilder%",
+        "%serverbuilder%'[s] name"
+      ]
+    },
+    {
+      "id": "ExprPassword",
+      "name": "Password of connection",
+      "description": [
+        "Set the password to connect to a bungeecord server."
+      ],
+      "examples": [
+        "set password of {_connection} to \"abdc123\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] password of %bungeeconn%",
+        "%bungeeconn%'[s] password"
+      ]
+    },
+    {
+      "id": "ExprPingMotd",
+      "name": "Ping's MOTD",
+      "description": [
+        "The MOTD displayed when a player pings the proxy"
+      ],
+      "examples": [
+        "on proxy ping:\n\tset ping motd to \"&aLine 1%nl%&2Line 2\""
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "ping motd"
+      ]
+    },
+    {
+      "id": "ExprPingAddress",
+      "name": "Ping's address",
+      "description": [
+        "Returns the IP address of the player pinging the proxy"
+      ],
+      "examples": [
+        "on proxy ping:\n\tset {_ip} to pinger's bungee ip"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "bungee ip of pinger",
+        "pinger's bungee ip [address]"
+      ]
+    },
+    {
+      "id": "ExprFaviconUrl",
+      "name": "Ping's favicon URL",
+      "description": [
+        "The favicon URL displayed in a proxy ping event"
+      ],
+      "examples": [
+        "on proxy ping:\n\tset favicon url to \"https://i.imgur.com/KE23iIh.png\""
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "favicon [url]"
+      ]
+    },
+    {
+      "id": "ExprHoverList",
+      "name": "Ping's hover list",
+      "description": [
+        "The hover list displayed when hovering the player's size in the ping's list."
+      ],
+      "examples": [
+        "on proxy ping:\n\tset hover list to \"&bLine 1\", \"&3Line 2\" and \"&9Line 3\""
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "hover list"
+      ]
+    },
+    {
+      "id": "ExprMaxPlayers",
+      "name": "Ping's maximum size of connected players",
+      "description": [
+        "The maximum size of the connected players in a proxy ping event"
+      ],
+      "examples": [
+        "on proxy ping:\n\tset max players to 100"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "long",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "max players [size]"
+      ]
+    },
+    {
+      "id": "ExprProtocolMessage",
+      "name": "Ping's protocol message",
+      "description": [
+        "The protocol message displayed if the protocol version number doesn't match the client's one."
+      ],
+      "examples": [
+        "on proxy ping:\n\tset protocol message to \"This is a test !\""
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "Text",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "protocol message"
+      ]
+    },
+    {
+      "id": "ExprProtocolVersion",
+      "name": "Ping's protocol version",
+      "description": [
+        "The protocol version number in a proxy ping event. For further informations, see https://wiki.vg/Protocol_version_numbers"
+      ],
+      "examples": [
+        "on proxy ping:\n\tset protocol version to 0"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "long",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "protocol version [number]"
+      ]
+    },
+    {
+      "id": "ExprConnectedPlayers",
+      "name": "Ping's size of connected players",
+      "description": [
+        "The size of the connected players in a proxy ping event"
+      ],
+      "examples": [
+        "on proxy ping:\n\tset connected players to 10"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "long",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "connected players [size]"
+      ]
+    },
+    {
+      "id": "ExprPort",
+      "name": "Port of bungee server builder",
+      "description": [
+        "Set the port of a bungee server builder"
+      ],
+      "examples": [
+        "set port of server builder to 25567"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "return type": "integer",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] port of %serverbuilder%",
+        "%serverbuilder%'[s] port"
+      ]
+    },
+    {
+      "id": "ExprPort",
+      "name": "Port of connection",
+      "description": [
+        "Set the port of a connection"
+      ],
+      "examples": [
+        "set port of {_connection} to 20000"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "long",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] port of %bungeeconn%",
+        "%bungeeconn%'[s] port"
+      ]
+    },
+    {
+      "id": "ExprBungeePlayerServer",
+      "name": "Server of bungee player",
+      "description": [
+        "Get the server of a player on the network. NOTE: Server can be get only 2 ticks or more after the bungee player join event"
+      ],
+      "examples": [
+        "set {_server} to event-bungeeplayer's server\n"
+      ],
+      "since": [
+        "1.0.0, 1.1.0: Returns BungeeServer"
+      ],
+      "return type": "Bungee player",
+      "patterns": [
+        "[the] server of %bungeeplayer%",
+        "%bungeeplayer%'[s] server"
+      ]
+    },
+    {
+      "id": "ExprPastServer",
+      "name": "Server switch event past server",
+      "description": [
+        "Gets the server where the player was from in a server switch event"
+      ],
+      "examples": [
+        "on server switch:\n\tbroadcast \"The player was in the %past-server% server !\""
+      ],
+      "since": [
+        "1.0.0 - 1.1.0: Returns bungee server"
+      ],
+      "return type": "Bungee player",
+      "patterns": [
+        "past-server"
+      ]
+    },
+    {
+      "id": "ExprBungeePlayerUuid",
+      "name": "UUID of bungee player",
+      "description": [
+        "Get the UUID of a player on the network"
+      ],
+      "examples": [
+        "set {_uuid} to event-bungeeplayer's bungee uuid"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] bungee uuid of %bungeeplayer%",
+        "%bungeeplayer%'[s] bungee uuid"
+      ]
+    }
+  ],
+  "types": [
+    {
+      "id": "ClientBuilder",
+      "name": "Bungee connection",
+      "description": [
+        "Represents a new bungee connection"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "bungeeconn"
+      ]
+    },
+    {
+      "id": "BungeePlayer",
+      "name": "Bungee player",
+      "description": [
+        "Represents a player on the network"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "bungeeplayer"
+      ]
+    },
+    {
+      "id": "BungeeServer",
+      "name": "Bungee player",
+      "description": [
+        "Represents a player on the network"
+      ],
+      "since": [
+        "1.1.0"
+      ],
+      "patterns": [
+        "bungeeserver"
+      ]
+    },
+    {
+      "id": "BungeeServerBuilder",
+      "name": "Bungee server builder",
+      "description": [
+        "Represents a bungee server builder"
+      ],
+      "since": [
+        "2.0.0"
+      ],
+      "patterns": [
+        "serverbuilder"
+      ]
+    }
+  ]
+}

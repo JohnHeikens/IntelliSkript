@@ -1,0 +1,3124 @@
+{
+  "events": [
+    {
+      "id": "anvil_damaged_event",
+      "name": "On Anvil Damaged Event",
+      "description": [
+        "Called when an anvil is damaged from being used. Requires Paper 1.13+"
+      ],
+      "examples": [
+        "on anvil damage:",
+        "\tloop viewers of event-inventory:",
+        "\t\tif loop-player has permission \"no.anvil.break\"",
+        "\t\t\tcancel event"
+      ],
+      "since": [
+        "1.5.0"
+      ],
+      "patterns": [
+        "[on] anvil damage"
+      ],
+      "event values": [
+        "event-block",
+        "event-inventory",
+        "event-player"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "anvil_prepare_event",
+      "name": "On Anvil Prepare Event",
+      "description": [
+        "Called when a player attempts to combine 2 items in an anvil.",
+        "'event-slot' represents the result slot, can be used to get or set."
+      ],
+      "examples": [
+        "on anvil prepare:",
+        "\tif slot 0 of event-inventory is a diamond sword:",
+        "\t\tif slot 1 of event-inventory is an enchanted book:",
+        "\t\t\tif stored enchants of slot 1 of event-inventory contains sharpness 5:",
+        "\t\t\t\tset {_i} to slot 0 of event-inventory",
+        "\t\t\t\tadd \"&aOOOOOOO\" and \"&bAHHHHHH\" to lore of {_i}",
+        "\t\t\t\tenchant {_i} with sharpness 6",
+        "\t\t\t\tset event-slot to {_i}",
+        "\t\t\t\tset repair cost of event-inventory to 30"
+      ],
+      "since": [
+        "1.11.0"
+      ],
+      "patterns": [
+        "[on] anvil prepare"
+      ],
+      "event values": [
+        "event-slot",
+        "event-inventory",
+        "event-player"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "armor_change_event",
+      "name": "On Armor Change Event",
+      "description": [
+        "Called when the player themselves change their armor items. Requires Paper 1.12.2+"
+      ],
+      "examples": [
+        "on player change armor:",
+        "\tset helmet of player to pumpkin"
+      ],
+      "since": [
+        "1.3.1"
+      ],
+      "patterns": [
+        "[on] player change armor"
+      ],
+      "event values": [
+        "event-world",
+        "event-player",
+        "event-itemtype"
+      ],
+      "cancellable": false
+    },
+    {
+      "id": "beacon_effect",
+      "name": "On Beacon Effect",
+      "description": [
+        "Called when a beacon effect is being applied to a player. Requires Paper 1.9+"
+      ],
+      "examples": [
+        "on beacon effect:",
+        "\tif event-player does not have permission \"my.server.beacons\":",
+        "\t\tcancel event"
+      ],
+      "since": [
+        "1.8.4"
+      ],
+      "patterns": [
+        "[on] beacon effect"
+      ],
+      "event values": [
+        "event-block",
+        "event-world",
+        "event-player",
+        "event-potioneffecttype",
+        "event-potioneffect",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "block_physical_interact_event",
+      "name": "On Block Physical Interact Event",
+      "description": [
+        "Called when an entity physically interacts with a block, for example, trampling."
+      ],
+      "examples": [
+        "on block interact:",
+        "\tif event-entity is a villager:",
+        "\t\tcancel event"
+      ],
+      "since": [
+        "1.5.0"
+      ],
+      "patterns": [
+        "[on] block (interact|trample)"
+      ],
+      "event values": [
+        "event-block",
+        "event-world",
+        "event-commandsender",
+        "event-entity",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "block_receive_game_event",
+      "name": "On Block Receive Game Event",
+      "description": [
+        "Called when a block receives a Minecraft game event. As of now the only block that receives these are Skulk sensors.",
+        "Requires MC 1.17+"
+      ],
+      "examples": [
+        "on block receive game event:",
+        "\tset {_e} to event-entity",
+        "\tif {_e} is a player:",
+        "\t\tif event-block is set:",
+        "\t\t\tdamage {_e} by 0.5"
+      ],
+      "since": [
+        "1.14.0"
+      ],
+      "patterns": [
+        "[on] block receive game[ ]event [%gameevent%]"
+      ],
+      "event values": [
+        "event-block",
+        "event-world",
+        "event-gameevent",
+        "event-entity",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "bound_-_enter",
+      "name": "On Bound - Enter",
+      "description": [
+        "Called when a player enters a bound. Optional ID of bound. 'event-string' = bound ID."
+      ],
+      "examples": [
+        "on bound enter:",
+        "\tif event-bound = {bounds::spawn}:",
+        "\t\tsend \"You entered spawn!\"",
+        "on enter bound with id \"spawn\":",
+        "\tcancel event"
+      ],
+      "since": [
+        "1.0.0, 1.12.2 (Bound IDs)"
+      ],
+      "patterns": [
+        "[on] (bound enter|enter bound) [with id %string%]"
+      ],
+      "event values": [
+        "event-string",
+        "event-bound",
+        "event-player"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "bound_-_exit",
+      "name": "On Bound - Exit",
+      "description": [
+        "Called when a player exits a bound. Optional ID of bound. 'event-string' = bound ID."
+      ],
+      "examples": [
+        "on bound exit:",
+        "\tsend \"You left a bound\"",
+        "\tif event-bound = {bound}:",
+        "\t\tsend \"You left Spawn!\"",
+        "on exit bound with id \"spawn\":",
+        "\tcancel event"
+      ],
+      "since": [
+        "1.0.0, 1.12.2 (Bound IDs)"
+      ],
+      "patterns": [
+        "[on] (bound exit|exit bound) [with id %string%]"
+      ],
+      "event values": [
+        "event-string",
+        "event-bound",
+        "event-player"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "entity_knockback",
+      "name": "On Entity Knockback",
+      "description": [
+        "Fired when an Entity is knocked back by the hit of another Entity. If this event is cancelled, the entity is not knocked back. Requires Paper 1.12.2+"
+      ],
+      "examples": [
+        "on entity knockback:",
+        "\tif event-entity is a cow:",
+        "\t\tcancel event"
+      ],
+      "since": [
+        "1.8.0"
+      ],
+      "patterns": [
+        "[on] entity knockback"
+      ],
+      "event values": [
+        "event-world",
+        "event-commandsender",
+        "event-entity",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "entity_pathfind_event",
+      "name": "On Entity Pathfind Event",
+      "description": [
+        "Called when an Entity decides to start moving towards a location. This event does not fire for the entities actual movement. Only when it is choosing to start moving to a location. Requires Paper."
+      ],
+      "examples": [
+        "on entity starts pathfinding:",
+        "\tif event-entity is a sheep:",
+        "\t\tcancel event"
+      ],
+      "since": [
+        "1.5.0"
+      ],
+      "patterns": [
+        "[on] entity start[s] pathfinding"
+      ],
+      "event values": [
+        "event-world",
+        "event-commandsender",
+        "event-entity",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "entity_zap",
+      "name": "On Entity Zap",
+      "description": [
+        "Fired when lightning strikes an entity. Requires Paper 1.10.2+"
+      ],
+      "examples": [
+        "on entity zap:",
+        "\tif event-entity is a pig:",
+        "\t\tspawn 3 zombie pigmen at event-location"
+      ],
+      "since": [
+        "1.8.0"
+      ],
+      "patterns": [
+        "[on] entity (zap|struck by lightning)"
+      ],
+      "event values": [
+        "event-world",
+        "event-commandsender",
+        "event-entity",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "experience_orb_merge",
+      "name": "On Experience Orb Merge",
+      "description": [
+        "Fired anytime the server is about to merge 2 experience orbs into one. Requires Paper 1.12.2+"
+      ],
+      "examples": [
+        "on xp merge:",
+        "\tcancel event"
+      ],
+      "since": [
+        "1.8.0"
+      ],
+      "patterns": [
+        "[on] (experience|[e]xp) orb merge"
+      ],
+      "event values": [
+        "event-world",
+        "event-commandsender",
+        "event-entity",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "generic_game_event",
+      "name": "On Generic Game Event",
+      "description": [
+        "Called when a Minecraft game event is fired. These events are provided directly by Minecraft.",
+        "NOTE: Cancelling this event will not cancel the action, only cancel broadcasting event to blocks.",
+        "Requires MC 1.17+"
+      ],
+      "examples": [
+        "on game event splash:",
+        "\tset {_e} to event-entity",
+        "\tif {_e} is a player:",
+        "\t\tpush {_e} up with speed 0.5"
+      ],
+      "since": [
+        "1.14.0"
+      ],
+      "patterns": [
+        "[on] [generic] game[ ]event [%gameevent%]"
+      ],
+      "event values": [
+        "event-world",
+        "event-gameevent",
+        "event-entity",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "player_elytra_boost",
+      "name": "On Player Elytra Boost",
+      "description": [
+        "Fired when a player boosts elytra flight with a firework. Requires Paper 1.13.2+"
+      ],
+      "examples": [
+        "on elytra boost:",
+        "\tpush player forward at speed 50"
+      ],
+      "since": [
+        "1.8.0"
+      ],
+      "patterns": [
+        "[on] [player] elytra boost"
+      ],
+      "event values": [
+        "event-world",
+        "event-player",
+        "event-itemtype"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "player_pickup_experience_orb",
+      "name": "On Player Pickup Experience Orb",
+      "description": [
+        "Fired when a player is attempting to pick up an experience orb. Requires Paper 1.12.2+"
+      ],
+      "examples": [
+        "on player pickup xp:",
+        "\tadd 10 to level of player"
+      ],
+      "since": [
+        "1.8.0"
+      ],
+      "patterns": [
+        "[on] player pickup (experience|xp) [orb]"
+      ],
+      "event values": [
+        "event-world",
+        "event-player"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "recipe_-_discover_event",
+      "name": "On Recipe - Discover Event",
+      "description": [
+        "Called when a player unlocks a recipe. ",
+        "`event-string` = the recipe namespace (this will also include either \"minecraft:\" or \"mykeyhere:\")",
+        "Requires MC 1.13+"
+      ],
+      "examples": [
+        "on recipe discover:",
+        "\tif event-string = \"minecraft:diamond_block\"",
+        "\t\tcancel event"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "[on] recipe discover[y]"
+      ],
+      "event values": [
+        "event-string",
+        "event-world",
+        "event-player"
+      ],
+      "cancellable": true,
+      "required plugins": [
+        "1.13+"
+      ]
+    },
+    {
+      "id": "recipe_book_click_event",
+      "name": "On Recipe Book Click Event",
+      "description": [
+        "Called when the player clicks on a recipe in their recipe book. Requires Paper 1.15+"
+      ],
+      "examples": [
+        "on recipe book click:",
+        "\tif event-string = \"minecraft:diamond_sword\":",
+        "\t\tcancel event"
+      ],
+      "since": [
+        "1.5.0"
+      ],
+      "patterns": [
+        "[on] [player] recipe book click"
+      ],
+      "event values": [
+        "event-string",
+        "event-world",
+        "event-player"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "shear_entity",
+      "name": "On Shear Entity",
+      "description": [
+        "Called when a player shears an entity. Requires Minecraft 1.9.4+"
+      ],
+      "examples": [
+        "on player shear entity:"
+      ],
+      "since": [
+        "1.8.0"
+      ],
+      "patterns": [
+        "[on] [player] shear entity"
+      ],
+      "event values": [
+        "event-world",
+        "event-player",
+        "event-entity"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "skeleton_horse_trap_event",
+      "name": "On Skeleton Horse Trap Event",
+      "description": [
+        "Called when a player gets close to a skeleton horse and triggers the lightning trap. Requires Paper 1.13+"
+      ],
+      "examples": [
+        "on skeleton horse trap:",
+        "\tloop all players in radius 10 around event-entity:",
+        "\t\tif loop-player is an op:",
+        "\t\t\tcancel event"
+      ],
+      "since": [
+        "1.5.0"
+      ],
+      "patterns": [
+        "[on] skeleton horse trap"
+      ],
+      "event values": [
+        "event-world",
+        "event-commandsender",
+        "event-entity",
+        "event-location"
+      ],
+      "cancellable": true
+    },
+    {
+      "id": "tab_complete",
+      "name": "On Tab Complete",
+      "description": [
+        "Called when a player attempts to tab complete the arguments of a command. ",
+        "event-string = the command."
+      ],
+      "examples": [
+        "on tab complete of \"/mycommand\":",
+        "\tset tab completions for position 1 to \"one\", \"two\" and \"three\"",
+        "\tset tab completions for position 2 to 1, 2 and 3",
+        "\tset tab completions for position 3 to all players",
+        "\tset tab completions for position 4 to (indexes of {blocks::*})",
+        "",
+        "on tab complete:",
+        "\tif event-string contains \"/ver\":",
+        "\t\tclear tab completions"
+      ],
+      "since": [
+        "1.7.0"
+      ],
+      "patterns": [
+        "[on] [skbee] tab complete [(of|for) %strings%]"
+      ],
+      "event values": [
+        "event-string",
+        "event-player"
+      ],
+      "cancellable": true
+    }
+  ],
+  "conditions": [
+    {
+      "id": "CondBoardOn",
+      "name": "Board - Is on",
+      "description": [
+        "Check if a player's scoreboard is currently toggled on or off."
+      ],
+      "examples": [
+        "if scoreboard of player is on:",
+        "\ttoggle scoreboard of player off",
+        "if scoreboard of player is off:",
+        "\ttoggle scoreboard of player on"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "[score]board of %player% is (on|true)",
+        "[score]board of %player% is(n't| not) on",
+        "[score]board of %player% is (off|false)"
+      ]
+    },
+    {
+      "id": "CondBoundContainsLocation",
+      "name": "Bound - Contains Location",
+      "description": [
+        "Check if a location is within the bounds of a bounding box."
+      ],
+      "examples": [
+        "on break:",
+        "\tif location of event-block is within bound with id \"spawn.bound\":",
+        "\t\tcancel event",
+        "",
+        "on damage of a player:",
+        "\tif victim is within bound {spawn}:",
+        "\t\tcancel event"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "%locations% (is|are) [with]in [bound] %bound%",
+        "%locations% (isn't|is not|aren't|are not) [with]in [bound] %bound%"
+      ]
+    },
+    {
+      "id": "CondEntityStorageBlockFull",
+      "name": "EntityBlockStorage - Is Full",
+      "description": [
+        "Check if an entity storage block is fully of entities.",
+        "As of 1.15 this only includes beehives/bee nests! Requires Spigot/Paper 1.15.2+"
+      ],
+      "examples": [
+        "if entity storage of block at player is full:",
+        "if entity storage of target block is not full:"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "entity storage of %block% is full",
+        "entity storage of %block% is(n't| not) full"
+      ]
+    },
+    {
+      "id": "CondIsMinecraftTagged",
+      "name": "Is Minecraft Tagged",
+      "description": [
+        "Check if an item is tagged with a Minecraft tag."
+      ],
+      "examples": [
+        "if player's tool is tagged with minecraft tag \"carpets\":",
+        "if target block is not tagged as minecraft tag \"fence_gates\"",
+        "if clicked block is tagged as minecraft block tag \"doors\" or minecraft block tag \"fence_gates\""
+      ],
+      "since": [
+        "1.10.0"
+      ],
+      "patterns": [
+        "%itemtypes% (is|are) tagged (with|as) %minecrafttags%",
+        "%itemtypes% (isn't|is not|aren't|are not) tagged (with|as) %minecrafttags%"
+      ]
+    },
+    {
+      "id": "CondHasDiscoveredRecipe",
+      "name": "Recipe - Has Discovered",
+      "description": [
+        "Check if a player has discovered a recipe. Can check recipes you created, another plugin has created, or vanilla Minecraft recipes.When checking recipes that are not your own, make sure to include the namespace, ex \"minecraft:diamond_sword\", \"someplugin:some_recipe\". This condition is only available on 1.16+"
+      ],
+      "examples": [
+        "player has discovered recipe \"minecraft:furnace\"",
+        "if player has discovered recipe \"my_custom_sword\":",
+        "if player has discovered recipe \"someplugin:fancy_shovel\":",
+        "if all players have not discovered recipe \"minecraft:golden_shovel\":",
+        "if player has not discovered recipe \"my_fancy_hoe\":"
+      ],
+      "since": [
+        "1.4.9"
+      ],
+      "patterns": [
+        "%players% (has|have) discovered recipe[s] %strings%",
+        "%players% (has|have) not discovered recipe[s] %strings%"
+      ]
+    },
+    {
+      "id": "CondWorldExists",
+      "name": "World Exists",
+      "description": [
+        "Check if a world exists in your world directory."
+      ],
+      "examples": [
+        "if world \"my-world\" exists:"
+      ],
+      "since": [
+        "1.8.0"
+      ],
+      "patterns": [
+        "world %string% (exists|(does not|doesn't) exist)"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "EffBoardClear",
+      "name": "Board - Clear",
+      "description": [
+        "Clear the scoreboard of a player."
+      ],
+      "examples": [
+        "clear scoreboard of player",
+        "clear scoreboards of all players"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "clear %players%'[s] [score]board[s]",
+        "clear [score]board[s] of %players%"
+      ]
+    },
+    {
+      "id": "EffBoardLine",
+      "name": "Board - Line",
+      "description": [
+        "set/delete a line in a player's scoreboard. Note: line 1 is bottom, line 15 is top.",
+        "Accepts texts and text components (text components as of 1.5.1, only available if 'text-component'",
+        "is enabled in the SkBee config)."
+      ],
+      "examples": [
+        "set line 1 of player's scoreboard to \"oooo I'm a line!!\"",
+        "set line 15 of all players' scoreboards to \"I'm the top line!!!\"",
+        "delete line 3 of player's scoreboard",
+        "delete line 4 of all players' scoreboards",
+        "",
+        "set {_t} to translate component from player's tool",
+        "set line 1 of player's scoreboard to {_t}"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "set line %number% of %players%'[s] [score]board[s] to %basecomponent/string%",
+        "set line %number% of [score]board[s] of %players% to %basecomponent/string%",
+        "delete line %number% of %players%'[s] [score]board[s]",
+        "delete line %number% of [score]board[s] of %players%"
+      ]
+    },
+    {
+      "id": "EffBoardTitle",
+      "name": "Board - Title",
+      "description": [
+        "Set the title of a player's scoreboard."
+      ],
+      "examples": [
+        "set title of player's scoreboard to \"MyServer\"",
+        "set title of all players' scoreboards to \"Our Serberder!\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "set title of %players%'[s] [score]board[s] to %string%",
+        "set title of [score]board[s] of %players% to %string%"
+      ]
+    },
+    {
+      "id": "EffBoardToggle",
+      "name": "Board - Toggle",
+      "description": [
+        "Toggle the scoreboard of a player on or off."
+      ],
+      "examples": [
+        "toggle board of player",
+        "if scoreboard of player is on:",
+        "\ttoggle scoreboard of player off",
+        "",
+        "toggle scoreboards of all players off"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "toggle [score]board[s] of %players% [[to] ((on|true)|(off|false))]",
+        "toggle %players%'[s] [score]board[s] [[to] ((on|true)|(off|false))]"
+      ]
+    },
+    {
+      "id": "EffBonemeal",
+      "name": "Bone Meal Effect",
+      "description": [
+        "Apply the bone meal effect to a block. Requires Minecraft 1.16.2+"
+      ],
+      "examples": [
+        "apply bonemeal effect to target block of player"
+      ],
+      "since": [
+        "1.7.0"
+      ],
+      "patterns": [
+        "apply bone[ ]meal [effect] to %blocks%"
+      ]
+    },
+    {
+      "id": "EffBoundCreate",
+      "name": "Bound - Create/Remove",
+      "description": [
+        "Create/Remove a bound with id between 2 locations. Optional value \"full\" is a bound from min to max height of world."
+      ],
+      "examples": [
+        "create a new bound with id \"%uuid of player%.home\" between {loc1} and {loc2}",
+        "create a full bound with id \"spawn\" between {loc} and location of player",
+        "delete bound with id \"my.home\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "create [a] [new] [(full)] bound with id %string% (within|between) %location% and %location%",
+        "(delete|remove) bound with id %string%"
+      ]
+    },
+    {
+      "id": "EffEntityBlockStorage",
+      "name": "EntityBlockStorage - Add/Release entities",
+      "description": [
+        "Add/release entities to/from blocks which can store entities.",
+        "When releasing bees at night/during rain, they will immediately go back in their hive, use the optional timespan to keep them outside.",
+        "You can optionally put the released entities into a variable (see examples).",
+        "As of 1.15 this only includes beehives/bee nests! Requires Spigot/Paper 1.15.2+"
+      ],
+      "examples": [
+        "add last spawned bee to storage of target block of player",
+        "release all entities from storage of target block of player",
+        "release all entities from storage of event-block for 2 minutes",
+        "release all entities from storage of target block of player for 1 minute into {_bees::*}"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "release [all] entities from [storage of] %blocks% [for %timespan%] [into %objects%]",
+        "add %entities% to [storage of] %block%"
+      ]
+    },
+    {
+      "id": "EffLoadWorld",
+      "name": "Load/Unload/Delete World",
+      "description": [
+        "Load a world from a world creator. Worlds created/loaded with a world creator, are saved in the 'plugins/SkBee/worlds.yml' file and automatically loaded on server start. If you wish to import a world, just use a world creator with a name that matches that world folder.You can load a world from a name (assuming this world is in your world directory and not loaded. You can unload a world with an option to save/not save (defaults to saving). You can also delete a world, but only a custom world."
+      ],
+      "examples": [
+        "set {_w} to a new world creator named \"my-world\"",
+        "load world from world creator {_w}",
+        "",
+        "load world \"my-world\"",
+        "unload world world(\"my-world\")"
+      ],
+      "since": [
+        "1.8.0"
+      ],
+      "patterns": [
+        "load world from [[world] creator] %worldcreator%",
+        "load world %string%",
+        "unload [world] %world% [and (save|(do not|don't) save)]",
+        "delete world file for [world] %string%"
+      ]
+    },
+    {
+      "id": "EffSaveNBTFile",
+      "name": "NBT - Save File",
+      "description": [
+        "Manually save the NBT from a file. When getting the NBT compound from a file, changing values in the compound will",
+        "not be automatically applied to the file, and saving will have to be done manually."
+      ],
+      "examples": [
+        "set {_n} to nbt compound from file \"plugins/maScript/some-data.nbt\"",
+        "set tag \"ma-tag\" of {_n} to 32",
+        "save nbt file of {_n}"
+      ],
+      "since": [
+        "1.14.0"
+      ],
+      "patterns": [
+        "save nbt file[s] (for|of) %nbtcompounds%"
+      ]
+    },
+    {
+      "id": "EffSetBlockNBT",
+      "name": "NBT - Set Block with NBT",
+      "description": [
+        "Set a block at a location to a block with NBT. BlockData is also supported when using MC 1.13+ and Skript 2.5+"
+      ],
+      "examples": [
+        "set nbt-block at player to west facing furnace with nbt \"{CustomName:\"\"{\\\"\"text\\\"\":\\\"\"&aFurnieFurnace\\\"\"}\"\"}\"",
+        "set nbt-block at event-location to hopper with nbt \"{CustomName:\"\"{\\\"\"text\\\"\":\\\"\"&cHoppieHopper\\\"\"}\"\"}\"",
+        "set nbt-block at player to furnace[facing=west] with nbt \"{CustomName:\"\"{\\\"\"text\\\"\":\\\"\"&aFurnieFurnace\\\"\"}\"\"}\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "set (nbt[(-| )]block|tile[(-| )]entity) %directions% %locations% to %itemtype/blockdata% with nbt %string/nbtcompound%"
+      ]
+    },
+    {
+      "id": "EffSpawnEntityNBT",
+      "name": "NBT - Spawn Entity with NBT",
+      "description": [
+        "Spawn an entity at a location with NBT"
+      ],
+      "examples": [
+        "spawn sheep at player with nbt \"{NoAI:1b}\"",
+        "spawn 1 of zombie at player with nbt \"{NoGravity:1b}\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "spawn %entitytypes% [%directions% %locations%] with nbt %string/nbtcompound%",
+        "spawn %number% of %entitytypes% [%directions% %locations%] with nbt %string/nbtcompound%"
+      ]
+    },
+    {
+      "id": "EffOpenContainerAnimation",
+      "name": "Open Container Animation",
+      "description": [
+        "Play the open/close animation on a lidded block (ie: chest, barrel or shulker box).",
+        "Note: When using the open method, the block will basically be locked 'open', a player opening/closing the block will not close the lid.",
+        "Requires Minecraft 1.16+"
+      ],
+      "examples": [
+        "play open animation on target block",
+        "play close animation on all blocks in radius 3 around player"
+      ],
+      "since": [
+        "1.10.0"
+      ],
+      "patterns": [
+        "play (open|close) animation on %blocks%"
+      ]
+    },
+    {
+      "id": "EffParseEffect",
+      "name": "Parse Effect",
+      "description": [
+        "This will parse a string as an effect, and execute it. Works the same as Skript's 'effect commands'."
+      ],
+      "examples": [
+        "on join:",
+        "\tparse effect \"give player a diamond sword\""
+      ],
+      "since": [
+        "1.15.0"
+      ],
+      "patterns": [
+        "parse effect[s] %strings% [from %commandsender%]"
+      ]
+    },
+    {
+      "id": "EffParticle",
+      "name": "Particle Spawn",
+      "description": [
+        "Spawn a particle. This system is more inline with how Bukkit deals with particles, hence the amount of patterns.",
+        "DO NOT USE '(spawn|play)' part of syntax, they're horribly slow at parsing and will be removed in the future, use '(lerp|draw|make)' instead.",
+        "Some particles may be affected differently by these values, so let's break them down:",
+        "\nfirst number = count, how many particles to spawn at once.",
+        "\nparticle = the particle to spawn.",
+        "\nusing = the data used for this particle (some particles like 'block', 'item' and 'dust' require more data).",
+        "\nlocation = where you are going to spawn the particle.",
+        "\noffset = a vector with the maximum random offset. The position of each particle will be randomized positively and negatively by the offset parameters on each axis.",
+        "I believe some particles use the offset to set color. I'm not positive on this.",
+        "\nextra = the extra data for this particle, depends on the particle used (normally speed).",
+        "\nRequires Minecraft 1.13+"
+      ],
+      "examples": [
+        "make 3 of item particle using diamond at location of player",
+        "make 1 of block particle using dirt at location of target block",
+        "make 10 of poof at player with offset vector(2, 2, 2) with extra 0.5",
+        "draw 20 of dust using dustOption(blue, 10) at location above target block",
+        "draw 1 of dust_color_transition using dustTransition(blue, green, 3) at location of player",
+        "draw 1 of vibration using vibration({loc1}, {loc2}, 1 second) at {loc1}"
+      ],
+      "since": [
+        "1.9.0"
+      ],
+      "patterns": [
+        "(spawn|play|lerp|draw|make) %number% [of] %particle% [particle] [using %itemtype/blockdata/dustoption/dusttransition/vibration%] %directions% %locations% [(with offset|offset by) %vector%] [with extra %number%] [(for|to) %players%]"
+      ]
+    },
+    {
+      "id": "EffCookingRecipe",
+      "name": "Recipe - Cooking",
+      "description": [
+        "Register new cooking recipes. On 1.13+ you can register recipes for furnaces. ",
+        "On 1.14+ you can also register recipes for smokers, blast furnaces and campfires. ",
+        "The ID will be the name given to this recipe. IDs may only contain letters, numbers, periods, hyphens and underscores. Used for recipe discovery/unlocking recipes for players. You may also include an optional group for recipes. These will group the recipes together in the recipe book.",
+        "By default recipes will start with the namespace \"skrecipe:\", this can be changed in the config to whatever you want."
+      ],
+      "examples": [
+        "on skript load:",
+        "\tregister new furnace recipe for diamond using dirt with id \"furnace_diamond\"",
+        "\tregister new blasting recipe for emerald using dirt with id \"blasting_emerald\"",
+        "\tregister new smoking recipe for cooked cod named \"Hot Cod\" using puffer fish with id \"smoking_cod\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "register [new] (furnace|(blast furnace|blasting)|smok(er|ing)|campfire) recipe for %itemtype% (using|with ingredient) %itemtype/materialchoice% with id %string% [[and ]with exp[erience] %number%] [[and ]with cook[ ]time %timespan%] [in group %string%]"
+      ],
+      "required plugins": [
+        "1.13+ for furnaces. 1.14+ for smokers, blast furnaces and campfires."
+      ]
+    },
+    {
+      "id": "EffRecipeDiscovery",
+      "name": "Recipe - Discovery",
+      "description": [
+        "Lock/Unlock recipes for players. This uses the IDs we created earlier when registering recipes, you can also lock/unlock minecraft recipes. Requires MC 1.13+"
+      ],
+      "examples": [
+        "unlock recipe \"smoking_cod\" for all players",
+        "on pickup of diamonds:",
+        "\tdiscover recipe \"fancy_diamonds\" for player"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "(discover|unlock) [(custom|(mc|minecraft))] recipe[s] [with id[s]] %strings% for %players%",
+        "(undiscover|lock) [(custom|(mc|minecraft))] recipe[s] [with id[s]] %strings% for %players%"
+      ]
+    },
+    {
+      "id": "EffKnowledgeBook",
+      "name": "Recipe - Knowledge Book",
+      "description": [
+        "Add/Remove custom or minecraft recipes to/from a knowledge book item.",
+        "Optional string for plugin name, to add recipes from other plugins. Requires MC 1.13+"
+      ],
+      "examples": [
+        "add custom recipe \"my_recipe\" to player's tool",
+        "add minecraft recipe \"cooked_cod_from_campfire_cooking\" to {_book}"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "add [(custom|(mc|minecraft))] recipe[s] [with id[s]] %strings% [from plugin %string%] to %itemtype%",
+        "remove [(custom|(mc|minecraft))] recipe[s] [with id[s]] %strings% [from plugin %string%] from %itemtype%"
+      ]
+    },
+    {
+      "id": "EffRemoveRecipe",
+      "name": "Recipe - Remove",
+      "description": [
+        "Remove a recipe from your server. Recipes can be removed at any time ",
+        "but it is best to do so during a server load event. If a recipe is removed whilst a player is online ",
+        "it will still show up in their recipe book, but they will not be able to craft it. If need be, you can get ",
+        "a list of all recipes by simply typing \"/minecraft:recipe give YourName \" in game.",
+        "You can remove Minecraft recipes, custom recipes and recipes from other plugins. Requires MC 1.13+"
+      ],
+      "examples": [
+        "remove mc recipe \"acacia_boat\"",
+        "remove minecraft recipe \"cooked_chicken_from_campfire_cooking\"",
+        "remove recipe \"minecraft:diamond_sword\"",
+        "remove all minecraft recipes",
+        "remove custom recipe \"my_recipe\"",
+        "remove recipe \"another_recipe\"",
+        "remove recipe \"someplugin:some_recipe\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "remove [(custom|(mc|minecraft))] recipe[s] %strings%",
+        "remove all (mc|minecraft) recipe[s]"
+      ]
+    },
+    {
+      "id": "EffCraftingRecipe",
+      "name": "Recipe - Shaped/Shapeless",
+      "description": [
+        "Register a new shaped/shapeless recipe for a specific item using custom ingredients.",
+        "Recipes support items and material choices for ingredients. Material choices allow you to use Minecraft tags or lists of items.",
+        "The ID will be the name given to this recipe. IDs may only contain letters, numbers, periods, hyphens and underscores.",
+        "IDs are used for recipe discovery/unlocking recipes for players.",
+        "You may also include an optional group for recipes. These will group the recipes together in the recipe book.",
+        "NOTE: Recipes with 4 or less ingredients will be craftable in the player's crafting grid.",
+        "By default recipes will start with the namespace \"skrecipe:\", this can be changed in the SkBee config to whatever you want.",
+        "Requires MC 1.13+"
+      ],
+      "examples": [
+        "on load:",
+        "\tregister new shaped recipe for elytra using air, iron chestplate, air, air, iron chestplate and air with id \"elytra\"",
+        "\tset {_s} to emerald named \"&3Strong Emerald\"",
+        "\tregister new shaped recipe for {_s} using emerald, emerald, air, emerald, emerald and air with id \"strong_emerald\"",
+        "\tregister new shaped recipe for diamond chestplate named \"&3Strong Emerald Chestplate\" using {_s}, air, {_s}, {_s}, {_s}, {_s}, {_s}, {_s} and {_s} with id \"strong_emerald_chestplate\"",
+        "",
+        "\tset {_m} to material choice of every plank",
+        "\tregister new shaped recipe for jigsaw block using {_a}, {_a}, {_a}, {_a}, {_a}, {_a}, {_a}, {_a} and {_a} with id \"jigsaw\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "register [new] (shaped|shapeless) recipe for %itemtype% (using|with ingredients) %itemtypes/materialchoices% with id %string% [in group %string%]"
+      ],
+      "required plugins": [
+        "1.13+"
+      ]
+    },
+    {
+      "id": "EffSmithingRecipe",
+      "name": "Recipe - Smithing",
+      "description": [
+        "Register a new smithing recipe.",
+        "The ID will be the name given to this recipe. IDs may only contain letters, numbers, periods, hyphens and underscores.",
+        "Used for recipe discovery/unlocking recipes for players.",
+        "Note: While 'custom' items will work in these recipes, it appears the smithing table will not recognize them. Requires MC 1.16+"
+      ],
+      "examples": [
+        "on load:",
+        "\tregister new smithing recipe for diamond chestplate using an iron chestplate and a diamond with id \"smith_diamond_chestplate\""
+      ],
+      "since": [
+        "1.4.2"
+      ],
+      "patterns": [
+        "register [new] smithing recipe for %itemtype% using %itemtype/materialchoice% and %itemtype/materialchoice% with id %string%"
+      ],
+      "required plugins": [
+        "1.16+"
+      ]
+    },
+    {
+      "id": "EffStonecuttingRecipe",
+      "name": "Recipe - StoneCutting",
+      "description": [
+        "Register a new stone cutting recipe. The ID will be the name given to this recipe. IDs may only contain letters, numbers, periods, hyphens and underscores.",
+        "Used for recipe discovery/unlocking recipes for players. ",
+        "You may also include an optional group for recipes. These will group the recipes together in the recipe book.",
+        "By default recipes will start with the namespace \"skrecipe:\", this can be changed in the config to whatever you want.",
+        "Requires MC 1.13+"
+      ],
+      "examples": [
+        "on skript load:",
+        "\tregister new stone cutting recipe for diamond using diamond ore with id \"cutting_diamond\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "register [new] stone[ ]cutt(ing|er) recipe for %itemtype% (using|with ingredient) %itemtype/materialchoice% with id %string% [in group %string%]"
+      ],
+      "required plugins": [
+        "1.14+"
+      ]
+    },
+    {
+      "id": "EffStructureFill",
+      "name": "Structure - Fill",
+      "description": [
+        "Fill a structure with blocks. Requires MC 1.17.1+"
+      ],
+      "examples": [
+        "fill structure {_s} between {loc1} and {loc2}",
+        "fill structure {_s} between location at player and location(10,10,10, world \"world\")"
+      ],
+      "since": [
+        "1.12.0"
+      ],
+      "patterns": [
+        "fill [structure] %structure% between %location% and %location%"
+      ]
+    },
+    {
+      "id": "EffStructurePlace",
+      "name": "Structure - Place",
+      "description": [
+        "Place an already created structure into the world. Requires MC 1.17.1+"
+      ],
+      "examples": [
+        "place structure {_s} at location above target block of player"
+      ],
+      "since": [
+        "1.12.0"
+      ],
+      "patterns": [
+        "place [structure] %structure% at %location%"
+      ]
+    },
+    {
+      "id": "EffStructureSave",
+      "name": "Structure - Save/Delete",
+      "description": [
+        "Save a structure to file (will overwrite if already in that file), or delete a structure file. Requires MC 1.17.1+"
+      ],
+      "examples": [
+        "save structure {_s}",
+        "save structures {_s::*}",
+        "delete structure {_s}"
+      ],
+      "since": [
+        "1.12.0"
+      ],
+      "patterns": [
+        "(save|delete) [structure[s]] %structures%"
+      ]
+    },
+    {
+      "id": "EffLoadStructure",
+      "name": "Structure Block - Load",
+      "description": [
+        "Load structure block structures that are saved on your server",
+        "Optional values for rotation, mirroring and the inclusion of entities.",
+        "Requires Minecraft 1.9.4+. No longer available on MC 1.18+, please use new structure system."
+      ],
+      "examples": [
+        "load \"house\" at location of player",
+        "load \"barn\" at location 10 infront of player",
+        "paste \"house\" at location of player with rotation 90 and with mirror left to right",
+        "load \"sheep_pen\" at location below player with rotation 180 and with entities"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "(load|paste) [structure] %string% at %location% [with rotation (0|90|180|270)] [(|[and] with entities)]",
+        "(load|paste) [structure] %string% at %location% [with rotation (0|90|180|270)] [and] [with] mirror front to back [(|[and] with entities)]",
+        "(load|paste) [structure] %string% at %location% [with rotation (0|90|180|270)] [and] [with] mirror left to right [(|[and] with entities)]"
+      ]
+    },
+    {
+      "id": "EffSaveStructure",
+      "name": "Structure Block - Save",
+      "description": [
+        "Save structure block structures.",
+        "Requires Minecraft 1.9.4+. No longer available on MC 1.18+, please use new structure system."
+      ],
+      "examples": [
+        "save structure between {loc1} and {loc2} as \"house\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "save [structure] between %location% and %location% as %string%"
+      ]
+    },
+    {
+      "id": "EffTeamRegister",
+      "name": "Team - Register",
+      "description": [
+        "Register a new team. NOTE: Teams are not persistent and will need to created on each server start."
+      ],
+      "examples": [
+        "on load:",
+        "\tregister new team \"a-team\""
+      ],
+      "since": [
+        "1.15.0"
+      ],
+      "patterns": [
+        "register [new] [[sk]bee] team %string%"
+      ]
+    },
+    {
+      "id": "EffSendComponent",
+      "name": "TextComponent - Send",
+      "description": [
+        "Send text components to players (or console, not sure which server version this started on). ",
+        "The optional sender (supported in Minecraft 1.16.4+) allows you to send components from a specific player.",
+        "This is useful to make sure players can block messages using 1.16.4's new player chat ignore system."
+      ],
+      "examples": [
+        "set {_comp::1} to text component of \"hi player \"",
+        "set {_comp::2} to text component of \"hover over me for a special message!\"",
+        "set hover event of {_comp::2} to hover event to show \"OoO look ma I'm hovering!\"",
+        "send component {_comp::*} to player"
+      ],
+      "since": [
+        "1.5.0"
+      ],
+      "patterns": [
+        "send [text] component[s] %basecomponents% [to %commandsenders%] [from %player%]"
+      ]
+    }
+  ],
+  "expressions": [
+    {
+      "id": "ExprAnvilRenameText",
+      "name": "Anvil Rename Text",
+      "description": [
+        "Represents the text the player enters into an anvil. This can not be set."
+      ],
+      "examples": [
+        "on anvil prepare:",
+        "\tif slot 0 of event-inventory is raw chicken:",
+        "\t\tif slot 1 of event-inventory is an enchanted book:",
+        "\t\t\tif stored enchants of slot 1 of event-inventory contains sharpness 5:",
+        "\t\t\t\tset {_i} to cooked chicken",
+        "\t\t\t\tset name of {_i} to colored anvil rename text of event-inventory",
+        "\t\t\t\tenchant {_i} with sharpness 6",
+        "\t\t\t\tset event-slot to {_i}",
+        "\t\t\t\tset repair cost of event-inventory to 30"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [anvil] (rename text|repair name) of %inventories%",
+        "%inventories%'[s] [anvil] (rename text|repair name)"
+      ]
+    },
+    {
+      "id": "ExprAnvilRepairCost",
+      "name": "Anvil Repair Cost",
+      "description": [
+        "Represents the anvil inventory's repair cost and maximum repair cost.",
+        "Repair cost = the experience cost (in levels) to complete the current repair.",
+        "Maximum repair cost = the maximum experience cost (in levels) to be allowed by the current repair.",
+        "If the result of 'repair cost' exceeds the returned value, the repair result will be air to due being \"too expensive\".",
+        "By default, this level is set to 40. Players in creative mode ignore the maximum repair cost.",
+        "NOTE: the 'max repair cost' seems to be a little finicky, it may or may not work as intended (this is out of my control)."
+      ],
+      "examples": [
+        "on anvil prepare:",
+        "\tif slot 0 of event-inventory is a diamond sword:",
+        "\t\tif slot 1 of event-inventory is an enchanted book:",
+        "\t\t\tif stored enchants of slot 1 of event-inventory contains sharpness 5:",
+        "\t\t\t\tset {_i} to slot 0 of event-inventory",
+        "\t\t\t\tadd \"&aOOOOOOO\" and \"&bAHHHHHH\" to lore of {_i}",
+        "\t\t\t\tenchant {_i} with sharpness 6",
+        "\t\t\t\tset event-slot to {_i}",
+        "\t\t\t\tset repair cost of event-inventory to 30"
+      ],
+      "since": [
+        "1.11.0"
+      ],
+      "return type": "Number",
+      "changers": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "patterns": [
+        "[the] [anvil] (repair cost|max[imum] repair cost) of %inventories%",
+        "%inventories%'[s] [anvil] (repair cost|max[imum] repair cost)"
+      ]
+    },
+    {
+      "id": "ExprArmorChange",
+      "name": "Armor Change Event - Item",
+      "description": [
+        "Get the old/new item in an armor change event. Defaults to new. When using set, it will set the slot that was changed, old/new will make no difference in this case. Requires Paper 1.12.2+"
+      ],
+      "examples": [
+        "on player armor change:",
+        "\tif new armor item is any helmet:",
+        "\t\tset armor item to a diamond helmet"
+      ],
+      "since": [
+        "1.3.1"
+      ],
+      "return type": "Item Type",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[(new|old)] armor item"
+      ]
+    },
+    {
+      "id": "ExprAvailableMaterials",
+      "name": "Available Materials",
+      "description": [
+        "Get a list of all available materials (will return as an itemtype, but it's a mix of blocks and items),",
+        "itemtypes, block types (will return as an item type, but only materials which can be placed use as a block) and block datas."
+      ],
+      "examples": [
+        "give player random element of all available itemtypes",
+        "set {_blocks::*} to all available blocktypes",
+        "set target block to random element of all available blockdatas"
+      ],
+      "since": [
+        "1.15.0"
+      ],
+      "return type": "Object",
+      "patterns": [
+        "[all] available materials",
+        "[all] available item[ ]types",
+        "[all] available block[ ]types",
+        "[all] available block[ ]datas"
+      ]
+    },
+    {
+      "id": "ExprBlockDataBlock",
+      "name": "Block Data - Block",
+      "description": [
+        "Customize block data from a block. You can get all the tags in a block data or a specific tag.",
+        "You can set a specific tag of block data, or set blockdata of a block without updates",
+        "(will prevent physics updates of neighbouring blocks.)(This supports blockdata objects and ItemTypes (from Skript) or strings.)"
+      ],
+      "examples": [
+        "set {_data} to block data of target block of player",
+        "set {_data::*} to block data tags of target block of player",
+        "set {_water} to block data tag \"waterlogged\" of event-block",
+        "set block data without updates of target block to oak_fence[]",
+        "set block data tag \"waterlogged\" of event-block to true"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Object",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] block[ ](data|state) (tags|tag %string%|without update[s]) of %blocks%",
+        "%blocks%'[s] block[ ](data|state) (tags|tag %string%|without update[s])"
+      ]
+    },
+    {
+      "id": "ExprBlockDataItem",
+      "name": "Block Data - Item",
+      "description": [
+        "Get block data from an item. You can get a string of block data, all the tags in a block data or a specific tag. ",
+        "You can also set a block data for an item or set a specific tag for block data. This syntax is only available for MC 1.14+"
+      ],
+      "examples": [
+        "set item data of player's tool to block data of target block",
+        "set item data of player's tool to \"minecraft:campfire[lit=false,waterlogged=true]\"",
+        "set item data tag \"lit\" of player's tool to false"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Object",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] item [block[ ]](data|state) [(tags|tag %string%)] of %itemtypes%",
+        "%itemtypes%'[s] item [block[ ]](data|state) [(tags|tag %string%)]"
+      ]
+    },
+    {
+      "id": "ExprBlockInChunk",
+      "name": "Block in Chunk",
+      "description": [
+        "Represents a block in a chunk. X/Z coords will be a value from 0 to 15."
+      ],
+      "examples": [
+        "set block at 1,1,1 in chunk at player to stone",
+        "set {_b} to block at 8,64,8 in chunk at player"
+      ],
+      "since": [
+        "1.13.0"
+      ],
+      "return type": "Block",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete"
+      ],
+      "patterns": [
+        "block at %number%,[ ]%number%,[ ]%number% (in|of) %chunk%"
+      ]
+    },
+    {
+      "id": "ExprBlockStateBlockData",
+      "name": "BlockState - BlockData",
+      "description": [
+        "Represents the blockdata of a block in a structure. Requires MC 1.17.1+"
+      ],
+      "examples": [
+        "set {_data} to blockdata of blockstate {_blockstate}"
+      ],
+      "since": [
+        "1.12.3"
+      ],
+      "return type": "Block Data",
+      "patterns": [
+        "block[ ]data of [blockstate[s]] %blockstates%"
+      ]
+    },
+    {
+      "id": "ExprBlockStateItemType",
+      "name": "BlockState - ItemType",
+      "description": [
+        "Represents the itemtype of a block in a structure. Requires MC 1.17.1+"
+      ],
+      "examples": [
+        "set {_type} to itemtype of blockstate {_blockstate}"
+      ],
+      "since": [
+        "1.12.3"
+      ],
+      "return type": "Item Type",
+      "patterns": [
+        "[item[ ]]type of [blockstate[s]] %blockstates%"
+      ]
+    },
+    {
+      "id": "ExprBlockStateOffset",
+      "name": "BlockState - Offset",
+      "description": [
+        "Represents the offset of a block in a structure. This is a vector, distance from the starting block of a structure.",
+        "Requires MC 1.17.1+"
+      ],
+      "examples": [
+        "set {_offset} to offset of blockstate {_blockstate}"
+      ],
+      "since": [
+        "1.12.3"
+      ],
+      "return type": "Vector",
+      "patterns": [
+        "offset of [blockstate[s]] %blockstates%"
+      ]
+    },
+    {
+      "id": "ExprBookPages",
+      "name": "Book Pages",
+      "description": [
+        "Allows you to set pages in a book to text components. You can also retrieve the pages. Based on testing, a book's author/title needs to be set AFTER setting the pages, why? I have no idea!"
+      ],
+      "examples": [
+        "set {_i} to a written book",
+        "set {_a} to text component of \"RULES\"",
+        "set hover event of {_a} to hover event showing \"make sure to read our rules\"",
+        "set click event of {_a} to click event to run command \"/rules\"",
+        "set page 1 of {_i} to {_a}",
+        "set book author of {_i} to \"Bob\"",
+        "set book title of {_i} to \"MyBook\"",
+        "give player 1 of {_i}"
+      ],
+      "since": [
+        "1.8.0"
+      ],
+      "return type": "Text Component - Base Component",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "page %number% of [book] %itemtype%"
+      ]
+    },
+    {
+      "id": "ExprBoundAllBounds",
+      "name": "Bound - All Bounds",
+      "description": [
+        "Get a list of all bounds, optionally in a specific world."
+      ],
+      "examples": [
+        "set {_bounds::*} to all bounds in world of player",
+        "loop all bounds:",
+        "\tif {bounds::%loop-bound%::owner} = player:",
+        "\t\tsend \"You own bound %loop-bound%\""
+      ],
+      "since": [
+        "1.15.0"
+      ],
+      "return type": "Object",
+      "patterns": [
+        "[(all [[of] the]|the)] bound[s] [(in|of) %worlds%]",
+        "[(all [[of] the]|the)] bound id[s] [(in|of) %worlds%]"
+      ]
+    },
+    {
+      "id": "ExprBoundAtLocation",
+      "name": "Bound - At Location",
+      "description": [
+        "Get a list of bounds/ids at a location."
+      ],
+      "examples": [
+        "set {_bounds::*} to bounds at player",
+        "set {_b::*} to bound ids at player",
+        "loop all bounds at player:"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Object",
+      "patterns": [
+        "[(all [[of] the]|the)] bound[s] at %location%",
+        "[(all [[of] the]|the)] bound id[s] at %location%"
+      ]
+    },
+    {
+      "id": "ExprBoundBlocks",
+      "name": "Bound - Blocks",
+      "description": [
+        "All the blocks within a bound"
+      ],
+      "examples": [
+        "set {_blocks::*} to all blocks within bound {bound}",
+        "set all blocks within {bound} to stone",
+        "loop all blocks within bound {bound}:",
+        "\tif loop-block is stone:",
+        "\t\tset loop-block to grass"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Block",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete"
+      ],
+      "patterns": [
+        "[(all [[of] the]|the)] blocks within [bound] %bound%"
+      ]
+    },
+    {
+      "id": "ExprBoundCoords",
+      "name": "Bound - Coords",
+      "description": [
+        "The coords and world of a bounding box. You can get the world/coords for a specific bound, you can also set the coords of a bounding box. You can NOT set the world of a bounding box. ",
+        "\nLesser will always equal the lower south-east corner. ",
+        "Greater will always equal the higher north-west corner."
+      ],
+      "examples": [
+        "set lesser y coord of {bound} to 10",
+        "set {_x} to greater x coord of bound with id \"my.bound\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Object",
+      "changers": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "patterns": [
+        "lesser (x|y|z) coord[inate] of [bound] %bound%",
+        "greater (x|y|z) coord[inate] of [bound] %bound%",
+        "world of bound %bound%"
+      ]
+    },
+    {
+      "id": "ExprBoundEntities",
+      "name": "Bound - Entities",
+      "description": [
+        "Get all the entities within a bound. NOTE: If the chunk in a bound is unloaded, entities will also be unloaded."
+      ],
+      "examples": [
+        "loop entities of bound with id \"my-bound\":",
+        "\tif loop-entity is a cow or pig:",
+        "\t\tkill loop-entity"
+      ],
+      "since": [
+        "1.15.0"
+      ],
+      "return type": "Entity",
+      "changers": [
+        "add",
+        "remove",
+        "remove all"
+      ],
+      "patterns": [
+        "[(all [[of] the]|the)] %*entitydatas% of [bound] %bounds%"
+      ]
+    },
+    {
+      "id": "ExprBoundFromID",
+      "name": "Bound - From ID",
+      "description": [
+        "Get a bound object from a bound ID"
+      ],
+      "examples": [
+        "set {_b} to bound from id \"%player%.home\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Bound",
+      "patterns": [
+        "bound (of|from|with) id %string%"
+      ]
+    },
+    {
+      "id": "ExprBoundID",
+      "name": "Bound - ID",
+      "description": [
+        "Get/set the id of a bound. When setting the ID of a bound, if another bound has that ID, this will fail with an error in console.",
+        "You cannot set the IDs of multiple bounds at once."
+      ],
+      "examples": [
+        "set {_id} to id of first element of bounds at player to \"farm\"",
+        "loop all bounds at player:",
+        "\tset id of loop-bound to \"%player%-%id of loop-bound%\"",
+        "set {_id} to id of event-bound",
+        "send \"You entered bound '%id of loop-bound%'\""
+      ],
+      "since": [
+        "1.15.0"
+      ],
+      "return type": "Text",
+      "changers": [
+        "unknown"
+      ],
+      "patterns": [
+        "[the] [bound] id of %bounds%",
+        "%bounds%'[s] [bound] id"
+      ]
+    },
+    {
+      "id": "ExprBoundOwnerMember",
+      "name": "Bound - Owners/Members",
+      "description": [
+        "Represents the owners and members of a bound. Will be saved as UUIDs in the bound config."
+      ],
+      "examples": [
+        "add player to members of bound with id \"spawn\"",
+        "remove player from owners of bound with id \"spawn\"",
+        "loop owners of bound with id \"beach\":",
+        "\tif loop-offline player is online:",
+        "\t\tteleport loop-offline player to spawn of world \"world\""
+      ],
+      "since": [
+        "1.15.0"
+      ],
+      "return type": "Offline Player",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "delete"
+      ],
+      "patterns": [
+        "(owners|members) of [bound] %bound%"
+      ]
+    },
+    {
+      "id": "ExprChunkCoords",
+      "name": "Chunk Coordinates",
+      "description": [
+        "Represents the coordinates of a chunk."
+      ],
+      "examples": [
+        "set {_x} to chunk x of chunk at player"
+      ],
+      "since": [
+        "1.13.0"
+      ],
+      "return type": "Number",
+      "patterns": [
+        "chunk (x|z) of %chunk%"
+      ]
+    },
+    {
+      "id": "ExprNoClip",
+      "name": "Entity NoClip",
+      "description": [
+        "Set or get the noClip status of an entity (This will not work on players)"
+      ],
+      "examples": [
+        "spawn a zombie at player",
+        "set no clip state of last spawned zombie to true",
+        "set {_var} to no clip state of last spawned sheep",
+        "loop all entities in radius 5 around player:",
+        "\tset no clip state of loop-entity to true",
+        "\tpush loop-entity up with speed 5"
+      ],
+      "since": [
+        "1.0.2"
+      ],
+      "return type": "Boolean",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "no[( |-)]clip (state|mode) of %entities%",
+        "%entities%'s no[( |-)]clip (state|mode)"
+      ]
+    },
+    {
+      "id": "ExprEntityVisibility",
+      "name": "Entity Visibility",
+      "description": [
+        "Get/set visibility for entities. Armor stands on all versions, ItemFrames on 1.15+ and LivingEntities on 1.16.3+"
+      ],
+      "examples": [
+        "set visibility of target entity to false",
+        "set {_v} to visibility of target entity",
+        "if visibility of target entity is true:"
+      ],
+      "since": [
+        "1.7.0"
+      ],
+      "return type": "Boolean",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] visibility of %entities%",
+        "%entities%'[s] visibility"
+      ]
+    },
+    {
+      "id": "ExprEntityBlockStorageCount",
+      "name": "EntityBlockStorage - Entity Count",
+      "description": [
+        "Get the amount of entities currently stored in a storage block.",
+        "As of 1.15 this only includes beehives/bee nests! Requires Spigot/Paper 1.15.2+"
+      ],
+      "examples": [
+        "if amount of stored entities in block at player > 10:",
+        "set {_a} to size of entities stored in event-block"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "long",
+      "patterns": [
+        "(size|amount) of [all] (stored entities|entities stored) in %blocks%"
+      ]
+    },
+    {
+      "id": "ExprEntityBlockStorageMax",
+      "name": "EntityBlockStorage - Max Entities",
+      "description": [
+        "Get/Set the max amount of entities which can be stored in a block.",
+        "As of 1.15 this only includes beehives/bee nests! Requires Spigot/Paper 1.15.2+"
+      ],
+      "examples": [
+        "set {_m} to max entities of target block of player",
+        "set max entities of target block of player to 20",
+        "set max entity storage of event-block to 5"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "long",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "reset"
+      ],
+      "patterns": [
+        "[the] max entit(ies|y storage) of %blocks%",
+        "%blocks%'[s] max entit(ies|y storage)"
+      ]
+    },
+    {
+      "id": "ExprGameEventRadius",
+      "name": "Game Event - Radius",
+      "description": [
+        "Get/set the radius a game event will broadcast. Requires MC 1.17+"
+      ],
+      "examples": [
+        "on game event:",
+        "\tset game event radius to 20"
+      ],
+      "since": [
+        "1.14.0"
+      ],
+      "return type": "Number",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "delete"
+      ],
+      "patterns": [
+        "game[ ]event radius"
+      ]
+    },
+    {
+      "id": "ExprHiddenFlags",
+      "name": "Hidden Item Flags",
+      "description": [
+        "Hides the item flags on items, allowing you to make super duper custom items. Dye item flag added in 1.5.0 and only available on 1.16.2+."
+      ],
+      "examples": [
+        "set player's tool to player's tool with attribute flag hidden",
+        "give player 1 diamond sword of sharpness 5 with hidden enchants flag",
+        "set {_tool} to player's tool with all flags hidden",
+        "give player potion of harming with hidden potion effects flag",
+        "set {_b} to leather boots with dye flag hidden"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Item Type",
+      "patterns": [
+        "%itemtype% with (all|enchant[s]|destroy[s]|potion[ ]effect[s]|unbreakable|attribute[s]|dye) flag[s] hidden",
+        "%itemtype% with hidden (all|enchant[s]|destroy[s]|potion[ ]effect[s]|unbreakable|attribute[s]|dye) flag[s]"
+      ]
+    },
+    {
+      "id": "ExprInvName",
+      "name": "Inventory Name",
+      "description": [
+        "This is a temp placeholder for Skript's inventory name expression, which is broken in 1.14+"
+      ],
+      "examples": [
+        "if inventory name of current inventory of player = \"Settings\":"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] (custom|inv[entory]) name of %inventories%",
+        "%inventories%'[s] (custom|inv[entory]) name"
+      ]
+    },
+    {
+      "id": "ExprKnockbackAttackerVictim",
+      "name": "Knockback Attacker/Victim",
+      "description": [
+        "The attacker/victim in an entity knockback event. Paper 1.12.2+"
+      ],
+      "examples": [
+        "on entity knockback:",
+        "\tif knockback attacker is a player:",
+        "\t\tif knockback victim is a sheep:",
+        "\t\t\tcancel event"
+      ],
+      "since": [
+        "1.8.0"
+      ],
+      "return type": "Entity",
+      "changers": [
+        "add",
+        "remove",
+        "remove all"
+      ],
+      "patterns": [
+        "[the] knockback (attacker|victim)"
+      ]
+    },
+    {
+      "id": "ExprLoadedChunks",
+      "name": "Loaded Chunks",
+      "description": [
+        "Represents all currently loaded chunks in a world."
+      ],
+      "examples": [
+        "loop loaded chunks of world of player:",
+        "set {_chunks} to loaded chunks of world \"world\""
+      ],
+      "since": [
+        "1.13.0"
+      ],
+      "return type": "Chunk",
+      "patterns": [
+        "[(all [[of] the]|the)] loaded chunks of %world%"
+      ]
+    },
+    {
+      "id": "ExprMaterialChoice",
+      "name": "Material Choice",
+      "description": [
+        "A material choice is a list of items or a minecraft tag, that can be used as an option in some recipes.",
+        "When using the 'every' item type, this will grab all relatable items in a list, ie: 'every sword'.",
+        "This allows you to have one specific slot of a recipe to accept multiple items, without having to create multiple recipes.",
+        "Do note that material choices do not accept custom items (ie: items with names, lore, enchants, etc). Requires Minecraft 1.13+"
+      ],
+      "examples": [
+        "set {_a} to material choice of diamond sword, diamond shovel and diamond hoe",
+        "set {_a} to material choice of every sword",
+        "set {_a} to material choice of minecraft tag \"doors\""
+      ],
+      "since": [
+        "1.10.0"
+      ],
+      "return type": "Material Choice",
+      "patterns": [
+        "material choice of %itemtypes%",
+        "material choice of %minecrafttag%"
+      ]
+    },
+    {
+      "id": "ExprMinecraftTag",
+      "name": "Minecraft Tag",
+      "description": [
+        "Represents a Minecraft tag. This includes all vanilla item/block tags registered to the server.",
+        "Bukkit provides 2 lists, item tags and block tags. Some tags might be in both lists but still have the same effect.",
+        "If you are unsure of all tag options, just return a list of all tags to see what is available.",
+        "You can also get a list of all itemtypes that are tagged by a tag.",
+        "The 'minecraft:' namespace is optional. Requires Minecraft 1.13+"
+      ],
+      "examples": [
+        "set {_i} to minecraft tag \"doors\"",
+        "set {_tag} to minecraft tag \"trapdoors\"",
+        "set {_tags::*} to minecraft tags \"wall_signs\" and \"wooden_doors\"",
+        "set {_tag} to \"minecraft:climbable\"",
+        "",
+        "loop minecraft tags:",
+        "\tsend \"-%loop-value%\" to console"
+      ],
+      "since": [
+        "1.10.0"
+      ],
+      "return type": "Object",
+      "patterns": [
+        "minecraft [(item|block)] tag[s] %strings%",
+        "[all] minecraft [(item|block)] tags",
+        "[all] item[type]s of minecraft [(item|block)] tag[s] %strings%"
+      ]
+    },
+    {
+      "id": "ExprNbtCompound",
+      "name": "NBT - Compound of",
+      "description": [
+        "Get the nbt compound of a block/entity/item/file. This is a more advanced version of NBT than just getting an NBT string ",
+        "which allows for better manipulation. Optionally you can return a copy of the compound. This way you can modify it without ",
+        "actually modifying the original compound, for example when grabbing the compound from an entity, modifying it and applying to ",
+        "other entities. NBT from items will not be the original, but will be a copy. NBT from a file will need to be saved manually using ",
+        "the NBT - Save File effect. If the file does not yet exist, a new file will be created."
+      ],
+      "examples": [
+        "set {_n} to nbt compound of player's tool",
+        "set {_nbt} to nbt compound of target entity",
+        "set {_n} to nbt compound of \"{id:\"\"minecraft:diamond_sword\"\",tag:{Damage:0,Enchantments:[{id:\"\"minecraft:sharpness\"\",lvl:3s}]},Count:1b}\"",
+        "set {_nbt} to nbt compound of file \"world/playerdata/some-uuid.dat\""
+      ],
+      "since": [
+        "1.6.0"
+      ],
+      "return type": "NBT - Compound",
+      "changers": [
+        "add"
+      ],
+      "patterns": [
+        "nbt compound [(copy)] (of|from) %blocks/entities/itemtypes/itemstacks/slots/strings%",
+        "nbt compound [(copy)] (of|from) file[s] %strings%"
+      ]
+    },
+    {
+      "id": "ExprItemFromNBT",
+      "name": "NBT - Item from NBT",
+      "description": [
+        "This expression allows you to grab an item from NBT strings or compounds (compound support added in 1.6.0). ",
+        "This can be useful when wanting to grab items from file nbt, or nbt of an entity or an inventory holding block (like a chest or furnace).",
+        "It can also be useful for creating your own serializing system. The NBT string required for this must be an item's FULL item NBT ",
+        "(This must include the item type and amount, example of full: \"{id:\"minecraft:iron_sword\",tag:{Damage:0},Count:1b}\"",
+        " example of partial nbt of the same item: \"{Damage:0}\")."
+      ],
+      "examples": [
+        "set {_i} to item from nbt \"{id:\"\"minecraft:iron_sword\"\",tag:{Damage:0},Count:1b}\"",
+        "\n",
+        "set {_nbt::*} to tag \"Inventory\" of file nbt of \"world/playerdata/some-players-uuid.dat\"",
+        "loop {_nbt::*}",
+        "\tset {_i} to item from nbt loop-value"
+      ],
+      "since": [
+        "1.4.10"
+      ],
+      "return type": "Item Type",
+      "patterns": [
+        "item[s] (from|of) nbt[s] %strings/nbtcompounds%",
+        "nbt item[s] (from|of) %strings/nbtcompounds%"
+      ]
+    },
+    {
+      "id": "ExprItemWithNBT",
+      "name": "NBT - Item with NBT",
+      "description": [
+        "Give players items with NBT or even use items with NBT in GUIs"
+      ],
+      "examples": [
+        "give player diamond sword with nbt \"{Unbreakable:1}\"",
+        "format gui slot 1 of player with diamond axe with nbt \"{Enchantments:[{id:\\\"\\\"unbreaking\\\"\\\",lvl:5s}]}\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Item Type",
+      "patterns": [
+        "%itemtype% with [item( |-)]nbt %string/nbtcompound%"
+      ]
+    },
+    {
+      "id": "ExprObjectNBT",
+      "name": "NBT - Item/Inventory Slot/Entity/Block/File",
+      "description": [
+        "NBT of items, inventory slots, entities, tile entities (such as a furnace, hopper, brewing stand, banner, etc) or files. ",
+        "Supports get, set, add and reset. Reset will only properly work on an item, not entities or blocks. ",
+        "Set should not be used on entities or blocks, it's best to use add. Using set can quite often screw up the entity/block's location. ",
+        "The optional 'full' part (added in 1.4.10) will only work on items/slots. When using this, it will return the full NBT of said item, ",
+        "including the item amount as well as the item type."
+      ],
+      "examples": [
+        "set {_nbt} to nbt of player's tool",
+        "set {_f} to full nbt of player's tool",
+        "add \"{Enchantments:[{id:\"\"sharpness\"\",lvl:5}]}\" to nbt of player's tool",
+        "reset nbt of player's tool",
+        "set {_nbt} to nbt of target entity",
+        "set {_nbt} to event-entity",
+        "add \"{CustomName:\"\"{\\\"\"text\\\"\":\\\"\"&bMyNewName\\\"\"}\"\"}\" to nbt of target entity",
+        "add \"{RequiredPlayerRange:0s}\" to targeted block's nbt",
+        "add \"{SpawnData:{id:\"\"minecraft:wither\"\"}}\" to nbt of clicked block",
+        "set {_nbt} to file-nbt of \"world/playerdata/some-uuid-here.dat\""
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Object",
+      "changers": [
+        "add",
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] [(full )][(entity|item|slot|block|tile[(-| )]entity|file)(-| )]nbt of %block/entity/itemstack/itemtype/slot/string%",
+        "%block/entity/itemstack/itemtype/slot/string%'[s] [(full )][(entity|item|slot|block|tile[(-| )]entity|file)(-| )]nbt"
+      ]
+    },
+    {
+      "id": "ExprPrettyNBT",
+      "name": "NBT - Pretty NBT String",
+      "description": [
+        "Get a 'pretty' NBT string. This is colored the same as when using the vanilla Minecraft '/data' command. ",
+        "Splitting it will output kind of like a JSON output. Requires 1.13.2+"
+      ],
+      "examples": [
+        "set {_p} to pretty nbt from nbt compound of player's tool",
+        "send pretty nbt from {_nbt} to player",
+        "send pretty nbt from {_nbt} with split \" \" to console"
+      ],
+      "since": [
+        "1.6.0"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "pretty nbt (of|from) %nbtcompounds/strings% [(with|using) split %string%]",
+        "%nbtcompounds/strings%'[s] pretty nbt [(with|using) split %string%]"
+      ]
+    },
+    {
+      "id": "ExprTagOfNBT",
+      "name": "NBT - Tag",
+      "description": [
+        "Returns the value of the specified tag of the specified NBT. Also supports getting nested tags using a semi colon as a delimiter.",
+        "If the return value is a list, you can use it as a list, as it will automatically split it for ya.",
+        "As of 1.6.0 you can also set/delete tags, but only with NBT compounds, not NBT strings. Do note that setting the tag of an item",
+        "will not update it, you will have to create a variable for the NBT compound of the item, set the tag of that variable, then set the item back",
+        "using the 'nbt item of' expression. I understand this is a bit convoluted but unfortunately that is just how it works. See examples.",
+        "Also note that you can NOT create custom tags for entities/blocks. As of 1.7.1 blocks(tile entities)/entities will be able to hold custom nbt",
+        "data in the \"custom\" tag of said block/entity. Due to Minecraft not supporting this, I had to use some hacky methods to make this happen.",
+        "That said, this system is a tad convoluted, see the SkBee WIKI for more details.",
+        "As of 1.10.0 you can now add custom NBT to any block (the same as you would for tile entities)(This is only support on 1.16.4+). ",
+        "Since Minecraft does not natively support this, the NBT is actually stored in the chunk's NBT. See wiki for more info.",
+        "As of 1.10.0 you can get/set specific tag types of NBT compounds, allowing for more detailed control of what type your tag is going to be."
+      ],
+      "examples": [
+        "set {_tag} to tag \"Invulnerable\" of targeted entity's nbt",
+        "send \"Tag: %tag \"\"CustomName\"\" of nbt of target entity%\" to player",
+        "set {_tag} to \"Enchantments\" tag of nbt of player's tool",
+        "delete tag \"CustomTag\" of {_nbt}",
+        "set {_tag} to \"BlockEntityTag;Items\" tag of nbt of target block",
+        "",
+        "set {_n} to nbt compound of player's tool",
+        "set tag \"tag;Damage\" of {_n} to 500",
+        "set player's tool to nbt item of {_n}",
+        "",
+        "set byte tag \"points\" of {_nbt} to 1",
+        "set int tag \"custom;score\" of nbt compound of player to 10",
+        "set {_i} to int tag \"Score\" of nbt compound of player",
+        "set {_t::*} to compound list tag \"abilities\" of nbt compound of player"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Object",
+      "changers": [
+        "set",
+        "delete"
+      ],
+      "patterns": [
+        "tag %string% of %string/nbtcompound%",
+        "%string% tag of %string/nbtcompound%",
+        "%nbttype% %string% of %nbtcompound%",
+        "%string% %nbttype% of %nbtcompound%"
+      ]
+    },
+    {
+      "id": "ExprTagTypeOfNBT",
+      "name": "NBT - Tag Type",
+      "description": [
+        "Represents the NBT tag type of a tag in an NBT compound. This is mainly useful for debugging purposes."
+      ],
+      "examples": [
+        "set {_type} to tag type of tag \"Pos\" of nbt compound of player"
+      ],
+      "since": [
+        "1.13.1"
+      ],
+      "return type": "NBT - Tag Type",
+      "patterns": [
+        "[nbt[ ]]tag[ ]type of tag %string% of %nbtcompound%"
+      ]
+    },
+    {
+      "id": "ExprTagsOfNBT",
+      "name": "NBT - Tags",
+      "description": [
+        "Get all tags of an NBT compound."
+      ],
+      "examples": [
+        "set {_t::*} to nbt tags of {_n}",
+        "set {_t::*} to nbt tags of nbt compound of player"
+      ],
+      "since": [
+        "1.14.2"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] nbt tags of %nbtcompound%",
+        "%nbtcompound%'[s] nbt tags"
+      ]
+    },
+    {
+      "id": "ExprNBTUuid",
+      "name": "NBT - UUID for NBT",
+      "description": [
+        "Allows you to get an entity's UUID which can be represented in an NBT compound. Prior to 1.16 UUIDs were represented ",
+        "as most/least significant bits. As of 1.16, they are now represented as int arrays. If the player/entity is excluded, this ",
+        "will return a random UUID."
+      ],
+      "examples": [
+        "set {_u::*} to uuid int array of player",
+        "set {_u} to uuid int array as string from player",
+        "set {_m} to uuid most from target entity",
+        "set {_l} to uuid least bits of event-entity"
+      ],
+      "since": [
+        "1.5.2"
+      ],
+      "return type": "Object",
+      "patterns": [
+        "uuid (int array[( as string)]|most[ bits]|least[ bits]) [(from|of) %offlineplayer/entity%]"
+      ]
+    },
+    {
+      "id": "ExprPath",
+      "name": "Pathfinding - Path Points",
+      "description": [
+        "Get all the points along an entity's pathfinding path. Requires Paper 1.13+"
+      ],
+      "examples": [
+        "set {_path::*} to path points of last spawned sheep"
+      ],
+      "since": [
+        "1.5.0"
+      ],
+      "return type": "Location",
+      "patterns": [
+        "path [points] of %livingentities%"
+      ]
+    },
+    {
+      "id": "ExprPathTarget",
+      "name": "Pathfinding - Path Target",
+      "description": [
+        "Set the path of an entity to target a specific location, with an optional speed",
+        "Get the location of the paths end. Delete will stop the entity from pathfinding. Requires Paper 1.13+"
+      ],
+      "examples": [
+        "set path target of event-entity to player",
+        "set path target with speed 1.5 to location of above player",
+        "set path targets of all entities to location of player",
+        "delete path target of event-entity"
+      ],
+      "since": [
+        "1.5.0"
+      ],
+      "return type": "Location",
+      "changers": [
+        "set",
+        "delete"
+      ],
+      "patterns": [
+        "[the] [final] path target[s] [with speed %number%] of %livingentities%",
+        "%livingentities%'[s] [final] path target[s] [with speed %number%]"
+      ]
+    },
+    {
+      "id": "ExprAllRecipes",
+      "name": "Recipe - All Recipes",
+      "description": [
+        "Get a list of all recipes. May be from a specific item, may be just Minecraft recipes or custom recipes.",
+        "Due to some items having more than 1 recipe this may return multiple recipes. Requires 1.13+"
+      ],
+      "examples": [
+        "set {_recipes::*} to all recipes of iron ingot"
+      ],
+      "since": [
+        "1.4.0"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[(all [[of] the]|the)] [((mc|minecraft)|custom)] recipe[s] [(for|of) %itemtypes%]"
+      ]
+    },
+    {
+      "id": "ExprIngredientsOfRecipe",
+      "name": "Recipe - Ingredients of Recipe",
+      "description": [
+        "Get the ingredients from a recipe. Requires 1.13+"
+      ],
+      "examples": [
+        "set {_ing::*} to ingredients of recipe \"minecraft:diamond_sword\"",
+        "loop recipes for iron ingot:",
+        "\tset {_ing::*} to ingredients of recipe %loop-value%"
+      ],
+      "since": [
+        "1.4.0"
+      ],
+      "return type": "Item Type",
+      "patterns": [
+        "[(all [[of] the]|the)] ingredients (for|of) recipe %string%"
+      ]
+    },
+    {
+      "id": "ExprStoredEnchant",
+      "name": "Stored Enchantments",
+      "description": [
+        "Get/set the stored enchantments of an enchanted book."
+      ],
+      "examples": [
+        "set {_a::*} to stored enchants of player's tool",
+        "set stored enchants of player's tool to sharpness 3 and unbreaking 2",
+        "add sharpness 1 to stored enchants of player's tool",
+        "delete stored enchants of player's tool",
+        "remove sharpness from stored enchants of player's tool"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "return type": "Enchantment Type",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "delete"
+      ],
+      "patterns": [
+        "[the] stored enchant[ment]s of %itemstacks/itemtypes%",
+        "%itemstacks/itemtypes%'[s] stored enchant[ment]s"
+      ]
+    },
+    {
+      "id": "ExprStructureBlockStates",
+      "name": "Structure - BlockStates",
+      "description": [
+        "Get a list of the blockstates in a structure. This represents the palette of blocks a structure holds.",
+        "Requires MC 1.17.1+"
+      ],
+      "examples": [
+        "set {_list::*} to blockstates of structure {_structure}"
+      ],
+      "since": [
+        "1.12.3"
+      ],
+      "return type": "BlockState",
+      "patterns": [
+        "blockstates of [structure] %structure%"
+      ]
+    },
+    {
+      "id": "ExprStructureObject",
+      "name": "Structure - Object",
+      "description": [
+        "Create a new, empty structure or load a structure from file. ",
+        "If the file you have specified is not available, it will be created upon saving.",
+        "Structures without a namespace (ex: \"tree\") will load from/save to \"(main world folder)/generated/minecraft/structures/\".",
+        "Structures with a namespace (ex:\"myname:house\") will load from/save to \"(main world folder)/generated/myname/structures/\".",
+        "To create folders, simply add a slash in your name, ex: \"buildings/house\".",
+        "Requires MC 1.17.1+"
+      ],
+      "examples": [
+        "set {_s} to structure named \"my-server:houses/house1\"",
+        "set {_s} to structure named \"my-house\"",
+        "set {_s::*} to structures named \"house1\" and \"house2\""
+      ],
+      "since": [
+        "1.12.0"
+      ],
+      "return type": "Structure",
+      "patterns": [
+        "structure[s] named %strings%"
+      ]
+    },
+    {
+      "id": "ExprStructureProperties",
+      "name": "Structure - Properties",
+      "description": [
+        "Represents different properties of a structure, including mirroring, rotation, inclusion of entities and integrity.",
+        "These properties are only used for placing the structure in a world, they are NOT saved to the structure file.",
+        "Mirror determines which way the structure mirrors, either 'none', 'front back' or 'left right'.",
+        "Rotation determines which way the structure is rotated, either 'none', 'clockwise 90', 'clockwise 180' or 'counterclockwise 90'.",
+        "Integrity determines how damaged the building should look by randomly skipping blocks to place. This value can range from 0 to 1.",
+        "With 0 removing all blocks and 1 spawning the structure in pristine condition.",
+        "Include entities determines if saved entities should be spawned into the structure (true by default).",
+        "Size returns a vector offset from the starting point of the structure. This cannot be changed.",
+        "Requires MC 1.17.1+"
+      ],
+      "examples": [
+        "set rotation of {_s} to clockwise 90",
+        "set {_r} to rotation of {_s}",
+        "set {_v} to size of {_s}",
+        "set include entities of structure {_s} to false",
+        "set integrity of structure {_s} to 0.75"
+      ],
+      "since": [
+        "1.12.0"
+      ],
+      "return type": "Object",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "mirror of [structure] %structures%",
+        "rotation of [structure] %structures%",
+        "integrity of [structure] %structures%",
+        "include entities of [structure] %structures%",
+        "size of [structure] %structures%"
+      ]
+    },
+    {
+      "id": "ExprTabCompletionArgs",
+      "name": "Tab Completion Argument",
+      "description": [
+        "Get the argument or a list of all arguments in a tab complete event."
+      ],
+      "examples": [
+        "on tab complete of \"/breakfast\":",
+        "\tset tab completions for position 1 to \"toast\", \"eggs\" and \"waffles\"",
+        "\tif tab arg-1 = \"toast\":",
+        "\t\tset tab completions for position 2 to \"butter\", \"peanut_butter\" and \"jam\"",
+        "\telse if tab arg-1 = \"eggs\":",
+        "\t\tset tab completions for position 2 to \"sunny_side_up\", \"scrambled\" and \"over_easy\"",
+        "",
+        "set {_l::*} to tab args"
+      ],
+      "since": [
+        "1.7.0"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "tab [complete] arg[ument](s|[(-| )]%number%)"
+      ]
+    },
+    {
+      "id": "ExprTabCompletion",
+      "name": "Tab Completions",
+      "description": [
+        "Set the tab completions used in a tab complete event. ",
+        "You can specify which position in the command arguments also (will default to position 1). ",
+        "You can also remove texts from tab completions."
+      ],
+      "examples": [
+        "on tab complete of \"/mycommand\":",
+        "\tset tab completions for position 1 to \"one\", \"two\" and \"three\"",
+        "\tset tab completions for position 2 to 1, 2 and 3",
+        "\tset tab completions for position 3 to all players",
+        "\tset tab completions for position 4 to (indexes of {blocks::*})",
+        "",
+        "on tab complete:",
+        "\tif event-string contains \"/ver\":",
+        "\t\tremove \"PermissionsEx\" from tab completions"
+      ],
+      "since": [
+        "1.7.0"
+      ],
+      "return type": "Text",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete"
+      ],
+      "patterns": [
+        "[skbee] tab completions [(of|for) position %number%]"
+      ]
+    },
+    {
+      "id": "ExprTargetBlockExact",
+      "name": "Target Block Exact",
+      "description": [
+        "Returns the exact target block of a living entity.",
+        "Unlike Skript's target block expression, this takes the blocks' precise collision shapes into account.",
+        "An example would be a torch, Skript's expression won't account for the actual shape of the block.",
+        "Will also ignore fluids. Skript's expression is only for players, this one is for all living entities."
+      ],
+      "examples": [
+        "set exact target block of player to stone",
+        "set {_t} to exact target block of last spawned entity"
+      ],
+      "since": [
+        "1.15.0"
+      ],
+      "return type": "Block",
+      "changers": [
+        "add",
+        "set",
+        "remove",
+        "remove all",
+        "delete"
+      ],
+      "patterns": [
+        "exact target[ed] block [of %livingentities%]"
+      ]
+    },
+    {
+      "id": "ExprTeamColor",
+      "name": "Team - Color",
+      "description": [
+        "Represents the color of a team. This will be the color of glow (if glowing) as well as display name color."
+      ],
+      "examples": [
+        "set team color of team named \"a-team\" to blue"
+      ],
+      "since": [
+        "1.15.0"
+      ],
+      "return type": "Colour",
+      "changers": [
+        "set",
+        "reset"
+      ],
+      "patterns": [
+        "[the] [[sk]bee] team color of %beeteams%",
+        "%beeteams%'[s] [[sk]bee] team color"
+      ]
+    },
+    {
+      "id": "ExprTeamEntries",
+      "name": "Team - Entries",
+      "description": [
+        "Represents the entries of a team. You can add/remove players/entities to teams."
+      ],
+      "examples": [
+        "add player to team entries of team named \"a-team\"",
+        "add all villagers to team entries of team named \"villagers\"",
+        "remove all players from team entries of team named \"team-players\""
+      ],
+      "since": [
+        "1.15.0"
+      ],
+      "return type": "Entity",
+      "changers": [
+        "add",
+        "remove"
+      ],
+      "patterns": [
+        "[[sk]bee] team entries of %beeteam%",
+        "%beeteam%'[s] [[sk]bee] team entries"
+      ]
+    },
+    {
+      "id": "ExprTeam",
+      "name": "Team - Get Team",
+      "description": [
+        "Get the team by name or of an entity."
+      ],
+      "examples": [
+        "set {_t} to team named \"a-team\"",
+        "set {_t} to team of player"
+      ],
+      "since": [
+        "1.15.0"
+      ],
+      "return type": "Team",
+      "patterns": [
+        "[[sk]bee] team named %string%",
+        "[[sk]bee] team of %entity%"
+      ]
+    },
+    {
+      "id": "ExprTeamOption",
+      "name": "Team - Options",
+      "description": [
+        "Represents an option for a team."
+      ],
+      "examples": [
+        "set team option name tag visibility of team named \"a-team\" to never"
+      ],
+      "since": [
+        "1.15.0"
+      ],
+      "return type": "Team - Option Status",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "team option %teamoption% of %beeteams%",
+        "%beeteams%'[s] team option %teamoption%"
+      ]
+    },
+    {
+      "id": "ExprTeamPrefix",
+      "name": "Team - Prefix/Suffix",
+      "description": [
+        "Get/set the prefix/suffix of a team."
+      ],
+      "examples": [
+        "on load:",
+        "\tregister new team \"a-team\"",
+        "\tset team prefix of team named \"a-team\" to \"[A-TEAM] \""
+      ],
+      "since": [
+        "1.15.0"
+      ],
+      "return type": "Text",
+      "changers": [
+        "set",
+        "delete"
+      ],
+      "patterns": [
+        "[the] [[sk]bee] team (prefix|suffix) of %beeteams%",
+        "%beeteams%'[s] [[sk]bee] team (prefix|suffix)"
+      ]
+    },
+    {
+      "id": "ExprTeamState",
+      "name": "Team - State",
+      "description": [
+        "Represents the friendly fire and can see friendly invisibles states of a team."
+      ],
+      "examples": [
+        "set allow friendly fire team state of team named \"a-team\" to true"
+      ],
+      "since": [
+        "1.15.0"
+      ],
+      "return type": "Boolean",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] (allow friendly fire|can see friendly invisibles) team state of %beeteams%",
+        "%beeteams%'[s] (allow friendly fire|can see friendly invisibles) team state"
+      ]
+    },
+    {
+      "id": "ExprClickEvent",
+      "name": "Text Component - Click Event",
+      "description": [
+        "Create a new click event. Supports run command, suggest command, open link and copy to clipboard."
+      ],
+      "examples": [
+        "set {_t} to text component from \"Check out my cool website\"",
+        "set hover event of {_t} to a new hover event showing \"Clicky clicky to go to spawn!\"",
+        "set click event of {_t} to a new click event to open url \"https://my.cool.website\"",
+        "send component {_t} to player"
+      ],
+      "since": [
+        "1.5.0"
+      ],
+      "return type": "Object",
+      "patterns": [
+        "[a] [new] click event to run command %string%",
+        "[a] [new] click event to suggest command %string%",
+        "[a] [new] click event to open (link|url) %string%",
+        "[a] [new] click event to copy %string% to clipboard",
+        "[a] [new] click event to change to page %number%"
+      ]
+    },
+    {
+      "id": "ExprClickEventOf",
+      "name": "Text Component - Click Event Of",
+      "description": [
+        "Set the click event of a text component."
+      ],
+      "examples": [
+        "set {_t} to text component from \"Check out this cool thing at SPAWN!\"",
+        "set hover event of {_t} to a new hover event showing \"Clicky clicky to go to spawn!\"",
+        "set click event of {_t} to a new click event to run command \"/spawn\"",
+        "send component {_t} to player"
+      ],
+      "since": [
+        "1.5.0"
+      ],
+      "return type": "Object",
+      "patterns": [
+        "[the] click event of %basecomponents%",
+        "%basecomponents%'[s] click event"
+      ]
+    },
+    {
+      "id": "ExprComponentFormat",
+      "name": "Text Component - Format",
+      "description": [
+        "Change formatting options of text components. Most of these are pretty straight forward. Insertion means the text ",
+        "that will copy to chat when a player shift-clicks the component (Might not be available on all versions). Color supports color ",
+        "names as well as RGB color codes via Skript's RGB function (RGB = Minecraft 1.16+) (see examples)."
+      ],
+      "examples": [
+        "set {_t} to text component from \"my fancy text component\"",
+        "set bold format of {_t} to true",
+        "set color format of {_t} to aqua",
+        "set color format of {_t} to rgb(100, 0, 160)",
+        "set insertion format of {_t} to \"ooooo\""
+      ],
+      "since": [
+        "1.5.1"
+      ],
+      "return type": "Object",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] (color|bold|italic|(obfuscate[d]|magic)|strikethrough|underline[d]|insert[ion]) format of %basecomponents%",
+        "%basecomponents%'[s] (color|bold|italic|(obfuscate[d]|magic)|strikethrough|underline[d]|insert[ion]) format"
+      ]
+    },
+    {
+      "id": "ExprHoverEvent",
+      "name": "Text Component - Hover Event",
+      "description": [
+        "Create a new hover event. Can show text or an item to a player. 'showing %itemtype%' requires Minecraft 1.16.2+"
+      ],
+      "examples": [
+        "set {_t} to text component from \"Check out my cool tool!\"",
+        "set hover event of {_t} to a new hover event showing player's tool",
+        "send component {_t} to player"
+      ],
+      "since": [
+        "1.5.0"
+      ],
+      "return type": "Object",
+      "patterns": [
+        "[a] [new] hover event showing %strings%",
+        "[a] [new] hover event showing [item] %itemtype%"
+      ]
+    },
+    {
+      "id": "ExprHoverEventOf",
+      "name": "Text Component - Hover Event Of",
+      "description": [
+        "Set the hover event of a text component."
+      ],
+      "examples": [
+        "set {_t} to text component from \"Check out my cool tool!\"",
+        "set hover event of {_t} to a new hover event showing player's tool",
+        "send component {_t} to player"
+      ],
+      "since": [
+        "1.5.0"
+      ],
+      "return type": "Object",
+      "patterns": [
+        "[the] hover event of %basecomponents%",
+        "%basecomponents%'[s] hover event"
+      ]
+    },
+    {
+      "id": "ExprTextComponent",
+      "name": "Text Component - New Text Component",
+      "description": [
+        "Create a new text component. Can have hover and click events added to it. You can also create a translate component, ",
+        "this will send to the client, and the client will translate based on their language. You can use either an item type or a ",
+        "translate string, you can find these in your Minecraft jar 'assets/minecraft/lang/<lang file>.json'.",
+        "As of Paper 1.17.1, several more objects can translate including GameRules, PotionEffectTypes, Attributes, Difficulty, Enchantments, ",
+        "FireworkEffectTypes, Entities and Blocks.",
+        "Some components have extra objects, you can use strings or other text components here."
+      ],
+      "examples": [
+        "set {_comp::1} to text component from \"hi player \"",
+        "set {_comp::2} to text component of \"hover over me for a special message!\"",
+        "set hover event of {_comp::2} to hover event to show \"OoO look ma I'm hovering!\"",
+        "send component {_comp::*} to player",
+        "",
+        "set {_t} to translate component from player's tool",
+        "set {_t} to translate component from \"item.minecraft.milk_bucket\"",
+        "set {_death} to translate component from \"death.fell.accident.ladder\" using player's name",
+        "set {_assist} to translate component \"death.fell.assist\" using victim's name and attacker's name"
+      ],
+      "since": [
+        "1.5.0"
+      ],
+      "return type": "Text Component - Base Component",
+      "patterns": [
+        "[a] [new] text component[s] (from|of) %strings%",
+        "[a] [new] translate component[s] (from|of) %objects%",
+        "[a] [new] translate component[s] (from|of) %string% (with|using) %objects%"
+      ]
+    },
+    {
+      "id": "ExprTotalXP",
+      "name": "Total Experience",
+      "description": [
+        "Represents the total experience points the player currently has."
+      ],
+      "examples": [
+        "add 10 to total experience of player",
+        "remove 100 from total experience of player",
+        "set total xp of player to 1500",
+        "set {_t} to total experience of player"
+      ],
+      "since": [
+        "1.2.0"
+      ],
+      "return type": "integer",
+      "changers": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "patterns": [
+        "[the] total (xp|experience) [points] of %players%",
+        "%players%'[s] total (xp|experience) [points]"
+      ]
+    },
+    {
+      "id": "ExprWorldCreator",
+      "name": "World Creator",
+      "description": [
+        "Create a new world creator. This will be used to create a new world. Name will be the name of your new world. You can not use the name of one of the default worlds, or a world created by another plugin, such as MultiVerse. Copy will create a fresh new world with the same seed and settings. Clone will create a carbon copy of your world, if the world is large, this process may take a while. After creating a world creator you will need to load the world."
+      ],
+      "examples": [
+        "set {_w} to a new world creator named \"my-world\"",
+        "set environment of {_w} to nether",
+        "load world from creator {_w}",
+        "",
+        "set {_clone} to a new world creator named \"world-clone\" to clone world \"world\"",
+        "load world from creator {_clone}"
+      ],
+      "since": [
+        "1.8.0"
+      ],
+      "return type": "World Creator",
+      "patterns": [
+        "[a] [new] world creator (with name|named) %string%",
+        "[a] [new] world creator (with name|named) %string% to (copy|clone) %world%"
+      ]
+    },
+    {
+      "id": "ExprWorldCreatorOption",
+      "name": "World Creator Options",
+      "description": [
+        "Set different options for world creators. See SkBee wiki for more details."
+      ],
+      "examples": [
+        "set {_w} to a new world creator named \"my-world\"",
+        "set environment of {_w} to nether",
+        "set world type of {_w} to flat",
+        "set should generate structures of {_w} to true",
+        "load world from creator {_w}"
+      ],
+      "since": [
+        "1.8.0"
+      ],
+      "return type": "Object",
+      "changers": [
+        "set"
+      ],
+      "patterns": [
+        "[the] (environment|world type|world seed|gen[erator] settings|generator|should gen[erate] structures|[is] hardcore|keep spawn loaded) of %worldcreator%",
+        "%worldcreator%'[s] (environment|world type|world seed|gen[erator] settings|generator|should gen[erate] structures|[is] hardcore|keep spawn loaded)"
+      ]
+    }
+  ],
+  "types": [
+    {
+      "id": "Bound",
+      "name": "Bound",
+      "description": [
+        "Represents a 3D bounding box between 2 points"
+      ],
+      "since": [
+        "1.0.0"
+      ],
+      "patterns": [
+        "bound"
+      ]
+    },
+    {
+      "id": "Environment",
+      "name": "Environment",
+      "description": [
+        "The environment of a world."
+      ],
+      "examples": [
+        "set environment of {_creator} to nether"
+      ],
+      "usage": "custom, nether, normal, the end",
+      "since": [
+        "1.8.0"
+      ],
+      "patterns": [
+        "environment[s]"
+      ]
+    },
+    {
+      "id": "GameEvent",
+      "name": "Game Event",
+      "description": [
+        "Represents a Minecraft 'GameEvent', mainly used by Skulk Sensors. Requires MC 1.17+.",
+        "See McWiki for more details -> https://minecraft.fandom.com/wiki/Sculk_Sensor#Vibration_amplitudes"
+      ],
+      "usage": "block_attach, block_change, block_close, block_destroy, block_detach, block_open, block_place, block_press, block_switch, block_unpress, block_unswitch, container_close, container_open, dispense_fail, drinking_finish, eat, elytra_free_fall, entity_damaged, entity_killed, entity_place, equip, explode, fishing_rod_cast, fishing_rod_reel_in, flap, fluid_pickup, fluid_place, hit_ground, lightning_strike, minecart_moving, mob_interact, piston_contract, piston_extend, prime_fuse, projectile_land, projectile_shoot, ravager_roar, ring_bell, shear, shulker_close, shulker_open, splash, step, swim, wolf_shaking",
+      "since": [
+        "1.14.0"
+      ],
+      "patterns": [
+        "game[ ]event[s]"
+      ]
+    },
+    {
+      "id": "MaterialChoice",
+      "name": "Material Choice",
+      "description": [
+        "Represents a set of materials/minecraft tags which can be used in some recipes. ",
+        "Requires Minecraft 1.13+"
+      ],
+      "examples": [
+        "set {_a} to material choice of diamond sword, diamond shovel and diamond hoe",
+        "set {_a} to material choice of every sword",
+        "set {_a} to material choice of minecraft tag \"doors\""
+      ],
+      "usage": "see material choice expression",
+      "since": [
+        "1.10.0"
+      ],
+      "patterns": [
+        "material choice[s]"
+      ]
+    },
+    {
+      "id": "Tag",
+      "name": "Minecraft Tag",
+      "description": [
+        "Represents a tag provided by Minecraft. Requires Minecraft 1.13+"
+      ],
+      "examples": [
+        "set {_i} to minecraft tag \"doors\"",
+        "set {_tag} to minecraft tag \"trapdoors\"",
+        "set {_tags::*} to minecraft tags \"wall_signs\" and \"wooden_doors\"",
+        "set {_tag} to \"minecraft:climbable\"",
+        "",
+        "loop minecraft tags:",
+        "\tsend \"-%loop-value%\" to console"
+      ],
+      "usage": "see Minecraft tag expression",
+      "since": [
+        "1.10.0"
+      ],
+      "patterns": [
+        "[minecraft ]tag[s]"
+      ]
+    },
+    {
+      "id": "NBTCompound",
+      "name": "NBT - Compound",
+      "description": [
+        "Represents the NBT compound of an entity/block/item."
+      ],
+      "examples": [
+        "set {_a} to nbt compound of player"
+      ],
+      "usage": "{id:\"minecraft:netherite_axe\",tag:{Damage:0,Enchantments:[{id:\"minecraft:unbreaking\",lvl:2s}]},Count:1b}",
+      "since": [
+        "1.6.0"
+      ],
+      "patterns": [
+        "nbt[ ]compound"
+      ]
+    },
+    {
+      "id": "NBTCustomType",
+      "name": "NBT - Tag Type",
+      "description": [
+        "Represents a type of NBT tag."
+      ],
+      "examples": [
+        "set byte tag \"points\" of {_nbt} to 1",
+        "set compound tag \"tool\" of {_nbt} to nbt compound of player's tool"
+      ],
+      "usage": "byte array tag, byte tag, compound list tag, compound tag, double list tag, double tag, float list tag, float tag, int array tag, int list tag, int tag, long list tag, long tag, short tag, string list tag, string tag",
+      "since": [
+        "1.10.0"
+      ],
+      "patterns": [
+        "nbt[ ]type[s]"
+      ]
+    },
+    {
+      "id": "Particle",
+      "name": "Particle",
+      "description": [
+        "Represents a particle which can be used in the 'Particle Spawn' effect.",
+        "Some particles require extra data, these are distinguished by their data type within the square brackets.",
+        "DustOption, DustTransition and Vibration each have their own functions to build the appropriate data for these particles."
+      ],
+      "examples": [
+        "play 1 of soul at location of player",
+        "play 10 of dust using dustOption(green, 10) at location of player",
+        "play 3 of item using player's tool at location of player",
+        "play 1 of block using dirt at location of player",
+        "play 1 of dust_color_transition using dustTransition(blue, green, 3) at location of player",
+        "play 1 of vibration using vibration({loc1}, {loc2}, 1 second) at {loc1}"
+      ],
+      "usage": "ambient_entity_effect, angry_villager, ash, barrier, block [blockdata/itemtype], bubble, bubble_column_up, bubble_pop, campfire_cosy_smoke, campfire_signal_smoke, cloud, composter, crimson_spore, crit, current_down, damage_indicator, dolphin, dragon_breath, dripping_dripstone_lava, dripping_dripstone_water, dripping_honey, dripping_lava, dripping_obsidian_tear, dripping_water, dust [dust-option], dust_color_transition [dust-transition], effect, elder_guardian, electric_spark, enchant, enchanted_hit, end_rod, entity_effect, explosion, explosion_emitter, falling_dripstone_lava, falling_dripstone_water, falling_dust [blockdata/itemtype], falling_honey, falling_lava, falling_nectar, falling_obsidian_tear, falling_spore_blossom, falling_water, firework, fishing, flame, flash, glow, glow_squid_ink, happy_villager, heart, instant_effect, item [itemtype], item_slime, item_snowball, landing_honey, landing_lava, landing_obsidian_tear, large_smoke, lava, light, mycelium, nautilus, note, poof, portal, rain, reverse_portal, scrape, small_flame, smoke, sneeze, snowflake, soul, soul_fire_flame, spit, splash, spore_blossom_air, squid_ink, sweep_attack, totem_of_undying, underwater, vibration [vibration], warped_spore, wax_off, wax_on, white_ash, witch",
+      "since": [
+        "1.9.0"
+      ],
+      "patterns": [
+        "particle[s]"
+      ]
+    },
+    {
+      "id": "StructureBee",
+      "name": "Structure",
+      "description": [
+        "Represents a structure that can be saved or pasted into a world. Requires MC 1.17.1+",
+        "Use the 'Structure-Object' expression to get a new/existing structure object."
+      ],
+      "since": [
+        "1.12.0"
+      ],
+      "patterns": [
+        "structure[s]"
+      ]
+    },
+    {
+      "id": "Mirror",
+      "name": "Structure - Mirror",
+      "description": [
+        "Represents the different states of mirroring for a structure. Requires MC 1.17.1+"
+      ],
+      "examples": [
+        "set mirror of structure {_s} to front back"
+      ],
+      "usage": "front back, left right, none",
+      "since": [
+        "1.12.0"
+      ],
+      "patterns": [
+        "mirror[s]"
+      ]
+    },
+    {
+      "id": "StructureRotation",
+      "name": "Structure - Rotation",
+      "description": [
+        "Represents the different states of rotation for a structure. Requires MC 1.17.1+"
+      ],
+      "examples": [
+        "set rotation of structure {_s} to clockwise 90"
+      ],
+      "usage": "clockwise 180, clockwise 90, counterclockwise 90, none",
+      "since": [
+        "1.12.0"
+      ],
+      "patterns": [
+        "structure[ ]rotation[s]"
+      ]
+    },
+    {
+      "id": "Option",
+      "name": "Team - Option",
+      "description": [
+        "Represents an option for a team."
+      ],
+      "usage": "collision rule, death message visibility, name tag visibility",
+      "patterns": [
+        "team[ ]option[s]"
+      ]
+    },
+    {
+      "id": "OptionStatus",
+      "name": "Team - Option Status",
+      "description": [
+        "Represents an option status for a team option"
+      ],
+      "usage": "always, for other teams, for own team, never",
+      "patterns": [
+        "team[ ]option[ ]status"
+      ]
+    },
+    {
+      "id": "BaseComponent",
+      "name": "Text Component - Base Component",
+      "description": [
+        "Text components used for hover/click events. Due to the complexity of these, ",
+        "they can NOT be long term stored in variables."
+      ],
+      "examples": [
+        "set {_t} to text component from \"CLICK FOR OUR DISCORD\"",
+        "set hover event of {_t} to a new hover event showing \"Clicky Clicky!\"",
+        "set click event of {_t} to a new click event to open url \"https://OurDiscord.com\"",
+        "send component {_t} to player"
+      ],
+      "since": [
+        "1.5.0"
+      ],
+      "patterns": [
+        "base[ ]component[s]"
+      ]
+    },
+    {
+      "id": "WorldType",
+      "name": "World Type",
+      "description": [
+        "The type of a world"
+      ],
+      "examples": [
+        "set world type of {_creator} to flat"
+      ],
+      "usage": "amplified, flat, large biomes, normal",
+      "since": [
+        "1.8.0"
+      ],
+      "patterns": [
+        "world[ ]type[s]"
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "id": "function_dustOption",
+      "name": "dustOption",
+      "description": [
+        "Creates a new dust option to be used with 'dust' particle. Color can either be a regular color or an RGB color using",
+        "Skript's rgb() function. Size is the size the particle will be."
+      ],
+      "examples": [
+        "set {_c} to dustOption(red, 1.5)",
+        "set {_c} to dustOption(rgb(1, 255, 1), 3)"
+      ],
+      "since": [
+        "1.9.0"
+      ],
+      "return type": "dustoption",
+      "patterns": [
+        "dustOption(color: color, size: number)"
+      ]
+    },
+    {
+      "id": "function_dustTransition",
+      "name": "dustTransition",
+      "description": [
+        "Creates a new dust transition to be used with 'dust_color_transition' particle.",
+        "Color can either be a regular color or an RGB color using Skript's rgb() function.",
+        "Size is the size the particle will be. Requires MC 1.17+"
+      ],
+      "examples": [
+        "set {_d} to dustTransition(red, green, 10)",
+        "set {_d} to dustTransition(blue, rgb(1,1,1), 5)"
+      ],
+      "since": [
+        "1.11.1"
+      ],
+      "return type": "dusttransition",
+      "patterns": [
+        "dustTransition(fromcolor: color, tocolor: color, size: number)"
+      ]
+    },
+    {
+      "id": "function_vibration",
+      "name": "vibration",
+      "description": [
+        "Creates a new vibration to be used with 'vibration' particle.",
+        "FROM = the origin location the particle will start at.",
+        "TO = the destination location the particle will travel to.",
+        "ARRIVAL TIME = the time it will take to arrive at the destination location. Requires MC 1.17+"
+      ],
+      "examples": [
+        "set {_v} to vibration({loc1}, {loc2}, 10 seconds)"
+      ],
+      "since": [
+        "1.11.1"
+      ],
+      "return type": "vibration",
+      "patterns": [
+        "vibration(from: location, to: location, arrivaltime: timespan)"
+      ]
+    }
+  ]
+}

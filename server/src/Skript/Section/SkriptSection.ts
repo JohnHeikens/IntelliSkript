@@ -61,6 +61,9 @@ export class SkriptSection extends SkriptSectionGroup {
 		if (context.hierarchy) {
 			this.detectVariablesRecursively(context, context.hierarchy);
 		}
+		if(context.currentSkriptFile && context.currentSkriptFile.getPatternSection(context.currentString) == undefined) {
+			context.addDiagnostic(0, context.currentString.length, "can't understand this line");
+		}
 	}
 	createSection(context: SkriptContext): SkriptSection {
 		const checkPattern = /check \[(?!\()/g;
@@ -81,7 +84,7 @@ export class SkriptSection extends SkriptSectionGroup {
 			isIfStatement = true;
 		}
 		if (isIfStatement) {
-			return new SkriptIfStatement(context, this);
+			return new SkriptConditionSection(context, this);
 		}
 		return new SkriptSection(context, this);
 	}
@@ -92,4 +95,4 @@ export class SkriptSection extends SkriptSectionGroup {
 
 
 }
-import { SkriptIfStatement } from './SkriptIfStatement'; import { SkriptNestHierarchy } from '../Nesting/SkriptNestHierarchy';
+import { SkriptConditionSection } from './Reflect/SkriptConditionSection'; import { SkriptNestHierarchy } from '../../Nesting/SkriptNestHierarchy';

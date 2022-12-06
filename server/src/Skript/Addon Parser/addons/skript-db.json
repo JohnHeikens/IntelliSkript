@@ -1,0 +1,65 @@
+{
+  "events": [
+    {
+      "id": "complete_of_sql_query",
+      "name": "On complete of sql query",
+      "patterns": [
+        "[on] complete of [(sql|database)] query"
+      ],
+      "cancellable": false
+    }
+  ],
+  "effects": [
+    {
+      "id": "EffExecuteStatement",
+      "name": "EffExecuteStatement",
+      "patterns": [
+        "execute %string% (in|on) %datasource% [and store [[the] (output|result)[s]] (to|in) [the] [var[iable]] %objects%]",
+        "quickly execute %string% (in|on) %datasource% [and store [[the] (output|result)[s]] (to|in) [the] [var[iable]] %objects%]"
+      ]
+    }
+  ],
+  "expressions": [
+    {
+      "id": "ExprDBError",
+      "name": "ExprDBError",
+      "return type": "Text",
+      "patterns": [
+        "[the] [last] (sql|db|data(base|[ ]source)) error"
+      ]
+    },
+    {
+      "id": "ExprDataSource",
+      "name": "ExprDataSource",
+      "return type": "datasource",
+      "patterns": [
+        "[the] data(base|[ ]source) [(of|at)] %string% [with [a] [max[imum]] [connection] life[ ]time of %timespan%]"
+      ]
+    },
+    {
+      "id": "ExprSQLQuery",
+      "name": "ExprSQLQuery",
+      "return type": "Text",
+      "patterns": [
+        "sql query"
+      ]
+    },
+    {
+      "id": "ExprUnsafe",
+      "name": "ExprUnsafe",
+      "return type": "Text",
+      "patterns": [
+        "unsafe %string%"
+      ]
+    }
+  ],
+  "types": [
+    {
+      "id": "HikariDataSource",
+      "name": "datasource",
+      "patterns": [
+        "datasource[s]"
+      ]
+    }
+  ]
+}

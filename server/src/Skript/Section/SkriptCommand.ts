@@ -1,4 +1,5 @@
 import { SkriptContext } from '../SkriptContext';
+import { TokenTypes } from '../../TokenTypes';
 import{
 	SkriptSection
 
@@ -20,6 +21,7 @@ export class SkriptCommand extends SkriptSection{
 		if (result == null){
 			context.addDiagnostic(0, context.currentString.length, "cannot recognize this section. make sure to put your code for the command in triggers");
 		}
+		context.addToken(0, context.currentString.length, TokenTypes.keyword);
 		return super.createSection(context);
 	}
 	processLine(context: SkriptContext): void {
