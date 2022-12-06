@@ -26,4 +26,4 @@ IntelliSkript is the most advanced skript plugin for Visual Studio Code out ther
 (image to come)
 
 report issues at https://github.com/johnheikens/IntelliSkript/issues<br>
-do you have any question? go to https://pex.li/discord
+do you have any question? go to https://discord.gg/D4Eh4yxM8z
