@@ -1,6 +1,9 @@
-import path from 'path';
 
-export const intelliSkriptServerDirectory = path.resolve(__dirname, "..");
-export const intelliSkriptServerAssetsDirectory = intelliSkriptServerDirectory + "\\Assets";
-export const release = intelliSkriptServerDirectory.includes('johnheikens.intelliskript');
-export const intelliSkriptServerSrcDirectory = intelliSkriptServerDirectory + "\\src";
+import * as path from 'path';
+
+export namespace IntelliSkriptConstants {
+	export const ServerDirectory = path.resolve(__dirname, "..");
+	export const ServerAssetsDirectory = path.join(ServerDirectory, "Assets");
+	export const IsReleaseMode = ServerDirectory.includes('johnheikens.intelliskript');
+	export const ServerSrcDirectory = path.join(ServerDirectory, "src");
+}

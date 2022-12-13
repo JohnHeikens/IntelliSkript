@@ -1,7 +1,9 @@
-import * as SkriptJson from './Addon Json/WolvSK.json';
+//import * as SkriptJson from './Addon Json/WolvSK.json';
 
-import { intelliSkriptServerAssetsDirectory, intelliSkriptServerDirectory, intelliSkriptServerSrcDirectory } from '../../IntelliSkriptConstants';
-export const intelliSkriptAddonSkFilesDirectory = intelliSkriptServerAssetsDirectory + "\\Addons";
+import { IntelliSkriptConstants } from '../../IntelliSkriptConstants';
+import * as path from 'path';
+import * as fs from 'fs';
+export const intelliSkriptAddonSkFilesDirectory = path.join(IntelliSkriptConstants.ServerAssetsDirectory, "Addons");
 export class GeneralJson {
 	name = "";
 	description?: string[];
@@ -144,7 +146,7 @@ export class AddonParser {
 		if (!fs.existsSync(intelliSkriptAddonSkFilesDirectory)) {
 			fs.mkdirSync(intelliSkriptAddonSkFilesDirectory, { recursive: true });
 		}
-		const jsonDirectory = intelliSkriptServerSrcDirectory + "\\Skript\\Addon Parser\\Addon Json";
+		const jsonDirectory = path.join(IntelliSkriptConstants.ServerSrcDirectory, "Skript", "Addon Parser", "Addon Json");
 		fs.readdir(jsonDirectory, undefined, function (err: NodeJS.ErrnoException | null, files: string[]) {
 
 			files.forEach(function (file, index) {
@@ -155,9 +157,9 @@ export class AddonParser {
 				const jsonString = fs.readFileSync(completePath, "utf8");
 				const fileData = JSON.parse(jsonString);
 				//if (fileData instanceof fileJson) {
-					const parseResult = AddonParser.parseFileJson(fileData);
-					const targetPath = intelliSkriptAddonSkFilesDirectory + "\\" + file.substring(0, file.indexOf('.')) + ".sk";
-					fs.writeFileSync(targetPath, parseResult);
+				const parseResult = AddonParser.parseFileJson(fileData);
+				const targetPath = path.join(intelliSkriptAddonSkFilesDirectory, file.substring(0, file.indexOf('.'))) + ".sk";
+				fs.writeFileSync(targetPath, parseResult);
 				//}
 				//else{
 				//	console.log("no valid JSON file");
@@ -165,15 +167,10 @@ export class AddonParser {
 			});
 		});
 
-		const parseResult = AddonParser.parseFileJson(SkriptJson);
-
-		//fs.writeFileSync(intelliSkriptAddonSkFilesDirectory + "\\Skript.sk", parseResult);
-		//fs.writeFileSync(intelliSkriptAddonSkFilesDirectory + "BungeeSK.sk", AddonParser.parseFileJson(BungeeSkJson));
+		//const parseResult = AddonParser.parseFileJson(SkriptJson);
 	}
 }
 //import { readFile } from "fs/promises";
-import * as fs from 'fs';
-import path from 'path';
 
 //async function readJsonFile(path) {
 //	const file = await readFile(path, "utf8");

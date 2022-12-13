@@ -1,4 +1,4 @@
-import assert from 'assert';
+import * as assert from 'assert';
 import { SkriptContext } from '../../SkriptContext';
 import { SkriptSection } from '../SkriptSection';
 

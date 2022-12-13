@@ -42,7 +42,7 @@ import { TokenTypes } from './TokenTypes';
 import { AddonParser, intelliSkriptAddonSkFilesDirectory } from './Skript/Addon Parser/AddonParser';
 import path = require('path');
 import * as fs from 'fs';
-import { intelliSkriptServerDirectory, release } from './IntelliSkriptConstants';
+import { IntelliSkriptConstants } from './IntelliSkriptConstants';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -265,7 +265,7 @@ connection.onInitialized(async () => {
 
 	//works for the client only
 	//const myExtDir = vscode.extensions.getExtension ("JohnHeikens.IntelliSkript").extensionPath;
-	if (!release) {
+	if (!IntelliSkriptConstants.IsReleaseMode) {
 		AddonParser.ParseFiles();
 		//await delay(1000);//give the debugger time to start
 

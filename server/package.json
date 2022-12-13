@@ -13,11 +13,15 @@
 		"url": "https://github.com/JohnHeikens/IntelliSkript"
 	},
 	"categories": [
-	  "Programming Languages", "Linters"
+		"Programming Languages",
+		"Linters"
 	],
 	"dependencies": {
 		"vscode-languageserver": "^7.0.0",
 		"vscode-languageserver-textdocument": "^1.0.4"
 	},
-	"scripts": {}
+	"devDependencies": {
+		"typescript": "^2.1.4"
+	},
+	"scripts": { "start": "node ./node_modules/.bin/ts-node -- ./server.ts" }
 }

@@ -180,8 +180,9 @@ export class SkriptSection extends SkriptSectionGroup {
 
 
 }
-import { SkriptConditionSection } from './Reflect/SkriptConditionSection'; import { SkriptNestHierarchy } from '../../Nesting/SkriptNestHierarchy'; import assert from 'assert';
+import { SkriptConditionSection } from './Reflect/SkriptConditionSection'; import { SkriptNestHierarchy } from '../../Nesting/SkriptNestHierarchy'; 
 import { PatternData, patternResultProcessor } from '../../PatternTree';
 import { SkriptEventListenerSection } from './SkriptEventListenerSection';
 import { SkriptPatternMatchHierarchy } from '../SkriptPatternMatchHierarchy';
+import assert = require('assert');
 
