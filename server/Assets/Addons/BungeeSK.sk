@@ -1,0 +1,798 @@
+#AUTOMATIC GENERATED SKRIPT FILE
+#COPYRIGHT JOHN HEIKENS
+
+#Broadcast message to server
+#Broadcasts a message to a server in the network
+#since 1.0.3 - 1.1.0: Usage of BungeeServer type
+#Examples:
+#broadcast bungee message "&aHello world !" to bungee server named "hub"
+effect:
+	patterns:
+		broadcast bungee message %string% to %bungeeserver%
+
+#Broadcast message to the network
+#Broadcast message to the network, like the /alert command does but with more personalization (the messages will not appear in the spigot consoles)
+#since 1.1.0
+#Examples:
+#broadcast "&6Hello everyone" to network
+effect:
+	patterns:
+		broadcast %string% to [the] network
+
+#Delete dynamic server from Bungeecord
+#Delete a dynamic server from Bungeecord.
+#since 1.1.1
+#Examples:
+#delete server named "lobby2" from bungeecord
+effect:
+	patterns:
+		delete server named %string% from [the] bungeecord
+
+#Disconnect client from Bungeecord
+#Disconnect client from the Bungeecord server
+#since 1.1.1
+#Examples:
+#disconnect this client
+effect:
+	patterns:
+		disconnect (the|this) client
+
+#EffAddServerToBungee
+effect:
+	patterns:
+		put [dynamic server] %serverbuilder% into bungeecord
+
+#EffSendMessageToBungeeConsole
+effect:
+	patterns:
+		send %string% to bungee console
+
+#Execute console command
+#Make bungee or spigot execute command
+#since 1.0.0 - 1.1.0: Usage of BungeeServer type
+#Examples:
+#make bungee execute console command "alert This is an alert !"
+#make bungee server named "hub" execute console command "say Hi everyone !"
+effect:
+	patterns:
+		make bungee[cord] [server] execute console command %string%
+		make %bungeeserver% execute console command %string%
+		make all servers execute console command %string%
+
+#Kick bungee player
+#Kicks a player on the network from the network
+#since 1.1.0
+#Examples:
+#kick bungee player named "Notch" from bungeecord due to "&cYou're the fake Notch !"
+effect:
+	patterns:
+		kick %bungeeplayer% from bungee[cord] [(due to|because of) %string%]
+
+#Listen to proxy ping
+#Inform the Bungeecord server that this bungee server is listening to the proxy ping event
+#since 2.0.0
+#Examples:
+#on client connect:
+#	listen to bungee proxy ping
+effect:
+	patterns:
+		listen to bungee proxy ping
+
+#Make bungee player execute bungee command
+#Make a player on the bungeecord execute a specific bungeecord-sided command
+#since 2.0.0
+#Examples:
+#make bungee player named "Notch" execute bungee command "glist"
+effect:
+	patterns:
+		make %bungeeplayer% execute bungee command %string%
+
+#Make bungee player execute command
+#Make a player on the bungeecord execute a specific command
+#since 1.1.0
+#Examples:
+#make bungee player named "Notch" execute command "say What's up people !"
+effect:
+	patterns:
+		make %bungeeplayer% execute command %string%
+
+#Retrieve scripts
+#Retrieve every script from the bungee
+#since 1.0.0
+#Examples:
+#retrieve all scripts from bungee
+effect:
+	patterns:
+		retrieve all (scripts|skripts) from bungee
+
+#Send Bungeecord title to bungee player
+#Send a Bungeecord title to a player on the network
+#since 1.1.0
+#Examples:
+#send bungeecord title "&cHey you !" with subtitle "&6How are you ? :)" for 3 seconds to bungee player named "Notch" with fade-in 10 ticks and fade-out 2 seconds
+effect:
+	patterns:
+		send bungee[cord] title %string% [with subtitle %string%] [for %timespan%] to %bungeeplayer% [with fade-in %timespan%] [(and|with) fade-out %timespan%]
+
+#Send action bar message
+#Send an action bar message to a player on the bungeecord network
+#since 1.1.0
+#Examples:
+#send bungee player named "Notch" action bar "&6Welcome ! :)"
+effect:
+	patterns:
+		send %bungeeplayer% action bar [message] %string%
+
+#Send bungee player to server
+#Send a player on the network to a specific server
+#since 1.0.0 - 1.1.0: Usage of BungeeServer type
+#Examples:
+#send bungee player named "Zorg_btw" to bungee server named "lobby2"
+effect:
+	patterns:
+		send %bungeeplayer% to %bungeeserver%
+
+#Send custom bungee message to a server
+#Sends a custom bungee message in string form to one or more servers
+#since 1.1.0
+#Examples:
+#send custom message "This is an example" to bungee server named "lobby2"
+effect:
+	patterns:
+		send custom message %string% to %bungeeservers%
+
+#Send message to bungee player
+#Send a message to a bungee player on the network
+#since 1.0.0
+#Examples:
+#send bungee message "&6Hello !" to bungee player named "Notch"
+effect:
+	patterns:
+		send bungee message %string% to %bungeeplayer%
+
+#Start new connection
+#Start a new connection to bungeecord
+#since 1.0.0
+#Examples:
+#on load:
+#	create new bungee connection:
+		set address of connection to "127.0.0.1"
+		set port of connection to 20000
+		set password of connection to "abcd"
+	start new connection with connection
+effect:
+	patterns:
+		start new connection with %bungeeconn%
+
+#Stop bungee server
+#Stop a bungee server remotely
+#since 2.0.0
+#Examples:
+#stop bungee server named "lobby"
+effect:
+	patterns:
+		stop %bungeeserver%
+
+#Connect to server
+#This scope allows you to connect to your bungeecord server easily !
+#since 1.0.0
+#Examples:
+#on load:
+#	create new bungee connection:
+		set address of connection to "127.0.0.1"
+		set port of connection to 20000
+		set password of connection to "abcd"
+	start new connection with connection
+condition:
+	patterns:
+		(create|init) new bungee connection
+
+#Does bungee player have / doesn't have permission
+#Check if a bungee player has a specific permission on the bungeecord
+#since 1.1.1
+#Examples:
+#broadcast "Notch has the BungeeSK permission ! :o" if bungee player named "Notch" has permission "bungeesk.perm"
+condition:
+	patterns:
+		%bungeeplayer% has permission %string%
+		%bungeeplayer% (doesn't|does not) have permission %string%
+
+#Is bungee player connected
+#Checks if a bungee player is connected
+#since 1.0.0
+#Examples:
+#broadcast "Notch is connected ! :o" if bungee player named "Notch" is connected
+condition:
+	patterns:
+		%bungeeplayer% is connected
+		%bungeeplayer% is(n't| not) connected
+
+#Is bungee server started
+#Checks if a bungee server is started
+#since 2.0.0
+#Examples:
+#broadcast "Lobby 2 is started" if bungee server named "lobby2" is started
+condition:
+	patterns:
+		%bungeeserver% is (started|online)
+		%bungeeserver% is(n't| not) (started|online)
+
+#Is bungeecord connected
+#Checks if the server and the bungeecord are linked
+#since 1.0.0
+#Examples:
+#command /isconnected:
+#	trigger:
+		if client is not connected:
+			send "Not connected !"
+		if client is connected:
+			send "Connected as well !"
+condition:
+	patterns:
+		client is connected
+		client is(n't| not) connected
+
+#ScopeCreateBungeeServer
+condition:
+	patterns:
+		create new bungee server
+
+#On bungee command
+#When a command is executed on the network, this could be a Spigot command or a Bungee command
+#since 2.0.0
+#Examples:
+#on bungee command:
+#	set {_command} to event-string
+#	set {_player} to event-bungeeplayer
+event "bungee_command":
+	patterns:
+		[on] bungee command
+	event-values: bungeeplayer, string
+
+#On bungee custom request
+#When a custom request is asked from another BungeeServer
+#since 2.0.0
+#Examples:
+#broadcast custom request "hello" from bungee server named "lobby"
+#On the other server
+#on custom request:
+#	if event-string is "hello":
+#		set custom request response to "hi !"
+event "bungee_custom_request":
+	patterns:
+		[on] [bungee] custom request
+	event-values: string
+
+#On bungee message receive
+#When a bungee message is received
+#since 1.1.0
+#Examples:
+#on bungee message receive:
+#	set {_server} to event-bungeeserver
+#	set {_message} to event-string
+event "bungee_message_receive":
+	patterns:
+		[on] bungee [custom] message receive
+	event-values: string, bungeeserver
+
+#On bungee player join
+#When a bungee player joins the network
+#since 1.0.0
+#Examples:
+#on bungee player join:
+#	set {_player} to event-bungeeplayer
+event "bungee_player_join":
+	patterns:
+		[on] bungee [player] join
+	event-values: bungeeplayer
+
+#On bungee player leave
+#When a bungee player leaves the network
+#since 1.0.0
+#Examples:
+#on bungee player leave:
+#	set {_player} to event-bungeeplayer
+event "bungee_player_leave":
+	patterns:
+		[on] bungee [player] (leave|quit)
+	event-values: bungeeplayer
+
+#On bungee server start
+#When a bungee server is started / connected to BungeeSK
+#since 2.0.0
+#Examples:
+#on bungee server start:
+#	set {_server} to event-bungeeserver
+event "bungee_server_start":
+	patterns:
+		[on] bungee server (start|connect)
+	event-values: bungeeserver
+
+#On bungee server stop
+#When a bungee server is stop / disconnected from BungeeSK
+#since 2.0.0
+#Examples:
+#on bungee server stop:
+#	set {_server} to event-bungeeserver
+event "bungee_server_stop":
+	patterns:
+		[on] bungee server (stop|disconnect)
+	event-values: bungeeserver
+
+#On client connect
+#When the client connects to a server
+#since 1.0.0
+#Examples:
+#on bungee client connect:
+#	broadcast "&aClient connected !"
+event "client_connect":
+	patterns:
+		[on] [bungee] client connect
+
+#On client disconnect
+#When the client disconnects from the server
+#since 1.0.0
+#Examples:
+#on bungee client disconnect:
+#	broadcast "&cClient disconnected !"
+event "client_disconnect":
+	patterns:
+		[on] [bungee] client disconnect
+
+#On global script receive
+#When a global script is received
+#since 2.0.0
+#Examples:
+#on global script receive:
+#	set {_name} to event-string
+event "global_script_receive":
+	patterns:
+		[on] (bungee|global) script receive
+	event-values: string
+
+#On proxy ping
+#When the proxy is being ping by a player. Need to inform the proxy that this server is listening to this event with the 'Listen to proxy ping' effect
+#since 2.0.0
+#Examples:
+#on proxy ping:
+#	set max players to 10
+#	set connected players to 5
+#	And so on...
+event "proxy_ping":
+	patterns:
+		[on] (proxy|bungee) ping
+
+#On server switch
+#When the player switches between 2 servers
+#since 1.0.0
+#Examples:
+#on server switch:
+#	broadcast "&6%event-bungeeplayer% &7switched from server &c%past-server% &7to &a%event-bungeeplayer's server% &7!"
+event "server_switch":
+	patterns:
+		[on] [bungee] server switch
+	event-values: bungeeplayer, bungeeserver
+
+#Address of bungee server builder
+#Set the address of a bungee server builder
+#since 2.0.0
+#Examples:
+#set address of server builder to "127.0.0.1"
+expression:
+	patterns:
+		[the] (ip|address) of %serverbuilder%
+		%serverbuilder%'[s] (ip|address)
+	set:
+#		(internal code)
+	return type: Text
+#Address of connection
+#Set the address of a connection
+#since 1.0.0
+#Examples:
+#set address of {_connection} to "127.0.0.1"
+expression:
+	patterns:
+		[the] (ip|address) of %bungeeconn%
+		%bungeeconn%'[s] (ip|address)
+	set:
+#		(internal code)
+	return type: Text
+#All of the bungee players
+#Returns every bungee player on the network
+#since 1.0.0
+#Examples:
+#loop all bungee players:
+#	send "%loop-value%" is connected !
+expression:
+	patterns:
+		[(all [[of] the]|the)] bungee players
+	return type: Bungee player
+#All of the bungee players on specific server
+#Returns every bungee player on a specific server
+#since 1.0.2
+#Examples:
+#loop all bungee players on bungee server named "lobby":
+#	send "%loop-bungeeplayer%"
+expression:
+	patterns:
+		[(all [[of] the]|the)] bungee players on %bungeeserver%
+	return type: Bungee player
+#All of the bungee servers
+#Returns every server in the bungeecord config
+#since 1.0.0, 1.1.0: Returns BungeeServer
+#Examples:
+#loop all bungee servers:
+#	send "%loop-bungeeserver%"
+expression:
+	patterns:
+		[(all [[of] the]|the)] [bungee] servers
+	return type: Bungee player
+#Bungee address of bungee server
+#Get the address of a server precised in the Bungeecord config
+#since 1.1.0
+#Examples:
+#broadcast bungee address of bungee server named "lobby"
+expression:
+	patterns:
+		[the] bungee address of %bungeeserver%
+		%bungeeserver%'[s] bungee address
+	return type: Text
+#Bungee motd of bungee server
+#Get the MOTD of a server precised in the Bungeecord config
+#since 1.1.0
+#Examples:
+#broadcast bungee motd of bungee server named "lobby"
+expression:
+	patterns:
+		[the] bungee motd of %bungeeserver%
+		%bungeeserver%'[s] bungee motd
+	return type: Text
+#Bungee name of bungee server
+#Get the name of a server precised in the Bungeecord config
+#since 1.1.0
+#Examples:
+#broadcast bungee name of bungee server named "lobby"
+expression:
+	patterns:
+		[the] bungee name of %bungeeserver%
+		%bungeeserver%'[s] bungee name
+	return type: Text
+#Bungee player from name
+#Get bungee player from his name
+#since 1.0.0, 1.1.0: Add of 'named'
+#Examples:
+#set {_player} to bungee player named "Notch"
+expression:
+	patterns:
+		bungee[ ]player (with name|named) %string%
+	return type: Bungee player
+#Bungee player from uuid
+#Get bungee player from his uuid
+#since 1.1.0
+#Examples:
+#set {_player} to bungee player with uuid "06c80842-1780-4c51-97bf-d37759bc4ed1"
+expression:
+	patterns:
+		bungee[ ]player with uuid %string%
+	return type: Bungee player
+#Bungee port of bungee server
+#Get the port of a server precised in the Bungeecord config
+#since 1.1.0
+#Examples:
+#broadcast bungee port of bungee server named "lobby"
+expression:
+	patterns:
+		[the] bungee port of %bungeeserver%
+		%bungeeserver%'[s] bungee port
+	return type: long
+#Bungee server from its name
+#Get bungee server from its name
+#since 1.1.0
+#Examples:
+#set {_server} to bungee server named "Hub"
+expression:
+	patterns:
+		bungee[ ]server (with name|named) %string%
+	return type: Bungee player
+#Custom request from other Bungee server
+#Send a custom request to another Bungee server, and get the response. This can be any value, as long as it could be stored in a variable
+#since 2.0.0
+#Examples:
+#broadcast custom request "hello" from bungee server named "lobby"
+#
+On the other server
+on custom request:
+	if event-string is "hello":
+		set custom request response to "hi !"
+expression:
+	patterns:
+		custom request [named] %string% from [server] %bungeeserver%
+	return type: Object
+#Custom request response
+#Set the response of a custom request
+#since 2.0.0
+#Examples:
+#broadcast custom request "hello" from bungee server named "lobby"
+#
+On the other server
+on custom request:
+	if event-string is "hello":
+		set custom request response to "hi !"
+expression:
+	patterns:
+		custom request response
+	set:
+#		(internal code)
+	return type: Object
+#Get a bungee server from its address and port
+#Get one of the servers precised in the Bungeecord config whose address and port match
+#since 1.1.0
+#Examples:
+#set {_server} to bungee server with address "127.0.0.1" and port 25566
+expression:
+	patterns:
+		bungee[ ]server with address %string% and port %integer%
+	return type: Bungee player
+#Get bungee server from Spigot
+#Get the bungee server associated to the Spigot server
+#since 2.0.0
+#Examples:
+#set {_server} to this bungee server
+expression:
+	patterns:
+		this bungee[ ]server
+	return type: Bungee player
+#Global variables stored on the Bungeecord
+#Set, get and delete a global variable stored on the Bungeecord. Value can be boolean, number or string.
+#since 1.1.0
+#Examples:
+#set global variable "rank.%player%" to "Admin"
+#set {_rank} to global variable "rank.%player%"
+set global variable "money.%player%" to 1000
+set global variable "test.%player%" to true
+expression:
+	patterns:
+		global var[iable] [named] %string%
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	delete:
+#		(internal code)
+	return type: Object
+#IP address of BungeePlayer
+#Gets the IP address of a BungeePlayer
+#since 1.1.0
+#Examples:
+#send (bungee player named "Notch")'s ip
+expression:
+	patterns:
+		[the] ip [address] of %bungeeplayer%
+		%bungeeplayer%'[s] ip [address]
+	return type: Text
+#Last created bungee server builder
+#Returns the last created bungee server builder inside of a scope
+#since 2.0.0
+#Examples:
+#create new bungee server:
+#	set name of server builder to "lobby2"
+	set address of server builder to "127.0.0.1"
+	set port of server builder to 25567
+	set motd of server builder to "This is lobby number 2"
+put server into bungeecord
+expression:
+	patterns:
+		[the] [last] [(generated|created)] [bungee] server [builder]
+	return type: Bungee server builder
+#Last created connection
+#Returns the last created connection inside of a scope
+#since 1.0.0
+#Examples:
+#on load:
+#	create new bungee connection:
+		set address of connection to "127.0.0.1"
+		set port of connection to 20000
+		set password of connection to "abcd"
+	start new connection with connection
+expression:
+	patterns:
+		[the] [last] [(generated|created)] (connection|server)
+	return type: Bungee connection
+#MOTD of bungee server builder
+#Set the MOTD of a bungee server builder
+#since 2.0.0
+#Examples:
+#set motd of server builder to "This is a dynamic server"
+expression:
+	patterns:
+		[the] motd of %serverbuilder%
+		%serverbuilder%'[s] motd
+	set:
+#		(internal code)
+	return type: Text
+#Name of BungeePlayer
+#Gets the name of a BungeePlayer
+#since 2.0.0
+#Examples:
+#send (bungee player named "Notch")'s name returns 'Notch'
+expression:
+	patterns:
+		[the] [user]name of %bungeeplayer%
+		%bungeeplayer%'[s] [user]name
+	return type: Text
+#Name of bungee server builder
+#Set the name of a bungee server builder
+#since 2.0.0
+#Examples:
+#set name of server builder to "lobby2"
+expression:
+	patterns:
+		[the] name of %serverbuilder%
+		%serverbuilder%'[s] name
+	set:
+#		(internal code)
+	return type: Text
+#Password of connection
+#Set the password to connect to a bungeecord server.
+#since 1.0.0
+#Examples:
+#set password of {_connection} to "abdc123"
+expression:
+	patterns:
+		[the] password of %bungeeconn%
+		%bungeeconn%'[s] password
+	set:
+#		(internal code)
+	return type: Text
+#Ping's MOTD
+#The MOTD displayed when a player pings the proxy
+#since 2.0.0
+#Examples:
+#on proxy ping:
+#	set ping motd to "&aLine 1%nl%&2Line 2"
+expression:
+	patterns:
+		ping motd
+	set:
+#		(internal code)
+	return type: Text
+#Ping's address
+#Returns the IP address of the player pinging the proxy
+#since 2.0.0
+#Examples:
+#on proxy ping:
+#	set {_ip} to pinger's bungee ip
+expression:
+	patterns:
+		bungee ip of pinger
+		pinger's bungee ip [address]
+	return type: Text
+#Ping's favicon URL
+#The favicon URL displayed in a proxy ping event
+#since 2.0.0
+#Examples:
+#on proxy ping:
+#	set favicon url to "https://i.imgur.com/KE23iIh.png"
+expression:
+	patterns:
+		favicon [url]
+	set:
+#		(internal code)
+	return type: Text
+#Ping's hover list
+#The hover list displayed when hovering the player's size in the ping's list.
+#since 2.0.0
+#Examples:
+#on proxy ping:
+#	set hover list to "&bLine 1", "&3Line 2" and "&9Line 3"
+expression:
+	patterns:
+		hover list
+	set:
+#		(internal code)
+	return type: Text
+#Ping's maximum size of connected players
+#The maximum size of the connected players in a proxy ping event
+#since 2.0.0
+#Examples:
+#on proxy ping:
+#	set max players to 100
+expression:
+	patterns:
+		max players [size]
+	set:
+#		(internal code)
+	return type: long
+#Ping's protocol message
+#The protocol message displayed if the protocol version number doesn't match the client's one.
+#since 2.0.0
+#Examples:
+#on proxy ping:
+#	set protocol message to "This is a test !"
+expression:
+	patterns:
+		protocol message
+	set:
+#		(internal code)
+	return type: Text
+#Ping's protocol version
+#The protocol version number in a proxy ping event. For further informations, see https://wiki.vg/Protocol_version_numbers
+#since 2.0.0
+#Examples:
+#on proxy ping:
+#	set protocol version to 0
+expression:
+	patterns:
+		protocol version [number]
+	set:
+#		(internal code)
+	return type: long
+#Ping's size of connected players
+#The size of the connected players in a proxy ping event
+#since 2.0.0
+#Examples:
+#on proxy ping:
+#	set connected players to 10
+expression:
+	patterns:
+		connected players [size]
+	set:
+#		(internal code)
+	return type: long
+#Port of bungee server builder
+#Set the port of a bungee server builder
+#since 2.0.0
+#Examples:
+#set port of server builder to 25567
+expression:
+	patterns:
+		[the] port of %serverbuilder%
+		%serverbuilder%'[s] port
+	set:
+#		(internal code)
+	return type: integer
+#Port of connection
+#Set the port of a connection
+#since 1.0.0
+#Examples:
+#set port of {_connection} to 20000
+expression:
+	patterns:
+		[the] port of %bungeeconn%
+		%bungeeconn%'[s] port
+	set:
+#		(internal code)
+	return type: long
+#Server of bungee player
+#Get the server of a player on the network. NOTE: Server can be get only 2 ticks or more after the bungee player join event
+#since 1.0.0, 1.1.0: Returns BungeeServer
+#Examples:
+#set {_server} to event-bungeeplayer's server
+#
+expression:
+	patterns:
+		[the] server of %bungeeplayer%
+		%bungeeplayer%'[s] server
+	return type: Bungee player
+#Server switch event past server
+#Gets the server where the player was from in a server switch event
+#since 1.0.0 - 1.1.0: Returns bungee server
+#Examples:
+#on server switch:
+#	broadcast "The player was in the %past-server% server !"
+expression:
+	patterns:
+		past-server
+	return type: Bungee player
+#UUID of bungee player
+#Get the UUID of a player on the network
+#since 1.0.0
+#Examples:
+#set {_uuid} to event-bungeeplayer's bungee uuid
+expression:
+	patterns:
+		[the] bungee uuid of %bungeeplayer%
+		%bungeeplayer%'[s] bungee uuid
+	return type: Text

@@ -1,0 +1,2927 @@
+#AUTOMATIC GENERATED SKRIPT FILE
+#COPYRIGHT JOHN HEIKENS
+
+#Archive / Unarchive Thread
+#Archive or unarchive a specific thread.
+#since 4.4.0
+#Examples:
+#archive event-threadchannel
+#unarchive thread channel with id "000"
+effect:
+	patterns:
+		archive [the] [thread] %threadchannel%
+		unarchive [the] [thread] %threadchannel%
+
+#Ban Member
+#Bans a member from a guild.
+#Examples:
+#ban event-member because of "being lame" and delete 10 days' worth of messages
+effect:
+	patterns:
+		[discord] ban [the] discord [member] %member% [(due to|because of|with [the] reason) %string%] [and (delete|remove) %timespan% [worth ]of messages]
+
+#Change
+effect:
+	patterns:
+		(add|give) %objects% to (%objects%) (with|using) %bot%
+		increase %objects% by (%objects%) (with|using) %bot%
+		give %objects% (%objects%) (with|using) %bot%
+		set %objects% to (%objects%) (with|using) %bot%
+		remove (all|every) %objects% from (%objects%) (with|using) %bot%
+		(remove|subtract) %objects% from (%objects%) (with|using) %bot%
+		reduce %objects% by (%objects%) (with|using) %bot%
+		(delete|clear) (%objects%) (with|using) %bot%
+		reset (%objects%) (with|using) %bot%
+
+#Create Emote
+#Create a new emote in a specific guild.
+#The name must be between 2 and 32 chars and the guild should not have an emote with the same name.
+#The URL will represent the image, and can be either a web URL or a local path.
+#Examples:
+#create new emote named "test" with url "https://static.wikia.nocookie.net/leagueoflegends/images/a/ae/This_Changes_Everything_Emote.png/revision/latest/scale-to-width-down/250?cb=20211019231749" in event-guild and store it in {_emote}
+#make emote with name "test2" with path "plugins/path/image.png" in event-guild and store it in {_emote}
+effect:
+	patterns:
+		(make|create) [the] [new] emote (named|with name) %string% with [the] (url|path) %string% in [the] [guild] %guild% and store (it|the emote) in %object%
+
+#Create Post
+#Create a new post in a forum channel. The output value will be the newly created thread channel.
+#since 4.4.4
+#Examples:
+#create a new post in forum channel with id "000" named "I need help!" with message "please help me!"
+#create a new post in forum channel with id "000" named "I need help!" with message "please help me!" with tags "help" and "support"
+effect:
+	patterns:
+		create [a] [new] post in [channel] %forumchannel% (with name|named) %string% [with message] %string/messagecreatebuilder/embedbuilder% [with [the] tags %strings%] [and store (it|the thread) in %object%]
+
+#Create Thread
+#Create a new thread in a text channel with a base name.
+#The bot used in that effect will automatically join the thread, so you don't have to make it join yourself.
+#If you create a private thread, then you cannot specify a message.
+#Else, the Thread will be created based on the specified message.
+#Creating private thread need the guild to be level 2 or more, else it'll throw an exception.
+effect:
+	patterns:
+		(make|create) [the] [new] [private] thread (named|with name) %string% in [the] [channel] %channel/textchannel% [(with|using) [the] [message] [as reference] %message%] [(with|using) [the] [bot] %bot%] and store (it|the thread) in %object%
+
+#CreateAction
+effect:
+	patterns:
+		create [the] [(action|manager)] %roleaction/channelaction% and store (it|the (role|channel)) in %object%
+
+#CreateInvite
+effect:
+	patterns:
+		(make|create) [the] [new] invite in [the] [(guild|channel)] %guild/channel% [with max us(e|age)[s] %number%] [with max (time|age) %number%] and store (it|the invite) in %object%
+
+#Defer Interaction
+#Only usable in interaction event, currently button click/dropdown update/modal event!
+#This will force the interaction to be acknowledge, you have 3 seconds to do so, the effect will send a success message to Discord or hold the interaction to send a message later.
+#Keep in mind that replying in an interaction event will automatically defer the interaction, and therefore you don't need to defer it.
+#If you need to wait more than 3 seconds use the and wait pattern
+#An interaction can only be deferred once!
+#Examples:
+#defer the interaction
+#defer the interaction and wait
+#defer the interaction and wait silently
+effect:
+	patterns:
+		(acknowledge|defer) [the] interaction [and wait [(silently)]]
+
+#Destroy Discord Entity
+#Destroy on Discord the wanted entity.
+#Examples:
+#destroy event-channel
+#destroy event-message
+effect:
+	patterns:
+		destroy %guild/message/role/channel/emote%
+
+#Download Attachment
+#Download the specific attachment to a file path.
+#Examples:
+#download {_attachment} in folder "plugins/data/attachments/"
+effect:
+	patterns:
+		(download|dl) [the] [attachment] %attachment% (in|to) [the] [(folder|path)] %string%
+
+#Edit Message
+#Edit a specific message/interaction hook to show a new rich or simple message.
+#The interaction hook will only be editable for the next 15 minutes once it's sent!
+#since 4.4.0
+#Examples:
+# We are in a slash command event!
+#reply with hidden "Wanna see a magic trick? ..." and store it in {_msg}
+wait a second
+# The variable does not contains a 'real' message, it contains the interaction hook.edit {_msg} to show "Abracadabra!"
+effect:
+	patterns:
+		edit [the] [message] %message/interactionhook% (with|to show) %string/messagecreatebuilder/embedbuilder%
+
+#EffAddField
+effect:
+	patterns:
+		add field (named|with name) %string% [and] with [the] value %string% to [fields of] %embedbuilder%
+		add inline field (named|with name) %string% [and] with [the] value %string% to [fields of] %embedbuilder%
+
+#EffUpdateCommand
+effect:
+	patterns:
+		(update|register) [the] [command[s]] %slashcommands% [(globally|locally)] in [the] [(bot|guild)] %bot/guild%
+
+#Execute X Using Bot
+#This effect is for utilities purpose.
+#It will wrap the actual effect from DiSky and execute it using the specified bot.
+#The syntax MUST come from DiSky, and at least ONE bot MUST be loaded (if the specified one is wrong / not loaded)
+effect:
+	patterns:
+		execute (with|using) [the] %bot% <.+>
+		execute <.+> (with|using) [the] %bot%
+
+#Kick Member
+#Kick a specific member out of its guild. You can also specify a reason if needed.
+#Examples:
+#kick discord event-member due to "ur bad guys!"
+effect:
+	patterns:
+		kick [the] discord [member] %member% [(due to|because of|with [the] reason) %string%]
+
+#Load Members
+#Load every members of a guild.
+#This effect will also cache members that were not, so execution may be delayed.
+#consider calling this effect once, then use the default member expression to get the members.
+#since 4.0.0
+#Examples:
+#load members of event-guild and store them in {_members::*}
+effect:
+	patterns:
+		load [all] members (of|from) [the] %guild% and store (them|the members) in %objects%
+
+#Lock / Unlock Thread
+#Lock or unlock a specific thread.
+#since 4.4.0
+#Examples:
+#lock event-threadchannel
+#unlock thread channel with id "000"
+effect:
+	patterns:
+		lock [the] [thread] %threadchannel%
+		unlock [the] [thread] %threadchannel%
+
+#Manage Command Permissions
+#This effect allows you to manage the permissions of slash commands, with the following rules:
+# - By default, the command is marked as ENABLED, and anyone can see & use it.
+# - You can DISABLE completely the command (first pattern), only admins will be able to use it.
+# - Or you can ENABLE the commands for specific PERMISSIONS (second pattern).
+#Examples:
+#disable command{_cmd1}  disable the command for everyone, except the admins.
+#enable command {_cmd2} for manage server  enable the command only for the users who have the 'manage server' permission.
+effect:
+	patterns:
+		disable [the] [command] %slashcommand%
+		enable [the] [command] %slashcommands% (for|to) [the] [permissions] %permissions%
+
+#Move Member
+#Move a member to another voice chat.
+#You can only move a member if they were previously in a voice channel.
+#Examples:
+#move event-member to {_voice}
+effect:
+	patterns:
+		[voice] move [the] discord [member] %member% to [a] [voice[( |-)channel]] %voicechannel%
+
+#Move Role Above/Under Role
+#Move a specific role above or under another role within the same guild.
+#The indexes will be updated automatically.
+#Examples:
+#move role {_role} above role with id "000"
+effect:
+	patterns:
+		move [the] [discord] role %role% above [the] [discord] %role%
+		move [the] [discord] role %role% under [the] [discord] %role%
+
+#Mute Member
+#Mute or unmute a member in their guild.
+#Examples:
+#voice mute event-member
+#unmute member event-member
+effect:
+	patterns:
+		[voice] mute [the] [discord] [member] %member%
+		[voice] un[ |-]mute [the] [discord] [member] %member%
+
+#Open Private Channel
+#Opens a private channel with a specific user.
+#The opened channel can be null and an exception can be thrown if the user does not accept message.
+#Examples:
+#open private channel of event-user and store it in {_channel}
+#if {_channel} is not set:
+#	reply with "Please enable your private messages!"
+#else:
+#	post "Hello world!" to {_channel}
+effect:
+	patterns:
+		open [the] private (channel|message[s]) of [the] [member] %user% and store (it|the [private] channel) in %objects%
+
+#OpenModal
+effect:
+	patterns:
+		(show|enable) [the] [modal] %modal% [to [the] [event[( |-)]]user]
+
+#Post Message
+#Posts a message to a message-channel.
+#You can send messages in a text, private, news, post or thread channel.
+#since 4.4.0
+#Examples:
+#post "Hello world!" to text channel with id "000"
+#post last embed to thread channel with id "000" and store it in {_message
+effect:
+	patterns:
+		(post|dispatch) %string/messagecreatebuilder/sticker/embedbuilder% (in|to) [the] %channel% [and store (it|the message) in %objects%]
+
+#Purge Messages
+#Discord provide a better way to delete multiple messages at once.
+#This effect only works with messages, and a list is recommended here.
+#If you want to delete a single message, use the destroy effect.
+#Examples:
+#retrieve last 50 messages from event-channel and store them in {_msg::*}
+#purge {_msg::*}
+effect:
+	patterns:
+		purge [the] [message[s]] %messages%
+
+#Reply With
+#Reply with a specific message to the channel where a message-event was triggered.
+#It can also be used to acknowledge & reply to an interaction, such as button click or slash command.
+#In interaction only, you can use the keyword 'hidden' to reply with an ephemeral message (only the executor can see it).
+#Therefore, the value stored in the variable, if specified, will be an interaction hook, and not a compete message.
+#You can also provide a message as reference. The replied message be linked with the provided one.
+#since 4.4.0
+#Examples:
+#reply with "Hello world!"
+#reply with last embed with reference event-message
+#reply with hidden "Hello ..." and store it in {_msg}
+#wait a second
+#edit {_msg} to show "... world!"
+effect:
+	patterns:
+		reply with [hidden] %string/messagecreatebuilder/sticker/embedbuilder% [with [the] reference[d] [message] %message%] [and store (it|the message) in %objects%]
+
+#Retrieve Messages
+#Retrieve last X messages from a specific message channel.
+#You can retrieve up to 100 last messages, others will be ignored.
+#Don't forget to use 'purge' effect to delete a lot of messages the most enhanced way ever.
+#Examples:
+#retrieve last 30 messages from event-channel and store them in {_msg::*}
+effect:
+	patterns:
+		retrieve [last] %number% [amount of] message[s] (of|in|from) %channel% and store (them|the messages) in %objects%
+
+#Retrieve Profile
+#Retrieve the profile of the specified user.
+#Profile represent mainly the banner of the user, could return the accent color if non set.
+effect:
+	patterns:
+		retrieve profile (with|from) id %string% (from|with|of|in) %user% [(with|using) [the] [bot] %bot%] and store (it|the profile) in %object%
+
+#Retrieve Sticker
+#Retrieve a sticker from a guild using its per-guild name.
+#This will return a sticker from the guild, not a global one.
+effect:
+	patterns:
+		retrieve sticker (with|from) id %string% (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (it|the sticker) in %object%
+
+#Retrieve Stickers
+#Retrieve every stickers (and cache them) from a specific guild.
+effect:
+	patterns:
+		retrieve [(all|every)] stickers (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (them|the stickers) in %objects%
+
+#Retrieve Threads
+#Retrieve every threads (and cache them) from a specific guild.
+#This effect will only get back the ACTIVE thread, and will pass on the archived ones.
+effect:
+	patterns:
+		retrieve [(all|every)] thread[s] (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (them|the thread[s]) in %objects%
+
+#RetrieveBans
+effect:
+	patterns:
+		retrieve [(all|every)] bans (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (them|the bans) in %objects%
+
+#RetrieveEmotes
+effect:
+	patterns:
+		retrieve [(all|every)] emotes (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (them|the emotes) in %objects%
+
+#RetrieveEventValue
+effect:
+	patterns:
+		retrieve [the] [event[(-| )]]value %string% and store (it|the value) in %objects%
+
+#RetrieveInvite
+effect:
+	patterns:
+		retrieve invite (with|from) id %string% (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (it|the invite) in %object%
+
+#RetrieveInvites
+effect:
+	patterns:
+		retrieve [(all|every)] invites (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (them|the invites) in %objects%
+
+#RetrieveMember
+effect:
+	patterns:
+		retrieve member (with|from) id %string% (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (it|the member) in %object%
+
+#RetrieveMessage
+effect:
+	patterns:
+		retrieve message (with|from) id %string% (from|with|of|in) %channel% [(with|using) [the] [bot] %bot%] and store (it|the message) in %object%
+
+#RetrieveOwner
+effect:
+	patterns:
+		retrieve owner (from|with|of|in) %guild% [(with|using) [the] [bot] %bot%] and store (it|the owner) in %object%
+
+#RetrieveUser
+effect:
+	patterns:
+		retrieve user (with|from) id %string% (from|with|of|in) %bot% and store (it|the user) in %object%
+
+#Return
+effect:
+	patterns:
+		return %slashchoices%
+
+#Send typing
+#Sends the typing status to discord. This is what is used to make the message "X is typing..." appear.
+#Typing status lasts for 10 seconds.
+#Examples:
+#show typing status in event-channel
+effect:
+	patterns:
+		[discord] (send|show) typing [status] (in|to) [[text[ |-]]channel] %channel%
+
+#Shutdown Bot
+#Stop and disconnect a loaded bot from DiSky & discord.
+#If any requests was still remaining, they will be executed before the actual bot shutdown
+#Using the force pattern will cancel all requests and shutdown the bot instantly.
+#Examples:
+#shutdown bot named "name"
+#stop bot "name"
+effect:
+	patterns:
+		[force] (stop|shutdown) [the] [bot] %bot%
+
+#Suppress Reaction
+#Suppress one or more reactions of a message.
+#You can also specific the user who added the emote to remove it one time.
+#Without any specified user, it will be the bot's self user that removes the emote.
+#since 4.1.1
+#Examples:
+#suppress reaction "x" of event-user from event-message
+#suppress reaction "joy" from event-message  Remove the reaction ADDED BY THE BOT
+effect:
+	patterns:
+		suppress [the] %emotes% [(of|from) [the] %user%] (of|from) [the] %message%
+
+#TimeOut Member
+#Timeout a member (temporal exclusion) for a specific duration and with an optional reason.
+#You can either timeout UNTIL a specific date (Skript date), or FOR a specific timespan (Skript timespan).
+#This also can be used to remove the current time out, if the bot has the permission to do so.
+#Examples:
+#timeout event-member for 5 minutes due to "ur so bad"
+#time out event-member until {_date}
+#stop time out of event-member
+effect:
+	patterns:
+		time[( |-)]out %member% for %timespan% [(for [the reason]|due to) %string%]
+		time[( |-)]out %member% until %date% [(for [the reason]|due to) %string%]
+		(stop|remove) time[( |-)]out (from|of) %member%
+
+#Unban User
+#Unbans a user from a guild.
+#Examples:
+#unban event-user in guild with id "818182471140114432"
+effect:
+	patterns:
+		[discord] un[-| ]ban [the] [discord] [user] %user% (from|in) [guild] %guild%
+
+#Unregister Command
+#Unregister a specific slash command from local or global context of a bot.
+#You must provide the command's name. Keep in mind this **SHOULD NOT** be used!
+#The best way remains to update bot's commands without the command you want to delete!
+#Examples:
+#unregister command "test" locally in guild with id "000"
+effect:
+	patterns:
+		unregister [the] [command[s]] %strings% [(globally|locally)] (in|from|of) [the] [(bot|guild)] %bot/guild%
+
+#BotIsLoaded
+condition:
+	patterns:
+		%string% (is|are) [been] loaded (in|on|from|over) discord
+		%string% (isn't|is not|aren't|are not) [been] loaded (in|on|from|over) discord
+
+#ChannelType
+condition:
+	patterns:
+		%channel% is of [the] %channeltype% type
+		%channel% is of [the] type %channeltype%
+
+#EmoteIsAnimated
+condition:
+	patterns:
+		%emote% (is|are) animated
+		%emote% (isn't|is not|aren't|are not) animated
+
+#EmoteIsEmote
+condition:
+	patterns:
+		%emote% (is|are) [a[n]] emote
+		%emote% (isn't|is not|aren't|are not) [a[n]] emote
+
+#Is Attachment Image
+#See if a specific attachment is an image.
+#since 1.7
+condition:
+	patterns:
+		att[achment[s]] %attachment% is [an] (image|img)
+		att[achment[s]] %attachment% (isn't|is not|wasn't|was not) [an] (image|img)
+
+#Is Attachment Spoiler
+#See if a specific attachment is marked as a spoil.
+#since 1.7
+condition:
+	patterns:
+		att[achment[s]] %attachment% is [a] spoil[er]
+		att[achment[s]] %attachment% (isn't|is not|wasn't|was not) [a] spoil[er]
+
+#Is Attachment Video
+#See if a specific attachment is a video.
+#since 1.7
+condition:
+	patterns:
+		att[achment[s]] %attachment% is [a] (vdo|video)
+		att[achment[s]] %attachment% (isn't|is not|wasn't|was not) [a] (vdo|video)
+
+#Is Edited
+#Return true if the message was edited. Because of discord limitations, we cannot get the editing date.
+#Examples:
+#event-message is edited
+condition:
+	patterns:
+		%message% (is|are) edited
+		%message% (isn't|is not|aren't|are not) edited
+
+#Is Ephemeral
+#Return true if the message was ephemeral, e.g. private / hidden.
+#Action on hidden messages are limited.
+#Examples:
+#event-message is ephemeral
+condition:
+	patterns:
+		%message% (is|are) ephemeral
+		%message% (isn't|is not|aren't|are not) ephemeral
+
+#Is Pinned
+#Return true if the message is pinned.
+#Examples:
+#event-message is pinned
+condition:
+	patterns:
+		%message% (is|are) pin[ned]
+		%message% (isn't|is not|aren't|are not) pin[ned]
+
+#Is Posted
+#Return true if the message is posted, means sent in every guild that follow this news channel.
+#Examples:
+#event-message is posted
+condition:
+	patterns:
+		%message% (is|are) (publish|post|crosspost)ed
+		%message% (isn't|is not|aren't|are not) (publish|post|crosspost)ed
+
+#Is TTS
+#Return true if the message is TTS (TextToSpeech).
+#Examples:
+#event-message is tts
+condition:
+	patterns:
+		%message% (is|are) (tts|text to speech)
+		%message% (isn't|is not|aren't|are not) (tts|text to speech)
+
+#Member / Bot is in Thread
+#Check if a specific member or bot is in a guild thread.
+#Useful to avoid exception while using join & leave effects.
+condition:
+	patterns:
+		%member/bot% (is|are) in [the] thread %threadchannel%
+		%member/bot% (isn't|is not|aren't|are not) in [the] thread %threadchannel%
+
+#Member Has Permissions
+#Check if a member has permissions in an optional channel.
+#Examples:
+#if event-member has discord permission administrator:  global permission
+#if event-member has discord permission send message in event-channel:  channel specific permission
+condition:
+	patterns:
+		%member% (has|have) discord permission[s] %permissions% [in [the] [channel] %guildchannel%]
+		%member% (doesn't|does not|do not|don't) have discord permission[s] %permissions% [in [the] [channel] %guildchannel%]
+
+#Member Has Role
+#Check if a member has a specific role.
+#Examples:
+#if event-member has discord role with id "000":
+condition:
+	patterns:
+		%member% (has|have) discord [role] %role%
+		%member% (doesn't|does not|do not|don't) have discord [role] %role%
+
+#Message is From Guild
+#Check either a message(related event come from a guild or from private messages.
+#This condition work with every event where a message is sent / received.
+#Examples:
+#if event is from guild:
+#if message come from private message:
+condition:
+	patterns:
+		[the] (message|event) (is coming|come from|is from) guild [channel]
+		[the] (message|event) (is coming|come from|is from) (dm|(private|direct) message) [channel]
+
+#Profile Has Banner
+#Check if the specified profile have a custom banner set or not.
+#Useful to manage either its banner URL of color accent.
+condition:
+	patterns:
+		%userprofile% (has|have) [custom] banner
+		%userprofile% (doesn't|does not|do not|don't) have [custom] banner
+
+#Tag Required
+#Check if a forum channel require a tag to be set when creating a new post.
+#Can be changed using the 'tag required' expression.
+#Examples:
+#if event-forumchannel is tag required:
+#set tag required of event-forumchannel to false
+condition:
+	patterns:
+		%forumchannel% (is|are) tag required
+		%forumchannel% (isn't|is not|aren't|are not) tag required
+
+#User is Bot
+#Check either the provided user is a discord bot or not.
+#Examples:
+#event-user is a discord bot
+#event-member is not a discord bot
+condition:
+	patterns:
+		%users% (is|are) [a] discord bot
+		%users% (isn't|is not|aren't|are not) [a] discord bot
+
+#On Bot Creation Scope
+event "bot_creation_scope":
+	patterns:
+		[on] define [the] [new] bot (with name|named) %string%
+
+#On Bot Join Event
+#Fired when any bot join a new guild.
+event "bot_join_event":
+	patterns:
+		[on] bot [guild] join[ed] [seen by %string%]
+	event-values: bot, guild
+
+#On Button Click
+#Fired when any button sent by the button is clicked.
+#Use 'event-button' to get the button id. Don't forget to either reply or defer the interaction.
+#Modal can be shown in this interaction.
+event "button_click":
+	patterns:
+		[on] button click[ed] [seen by %string%]
+	event-values: user, threadchannel, member, newschannel, message, textchannel, guildchannel, channel, button, privatechannel, string, bot, guild
+
+#On DiSky Error / Exception
+#Fired when any DiSky error occur.
+#Since DiSky exception are per-event only, this regroup every exception occurred in every events.
+event "disky_error_exception":
+	patterns:
+		[on] disky (error|exception)
+	event-values: string
+
+#On Discord Command
+#Custom DiSky discord command system. Arguments works like the normal skript's one and accept both optional and require arguments.
+#since 3.0
+#Examples:
+#discord command move <member> <voicechannel>:
+#	prefixes: !
+	trigger:
+		reply with mention tag of arg-2
+		move arg-1 to arg-2
+event "discord_command":
+	patterns:
+		[on] discord command <([^\s]+)( .+)?$>
+	event-values: user, guildchannel, channel, member, string, discordcommand, message, bot, guild
+
+#On Disky Command
+#Fired when a disky/discord command is executed.
+#Examples:
+#on disky command:
+event "disky_command":
+	patterns:
+		[on] disky command [seen by %string%]
+	event-values: user, member, discordcommand, message, textchannel, bot, guild
+
+#On Entity Dropdown Click
+#Fired when an user select one or more choice in an entity dropdown.
+#Use 'event-dropdown' to get the dropdown id. Don't forget to either reply or defer the interaction.
+#Use 'selected entities' to get the selected entities.
+#Modal can be shown in this interaction.
+event "entity_dropdown_click":
+	patterns:
+		[on] entit(y|ies) drop[( |-)]down click[ed] [seen by %string%]
+	event-values: user, threadchannel, member, newschannel, message, textchannel, guildchannel, channel, privatechannel, dropdown, string, bot, guild
+
+#On Guild AFK Channel Event
+#Fired when a afk channel of a guild changes can be used to get the old/new channel, the author and the guild.
+#Examples:
+#on guild afk channel change:
+event "guild_afk_channel_event":
+	patterns:
+		[on] [discord] guild afk channel (change|update) [seen by %string%]
+	event-values: vent-voicechannel, voicechannel, bot, guild,  event-voicechannel
+
+#On Guild AFK Timeout Event
+#Fired when a afk timeout of a guild changes can be used to get the old/new timeout value, the author and the guild.
+#Examples:
+#on guild afk timeout change:
+event "guild_afk_timeout_event":
+	patterns:
+		[on] [discord] guild afk timeout (change|update) [seen by %string%]
+	event-values: vent-object, object, bot, guild,  event-object
+
+#On Guild Ban Event
+#Fired when a user is banned from a guild. A member doesn't exist here because the member is not in the guild anymore! Can be used to get the banned user, the author and the guild.
+#Examples:
+#on guild ban:
+event "guild_ban_event":
+	patterns:
+		[on] [discord] guild [user] ban [seen by %string%]
+	event-values: user, bot, guild
+
+#On Guild Banner Event
+#Fired when a banner of a guild changes can be used to get the old/new banner, the author and the guild.
+#Examples:
+#on guild banner change:
+event "guild_banner_event":
+	patterns:
+		[on] [discord] guild banner (change|update) [seen by %string%]
+	event-values: vent-string, string, bot, guild,  event-string
+
+#On Guild Boost Count Update
+#Fired when a boost count of a guild changes - can be used to get the old/new count, and the guild.
+#Examples:
+#on guild boost count change:
+event "guild_boost_count_update":
+	patterns:
+		[on] [discord] guild boost count (change|update) [seen by %string%]
+	event-values: vent-integer, integer, bot, guild,  event-integer
+
+#On Guild Boost Tier Update
+#Fired when a boost tier of a guild changes - can be used to get the old/new tier, and the guild.
+#Examples:
+#on guild boost tier change:
+event "guild_boost_tier_update":
+	patterns:
+		[on] [discord] guild boost tier (change|update) [seen by %string%]
+	event-values: vent-string, string, bot, guild,  event-string
+
+#On Guild Icon Event
+#Fired when the icon of a guild changes can be used to get the old/new icon, the author and the guild.
+#Examples:
+#on guild icon change:
+event "guild_icon_event":
+	patterns:
+		[on] [discord] guild icon (change|update) [seen by %string%]
+	event-values: vent-string, string, bot, guild,  event-string
+
+#On Guild Join Event
+#Fired when the bot joins in a guild.
+#Examples:
+#on bot join guild:
+event "guild_join_event":
+	patterns:
+		[on] [discord] bot join guild [seen by %string%]
+	event-values: bot, guild
+
+#On Guild Name Event
+#Fired when the name of a guild is changed can be used to get the old/new name.
+#Examples:
+#on guild name change:
+event "guild_name_event":
+	patterns:
+		[on] [discord] guild name (update|change) [seen by %string%]
+	event-values: vent-string, string, bot, guild,  event-string
+
+#On Guild Owner Event
+#Fired when a owner of a guild changes can be used to get the old/new owner, the author and the guild.
+#Examples:
+#on guild owner change:
+event "guild_owner_event":
+	patterns:
+		[on] [discord] guild owner (change|update) [seen by %string%]
+	event-values: vent-member, member, bot, guild,  event-member
+
+#On Guild Ready Event
+#Fired when a guild is fully loaded.
+event "guild_ready_event":
+	patterns:
+		[on] guild (ready|load[ed]) [seen by %string%]
+	event-values: bot, guild
+
+#On Guild Splash Event
+#Fired when a banner of a guild changes can be used to get the old/new banner, the author and the guild.
+#Examples:
+#on guild splash change:
+event "guild_splash_event":
+	patterns:
+		[on] [discord] guild splash (change|update) [seen by %string%]
+	event-values: vent-string, string, bot, guild,  event-string
+
+#On Guild Unban Event
+#Fired when a user is unbanned can be used to get the unbanned user, the author and the guild.
+#Examples:
+#on guild unban:
+event "guild_unban_event":
+	patterns:
+		[on] [discord] guild [user] unban [seen by %string%]
+	event-values: user, bot, guild
+
+#On Invite Create Event
+#Fired when a invite is created in a guild can be used to get the invite property, the author and the guild.
+#Examples:
+#on guild invite create:
+event "invite_create_event":
+	patterns:
+		[on] [discord] guild invite create [seen by %string%]
+	event-values: invite, bot, guild
+
+#On Invite Delete Event
+#Fired when a invite is deleted from a guild can be used to get the invite property, the author and the guild.
+#Examples:
+#on guild invite delete:
+event "invite_delete_event":
+	patterns:
+		[on] [discord] guild invite delete [seen by %string%]
+	event-values: channel, bot, guild
+
+#On Member Accept Screen Event
+#Fired when a member has agreed to membership screen requirements it can be useful for adding roles since the member is not available if they haven't accepted it yet.
+#Examples:
+#on member screen accept:
+event "member_accept_screen_event":
+	patterns:
+		[on] [discord] [guild] member screen accept [seen by %string%]
+	event-values: vent-boolean, member, boolean, bot, guild,  event-boolean
+
+#On Member Avatar Event
+#Fired when a member changes their avatar.
+#Examples:
+#on member avatar change:
+event "member_avatar_event":
+	patterns:
+		[on] [discord] [guild] member avatar (change|update) [seen by %string%]
+	event-values: vent-string, string, member, bot, guild,  event-string
+
+#On Member Boost Event
+#Fired when a member starts or stops boosting a guild can be used to get the old/new boosting time and the guild.
+#Examples:
+#member boost change:
+event "member_boost_event":
+	patterns:
+		[on] [discord] [guild] member boost (change|update) [seen by %string%]
+	event-values: vent-object, bot, object, guild,  event-object
+
+#On Member Join Event
+#Fired when a member joins a guild.
+#Examples:
+#on member join:
+event "member_join_event":
+	patterns:
+		[on] [discord] member join[ed] [guild] [seen by %string%]
+	event-values: member, bot, guild
+
+#On Member Leave Event
+#Fired when a member is removed from a guild either by leaving or being punished. Use the ban/kick event instead to check the exact reason
+#Examples:
+#on member leave:
+event "member_leave_event":
+	patterns:
+		[on] [discord] member (leave|left) [guild] [seen by %string%]
+	event-values: member, bot, guild
+
+#On Member Nickname Event
+#Fired when a member changes their nickname.
+#Examples:
+#on member nickname change:
+event "member_nickname_event":
+	patterns:
+		[on] [discord] [guild] member nickname (change|update) [seen by %string%]
+	event-values: vent-string, string, member, bot, guild,  event-string
+
+#On Member Voice Join Event
+#Fired when a member joins a voice or a stage channel, also fires when a member moves to another channel
+#Examples:
+#on voice channel join:
+event "member_voice_join_event":
+	patterns:
+		[on] [discord] [member] voice [channel] join [seen by %string%]
+	event-values: vent-stagechannel, vent-voicechannel, vent-audiohannel, member, stagechannel, voicechannel, bot, audiohannel, guild,  event-stagechannel,  event-voicechannel,  event-audiohannel
+
+#On Member Voice Leave Event
+#Fired when a member leaves a voice or a stage channel
+#Examples:
+#on voice channel leave:
+event "member_voice_leave_event":
+	patterns:
+		[on] [discord] [member] voice [channel] leave [seen by %string%]
+	event-values: member, stagechannel, voicechannel, bot, audiohannel, guild
+
+#On Message Command
+#Fired when someone click on a message application command.
+#Use 'event-string' to get the command name. Don't forget to either reply to the interaction. Defer doesn't work here.
+#Modal can be shown in this interaction.
+event "message_command":
+	patterns:
+		[on] message command [receive[d]] [seen by %string%]
+	event-values: user, guildchannel, channel, threadchannel, privatechannel, member, string, newschannel, message, textchannel, bot, guild
+
+#On Message Delete
+#Fired when any message is deleted.
+#Use 'event-string' to get the old message content, only works if this message was cached by DiSky before hand.
+#This will be fired, by default, both guild & private messages, use the 'event is from guild' condition to avoid confusion.
+event "message_delete":
+	patterns:
+		[on] message delete[d] [seen by %string%]
+	event-values: guildchannel, channel, threadchannel, privatechannel, newschannel, string, textchannel, bot, guild
+
+#On Message Edit
+#Fired when any message is edited / updated.
+#Use 'event-string' to get the old message content, only works if this message was cached by DiSky before hand.
+#This will be fired, by default, both guild & private messages, use the 'event is from guild' condition to avoid confusion.
+event "message_edit":
+	patterns:
+		[on] message edit[ed] [seen by %string%]
+	event-values: guildchannel, channel, threadchannel, privatechannel, newschannel, string, message, textchannel, bot, guild
+
+#On Message Receive
+#Fired when any bot receive an actual message.
+#This will be fired, by default, both guild & private messages, use the 'event is from guild' condition to avoid confusion.
+#Examples:
+#on message received:
+#	if message is from guild:
+#		reply with "I just received '%event-message%' from %mention tag of event-channel%!"
+#	else:
+#		reply with "I just received '%event-message%' from %mention tag of event-user%!"
+event "message_receive":
+	patterns:
+		[on] message receive[d] [seen by %string%]
+	event-values: user, guildchannel, channel, threadchannel, privatechannel, member, newschannel, message, textchannel, bot, guild
+
+#On Modal Receive
+#Fired when a modal has been sent to the bot from any user.
+#Use 'event-string' to get the modal id. Don't forget to either reply or defer the interaction.
+#Modal can NOT be shown in this interaction.
+event "modal_receive":
+	patterns:
+		[on] modal (click[ed]|receive[d]) [seen by %string%]
+	event-values: user, guildchannel, channel, threadchannel, privatechannel, member, string, newschannel, textchannel, bot, guild
+
+#On Reaction Add
+#Fired when a message, that can be seen by the bot, receive a reaction.
+#This will be fired, by default, both guild & private messages, use the 'event is from guild' condition to avoid confusion.
+event "reaction_add":
+	patterns:
+		[on] (reaction|emote)[s] add[ed] [seen by %string%]
+	event-values: user, guildchannel, channel, threadchannel, emote, privatechannel, member, newschannel, textchannel, bot, guild
+
+#On Reaction Remove
+#Fired when an user remove a reaction from a specific message.
+#This will be fired, by default, both guild & private messages, use the 'event is from guild' condition to avoid confusion.
+event "reaction_remove":
+	patterns:
+		[on] (reaction|emote)[s] remove[d] [seen by %string%]
+	event-values: user, guildchannel, channel, threadchannel, emote, privatechannel, member, newschannel, textchannel, bot, guild
+
+#On Reaction Remove All
+#Fired when an user remove every reactions from a message.
+#This will be fired, by default, both guild & private messages, use the 'event is from guild' condition to avoid confusion.
+event "reaction_remove_all":
+	patterns:
+		[on] (reaction|emote)[s] (remove[d] all|clear|reset) [seen by %string%]
+	event-values: guildchannel, channel, threadchannel, privatechannel, newschannel, textchannel, bot, guild
+
+#On Ready Event
+#Fired when a bot is fully loaded. 'guild ready' should be called before this one.
+event "ready_event":
+	patterns:
+		[on] (ready|bot load[ed]) [seen by %string%]
+	event-values: bot
+
+#On Role Add Event
+#Fired when a member adds roles to another member, it's a log action so event-author returns who made the action event-roles returns a list of added roles
+#Examples:
+#on role add:
+event "role_add_event":
+	patterns:
+		[on] [discord] [member] role add[ed] [seen by %string%]
+	event-values: member, bot, guild
+
+#On Role Color Change
+#Fired when the color of a role changes.
+#Examples:
+#on role color change:
+event "role_color_change":
+	patterns:
+		[on] [discord] [guild] role color (update|change) [seen by %string%]
+	event-values: guild, role,  event-color
+
+#On Role Create
+#Fired when a role is created in a guild
+#Examples:
+#on role create:
+event "role_create":
+	patterns:
+		[on] [discord] [guild] role create[d] [seen by %string%]
+	event-values: bot, guild, role
+
+#On Role Delete
+#Fired when a role is deleted from a guild.
+#Examples:
+#on role delete:
+event "role_delete":
+	patterns:
+		[on] [discord] [guild] role delete [seen by %string%]
+	event-values: bot, guild, role
+
+#On Role Hoist Change
+#Fired when the hoist state of a role changes.
+#Examples:
+#on role hoist change:
+event "role_hoist_change":
+	patterns:
+		[on] [discord] [guild] role hoist[ed] (update|change) [seen by %string%]
+	event-values: vent-boolean, boolean, bot, guild, role,  event-boolean
+
+#On Role Icon Change
+#Fired when the icon of a role changes.
+#Examples:
+#on role icon change:
+event "role_icon_change":
+	patterns:
+		[on] [discord] [guild] role icon (update|change) [seen by %string%]
+	event-values: vent-string, string, bot, guild, role,  event-string
+
+#On Role Name Change
+#Fired when the name of a role changes.
+#Examples:
+#on role name change:
+event "role_name_change":
+	patterns:
+		[on] [discord] [guild] role name (update|change) [seen by %string%]
+	event-values: vent-string, string, bot, guild, role,  event-string
+
+#On Role Permission Change
+#Fired when the permissions of a role changes.
+#Examples:
+#on role permissions change:
+event "role_permission_change":
+	patterns:
+		[on] [discord] [guild] role permission[s] (update|change) [seen by %string%]
+	event-values: bot, guild, role
+
+#On Role Position Change
+#Fired when the position of a role changes.
+#Examples:
+#on role position change:
+event "role_position_change":
+	patterns:
+		[on] [discord] [guild] role position (update|change) [seen by %string%]
+	event-values: vent-integer, integer, bot, guild, role,  event-integer
+
+#On Role Remove Event
+#Fired when a member removes roles from another member, it's a log action so event-author returns who made the action event-roles returns a list of removed roles
+#Examples:
+#on role remove:
+event "role_remove_event":
+	patterns:
+		[on] [discord] [member] role remove[d] [seen by %string%]
+	event-values: member, bot, guild
+
+#On Shutdown Event
+#Fired when a bot is stopped.
+event "shutdown_event":
+	patterns:
+		[on] bot (shutdown|stop) [seen by %string%]
+	event-values: bot
+
+#On Slash Command
+#Fired when a user execute a specific slash command.
+#Use 'event-string' to get the command name. Don't forget to either reply or defer the interaction, You can only defer using the wait pattern  e.g: 'defer the interaction and wait [silently].
+#Modal can be shown in this interaction.
+#You can get value of arguments using 'argument "name" as string' for example.
+event "slash_command":
+	patterns:
+		[on] slash command [receive[d]] [seen by %string%]
+	event-values: user, guildchannel, channel, threadchannel, privatechannel, member, string, newschannel, textchannel, bot, guild
+
+#On Slash Completion
+#Fired when Discord ask an argument completion.
+#Use 'event-string' to get the command name. Use normal return effect to return the actual completions.
+#Modal can NOT be shown in this interaction.
+event "slash_completion":
+	patterns:
+		[on] slash completion [receive[d]] [seen by %string%]
+	event-values: user, guildchannel, channel, threadchannel, privatechannel, member, string, newschannel, textchannel, bot, guild
+
+#On String Dropdown Click
+#Fired when an user select one or more choice in a string dropdown.
+#Use 'event-dropdown' to get the dropdown id. Don't forget to either reply or defer the interaction.
+#Use 'selected values' to get the selected string values.
+#Modal can be shown in this interaction.
+event "string_dropdown_click":
+	patterns:
+		[on] drop[( |-)]down click[ed] [seen by %string%]
+	event-values: user, threadchannel, member, newschannel, message, textchannel, guildchannel, channel, privatechannel, dropdown, string, bot, guild
+
+#On Thread Join Event
+#Fired when a member joins a tread, either by joining itself or by a moderator can be used to get the thread, the guild and the member.
+#Examples:
+#on thread join:
+event "thread_join_event":
+	patterns:
+		[on] [discord] thread join [seen by %string%]
+	event-values: threadchannel, member, bot, guild
+
+#On Thread Leave Event
+#Fired when a member leaves a thread, either by leaving itself or by a moderator can be used to get the thread, the guild and the member.
+#Examples:
+#on thread leave:
+event "thread_leave_event":
+	patterns:
+		[on] [discord] thread leave [seen by %string%]
+	event-values: threadchannel, member, bot, guild
+
+#On User Activity Order Event
+#Fired when a user in a guild changes its activity. Ex: by playing something different can be used to get the old/new activities.
+#Examples:
+#on user activity change:
+event "user_activity_order_event":
+	patterns:
+		[on] [discord] user activity [order] (change|update) [seen by %string%]
+	event-values: user, member, bot, guild
+
+#On User Avatar Event
+#Fired when a user changes its avatar.
+#Examples:
+#on user avatar change:
+event "user_avatar_event":
+	patterns:
+		[on] [discord] user avatar (change|update) [seen by %string%]
+	event-values: vent-string, user, string, bot,  event-string
+
+#On User Command
+#Fired when someone click on an user application command.
+#Use 'event-string' to get the command name. Don't forget to either reply to the interaction. Defer doesn't work here.
+#Modal can be shown in this interaction.
+event "user_command":
+	patterns:
+		[on] user command [receive[d]] [seen by %string%]
+	event-values: user, guildchannel, channel, threadchannel, privatechannel, member, string, newschannel, textchannel, bot, guild
+
+#On User Discriminator Event
+#Fired when a user changes its discriminator.
+#Examples:
+#on user discriminator change:
+event "user_discriminator_event":
+	patterns:
+		[on] [discord] user discriminator (change|update) [seen by %string%]
+	event-values: vent-string, user, string, bot,  event-string
+
+#On User Name Event
+#Fired when a user changes its name (not nickname).
+#Examples:
+#on user name change:
+event "user_name_event":
+	patterns:
+		[on] [discord] user name (change|update) [seen by %string%]
+	event-values: vent-string, user, string, bot,  event-string
+
+#On User Online Status Event
+#Fired when a user changes its online status.
+#Examples:
+#on user online status change:
+event "user_online_status_event":
+	patterns:
+		[on] [discord] user online status (change|update) [seen by %string%]
+	event-values: vent-onlinestatus, user, onlinestatus, member, bot, guild,  event-onlinestatus
+
+#On User Typing Event
+#Fired when a user starts typing in a channel.
+#Examples:
+#on user typing:
+event "user_typing_event":
+	patterns:
+		[on] [discord] user typ[e|ing] [seen by %string%]
+	event-values: user, member, bot, guild
+
+#ActivityEmote
+expression:
+	patterns:
+		[the] activity emo(ji|te) of %activity%
+		%activity%'[s] activity emo(ji|te)
+	return type: emote
+#ActivityText
+expression:
+	patterns:
+		[the] activity (text|content|name) of %activity%
+		%activity%'[s] activity (text|content|name)
+	return type: Text
+#ActivityType
+expression:
+	patterns:
+		[the] activity type of %activity%
+		%activity%'[s] activity type
+	return type: Text
+#ActivityURL
+expression:
+	patterns:
+		[the] activity ur(i|l) of %activity%
+		%activity%'[s] activity ur(i|l)
+	return type: Text
+#All Guild Guild Channels
+#Get every guild channel in the guild, including text, voice, stage, news, and thread channels.
+#Examples:
+#guild channels of event-guild
+expression:
+	patterns:
+		[all] [the] [guild] [all] guild[( |-)]channels of %guild%
+		[all] [the] %guild%'[s] [guild] [all] guild[( |-)]channels
+	return type: guildchannel
+#All Guild Stage Channels
+#Returns all stage channels of a guild.
+#Examples:
+#all stage channels of event-guild
+expression:
+	patterns:
+		[all] [the] [guild] [all] stage[( |-)]channels of %guild%
+		[all] [the] %guild%'[s] [guild] [all] stage[( |-)]channels
+	return type: stagechannel
+#All Guild Text Channels
+#Returns all text channels of a guild.
+#Examples:
+#all text channels of event-guild
+expression:
+	patterns:
+		[all] [the] [guild] [all] text[( |-)]channels of %guild%
+		[all] [the] %guild%'[s] [guild] [all] text[( |-)]channels
+	return type: textchannel
+#Attachments File Extension
+#Get the file extension of an attachment.
+#since 1.7
+expression:
+	patterns:
+		[the] [discord] file ext[ension] of %attachment%
+		%attachment%'[s] [discord] file ext[ension]
+	return type: Text
+#Attachments File Name
+#Get the file name of an attachment.
+#since 1.7
+expression:
+	patterns:
+		[the] [discord] file name of %attachment%
+		%attachment%'[s] [discord] file name
+	return type: Text
+#Attachments URL
+#Get the url of an attachment.
+#since 1.7
+expression:
+	patterns:
+		[the] [discord] [attachment] ur(l|i) of %attachment%
+		%attachment%'[s] [discord] [attachment] ur(l|i)
+	return type: Text
+#Ban Reason
+#The optional reason which say why the user of this ban was banned.
+expression:
+	patterns:
+		[the] [ban[ned]] reason of %ban%
+		%ban%'[s] [ban[ned]] reason
+	return type: Text
+#Ban User
+#The user linked to this ban.
+expression:
+	patterns:
+		[the] [banned] user of %ban%
+		%ban%'[s] [banned] user
+	return type: user
+#BotGuilds
+expression:
+	patterns:
+		[all] [the] guilds of %bot%
+		[all] [the] %bot%'[s] guilds
+	return type: guild
+#BotName
+expression:
+	patterns:
+		[the] [discord] bot name of %bot%
+		%bot%'[s] [discord] bot name
+	set:
+#		(internal code)
+	return type: Text
+#BotPing
+expression:
+	patterns:
+		[the] [discord] bot ping of %bot%
+		%bot%'[s] [discord] bot ping
+	return type: Number
+#BotPresence
+expression:
+	patterns:
+		[the] [discord] presence of %bot%
+		%bot%'[s] [discord] presence
+	set:
+#		(internal code)
+	return type: activity
+#BotToken
+expression:
+	patterns:
+		[the] [discord] bot token of %bot%
+		%bot%'[s] [discord] bot token
+	set:
+#		(internal code)
+	return type: Text
+#BotUptime
+expression:
+	patterns:
+		[the] [discord] [bot] uptime of %bot%
+		%bot%'[s] [discord] [bot] uptime
+	return type: Timespan
+#Channel Jump URL
+#Returns the jump-to URL for this channel.
+#Clicking this URL in the Discord client will cause the client to jump to the specified channel.
+#Examples:
+#reply with channel url of event-channel
+expression:
+	patterns:
+		[the] channel [jump] url of %channel%
+		%channel%'[s] channel [jump] url
+	return type: Text
+#ChannelBitrate
+expression:
+	patterns:
+		[the] [channel] bitrate of %channel/channelaction%
+		%channel/channelaction%'[s] [channel] bitrate
+	set:
+#		(internal code)
+	return type: Number
+#ChannelChannels
+expression:
+	patterns:
+		[all] [the] [discord] channel[s] of %category%
+		[all] [the] %category%'[s] [discord] channel[s]
+	return type: textchannel
+#ChannelMaxUser
+expression:
+	patterns:
+		[the] [channel] max[imum] user[s] of %channel/channelaction%
+		%channel/channelaction%'[s] [channel] max[imum] user[s]
+	set:
+#		(internal code)
+	return type: Number
+#ChannelNSFW
+expression:
+	patterns:
+		[the] [channel] nsfw of %channel/channelaction%
+		%channel/channelaction%'[s] [channel] nsfw
+	set:
+#		(internal code)
+	return type: Boolean
+#ChannelName
+expression:
+	patterns:
+		[the] channel name of %channel/channelaction%
+		%channel/channelaction%'[s] channel name
+	set:
+#		(internal code)
+	return type: Text
+#ChannelParent
+expression:
+	patterns:
+		[the] [channel] parent of %channel/channelaction%
+		%channel/channelaction%'[s] [channel] parent
+	set:
+#		(internal code)
+	return type: category
+#ChannelPosition
+expression:
+	patterns:
+		[the] [channel] position of %channel/channelaction%
+		%channel/channelaction%'[s] [channel] position
+	set:
+#		(internal code)
+	return type: Number
+#ChannelRegion
+expression:
+	patterns:
+		[the] [channel] region of %channel/channelaction%
+		%channel/channelaction%'[s] [channel] region
+	return type: Object
+#ChannelSlowmode
+expression:
+	patterns:
+		[the] [channel] slow[( |-)]mode of %channel/channelaction%
+		%channel/channelaction%'[s] [channel] slow[( |-)]mode
+	set:
+#		(internal code)
+	return type: Number
+#ChannelTopic
+expression:
+	patterns:
+		[the] [channel] topic of %channel/channelaction%
+		%channel/channelaction%'[s] [channel] topic
+	set:
+#		(internal code)
+	return type: Text
+#Color from Hex
+#Get a color from a hexadecimal string.
+#Do not include the  in the string.
+#Examples:
+#set embed color of embed to hex "ff0000"
+expression:
+	patterns:
+		[the] (hex|color) %string%
+	return type: Colour
+#Command Localization
+#Represents the localization of the name or the description of a slash/sub command.
+#You can add **Locale Data** (check for expression) to them.
+#Basically, the command's name & description will be according to the client's language code.
+#Documentation: https://docs.disky.me/advanced-stuff/slash-commandsusing-localizations-v4.3.0+
+expression:
+	patterns:
+		[all] [the] (name|description)['s] (localization[s]|locale[s]) of %slashcommand/subslashcommand%
+		[all] [the] %slashcommand/subslashcommand%'[s] (name|description)['s] (localization[s]|locale[s])
+	return type: Object
+#Creation Date
+#Get the creation date (as Skript date) of any ISnowFlake entity, including, but not limited to:
+#- Member
+#- User
+#- Role
+#- Guild
+#- Channel
+#- etc...
+#Examples:
+#creation date of event-user
+#created date of event-member
+expression:
+	patterns:
+		[the] creat(ion|ed) date of %guild/member/user/role/channel%
+		%guild/member/user/role/channel%'[s] creat(ion|ed) date
+	return type: Date
+#Current Argument
+#The current argument being completed.
+#Examples:
+#current argument
+expression:
+	patterns:
+		current( |-)arg[ument] [name]
+	return type: Text
+#Default Forum Emoji
+#Represent the default emoji of a forum channel.
+#It's the mote that is added automatically once a new post is created.
+#Can return none and can be changed.
+#Examples:
+#set default emoji of event-forumchannel to reaction "smile"
+expression:
+	patterns:
+		[the] default [forum] emoji of %forumchannel%
+		%forumchannel%'[s] default [forum] emoji
+	return type: emote
+#Discord Command Argument
+#Works same as Skript's command argument. You can specify the argument number or the argument type (in case there's only one user or member for example) to get the selected value.
+expression:
+	patterns:
+		[][the] last arg[ument][s]
+		[][the] arg[ument][s](-| )<(\d+)>
+		[][the] <(\d*1)st|(\d*2)nd|(\d*3)rd|(\d*[4-90])th> arg[ument][s]
+		[][the] arg[ument][s]
+		[][the] %*classinfo%( |-)arg[ument][( |-)<\d+>]
+		[][the] arg[ument]( |-)%*classinfo%[( |-)<\d+>]
+	get:
+#		(internal code)
+	return type: Object
+#Discord ID
+#Get the unique long value (ID) that represent a discord entity.
+#Examples:
+#discord id of event-channel
+#discord id of event-guild
+expression:
+	patterns:
+		[the] discord id of %channel/role/user/member/sticker/message/dropdown/button/guild%
+		%channel/role/user/member/sticker/message/dropdown/button/guild%'[s] discord id
+	return type: Text
+#Discord Members of Guild / Channel
+#Returns a list of members.
+#For Message text-related channel & category, it returns members with permission to view the channel
+#For Audio Channels it returns the currently connected members of the channel.
+#Examples:
+#members of event-channel
+#members of voice channel with id "0000"
+expression:
+	patterns:
+		[all] [the] discord member[s] [list] of %guildchannel/guild%
+		[all] [the] %guildchannel/guild%'[s] discord member[s] [list]
+	return type: member
+#Discord Permissions Of
+#Get or change the permissions of a specific member or role in an optional channel.
+#since 4.0.0
+#Examples:
+#add (manage server) to permissions of event-member in event-channel
+#remove (administrator) from permissions of event-role
+expression:
+	patterns:
+		permissions of %member/role% [in %channel%]
+	add:
+#		(internal code)
+	remove:
+#		(internal code)
+	return type: permission
+#Embed Color
+#Get or change the color of an embed builder.
+#The color input must come from Skript, and will be converted by DiSky.
+#Examples:
+#set embed color of embed to red
+expression:
+	patterns:
+		[the] (embed|discord) colo[u]r of %embedbuilder%
+		%embedbuilder%'[s] (embed|discord) colo[u]r
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Colour
+#EmbedAuthor
+expression:
+	patterns:
+		[the] author of %embedbuilder%
+		%embedbuilder%'[s] author
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Text
+#EmbedAuthorIcon
+expression:
+	patterns:
+		[the] author icon of %embedbuilder%
+		%embedbuilder%'[s] author icon
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Text
+#EmbedAuthorURL
+expression:
+	patterns:
+		[the] author url of %embedbuilder%
+		%embedbuilder%'[s] author url
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Text
+#EmbedDescription
+expression:
+	patterns:
+		[the] description of %embedbuilder%
+		%embedbuilder%'[s] description
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Text
+#EmbedFooter
+expression:
+	patterns:
+		[the] footer of %embedbuilder%
+		%embedbuilder%'[s] footer
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Text
+#EmbedFooterIcon
+expression:
+	patterns:
+		[the] footer icon of %embedbuilder%
+		%embedbuilder%'[s] footer icon
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Text
+#EmbedImage
+expression:
+	patterns:
+		[the] image of %embedbuilder%
+		%embedbuilder%'[s] image
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Text
+#EmbedThumbnail
+expression:
+	patterns:
+		[the] thumbnail of %embedbuilder%
+		%embedbuilder%'[s] thumbnail
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Text
+#EmbedTimeStamp
+expression:
+	patterns:
+		[the] time[( |-)]stamp of %embedbuilder%
+		%embedbuilder%'[s] time[( |-)]stamp
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Date
+#EmbedTitle
+expression:
+	patterns:
+		[the] title of %embedbuilder%
+		%embedbuilder%'[s] title
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Text
+#EmbedTitleURL
+expression:
+	patterns:
+		[the] title url of %embedbuilder%
+		%embedbuilder%'[s] title url
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Text
+#Emoji / Emote
+#Get an emoji or an emote from its name, ID or unicode.
+#- An emoji is discord-side only, can be used everywhere, and don't have any attached guild.
+#- An emote is guild-side only, have a custom long ID and are attached to a guild.
+#It the specified reaction doesn't exist, DiSky will simply return null and say it in console.
+#We highly recommend the specification of the guild when retrieving an emote, to avoid conflicts with other that potentially have the same name.
+#Examples:
+#reaction "joy"
+#emoji "sparkles"
+#emote "disky" in event-guild
+expression:
+	patterns:
+		(emoji|emote|reaction)[s] %strings% [(from|in) %guild%]
+	return type: emote
+#Emote Image URL
+#Get the URL of this emote.
+#Only emote have image URL, emoji are from Discord and will therefore return none here.
+#Examples:
+#emote url of event-emote
+#emote image of reaction "disky"  Custom emoji only
+expression:
+	patterns:
+		[the] [the] emo(te|ji) (ur(i|l)|image [url]) of %emote%
+		%emote%'[s] [the] emo(te|ji) (ur(i|l)|image [url])
+	return type: Text
+#Emote Name
+#Get the name of this emote.
+#This, instead of 'discord name of %emote%' will return the name of an emote, and not an emoji.
+#You can change this property to change the emote's name itself.
+#Examples:
+#emote name of event-emote
+#set emote name of reaction "disky" to "disky2"  Will now be 'reaction "disky2"' to get it back
+expression:
+	patterns:
+		[the] emo(te|ji) name of %emote%
+		%emote%'[s] emo(te|ji) name
+	set:
+#		(internal code)
+	return type: Text
+#EnumBotStatus
+expression:
+	patterns:
+		[the] [discord] [online] status of %bot%
+		%bot%'[s] [discord] [online] status
+	set:
+#		(internal code)
+	return type: onlinestatus
+#Everyone Role
+#Represent the @everyone role of a guild.
+#Even if it's not a real role, it share multiple properties such as permissions.
+#Examples:
+#reply with mention tag of everyone role of event-guild
+expression:
+	patterns:
+		[the] [discord] (public|everyone) role of %guild%
+		%guild%'[s] [discord] (public|everyone) role
+	return type: role
+#ExprArgumentChoices
+expression:
+	patterns:
+		[all] [the] [option] choices of %slashoption%
+		[all] [the] %slashoption%'[s] [option] choices
+	add:
+#		(internal code)
+	return type: slashchoice
+#ExprEventValues
+expression:
+	patterns:
+		(multiple|list|array) event-<.+>
+	get:
+#		(internal code)
+	return type: Object
+#ExprMaxRange
+expression:
+	patterns:
+		[the] max[imum] range of %dropdown/textinput%
+		%dropdown/textinput%'[s] max[imum] range
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Number
+#ExprMinRange
+expression:
+	patterns:
+		[the] min[imum] range of %dropdown/textinput%
+		%dropdown/textinput%'[s] min[imum] range
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Number
+#ExprNewInput
+expression:
+	patterns:
+		[a] [new] text[( |-)]input [with] [the] [id] %string% (named|with name) %string%
+		[a] [new] short text[( |-)]input [with] [the] [id] %string% (named|with name) %string%
+	return type: textinput
+#ExprNewModal
+expression:
+	patterns:
+		[a] [new] modal [with] [the] [id] %string% (named|with name) %string%
+	return type: modal
+#ExprNewSlashCommand
+expression:
+	patterns:
+		[a] [new] slash[( |-)]command [with] [(the name|named)] %string% [and] with [the] desc[ription] %string%
+		[a] [new] sub [slash][( |-)]command [with] [(the name|named)] %string% [and] with [the] desc[ription] %string%
+		[a] [new] [slash][( |-)][command] group [with] [(the name|named)] %string% [and] with [the] desc[ription] %string%
+	get:
+#		(internal code)
+	return type: Object
+#ExprNewSlashOption
+expression:
+	patterns:
+		[a] [new] [slash[( |-)]command] [(required)] [(auto[( |-)]complete)] %optiontype% option [(named|with name)] %string% with [the] desc[ription] %string%
+	return type: slashoption
+#ExprPlaceholder
+expression:
+	patterns:
+		[the] [discord] place[( |-)]holder of %dropdown/textinput%
+		%dropdown/textinput%'[s] [discord] place[( |-)]holder
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Text
+#ExprPresence
+expression:
+	patterns:
+		listening [to] %string%
+		watching [to] %string%
+		playing [to] %string%
+		streaming [to] %string% with [the] url %string%
+		competing [to] %string%
+	return type: activity
+#ExprRequireState
+expression:
+	patterns:
+		[the] require[d] state of %textinput%
+		%textinput%'[s] require[d] state
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Boolean
+#ExprValue
+expression:
+	patterns:
+		[the] [default] value of %textinput%
+		%textinput%'[s] [default] value
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Text
+#Get Audio Channel
+#This is an utility expression.
+#It will returns an Audio Channel out of the provided ID.
+#It will returns either the voice or stage channel corresponding to the provided ID.
+#This expression cannot be changed.
+#since 4.0.0
+#Examples:
+#audio channel with id "000"
+expression:
+	patterns:
+		audio channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]
+	return type: audiohannel
+#Get Bot / Bot Named X
+#Get a cached bot from DiSky using its unique name.
+#If the desired bot does not exist or is not loaded yet, this expression will return none.
+#This expression cannot be changed.
+#Examples:
+#get bot "name"
+#bot named "name"
+expression:
+	patterns:
+		[get] [the] bot [(named|with name)] %string%
+	return type: bot
+#Get Category
+#Get a category from a guild using its unique ID.
+#Categories are global on discord, means different categories cannot have the same ID.
+#This expression cannot be changed.
+#Examples:
+#category with id "000"
+expression:
+	patterns:
+		category (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]
+	return type: category
+#Get Channel
+#A generic expression to get any channel from its ID.
+#This can return a text, private, news, voice, category, stage, thread or post channel.
+#since 4.4.2
+#Examples:
+#post last embed to channel with id "000"
+expression:
+	patterns:
+		channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]
+	return type: channel
+#Get Channel
+#Get a channel from a guild using its unique ID.
+#Channels are global on discord, means different channels cannot have the same ID.
+#This expression cannot be changed.
+#Examples:
+#channel with id "000"
+expression:
+	patterns:
+		channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]
+	return type: guildchannel
+#Get Forum Channel
+#Get a forum channel from a guild using its unique ID.
+#Channels are global on discord, means different forum channels cannot have the same ID.
+#This expression cannot be changed.
+#Examples:
+#forum channel with id "000"
+expression:
+	patterns:
+		text channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]
+	return type: forumchannel
+#Get Guild
+#Get a guild from a guild using its unique ID.
+#This expression cannot be changed.
+#Examples:
+#guild with id "000"
+expression:
+	patterns:
+		guild (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]
+	return type: guild
+#Get Member
+#Get a cached member from its unique ID
+#This expression could return null, according to if the actual member was cached or not.
+#To be sure it will return the corresponding member, use the retrieve member effect.
+#This expression cannot be changed
+#Examples:
+#member with id "000" in event-guild
+expression:
+	patterns:
+		[get] [the] member with id %string% (from|in|of) [the] [guild] %guild%
+	return type: member
+#Get Message Channel
+#This is an utility expression.
+#It will returns a Message Channel (text, news or thread) out of the provided ID.
+#This expression cannot be changed.
+#since 4.0.0
+#Examples:
+#message channel with id "000"
+expression:
+	patterns:
+		message channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]
+	return type: guildchannel
+#Get News Channel
+#Get a news channel from a guild using its unique ID.
+#Channels are global on discord, means different channels cannot have the same ID.
+#This expression cannot be changed.
+#Examples:
+#news channel with id "000"
+expression:
+	patterns:
+		news channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]
+	return type: newschannel
+#Get Role
+#Get a role from a guild using its unique ID.
+#Role are global on discord, means two role from two different guild could never have the same ID.
+#This expression cannot be changed.
+#Examples:
+#role with id "000"
+expression:
+	patterns:
+		role (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]
+	return type: role
+#Get Stage Channel
+#Get a stage channel from a guild using its unique ID.
+#Channels are global on discord, means different channels cannot have the same ID.
+#This expression cannot be changed.
+#Examples:
+#stage channel with id "000"
+expression:
+	patterns:
+		stage channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]
+	return type: stagechannel
+#Get Sticker
+#Get a cached sticker from its per-guild name
+#This expression is here to get a sticker from its name.
+#If you success to get a sticker's ID, use the retrieve sticker effect instead!
+#This expression cannot be changed
+#Examples:
+#sticker with named "meliodas" from event-guild
+expression:
+	patterns:
+		[get] [the] sticker (with name|named) %string% (from|in|of) [the] [guild] %guild%
+	return type: sticker
+#Get Tag
+#Get a tag from a forum channel using its name.
+#since 4.4.4
+#Examples:
+#tag named "v4" from forum channel with id "000"
+expression:
+	patterns:
+		[forum] tag ((from|with) name|named) %string% (of|from|in) %forumchannel%
+	return type: forumtag
+#Get Text Channel
+#Get a text channel from a guild using its unique ID.
+#Channels are global on discord, means different text channels cannot have the same ID.
+#This expression cannot be changed.
+#Examples:
+#text channel with id "000"
+expression:
+	patterns:
+		text channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]
+	return type: textchannel
+#Get Thread Channel
+#Get a thread channel from a guild using its unique ID.
+#Threads are global on discord, means different threads cannot have the same ID.
+#This expression cannot be changed.
+#Examples:
+#thread with id "000"
+expression:
+	patterns:
+		thread [channel] (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]
+	return type: threadchannel
+#Get Voice Channel
+#Get a voice channel from a guild using its unique ID.
+#Channels are global on discord, means different channels cannot have the same ID.
+#This expression cannot be changed.
+#Examples:
+#voice channel with id "000"
+expression:
+	patterns:
+		voice channel (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]
+	return type: voicechannel
+#GetUser
+expression:
+	patterns:
+		user (with|from) [the] id %string% [(with|using) [the] bot [(named|with name)] %bot%]
+	return type: textchannel
+#Group / Command Sub-Commands
+#Represent every sub-slash-command a slash-command or a group have.
+#You can add sub-slash-commands to a group or a core slash-command, then add this group into the base slash command.
+expression:
+	patterns:
+		[all] [the] sub[( |-)]command[s] of %slashcommandgroup/slashcommand%
+		[all] [the] %slashcommandgroup/slashcommand%'[s] sub[( |-)]command[s]
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove all:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: subslashcommand
+#Guild / Member Roles
+#Represent the roles that a guild or a member currently have.
+#Can be changed, SET and ADD ChangeMode can be used when passing a member.
+#To modify guild's roles, check delete and create role effects.
+#Examples:
+#add role with id "000" to roles of event-member
+#remove event-role from roles of event-member
+#reply with "Amount of roles in the guild: %size of roles of event-guild%"
+expression:
+	patterns:
+		[all] [the] roles of %guild/member%
+		[all] [the] %guild/member%'[s] roles
+	add:
+#		(internal code)
+	remove:
+#		(internal code)
+	return type: role
+#Guild Boost Count
+#Represent how many people are boosting the guild currently.
+#Examples:
+#reply with "There's %boost amount of event-guild% booster(s)!"
+expression:
+	patterns:
+		[the] [guild] boost[(ing|er)] (amount|number|size) of %guild%
+		%guild%'[s] [guild] boost[(ing|er)] (amount|number|size)
+	return type: Number
+#Guild Booster Role
+#Represent the booster role of this guild.
+#Any member that got this role is actually a booster of the guild.
+#Examples:
+#reply with "Thanks to our %mention tag of boost role of event-guild%!"
+expression:
+	patterns:
+		[the] [guild] boost[(ing|er)] role[s] of %guild%
+		%guild%'[s] [guild] boost[(ing|er)] role[s]
+	return type: role
+#Guild Boosters
+#Represent the current members booster of the guild.
+#Examples:
+#reply with "Boosters: %boosters of event-guild%!"
+expression:
+	patterns:
+		[all] [the] [guild] booster[s] [member[s]] of %guild%
+		[all] [the] %guild%'[s] [guild] booster[s] [member[s]]
+	return type: member
+#Guild News Channels
+#Gets all news channels of a guild.
+#Examples:
+#all news channels of event-guild
+expression:
+	patterns:
+		[all] [the] [guild] [all] news[( |-)]channels of %guild%
+		[all] [the] %guild%'[s] [guild] [all] news[( |-)]channels
+	return type: newschannel
+#Guild Of
+#Return the guild of a specific entity.
+#This can return null if the entity is not guild-based, like private message channel or message.
+#Examples:
+#guild of event-member
+#guild of event-channel
+expression:
+	patterns:
+		[the] guild of %channel/role/sticker/member/message%
+		%channel/role/sticker/member/message%'[s] guild
+	return type: guild
+#Guild Verification Level
+#Represent the verification level of the guild. It can either be:
+#- None
+#- Low
+#- Medium
+#- High
+#- Very High
+#Examples:
+#reply with verification level of event-guild
+expression:
+	patterns:
+		[the] [guild] verification level[s] of %guild%
+		%guild%'[s] [guild] verification level[s]
+	return type: Text
+#Guild Voice Channels
+#Gets all voice channels of a guild.
+#Examples:
+#all voice channels of event-guild
+expression:
+	patterns:
+		[all] [the] [guild] [all] voice[( |-)]channels of %guild%
+		[all] [the] %guild%'[s] [guild] [all] voice[( |-)]channels
+	return type: voicechannel
+#GuildAFKChannel
+expression:
+	patterns:
+		[the] [discord] afk [voice( |-)] channel of %guild%
+		%guild%'[s] [discord] afk [voice( |-)] channel
+	set:
+#		(internal code)
+	return type: voicechannel
+#GuildAFKTimeout
+expression:
+	patterns:
+		[the] [discord] afk time[( |-)]out [second[s]] of %guild%
+		%guild%'[s] [discord] afk time[( |-)]out [second[s]]
+	set:
+#		(internal code)
+	return type: Number
+#GuildBanner
+expression:
+	patterns:
+		[the] [discord] banner of %guild%
+		%guild%'[s] [discord] banner
+	set:
+#		(internal code)
+	return type: Text
+#Inline Rich Message Builder
+#Create a new rich message in one line only.
+#WARNING: This could slow a lot the Skript's parsing time if used too many times!
+#We still recommend to use the create message section instead!
+#You can also use the second pattern to send component-only messages.
+#since 4.4.1, 4.4.3 (component-only)
+#Examples:
+#reply with message "hello world" with embed last embed with components {_row}
+#post components new danger button with id "id" named "Hey" to event-channel
+expression:
+	patterns:
+		[rich] message %string/embedbuilder% [with embed[s] %embedbuilders%] [with (component[s]|row[s]) %rows/buttons/dropdowns%] [with (file|attachment)[s] %strings%]
+		[rich] component[s] %rows/buttons/dropdowns%
+	return type: messagecreatebuilder
+#Invite Code
+#Represent the unique invite code used in the Discord URL.
+#Examples:
+#reply with invite code of event-invite
+expression:
+	patterns:
+		[the] invite code of %invite%
+		%invite%'[s] invite code
+	return type: Text
+#Invite Inviter
+#Represent the user who created the invite.
+#Examples:
+#reply with mention tag of invite inviter of event-invite
+expression:
+	patterns:
+		[the] invite (inviter|author) of %invite%
+		%invite%'[s] invite (inviter|author)
+	return type: user
+#Invite Max Age
+#Represent the max age time this invite can be used.
+#Examples:
+#reply with invite max age of event-invite
+expression:
+	patterns:
+		[the] invite max age[s] of %invite%
+		%invite%'[s] invite max age[s]
+	return type: Number
+#Invite Max Uses
+#Represent the max amount of times this invite can be used.
+#Examples:
+#reply with invite max use of event-invite
+expression:
+	patterns:
+		[the] invite max use[s] of %invite%
+		%invite%'[s] invite max use[s]
+	return type: Number
+#Invite URL
+#Represent the plain Discord URL that people have to click on in order to join the invite's guild.
+#Examples:
+#reply with invite url of event-invite
+expression:
+	patterns:
+		[the] invite url of %invite%
+		%invite%'[s] invite url
+	return type: Text
+#Invite Uses
+#Represent the amount of times this invite has been used.
+#Examples:
+#reply with invite uses of event-invite
+expression:
+	patterns:
+		[the] invite use[s] of %invite%
+		%invite%'[s] invite use[s]
+	return type: Number
+#Last DiSky Exception
+#Return the last occurred DiSky or Discord exception in the current event.
+#This expression is event-based, means you cannot get the last error that happened on another event.
+#Once this has been called, it will remove the returned value from the errors list to avoid having two times the same error message.
+#Examples:
+#if last disky exception is set:  an error occurred
+expression:
+	patterns:
+		[the] last (disky|discord) (error|exception)
+	return type: Text
+#Last Embed
+#This expression returns the last generated embed using the embed builder.
+#since 1.0
+expression:
+	patterns:
+		[the] [last] [(made|created|generated)] embed
+	return type: embedbuilder
+#Last Message Builder
+#Represents the last message builder created within a section.
+expression:
+	patterns:
+		[the] [last] message [builder]
+	return type: messagecreatebuilder
+#Last Row Builder
+#Represents the last row builder created within a section.
+expression:
+	patterns:
+		[the] [last] row [builder]
+	return type: row
+#Member Effective Name
+#Simple way to get the effective name of a member in a guild:
+#If the nickname is not set, it will return the discord name of the member, else its nickname.
+#Examples:
+#reply with effective name of event-member
+expression:
+	patterns:
+		[the] [member] effective name[s] of %member%
+		%member%'[s] [member] effective name[s]
+	return type: Text
+#Member Join Date
+#Represent the skript's date of the member's join date.
+#It cannot be changed.
+#This is a specific element of the bot, so it can be used in the bots event.
+#Examples:
+#reply with member join date of event-member
+expression:
+	patterns:
+		[the] [member] [member] join date of %member%
+		%member%'[s] [member] [member] join date
+	return type: Date
+#Member Nickname
+#Represent the member nickname. Can be none if the member doesn't have any nickname currently.
+#USe 'effective name' expression to get member's name of its nickname is not set.
+#Examples:
+#reply with member nickname of event-member
+#set member nickname of event-member to "ayo?!"
+expression:
+	patterns:
+		[the] [member] nick[( |-)]name[s] of %member%
+		%member%'[s] [member] nick[( |-)]name[s]
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Text
+#Member Status
+#Represent the member's online status.
+#The online status is represented by the following values:
+#• `online`
+#• `offline`
+#• `idle`
+#• `do not disturb`
+#• `invisible`
+#Examples:
+#reply with member online status of event-member
+expression:
+	patterns:
+		[the] [member] [member] online[( |-)]status of %member%
+		%member%'[s] [member] [member] online[( |-)]status
+	return type: Text
+#MemberVoiceChannel
+expression:
+	patterns:
+		[the] [member] (voice|audio) channel of %member%
+		%member%'[s] [member] (voice|audio) channel
+	return type: audiohannel
+#Mention Tag
+#Get the mention name of the discord entity.
+#It will return the similar format that when you are doing @ (roles, users) or  (channels) followed by names.
+#Examples:
+#mention tag of event-channel
+#mention tag of channel with id "000"
+expression:
+	patterns:
+		[the] mention [tag] of %channel/role/user/emote/member%
+		%channel/role/user/emote/member%'[s] mention [tag]
+	return type: Text
+#Message Attachment
+#Get every attachment as custom object of a message
+#Examples:
+#attachments of event-message
+expression:
+	patterns:
+		[all] [the] [discord] [message] attachment[s] of %message%
+		[all] [the] %message%'[s] [discord] [message] attachment[s]
+	return type: attachment
+#Message Builder Attachments
+#Attachments of a message builder
+#Supports SkImage's images if the addon is installed.
+#See also: 'Create (rich) Message'
+expression:
+	patterns:
+		[all] [the] (attachment|image)[s] of %messagecreatebuilder%
+		[all] [the] %messagecreatebuilder%'[s] (attachment|image)[s]
+	add:
+#		(internal code)
+	remove:
+#		(internal code)
+	return type: Object
+#Message Builder Component Rows
+#Component rows of a message builder
+#See also: 'Creator Components Row'
+expression:
+	patterns:
+		[all] [the] [component[s]] row[s] of %messagecreatebuilder/modal%
+		[all] [the] %messagecreatebuilder/modal%'[s] [component[s]] row[s]
+	add:
+#		(internal code)
+	return type: Object
+#Message Builder Content
+#Text content of a message builder
+#See also: 'Create (rich) Message'
+expression:
+	patterns:
+		[the] content of %messagecreatebuilder%
+		%messagecreatebuilder%'[s] content
+	set:
+#		(internal code)
+	return type: Text
+#Message Builder Embeds
+#Embeds of a message builder
+#See also: 'Create (rich) Message'
+expression:
+	patterns:
+		[all] [the] embed[s] of %messagecreatebuilder%
+		[all] [the] %messagecreatebuilder%'[s] embed[s]
+	add:
+#		(internal code)
+	remove:
+#		(internal code)
+	return type: embedbuilder
+#Message Content
+#Get the raw (non formatted) content of a sent message.
+#Examples:
+#content of event-message
+expression:
+	patterns:
+		[the] [discord] [message] content of %message%
+		%message%'[s] [discord] [message] content
+	return type: Text
+#Message Embeds
+#Get every embeds of a specific messages. Keep in mind only webhook are allowed to send more than one embed!
+#Examples:
+#embeds of event-message
+expression:
+	patterns:
+		[all] [the] [discord] [message] embeds of %message%
+		[all] [the] %message%'[s] [discord] [message] embeds
+	return type: embedbuilder
+#Message Emotes
+#Get every mentioned emotes in a message.
+#This will only return custom emote, and will therefore not include discord emotes.
+#Examples:
+#mentioned emotes of event-message
+expression:
+	patterns:
+		[all] [the] [discord] [message] mentioned emote[s] of %message%
+		[all] [the] %message%'[s] [discord] [message] mentioned emote[s]
+	return type: emote
+#Message Guild
+#Get the guild where the message was sent. Can be null if it's in PM or not in guild!
+#Examples:
+#guild of event-message
+expression:
+	patterns:
+		[the] [discord] [message] guild of %message%
+		%message%'[s] [discord] [message] guild
+	return type: guild
+#Message Jump URL
+#Get the jump URL of the specific message.
+#Examples:
+#jump url of event-message
+expression:
+	patterns:
+		[the] [discord] [message] [jump] url of %message%
+		%message%'[s] [discord] [message] [jump] url
+	return type: Text
+#Message Member Author
+#Get the member instance of the message's author. Can be null if it's in PM or not in guild!
+#Examples:
+#member writer of event-message
+expression:
+	patterns:
+		[the] [discord] [message] member (author|writer) of %message%
+		%message%'[s] [discord] [message] member (author|writer)
+	return type: member
+#Message Mentioned Members
+#Get every mentioned members in a message. If the message doesn't come from a guild it will return an empty array!
+#Examples:
+#mentioned members of event-message
+expression:
+	patterns:
+		[all] [the] [discord] [message] mentioned members of %message%
+		[all] [the] %message%'[s] [discord] [message] mentioned members
+	return type: member
+#Message Mentioned Roles
+#Get every mentioned Roles in a message. If the message doesn't come from a guild it will return an empty array!
+#Examples:
+#mentioned roles of event-message
+expression:
+	patterns:
+		[all] [the] [discord] [message] mentioned roles of %message%
+		[all] [the] %message%'[s] [discord] [message] mentioned roles
+	return type: role
+#Message Mentioned Users
+#Get every mentioned users in a message.
+#Examples:
+#mentioned users of event-message
+expression:
+	patterns:
+		[all] [the] [discord] [message] mentioned users of %message%
+		[all] [the] %message%'[s] [discord] [message] mentioned users
+	return type: user
+#Message Reactions
+#Get every reactions of a message.
+#Because of Discord's limitation, we cannot get which user reacted with which reaction, you'll have to count them yourself.
+#Examples:
+#reactions of event-message
+expression:
+	patterns:
+		[all] [the] [discord] [message] (emo(te|ji)|reaction)[s] of %message%
+		[all] [the] %message%'[s] [discord] [message] (emo(te|ji)|reaction)[s]
+	return type: emote
+#Message Text Channel
+#Get the text channel were the message was sent. Can be null if it's in PM or not in guild!
+#Examples:
+#channel of event-message
+expression:
+	patterns:
+		[the] [discord] [message] [text]( |-)channel of %message%
+		%message%'[s] [discord] [message] [text]( |-)channel
+	return type: textchannel
+#Message Text Channels
+#Get every mentioned text channels in a message.
+#Examples:
+#mentioned text channels of event-message
+expression:
+	patterns:
+		[all] [the] [discord] [message] mentioned text channels of %message%
+		[all] [the] %message%'[s] [discord] [message] mentioned text channels
+	return type: textchannel
+#Message User Author
+#Get the user instance of the message's author. Can be null in case of the message was sent by a webhook.
+#Examples:
+#author of event-message
+expression:
+	patterns:
+		[the] [discord] [message] (user|author|writer) of %message%
+		%message%'[s] [discord] [message] (user|author|writer)
+	return type: user
+#Message Voice Channels
+#Get every mentioned voice channels in a message.
+#Examples:
+#mentioned voice channels of event-message
+expression:
+	patterns:
+		[all] [the] [discord] [message] mentioned voice channels of %message%
+		[all] [the] %message%'[s] [discord] [message] mentioned voice channels
+	return type: voicechannel
+#MessageReferenced
+expression:
+	patterns:
+		[the] [discord] [message] referenc(ing|ed) message of %message%
+		%message%'[s] [discord] [message] referenc(ing|ed) message
+	return type: message
+#Modal Component Value / Values
+#Get the current value(s) of a sent component, currently only working in modals with text input & select menus.
+#You have to precise what type of component you are trying to get, either 'textinput' or 'dropdown'.
+#Examples:
+#values of dropdown with id "XXX"
+#value of textinput with id "XXX"
+expression:
+	patterns:
+		[the] [current] value[s] of [the] (text[( |-)]input|drop[( |-)]down) [with [the] id] %string%
+	get:
+#		(internal code)
+	return type: Object
+#Name of Discord Entity
+#This represent the current name of any discord entity that can hold one.
+#You can change name of every entity except member and user by defining a new text.
+#Check for 'nickname of member' if you want to check / change custom member's name.
+#Examples:
+#discord name of event-guild
+expression:
+	patterns:
+		[the] [the] discord name of %channel/user/member/sticker/emote/role/guild%
+		%channel/user/member/sticker/emote/role/guild%'[s] [the] discord name
+	set:
+#		(internal code)
+	return type: Text
+#New Button
+#Create a new button with an ID and some optional options. It can be either enabled or disabled, and either link or action. If the button is a link-type, then the ID will be the URL that the user will be redirect to.
+#Examples:
+#set {_btn} to new enabled danger button with id "button-id" named "Hello world :p"
+expression:
+	patterns:
+		[a] new [(enabled|disabled)] %buttonstyle% [link] button [with (id|url)] %string% [(named|with label) %string%][,] [with [emoji] %emote%]
+	return type: button
+#New Components Row
+#Create a new (empty) components row.
+#You can add either max 5 buttons or one dropdown to it.
+#A single message can hold 5 components rows.
+expression:
+	patterns:
+		[a] new component[s] row
+	return type: row
+#New Dropdown
+#Create a new dropdown menu with different properties.
+#There's two type of dropdown available:
+#- String, only text values are accepted & pre-defined
+#- Entity, only the specified entity type (role, channel and/or user) are accepted
+#Therefore, you cannot add user, channel or role to a string dropdown and vice-versa.
+#For entity dropdown, you can accept each type independently, or mix roles & users.
+#:warning: YOU CANNOT MIX CHANNELS WITH ROLES OR USERS!
+#since 4.6.0
+#Examples:
+#new dropdown with id "string"  Default string dropdown
+#new entity dropdown with id "entities" targeting "user" and "role"  Only user and role are accepted
+#new entity dropdown with id "channels" targeting "channel"  Only channel are accepted
+expression:
+	patterns:
+		[a] [new] [string] drop[( |-)]down [with] [the] [id] %string%
+		[a] [new] entit(y|ies) drop[( |-)]down [with] [the] [id] %string% targeting %strings%
+	return type: dropdown
+#New Dropdown Option
+#Create a new dropdown option with different properties.
+#This is a predefined option holding a string value. It can only be used in string dropdowns.
+#The value represent the returned string that this dropdown will return if this option is selected.
+#The name / label is the actual shown name on the option.
+#Description and emote are optional.
+#Examples:
+#set {_btn} to new enabled danger button with id "button-id" named "Hello world :p"
+expression:
+	patterns:
+		[a] new [default] [dropdown] option with value %string% (named|with label) %string% [with description [%string%]] [with [emoji] %emote%]
+	return type: selectoption
+#New Forum Tag
+#Create a new forum tag with a specific name & optional emoji.
+#You can also specify if the tag is 'moderate' or not.
+#since 4.4.4
+#Examples:
+#new forum tag named "solved" with reaction "white_check_mark"
+#new moderated forum tag named "internal"
+expression:
+	patterns:
+		new [forum] tag [named] %string% [with %emote%]
+		new moderated [forum] tag [named] %string% [with %emote%]
+	return type: Object
+#New Locale Data
+#Returns the a new locale data for the given locale and the given value.
+#You have to provide the locale using its code (list can be found here: https://discord.com/developers/docs/referencelocales) and the value to set.
+#Documentation: https://docs.disky.me/advanced-stuff/slash-commandsusing-localizations-v4.3.0+
+#Examples:
+#new locale data for "FR" as "niveau"
+expression:
+	patterns:
+		new local[e] [data] for %string% (as|with [value]) %string%
+	return type: Object
+#New Message Command
+#Create a new message command, to be updated on discord later.
+#This will create a context command of MESSAGE type.
+#Once created, you can execute it by right-clicking on a message, then going in 'Applications' -> <your message command name>
+#Examples:
+#new message command named "Warn Message"
+expression:
+	patterns:
+		[a] [new] message[( |-)]command [with] [(the name|named)] %string%
+	return type: Object
+#New Option Choice
+#Create a new slash command option choice with an unique name and a string or number value.
+#Choices are only available for STRING, NUMBER and INTEGER slash command option type.
+#Of course, the provided value type must be compatible with the option type (you cannot add string choice to a NUMBER option).
+#Examples:
+#add new choice named "Example choice" with value 100 to choices of {_option}  it's a NUMBER option
+expression:
+	patterns:
+		[a] new [option] choice [(named|with name)] %string% with [the] value %string/number%
+	return type: slashchoice
+#New User Command
+#Create a new user command, to be updated on discord later.
+#This will create a context command of USER type.
+#Once created, you can execute it by right-clicking on a user, then going in 'Applications' -> <your user command name>
+#Examples:
+#new user command named "Warn User"
+expression:
+	patterns:
+		[a] [new] user[( |-)]command [with] [(the name|named)] %string%
+	return type: Object
+#NewCategoryAction
+expression:
+	patterns:
+		[a] new category (action|manager) in [the] [guild] %guild% [(using|with) [the] [bot] %bot%]
+	return type: channelaction
+#NewNewsChannel
+expression:
+	patterns:
+		[a] new news[( |-)]channel (action|manager) in [the] [guild] %guild% [(using|with) [the] [bot] %bot%]
+	return type: channelaction
+#NewRoleAction
+expression:
+	patterns:
+		[a] new role (action|manager) in [the] [guild] %guild% [(using|with) [the] [bot] %bot%]
+	return type: roleaction
+#NewStageChannel
+expression:
+	patterns:
+		[a] new stage[( |-)]channel (action|manager) in [the] [guild] %guild% [(using|with) [the] [bot] %bot%]
+	return type: channelaction
+#NewTextAction
+expression:
+	patterns:
+		[a] new text[( |-)]channel (action|manager) in [the] [guild] %guild% [(using|with) [the] [bot] %bot%]
+	return type: channelaction
+#NewThreadAction
+expression:
+	patterns:
+		[a] new category (action|manager) in [the] [channel] %textchannel% [(using|with) [the] [bot] %bot%]
+	return type: channelaction
+#NewVoiceAction
+expression:
+	patterns:
+		[a] new voice[( |-)]channel (action|manager) in [the] [guild] %guild% [(using|with) [the] [bot] %bot%]
+	return type: channelaction
+#Post / Forum Tags
+#Get all tags of a forum channel or a thread channel.
+#You can also add or remove tags from a thread channel using this expression.
+#You must add the tag to the forum itself before adding it to the post.
+#Examples:
+#set {_tags::*} to tags of event-forumchannel
+#add new tag named "resolved" with reaction "x" to tags of forum with id "000"
+expression:
+	patterns:
+		[all] [the] tags of %threadchannel/forumchannel%
+		[all] [the] %threadchannel/forumchannel%'[s] tags
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Object
+#Profile Banner
+#Get the profile banner URL. If the user doesn't have a custom banner, this will return none.
+#Use the 'profile color' expression to get the color instead of the banner URL in that case!
+expression:
+	patterns:
+		[the] profile banner [ur(l|i)] of %userprofile%
+		%userprofile%'[s] profile banner [ur(l|i)]
+	return type: Text
+#Profile Color
+#Get the profile color accent. If the user have a custom banner, this will return none.
+#Use the 'profile banner' expression to get the avatar URL instead of the color accent in that case!
+expression:
+	patterns:
+		[the] profile color [accent] of %userprofile%
+		%userprofile%'[s] profile color [accent]
+	return type: Colour
+#PropOptions
+expression:
+	patterns:
+		[all] [the] option[s] [mapping[s]] of %slashcommand/subslashcommand/dropdown%
+		[all] [the] %slashcommand/subslashcommand/dropdown%'[s] option[s] [mapping[s]]
+	add:
+#		(internal code)
+	return type: Object
+#RoleColor
+expression:
+	patterns:
+		[the] role color of %role/roleaction%
+		%role/roleaction%'[s] role color
+	set:
+#		(internal code)
+	return type: Colour
+#RoleName
+expression:
+	patterns:
+		[the] role name of %role/roleaction%
+		%role/roleaction%'[s] role name
+	set:
+#		(internal code)
+	return type: Text
+#RolePosition
+expression:
+	patterns:
+		[the] [discord] [role] position of %role/roleaction%
+		%role/roleaction%'[s] [discord] [role] position
+	set:
+#		(internal code)
+	return type: Number
+#Row Builder Components
+#Components of a row builder
+#See also: 'Create (rich) Message'
+expression:
+	patterns:
+		[all] [the] component[s] of %row%
+		[all] [the] %row%'[s] component[s]
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	return type: Object
+#Selected Entities
+#The list of the selected entities, in the current entity dropdown update event.
+#Examples:
+#selected entities
+expression:
+	patterns:
+		select[ed] entit(y|ies)
+	return type: Object
+#Selected Values
+#The list of the selected values' IDs, in the current dropdown update event.
+#Examples:
+#selected values
+expression:
+	patterns:
+		select[ed] value[s]
+	return type: Text
+#Slash Command Argument
+#Represents a slash command argument.
+#The name is the ID used when defining the slash command.
+#Specify the type, so that Skript can parse it correctly. (if it's a number, operation wil be allowed for example)
+#The type should be the same used when defining the argument in the command.
+#Examples:
+# I'm doing /ban time:30 user:*user id*, so:
+#set {_time} to argument "time" as integer
+#set {_user} to argument "user" as user
+expression:
+	patterns:
+		[the] arg[ument] [(named|with name)] %string% as %optiontype%
+		[the] arg[ument] [(named|with name)] %string% as %optiontype%
+	get:
+#		(internal code)
+	return type: Object
+#Sub-command Groups
+#Represent every sub-slash-command groups a slash command have.
+#You can add sub-slash-commands to a group, then add this group into the base slash command.
+expression:
+	patterns:
+		[all] [the] sub[[( |-)]command[s]] group[s] of %slashcommand%
+		[all] [the] %slashcommand%'[s] sub[[( |-)]command[s]] group[s]
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove all:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: slashcommandgroup
+#Tag Emoji
+#Gets the emoji of a forum tag. Can be null if the tag has no emoji.
+#since 4.4.4
+expression:
+	patterns:
+		[the] tag emo(te|ji) of %forumtag%
+		%forumtag%'[s] tag emo(te|ji)
+	return type: emote
+#Tag Required
+#Get a true/false value of the tag required state of a forum channel.
+#This property can be changed, and we recommend the tag required condition for checks.
+#Examples:
+#set tag required of event-forumchannel to true
+expression:
+	patterns:
+		[the] [the] tag required of %forumchannel%
+		%forumchannel%'[s] [the] tag required
+	set:
+#		(internal code)
+	return type: Boolean
+#Target Message
+#Represent the target message in a message command event.
+#It basically represent the message that was clicked on.
+#Examples:
+#target message
+expression:
+	patterns:
+		[the] target message
+	return type: message
+#Target User
+#Represent the target user in a user command event.
+#It basically represent the user that was clicked on.
+#Examples:
+#target user
+expression:
+	patterns:
+		[the] target user
+	return type: user
+#Threads of Channel / Guild
+#Gets the threads of a specific forum/text channel or a guild.
+#since 4.0.0, 4.4.4 (threads of forum channel)
+#Examples:
+#threads of event-guild
+expression:
+	patterns:
+		[all] [the] threads of %forumchannel/textchannel/guild%
+		[all] [the] %forumchannel/textchannel/guild%'[s] threads
+	return type: threadchannel
+#Used Alias
+#Return the used alias in a discord command trigger section.
+#It can only be used here, and will throw an error if not.
+#Examples:
+#set {_alias} to the used alias
+expression:
+	patterns:
+		[the] use[d]( |-)alias[es]
+	return type: Text
+#Used Argument
+#Return the plain formatter of the discord command's argument
+#You should however use (arg-1) for example which will return the argument value directly.
+#This is intended to be for test purpose only, and therefore only return a String formatted containing every used arguments.
+expression:
+	patterns:
+		[the] use[d]( |-)arg[ument][s]
+	return type: Text
+#Used Prefix
+#Return the used prefix in a discord command trigger section.
+#Examples:
+#set {_p} to the used prefix
+expression:
+	patterns:
+		[the] use[d]( |-)prefix[es]
+	return type: Text
+#User / Bot / Guild Avatar
+#Return the avatar URL of any user, guild or bot.
+#This can be changed for guilds and bots only!
+#Examples:
+#avatar of event-guild
+#avatar of event-user
+expression:
+	patterns:
+		[the] avatar [url] of %guild/user/sticker/member/bot%
+		%guild/user/sticker/member/bot%'[s] avatar [url]
+	set:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Text
+#User Badges
+#Represent every badges' name a user have.
+#This does not and cannot contain any intro-related badges (nitro membership or nitro boosting), it need OAuth2 to be enabled.
+#Examples:
+#reply with "Whoa! You got all of them? %join badges of event-user with nl%"
+expression:
+	patterns:
+		[all] [the] [user] badge[s] of %user%
+		[all] [the] %user%'[s] [user] badge[s]
+	return type: Text
+#User Discriminator
+#Represent the four digit number after the  of a user's name.
+#These, mixed with the user name itself, are unique.
+#This **DOES NOT** include the `` char, so you have to add it yourself.
+#Examples:
+#reply with discriminator of event-user
+expression:
+	patterns:
+		[the] [user] discriminator of %user%
+		%user%'[s] [user] discriminator
+	return type: Text
+#User Locale
+#Get the language code defined as user-side client of Discord.
+#Basically, return the language user's client is loaded in.
+#This expression only works in interactions event, and cannot be used outside of them.
+#Examples:
+#the user locale
+expression:
+	patterns:
+		[the] user['s] local[e] [(code|language)]
+	return type: Text
+#User Mutual Guilds
+#Represent every guild that the bot and the user have in common.
+#Examples:
+#reply with "Oh boi, we have %size of mutual guilds event-user% mutual guilds!"
+expression:
+	patterns:
+		[all] [the] [user] mutual[s] guild[s] of %user%
+		[all] [the] %user%'[s] [user] mutual[s] guild[s]
+	return type: guild
+#User in Guild
+#Get the member related to the specified user in a specific guild.
+#Users are common to whole Discord, two user cannot have the same instance.
+#Members are common to guilds, but also holding an user as reference.
+#User can have multiple instance according to which guild they are in, therefore they are considered as member.
+expression:
+	patterns:
+		%user% in [the] [guild] %guild%
+	return type: member
+#Voice Channel Members
+#The list of members that are connected to this actual voice channel.
+#Examples:
+#audio members of event-channel
+#voice members of voice channel with id "0000"
+expression:
+	patterns:
+		[all] [the] (audio|stage|voice) member[s] [list] of %voicechannel%
+		[all] [the] %voicechannel%'[s] (audio|stage|voice) member[s] [list]
+	return type: member

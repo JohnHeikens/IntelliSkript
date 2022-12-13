@@ -1,0 +1,34 @@
+#AUTOMATIC GENERATED SKRIPT FILE
+#COPYRIGHT JOHN HEIKENS
+
+#EffExecuteStatement
+effect:
+	patterns:
+		execute %string% (in|on) %datasource% [and store [[the] (output|result)[s]] (to|in) [the] [var[iable]] %objects%]
+		quickly execute %string% (in|on) %datasource% [and store [[the] (output|result)[s]] (to|in) [the] [var[iable]] %objects%]
+
+#On complete of sql query
+event "complete_of_sql_query":
+	patterns:
+		[on] complete of [(sql|database)] query
+
+#ExprDBError
+expression:
+	patterns:
+		[the] [last] (sql|db|data(base|[ ]source)) error
+	return type: Text
+#ExprDataSource
+expression:
+	patterns:
+		[the] data(base|[ ]source) [(of|at)] %string% [with [a] [max[imum]] [connection] life[ ]time of %timespan%]
+	return type: datasource
+#ExprSQLQuery
+expression:
+	patterns:
+		sql query
+	return type: Text
+#ExprUnsafe
+expression:
+	patterns:
+		unsafe %string%
+	return type: Text

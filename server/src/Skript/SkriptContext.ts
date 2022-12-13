@@ -18,13 +18,16 @@ import { SkriptFile } from './Section/SkriptFile';
 //TOODO: make context able to 'push' and 'pop' (make a function able to modify the context or create an instance while keeping reference to the same diagnostics list
 export class SkriptContext {
 
-	referenceFields: {
+	private referenceFields: {
 		currentSection: SkriptSection | undefined;
 
 	} = { currentSection: undefined };
 
 	public get currentSection(): SkriptSection | undefined { return this.referenceFields.currentSection; }
 	public set currentSection(newValue: SkriptSection | undefined) { this.referenceFields.currentSection = newValue; }
+
+	//determine if the current context has any errors
+	hasErrors = false;
 
 	//reference variables
 	currentSkriptFile: SkriptFile | undefined;
@@ -36,6 +39,7 @@ export class SkriptContext {
 	parent: SkriptContext | undefined = undefined;
 	currentString = "";
 	currentPosition = 0;
+	currentLine = 0;
 	hierarchy: SkriptNestHierarchy | undefined = undefined;
 	constructor(currentDocument: TextDocument, currentString: string | undefined = undefined, currentBuilder: UnOrderedSemanticTokensBuilder = new UnOrderedSemanticTokensBuilder()) {
 		this.currentString = currentString == undefined ? currentDocument.getText() : currentString;
@@ -54,6 +58,7 @@ export class SkriptContext {
 		subContext.referenceFields = this.referenceFields;
 		subContext.currentPosition = this.currentPosition + newPosition;
 		subContext.diagnostics = this.diagnostics;
+		subContext.currentLine = this.currentLine;
 
 		//subContext.hierarchy = this.hierarchy;//the more data, the better so we're keeping the hierarchical data from the higher levels for now
 		return subContext;
@@ -65,7 +70,10 @@ export class SkriptContext {
 		this.currentBuilder.push(new SemanticToken(absolutePosition, length, type, modifier));
 	}
 
-	addDiagnostic(relativePosition: number, length: number, message: string, severity: DiagnosticSeverity = DiagnosticSeverity.Error, code: string | undefined = undefined, data: unknown = undefined): void {
+	addDiagnostic(relativePosition: number, length: number, message: string, severity: DiagnosticSeverity = DiagnosticSeverity.Error, code?: string, data: unknown = undefined): void {
+		if(severity == DiagnosticSeverity.Error){
+			this.hasErrors = true;
+		}
 		const diagnostic: Diagnostic = {
 			severity: severity,
 			range: {
@@ -73,10 +81,10 @@ export class SkriptContext {
 				end: this.currentDocument.positionAt(this.currentPosition + relativePosition + length)
 			},
 			message: message,
-			source: 'IntelliSkript',
+			source: 'IntelliSkript (click on the error code) -> ',
 			data: data,
-			code: code,
-			codeDescription: { href: 'https://github.com/JohnHeikens/IntelliSkript/wiki' }
+			code: code? code : "IntelliSkript->Undocumented",
+			codeDescription: { href: 'https://pex.li/intelliskript/' }//https://github.com/JohnHeikens/IntelliSkript/wiki
 		};
 		this.diagnostics.push(diagnostic);
 	}
@@ -141,6 +149,11 @@ export class SkriptContext {
 			}
 			else if (this.currentString[i] == '%') {
 				const node = this.hierarchy.getActiveNode();
+				if(node.character == '"'){
+					if(this.currentString[i + 1] == '%'){
+                        i++; continue;//skip escaped string characters
+                    }
+				}
 				if (node.character == '%') {
 					node.end = i;//pop
 				}
@@ -151,7 +164,7 @@ export class SkriptContext {
 				}
 				//order is important here! "example".includes("") will return true!
 				else if ("{\"".includes(node.character)) {
-					node.children.push(new SkriptNestHierarchy(i + 1, node.character));//push
+					node.children.push(new SkriptNestHierarchy(i + 1, '%'));//push
 				}
 				//else if(node.character.length > 0){
 				//	// % is also needed for definition of effects so when node.character == "" then we'll allow the %'s

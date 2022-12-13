@@ -20,9 +20,12 @@ import { SkriptConditionSection } from './Reflect/SkriptConditionSection';
 import assert = require('assert');
 import { SkriptEventSection } from './Reflect/SkriptEventSection';
 import { SkriptExpressionSection } from './Reflect/SkriptExpressionSection';
-import { SkriptPattern } from '../SkriptPattern';
 import { SkriptOptionsSection } from './SkriptOptionsSection';
 import { SkriptOption } from '../SkriptOption';
+import { PatternTree, PatternData, patternResultProcessor } from '../../PatternTree';
+import { SkriptEventListenerSection } from './SkriptEventListenerSection';
+import { SkriptPropertySection } from './Reflect/SkriptPropertySection';
+import { SkriptType } from '../SkriptType';
 
 function removeRemainder(toDivide: number, toDivideBy: number): number {
 	return Math.floor(toDivide / toDivideBy) * toDivideBy;
@@ -30,66 +33,90 @@ function removeRemainder(toDivide: number, toDivideBy: number): number {
 
 export class SkriptFile extends SkriptSection {
 	document: TextDocument;
-	workSpace: SkriptWorkSpace | undefined;
+	workSpace: SkriptWorkSpace;
 	builder: UnOrderedSemanticTokensBuilder;
 
 	options: SkriptOption[] = [];
 
-	getPatternSection(pattern: string): SkriptPatternContainerSection | undefined {
-		this.children.forEach(section => {
-			if (section instanceof SkriptPatternContainerSection) {
-				section.patterns.forEach(pattern => {
 
-					return section;
-				});
-			}
-		});
-		return undefined;
+	getPatternData(pattern: string, shouldContinue: patternResultProcessor): PatternData | undefined {
+		const result = this.workSpace.effectPatterns.getMatchingPatterns(pattern, shouldContinue);
+		if (result) {
+			return result;
+		}
+		else if (this.workSpace.parent) {
+			const parent = this.workSpace.parent as SkriptWorkSpace;
+			return parent.effectPatterns.getMatchingPatterns(pattern, shouldContinue);
+		}
+		else {
+			return undefined;
+		}
 	}
 
 	createSection(context: SkriptContext): SkriptSection {
 		const spaceIndex = context.currentString.indexOf(" ");
+		let patternStartIndex = spaceIndex == -1 ? undefined : spaceIndex + 1;
 		const sectionKeyword = spaceIndex == -1 ? context.currentString : context.currentString.substring(0, spaceIndex);
 		context.addToken(0, sectionKeyword.length, TokenTypes.keyword);
+		let s: SkriptSection;
 		if (sectionKeyword == "function") {
-			const s = new SkriptFunction(context, this);
+			s = new SkriptFunction(context, this);
 
-			return s;
 		}
 		else if (sectionKeyword == "command") {
-			const c = new SkriptCommand(context, this);
-			return c;
-		}
-		else if (sectionKeyword == "effect") {
-			const s = new SkriptEffect(context, this);
-			if (spaceIndex != -1) {
-				s.patterns.push(new SkriptPattern(context.push(spaceIndex + 1)));
-			}
-			return s;
+			s = new SkriptCommand(context, this);
 		}
 		else if (sectionKeyword == "import") {
-			const s = new SkriptImportSection(context, this);
-			return s;
-		}
-		else if (sectionKeyword == "condition") {
-			const s = new SkriptConditionSection(context, this);
-			return s;
+			s = new SkriptImportSection(context, this);
 		}
 		else if (sectionKeyword == "event") {
-			const s = new SkriptEventSection(context, this);
-			return s;
+			s = new SkriptEventSection(context, this);
 		}
-		else if (sectionKeyword == "expression") {
-			const s = new SkriptExpressionSection(context, this);
-			return s;
+		else if (sectionKeyword == "condition") {
+			s = new SkriptConditionSection(context, this);
+		}
+		else if (sectionKeyword == "effect") {
+			s = new SkriptEffect(context, this);
 		}
 		else if (sectionKeyword == "options") {
-			const s = new SkriptOptionsSection(context, this);
-			return s;
+			s = new SkriptOptionsSection(context, this);
 		}
 		else {
-			return super.createSection(context);
+			const result = /^((local )?((plural|non-single) )?expression)( .*|)/.exec(context.currentString);
+			if (result) {
+				s = new SkriptExpressionSection(context, this);
+				if (result[4]){
+					patternStartIndex = result[1].length + 1;
+				}
+				else{
+					patternStartIndex = undefined;
+				}
+			}
+			else {
+				const propertyResult = /^(local )?(.+) property .*/.exec(context.currentString);
+				if (propertyResult) {
+					s = new SkriptPropertySection(context, new SkriptType(propertyResult[2].substring(1)), this);
+				}
+				else {
+					const pattern = this.workSpace.eventPatterns.getMatchingPatterns(context.currentString,
+						() => {
+							return false;
+						});
+					if (pattern) {
+						//event
+						s = new SkriptEventListenerSection(context, pattern);
+					}
+					else {
+						return super.createSection(context);
+					}
+				}
+			}
 		}
+		if ((patternStartIndex != undefined) && (s instanceof SkriptPatternContainerSection)) {
+			const currentTree = ((s instanceof SkriptEventSection) ? this.workSpace.eventPatterns : this.workSpace.effectPatterns);
+			currentTree.addPattern(context.push(patternStartIndex), s);
+		}
+		return s;
 	}
 
 	processLine(context: SkriptContext): void {
@@ -102,7 +129,7 @@ export class SkriptFile extends SkriptSection {
 
 
 
-	constructor(workSpace: SkriptWorkSpace | undefined, context: SkriptContext) {
+	constructor(workSpace: SkriptWorkSpace, context: SkriptContext) {
 		super(context, undefined);
 		context.currentSkriptFile = this;
 		this.builder = context.currentBuilder;
@@ -156,7 +183,7 @@ export class SkriptFile extends SkriptSection {
 			const lineWithoutComments = commentIndex == -1 ? currentLine : currentLine.substring(0, commentIndex);
 
 			const currentLineContext = context.push(currentLineStartPosition, currentLine.length);
-
+			currentLineContext.currentLine = currentLineIndex;
 
 
 			const trimmedLine = lineWithoutComments.trim();
@@ -222,7 +249,7 @@ export class SkriptFile extends SkriptSection {
 						}
 					}
 				}
-				const trimmedContext = context.push(currentLineStartPosition + indentationEndIndex, trimmedLine.length);
+				const trimmedContext = currentLineContext.push(indentationEndIndex, trimmedLine.length);
 				trimmedContext.createHierarchy(true);
 				assert(trimmedContext.hierarchy != undefined);
 				trimmedContext.highLightRecursively(trimmedContext.hierarchy);

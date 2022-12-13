@@ -1,13 +1,19 @@
 import { SkriptFile } from './SkriptFile';
 import { SkriptSectionGroup } from './SkriptSectionGroup';
 import { SkriptVariable } from '../SkriptVariable';
+import { PatternTree } from '../../PatternTree';
 
 export class SkriptWorkSpace extends SkriptSectionGroup {
 	//the 'childsections' variable is not used here. TODO somehow merge the childsections and files variable
 	files: SkriptFile[] = [];
-	uri = "";
-	constructor(workSpaceUri: string) {
+	uri? = "";
+	effectPatterns: PatternTree = new PatternTree();
+	eventPatterns: PatternTree = new PatternTree();
+	override parent?: SkriptWorkSpace | undefined;
+
+	constructor(parent? : SkriptWorkSpace, workSpaceUri?: string) {
 		super();
+		this.parent = parent;
 		this.uri = workSpaceUri;
 	}
 
@@ -19,13 +25,13 @@ export class SkriptWorkSpace extends SkriptSectionGroup {
 		return undefined;
 	}
 	getSkriptFileIndexByUri(uri: string): number | undefined {
-		this.files.forEach((file, index) => {
-			if (file.document.uri == uri) return index;
-		});
+		for (let i = 0; i < this.files.length; i++) {
+			if(this.files[i].document.uri == uri) return i;
+		}
 		return undefined;
 	}
 	getSkriptFileByUri(uri: string): SkriptFile | undefined {
 		const index = this.getSkriptFileIndexByUri(uri);
-		return index ? this.files[index] : undefined;
+		return index == undefined ? undefined : this.files[index];
 	}
 }

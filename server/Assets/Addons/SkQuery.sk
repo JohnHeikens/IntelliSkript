@@ -1,0 +1,967 @@
+#AUTOMATIC GENERATED SKRIPT FILE
+#COPYRIGHT JOHN HEIKENS
+
+#Branch
+effect:
+	patterns:
+		branch %number%
+
+#Client Block
+effect:
+	patterns:
+		make %players% see %blocks% as %itemtype%
+
+#Client Sign
+effect:
+	patterns:
+		make %players% see lines of %blocks% as %string%, %string%, %string%( and|,) %string%
+
+#Developer Mode Option
+effect:
+	patterns:
+		$ developer mode
+
+#EffExecuteLambda
+effect:
+	patterns:
+		(do|execute) [%number% time[s]] %lambda%
+
+#EffOptionSQLPool
+effect:
+	patterns:
+		$ pool <.+>
+
+#EffSQLUpdate
+effect:
+	patterns:
+		update %string%
+
+#EffShootItemProjectile
+effect:
+	patterns:
+		make %livingentitys% shoot [an] item projectile [of] %itemtype% [at speed %number%]
+
+#EffShowCredits
+effect:
+	patterns:
+		display credits to %player%
+
+#EffStopServer
+effect:
+	patterns:
+		(stop|shutdown) server
+
+#EffTame
+effect:
+	patterns:
+		tame %entities% to %player%
+
+#EffTexture
+effect:
+	patterns:
+		send [(resource|texture)] pack from %string% to %players%
+
+#Entity Homing
+effect:
+	patterns:
+		make %entity% home towards %location%
+		make %entities% home towards %location% normally
+
+#Escape Lines
+effect:
+	patterns:
+		escape %number% [(level[s]|line[s])]
+
+#Evaluate Input Effect
+effect:
+	patterns:
+		evaluate %string/markup%
+		^%markup%
+
+#Format Inventory Slot
+effect:
+	patterns:
+		format slot %number% of %players% with %itemstack% to close then run %string/lambda%
+		format slot %number% of %players% with %itemstack% to run %string/lambda%
+		format slot %number% of %players% with %itemstack% to close
+		format slot %number% of %players% with %itemstack% to (be|act) unstealable
+		unformat slot %number% of %players%
+
+#Leash Entities
+effect:
+	patterns:
+		make %entities% (leash|lead) %livingentities%
+		(leash|lead) %livingentities% to %entities%
+
+#Make Damage
+effect:
+	patterns:
+		(make|force) %livingentities% [to] damage %livingentities% by %number%
+
+#Make Say
+effect:
+	patterns:
+		(make|force) %players% say %strings%
+
+#Make Sleep
+effect:
+	patterns:
+		(make|force) %player% [to] sleep at %location%
+
+#Pathfind
+effect:
+	patterns:
+		make %livingentities% pathfind to %location% (with|at) speed %number%
+
+#Play MIDI
+effect:
+	patterns:
+		play midi [from] %string% (for|to) %players% [at [tempo] %number%] [with id %string%]
+		play midi from (website|link) %string% (for|to) %players% [at [tempo] %number%] [with id %string%]
+
+#Preinit Driver Option
+effect:
+	patterns:
+		$ init <.+>
+
+#Restore Inventory
+effect:
+	patterns:
+		restore %inventories% (to|from) %string%
+
+#SQL Password Option
+effect:
+	patterns:
+		$ db password <.+>
+
+#SQL URL Option
+effect:
+	patterns:
+		$ db url <.+>
+
+#SQL Username Option
+effect:
+	patterns:
+		$ db username <.+>
+
+#Safely Execute Thread
+effect:
+	patterns:
+		$ thread
+
+#Set Block Without Updates
+effect:
+	patterns:
+		@noupdate::set %blocks% to %itemtype%
+
+#Spawn Falling Block
+effect:
+	patterns:
+		spawn falling block of %itemtype% at %locations%
+		spawn damaging falling block of %itemtype% at %locations%
+		spawn undroppable falling block of %itemtype% at %locations%
+		spawn damaging undroppable falling block of %itemtype% at %locations%
+		spawn undroppable damaging falling block of %itemtype% at %locations%
+
+#Stop MIDI
+effect:
+	patterns:
+		stop midi[s] [[with] id] %strings%
+
+#Trail Projectile
+effect:
+	patterns:
+		trail projectile with %particles%
+
+#skQueryPerms Option
+effect:
+	patterns:
+		$ use permissions
+
+#CondBoolean
+condition:
+	patterns:
+		%booleans%
+
+#Entity has Potion
+condition:
+	patterns:
+		%livingentities% (has|have) [potion [effect]] %potioneffecttypes%
+		%livingentities% (doesn't|does not|do not|don't) have [potion [effect]] %potioneffecttypes%
+
+#File existance
+#Checks whether or not a file at the defined path(s) exist.
+condition:
+	patterns:
+		file %string% (does|does(n't| not)) exist
+		existance of [file] %string% is %boolean%
+
+#Is Block
+condition:
+	patterns:
+		%itemtype% is [a] block
+		%itemtype% (isn't|is not) [a] block
+
+#Is Divisible
+condition:
+	patterns:
+		%numbers% (is|are) divisible by %number%
+		%number% (isn't|is not|aren't|are not) divisible by %number%
+
+#Is Prime
+condition:
+	patterns:
+		%numbers% (is|are) [a] prime [number]
+		%numbers% (isn't|is not|aren't|are not) [a] prime [number]
+
+#Is Within Cuboid
+condition:
+	patterns:
+		%locations% (is|are) within %location% (to|and) %location%
+		%locations% (are|is)(n't| not) within %location% (to|and) %location%
+
+#Midi is playing
+condition:
+	patterns:
+		midi [ids] %strings% (are|is) playing
+		midi [ids] %strings% (are|is)(n't| not) playing
+
+#Within Border
+condition:
+	patterns:
+		%locations% is [with]in [world[ ]border[s]] %worldborder%
+		%locations% (isn't|is not) [with]in [world[ ]border[s]] %worldborder%
+
+#Lambda when
+event "lambda_when":
+	patterns:
+		when %predicate% [[with] limit[(ing|er)] %boolean%]
+
+#On Book Editing
+event "book_editing":
+	patterns:
+		[on] [book] edit
+	event-values: world, player, itemtype
+
+#On Close Inventory
+event "close_inventory":
+	patterns:
+		[on] inventory [window] close
+	event-values: inventory, player
+
+#On Enchant
+event "enchant":
+	patterns:
+		[on] enchant
+	event-values: block, player, itemtype, itemstack
+
+#On Falling Block Land
+event "falling_block_land":
+	patterns:
+		[on] block land
+	event-values: block, world, commandsender, entity, itemstack, location
+
+#On Flight Toggle
+event "flight_toggle":
+	patterns:
+		[on] [player] toggl(e|ing) (flight|fly)
+		[on] [player] (flight|fly) toggl(e|ing)
+	event-values: world, player
+
+#On Generic Move
+event "generic_move":
+	patterns:
+		[on] any move[ment]
+	event-values: vent-location, block, teleportcause, world, player
+
+#On Horse Jump
+event "horse_jump":
+	patterns:
+		[on] horse jump
+	event-values: world, commandsender, entity, location
+
+#On Inventory Click
+event "inventory_click":
+	patterns:
+		[on] inventory click
+	event-values: inventoryaction, clicktype, string, world, slot, inventory, player, itemstack, itemtype
+
+#On Item Projectile Hit
+event "item_projectile_hit":
+	patterns:
+		[on] item [projectile] hit
+	event-values: livingentity, itemtype, location
+
+#On Server Ping
+event "server_ping":
+	patterns:
+		[on] [server] [list] ping
+
+#On Sheep Dye
+event "sheep_dye":
+	patterns:
+		[on] sheep dye
+	event-values: world, commandsender, entity, location
+
+#On Vehicle Collide With Block
+event "vehicle_collide_with_block":
+	patterns:
+		[on] vehicle (block collide|collide with block)
+	event-values: entity, block, world, entity
+
+#On Vehicle Collide With Entity
+event "vehicle_collide_with_entity":
+	patterns:
+		[on] vehicle (entity collide|collide with entity)
+	event-values: entity, block, world, entity
+
+#Script Options Header
+event "script_options_header":
+	patterns:
+		script options
+
+#Tab Complete
+event "tab_complete":
+	patterns:
+		tab complet(er|ion) [for [command]] %string%
+	event-values: player
+
+#ExprArrayValue
+expression:
+	patterns:
+		index %number% of %objects%
+	return type: Object
+#ExprArrowCrit
+expression:
+	patterns:
+		[the] critical arrow (state|ability|mode) of %entities%
+		%entities%'[s] critical arrow (state|ability|mode)
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Boolean
+#ExprArrowKnockback
+expression:
+	patterns:
+		[the] arrow knockback [amount] of %entities%
+		%entities%'[s] arrow knockback [amount]
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Number
+#ExprArt
+expression:
+	patterns:
+		[the] [displayed] art of %entities%
+		%entities%'[s] [displayed] art
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: art
+#ExprBlankInventories
+expression:
+	patterns:
+		inventory of %inventorytype%
+		chest with %number% row[s]
+		chest with %number% row[s] named %string%
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	return type: Inventory
+#ExprBlastRadius
+expression:
+	patterns:
+		[the] (blast|explosion) (radius|size|yield) of %entities%
+		%entities%'[s] (blast|explosion) (radius|size|yield)
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Number
+#ExprBlockChunk
+expression:
+	patterns:
+		blocks within %chunk%
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	return type: Block
+#ExprBlockCube
+expression:
+	patterns:
+		blocks within %location% (to|and) %location%
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	return type: Block
+#ExprBlockInChunk
+expression:
+	patterns:
+		[the] block at %number%, %number%, %number% in [chunk] %chunk%
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	return type: Block
+#ExprBorder
+expression:
+	patterns:
+		[the] world[ ]border[s] of %worlds%
+		%worlds%'[s] world[ ]border[s]
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: worldborder
+#ExprBorderCenter
+expression:
+	patterns:
+		[the] [world[ ]border[s]] center of %worldborders%
+		%worldborders%'[s] [world[ ]border[s]] center
+	set:
+#		(internal code)
+	return type: Location
+#ExprBorderDamageAmount
+expression:
+	patterns:
+		[the] [world[ ]border[s]] damage [amount] of %worldborders%
+		%worldborders%'[s] [world[ ]border[s]] damage [amount]
+	set:
+#		(internal code)
+	return type: Number
+#ExprBorderDamageBuffer
+expression:
+	patterns:
+		[the] [world[ ]border[s]] [damage] buffer of %worldborders%
+		%worldborders%'[s] [world[ ]border[s]] [damage] buffer
+	set:
+#		(internal code)
+	return type: Number
+#ExprBorderSize
+expression:
+	patterns:
+		(size|diameter) of world[ ]border[s] %worldborders% [over [a [(time|period) of]] %timespan%]
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	return type: Number
+#ExprBorderWarningDistance
+expression:
+	patterns:
+		[the] [world[ ]border[s]] warning distance of %worldborders%
+		%worldborders%'[s] [world[ ]border[s]] warning distance
+	set:
+#		(internal code)
+	return type: Number
+#ExprBorderWarningTime
+expression:
+	patterns:
+		[the] [world[ ]border[s]] warning time of %worldborders%
+		%worldborders%'[s] [world[ ]border[s]] warning time
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	return type: Number
+#ExprCharacterIndex
+expression:
+	patterns:
+		char[acter][s] at [index] %numbers% (within|in) %strings%
+	return type: Text
+#ExprCheck
+expression:
+	patterns:
+		check[ed] %predicate%
+	return type: Boolean
+#ExprColoredPotion
+expression:
+	patterns:
+		blank %potioneffecttype% [colo[u]r[ed]] potion
+	return type: Item / Material
+#ExprComparisons
+expression:
+	patterns:
+		%object%[ ]===[ ]%object%
+		%object%[ ]==[ ]%object%
+		%object%[ ]\>[ ]%object%
+		%object%[ ]\<[ ]%object%
+		%object%[ ]\>=[ ]%object%
+		%object%[ ]\<=[ ]%object%
+	return type: Boolean
+#ExprComplicatedMath
+expression:
+	patterns:
+		sin[e] %number%
+		cos[ine] %number%
+		tan[gent] %number%
+		arc sin[e] %number%
+		arc cos[ine] %number%
+		arc tan[gent] %number%
+		hyperbolic sin[e] %number%
+		hyperbolic cos[ine] %number%
+		hyperbolic tan[gent] %number%
+		[natural ]log[arithm] %number%
+		base(-| )10 log[arithm] %number%
+		signum %number%
+		(sqrt|square root)[ of] %number%
+		(%number% factorial|%number%!)
+	return type: Number
+#ExprDefaultValue
+expression:
+	patterns:
+		%object%[ ]?[ ]%object%
+	return type: Object
+#ExprDirectionFromTo
+expression:
+	patterns:
+		direction from %location% to %location%
+	return type: Direction
+#ExprEnchantLevel
+expression:
+	patterns:
+		[the] enchant(ing|ment|) level
+	return type: integer
+#ExprEntities
+expression:
+	patterns:
+		[the] entities of %chunks%
+		%chunks%'[s] entities
+	add:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	return type: Entity
+#ExprExplodedBlocks
+expression:
+	patterns:
+		[the] (destroyed|exploded|boom boomed) blocks
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	return type: Block
+#ExprFlightMode
+expression:
+	patterns:
+		[the] fl(y|ight) (state|ability|mode) of %players%
+		%players%'[s] fl(y|ight) (state|ability|mode)
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Boolean
+#ExprFormerLocation
+expression:
+	patterns:
+		[the] (past|former) move[ment] [location]
+	return type: Location
+#ExprGlowingItemStack
+expression:
+	patterns:
+		[skquery] glowing %itemstacks%
+	return type: Item / Material
+#ExprHealthScale
+expression:
+	patterns:
+		[the] scaled health of %players%
+		%players%'[s] scaled health
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Number
+#ExprHealthScaleMode
+expression:
+	patterns:
+		[the] scaled health (state|ability|mode) of %players%
+		%players%'[s] scaled health (state|ability|mode)
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Boolean
+#ExprHotbarSlot
+expression:
+	patterns:
+		[the] (current|selected) hotbar slot [id] of %players%
+		%players%'[s] (current|selected) hotbar slot [id]
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Number
+#ExprIIf
+expression:
+	patterns:
+		%boolean%[ ]?[ ]%object%[ ]:[ ]%object%
+	return type: Object
+#ExprImageLocal
+expression:
+	patterns:
+		[the] [buffered[ ]]image stored as %string%
+	return type: Object
+#ExprImageURL
+expression:
+	patterns:
+		[the] [buffered[ ]]image from [url] %string%
+	return type: Object
+#ExprIncendiaryExplosion
+expression:
+	patterns:
+		[the] (blast|explosion) fire (state|ability|mode) of %entities%
+		%entities%'[s] (blast|explosion) fire (state|ability|mode)
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Boolean
+#ExprInput
+expression:
+	patterns:
+		%*classinfo% input
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Object
+#ExprInventoryName
+expression:
+	patterns:
+		inventory (title|name)
+	return type: Text
+#ExprInventoryNameContainer
+expression:
+	patterns:
+		[the] inventory (title|name)[s] of %inventories%
+		%inventories%'[s] inventory (title|name)[s]
+	set:
+#		(internal code)
+	return type: Text
+#ExprInventorySerials
+expression:
+	patterns:
+		[the] serialized contents of %inventory%
+		%inventory%'[s] serialized contents
+	set:
+#		(internal code)
+	return type: Text
+#ExprItemStackSize
+expression:
+	patterns:
+		[the] [global] [max] stack size of %inventories%
+		%inventories%'[s] [global] [max] stack size
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Number
+#ExprKeyString
+expression:
+	patterns:
+		random %number% (char|long|length) string from [charset] %markup%
+	return type: Text
+#ExprLambdaConcatenate
+expression:
+	patterns:
+		%lambda%\>%lambda%
+		%predicate%\>%predicate%
+	return type: Object
+#ExprLandBoats
+expression:
+	patterns:
+		[the] land boat (state|mode|ability) of %entities%
+		%entities%'[s] land boat (state|mode|ability)
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Boolean
+#ExprLoadedChunks
+expression:
+	patterns:
+		[the] loaded chunks of %worlds%
+		%worlds%'[s] loaded chunks
+	return type: Chunk
+#ExprMaxSpeed
+expression:
+	patterns:
+		[the] [maximum] minecart speed of %entities%
+		%entities%'[s] [maximum] minecart speed
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Number
+#ExprMessageFormat
+expression:
+	patterns:
+		message format
+	set:
+#		(internal code)
+	return type: Text
+#ExprModulus
+expression:
+	patterns:
+		%number% mod %number%
+	return type: Number
+#ExprMoonPhase
+expression:
+	patterns:
+		[the] [current] moon phase of %world%
+		%world%'[s] [current] moon phase
+	set:
+#		(internal code)
+	return type: moonphase
+#ExprNewLine
+expression:
+	patterns:
+		(nl|new[ ]line)
+	return type: Text
+#ExprNotBoolean
+expression:
+	patterns:
+		(!|not )%boolean%
+	return type: Boolean
+#ExprNthPrime
+expression:
+	patterns:
+		%number%(st|nd|rd|th) prime
+	return type: integer
+#ExprNull
+expression:
+	patterns:
+		null
+	return type: Object
+#ExprOpenInventory
+expression:
+	patterns:
+		[the] (current|open) inventory of %player%
+		%player%'[s] (current|open) inventory
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	return type: Inventory
+#ExprPluginVersion
+expression:
+	patterns:
+		[the] version of %string%
+		%string%'[s] version
+	return type: Text
+#ExprPrimer
+expression:
+	patterns:
+		[the] (primer|fuse lighting piece of shit) of %entities%
+		%entities%'[s] (primer|fuse lighting piece of shit)
+	add:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	return type: Entity
+#ExprRadix
+expression:
+	patterns:
+		radix %number% of %number%
+	return type: Text
+#ExprRegexMatches
+expression:
+	patterns:
+		groups %number% of %string% matched (to|with|against) %string%
+	return type: Text
+#ExprRomanNumeralFrom
+expression:
+	patterns:
+		[the] arabic num(ber|eral) of %strings%
+		%strings%'[s] arabic num(ber|eral)
+	return type: Number
+#ExprRomanNumeralTo
+expression:
+	patterns:
+		[the] roman num(ber|eral) of %numbers%
+		%numbers%'[s] roman num(ber|eral)
+	return type: Text
+#ExprSQLQuery
+expression:
+	patterns:
+		result of query %string%
+	return type: queryresult
+#ExprSQLQueryObjects
+expression:
+	patterns:
+		objects in column %string% from %queryresult%
+	return type: Object
+#ExprSerial
+expression:
+	patterns:
+		[the] serialized inventory of %player%
+		%player%'[s] serialized inventory
+	return type: Text
+#ExprTabCompleteArgument
+expression:
+	patterns:
+		arg[ument] at %number%
+	return type: Text
+#ExprTabCompletions
+expression:
+	patterns:
+		[tab] (completions|suggestions)
+	add:
+#		(internal code)
+	return type: Text
+#ExprTameOwner
+expression:
+	patterns:
+		[the] (tamer|[pet] owner) of %entities%
+		%entities%'[s] (tamer|[pet] owner)
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Player
+#ExprTileEntities
+expression:
+	patterns:
+		[the] tile entities of %chunks%
+		%chunks%'[s] tile entities
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	return type: Block
+#ExprTimeAbs
+expression:
+	patterns:
+		[the] time of %players%
+		%players%'[s] time
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Time
+#ExprTimeRel
+expression:
+	patterns:
+		(relative|player) time of %player% [with relative %boolean%]
+		%player%'s (relative|player) time [with relative %boolean%]
+	set:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Time
+#ExprTntSource
+expression:
+	patterns:
+		[the] (primer|fuse lighting piece of shit) of %entities%
+		%entities%'[s] (primer|fuse lighting piece of shit)
+	add:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	return type: Entity
+#ExprURLText
+expression:
+	patterns:
+		text from [url] %string%
+	return type: Text
+#ExprValues
+expression:
+	patterns:
+		[all ]enum values of %classinfo%
+	return type: Text
+#ExprVillagerJob
+expression:
+	patterns:
+		[the] villager (profession|job) of %entities%
+		%entities%'[s] villager (profession|job)
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: profession
+#ExprWhere
+expression:
+	patterns:
+		%objects% where %predicate%
+	return type: Object
+#ExprYaml
+expression:
+	patterns:
+		yaml (value|nodes|nodes with keys|list) %string% from [file] %string%
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Object

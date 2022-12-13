@@ -1,0 +1,229 @@
+#AUTOMATIC GENERATED SKRIPT FILE
+#COPYRIGHT JOHN HEIKENS
+
+#Armour Change Client Side
+#Change what a player is wearing for another player, client side.
+effect:
+	patterns:
+		make %livingentities% appear to be wearing %itemstacks% in slot %itemslots% [(for|to) %players%]
+		set armo[u]r of %livingentities% to %itemstacks% in slot %itemslots% [(for|to) %players%]
+
+#Block Break Animation
+#Sends a block break animation at a stage to players. 0–9 are the displayable destroy stage any other number like -1 will reset it.
+effect:
+	patterns:
+		show [%players%] [a] block break animation at %locations% with stage %number%
+		show [a] block break [animation] stage %number% at %locations% [for %players%]
+		show stacking block break [animation] stage %number% at %locations% [for %players%]
+
+#Client Glowing
+#Make entities glow for players.
+effect:
+	patterns:
+		set client glowing of %livingentities% to %boolean% [(for|to) %players%]
+
+#EffSetClientBorder
+effect:
+	patterns:
+		set client [side] [world] border of %players% to [(size|radius|diameter)] %number% and [center [at] [location]] %location%
+
+#EffToastNotification
+effect:
+	patterns:
+		send %players% [advancement] toast [notification] %string% with [icon] %itemstack% and frame %advancementframe%
+
+#Red Screen Effect
+#Send the border warning red screen effect to someone. Time is required to reset it, otherwise it's forever.
+effect:
+	patterns:
+		send red [world] [border] screen [effect] to %players% [for %timespan%]
+
+#Send Client Border
+#Send a border to a player. This effect is for 1.16.3 and lower. 1.16.4 and up use the set border effect.
+effect:
+	patterns:
+		send client [side] [world] border %clientworldborder% to %players%
+		set client [side] [world] border of %players% to %clientworldborder%
+
+#Anvil Click
+#Check the click type of the anvil click event.
+condition:
+	patterns:
+		[the] anvil click[ed] [type] (was|is)(|n('|o)t) %anvilclicks%
+
+#Sign Open
+#Checks if a sign gui is open to a player. Skacket sign guis only.
+condition:
+	patterns:
+		%players% (has|have) [a] sign [gui] open
+		%players% (doesn't|does not|do not|don't) have [a] sign [gui] open
+
+#On anvil gui use
+event "anvil_gui_use":
+	patterns:
+		[on] anvil gui use
+	event-values: string, world, anvilclick, player
+
+#On named sound
+#Called when a sound is to be played to the client.
+event "named_sound":
+	patterns:
+		[on] [named] sound [%sounds%] [(trigger|play)]
+		[on] player hear[ing] sound [%sounds%]
+	event-values: sound, number, soundcategory, player, location
+
+#On player dig
+#Called when a sound is to be played to the client.
+event "player_dig":
+	patterns:
+		[on] [player] [(start|stop|abandon)] [block] (min(e|ing)|dig[ging]) [(for|of) %itemtypes%]
+		[on] player release (use item|(right mouse button|right[(-| )]click))
+	event-values: direction, block, world, player, playerdigtype, location
+
+#On server sign change
+#Called when the server sends a sign change event to a player.
+#Useful for sending lines on a sign to exact players, or permission based to see text on a sign.
+#Examples:
+#on server sending sign change:
+#	player doesn't have permission "vip.sign.see"
+#	location of block is {signs::vipEvent}
+#	cancel event
+event "server_sign_change":
+	patterns:
+		[on] server [sending] sign change
+	event-values: block, world, player, location
+
+#On steer vehicle
+#Called when a player attempts to move the entity they're riding.
+#Examples:
+#on steering vehicle left or right:
+event "steer_vehicle":
+	patterns:
+		[on] (steering [vehicle] [%movements%]|vehicle steer[ing])
+	event-values: player
+
+#ExprClientBorderCenter
+expression:
+	patterns:
+		[the] client [side] [world] border center [location] of %clientworldborders%
+		%clientworldborders%'[s] client [side] [world] border center [location]
+	set:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Location
+#ExprClientBorderOldRadius
+expression:
+	patterns:
+		[the] client [side] [world] border old radius of %clientworldborders%
+		%clientworldborders%'[s] client [side] [world] border old radius
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	return type: Number
+#ExprClientBorderPortalTeleportBoundary
+expression:
+	patterns:
+		[the] client [side] [world] border [portal] teleport boundary of %clientworldborders%
+		%clientworldborders%'[s] client [side] [world] border [portal] teleport boundary
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	return type: Number
+#ExprClientBorderRadius
+expression:
+	patterns:
+		[the] client [side] [world] border radius of %clientworldborders%
+		%clientworldborders%'[s] client [side] [world] border radius
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	return type: Number
+#ExprClientBorderSpeed
+expression:
+	patterns:
+		[the] client [side] [world] border speed of %clientworldborders%
+		%clientworldborders%'[s] client [side] [world] border speed
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	return type: Number
+#ExprClientBorderWarningDistance
+expression:
+	patterns:
+		[the] client [side] [world] border warning [block] distance of %clientworldborders%
+		%clientworldborders%'[s] client [side] [world] border warning [block] distance
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Number
+#ExprClientBorderWarningTime
+expression:
+	patterns:
+		[the] client [side] [world] border warning [time] of %clientworldborders%
+		%clientworldborders%'[s] client [side] [world] border warning [time]
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Timespan
+#ExprClientWorldBorder
+expression:
+	patterns:
+		[a] new client [side] [world] border (with|for) %worlds%
+	return type: Client World Border
+#ExprLines
+expression:
+	patterns:
+		[the] lines
+	return type: Text
+#ExprMovement
+expression:
+	patterns:
+		[the] movements
+	return type: Steer Movements
+#ExprPitch
+expression:
+	patterns:
+		[the] pitch
+	return type: Number
+#ExprRawSlot
+expression:
+	patterns:
+		[the] [clicked] raw slot
+	return type: Number
+#ExprSoundLocation
+expression:
+	patterns:
+		[the] sound location
+	return type: Number
+#ExprVolume
+expression:
+	patterns:
+		[the] volume
+	return type: Number

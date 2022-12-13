@@ -1,0 +1,442 @@
+#AUTOMATIC GENERATED SKRIPT FILE
+#COPYRIGHT JOHN HEIKENS
+
+#EffCallMethodWithParams
+effect:
+	patterns:
+		call (function|method) %string% with param[meter][s] %objects% in class[ named] %string%
+
+#EffCallMethodWithoutParams
+effect:
+	patterns:
+		call (function|method) %string% [without param[meter][s]] in class[ named] %string%
+
+#EffCreateCooldown
+effect:
+	patterns:
+		(delete|reset|finish) cooldown %string%
+		(delete|reset|finish) cooldown %string% (for|of) %player%
+
+#EffCreateCooldown
+effect:
+	patterns:
+		create cooldown %string% for %timespan%
+		create cooldown %string% (for|of) %player% for %timespan%
+
+#EffEssentialsDelHome
+effect:
+	patterns:
+		delete home %string% of %player%
+
+#EffEssentialsMakePlayerBecomeAFK
+effect:
+	patterns:
+		make %player% become afk
+		make %player% become (no afk|active)
+
+#EffEssentialsMakePlayerGod
+effect:
+	patterns:
+		make %player% become god
+		disable god[ mode] for %player%
+
+#EffEssentialsMakePlayerIgnore
+effect:
+	patterns:
+		make %player% ignore %player%
+		make %player% (doesn't ignore|unignore) %player%
+
+#EffEssentialsMakePlayerJailed
+effect:
+	patterns:
+		jail %player%
+		unjail %player%
+
+#EffEssentialsMakePlayerMuted
+effect:
+	patterns:
+		mute %player%
+		unmute %player%
+
+#EffEssentialsMakeSocialSpy
+effect:
+	patterns:
+		enable social spy for %player%
+		disable social spy for %player%
+
+#EffEssentialsMakeVanish
+effect:
+	patterns:
+		vanish %player%
+		unvanish %player%
+
+#EffEssentialsSendMail
+effect:
+	patterns:
+		send mail %string% to %player%
+
+#EffOpenAnvilGUI
+effect:
+	patterns:
+		open[ a[n]] anvil gui name[d] %string% to %player%
+		open[ a[n]] anvil gui name[d] %string% to %player% with[ default] text %string%
+		open[ a[n]] anvil gui name[d] %string% to %player% with item %itemstack%
+		open[ a[n]] anvil gui name[d] %string% to %player% with[ default] text %string% and [with ]item %itemstack%
+
+#CondCooldownFinish
+condition:
+	patterns:
+		cooldown %string% is (finish[ed]|over|done)
+		cooldown %string% of %player% is (finish[ed]|over|done)
+		cooldown %string% is(n't| not) (finish[ed]|over|done)
+		cooldown %string% of %player% is(n't| not) (finish[ed]|over|done)
+
+#CondEssentialsAFK
+condition:
+	patterns:
+		%player% is afk
+		%player% is(n't| not) afk
+
+#CondEssentialsCanBuild
+condition:
+	patterns:
+		essentials %player% can build
+		essentials %player% cannot build
+
+#CondEssentialsCanInteractVanish
+condition:
+	patterns:
+		%player% can interact vanish
+		%player% cannot interact vanish
+
+#CondEssentialsGodMode
+condition:
+	patterns:
+		%player% is[ in] god[ mode]
+		%player% is(n't| not)[ in] god[ mode]
+
+#CondEssentialsHasHome
+condition:
+	patterns:
+		%player% ha(s|ve)[ a[n]] home
+		%player% does(n't| not) ha(s|ve)[ a[n]] home
+		%player% ha(s|ve)(n't| not)[ a[n]] home
+
+#CondEssentialsHasPowertools
+condition:
+	patterns:
+		%player% ha(s|ve) powertool[s]
+		%player% does(n't| not) ha(s|ve) powertool[s]
+		%player% ha(s|ve)(n't| not) powertool[s]
+
+#CondEssentialsIgnore
+condition:
+	patterns:
+		%player% (ignore|is ignoring) %player%
+		%player% does(n't| not) ignore %player%
+
+#CondEssentialsIsJailed
+condition:
+	patterns:
+		%player% is jail[ed]
+		%player% is(n't| not) jail[ed]
+
+#CondEssentialsIsMuted
+condition:
+	patterns:
+		%player% is mute[d]
+		%player% is(n't| not) muted
+
+#CondEssentialsPowerToolsEnabled
+condition:
+	patterns:
+		%player% ha(s|ve) powertool[s] enable[d]
+		%player% does(n't| not) ha(s|ve) powertool[s] enable[d]
+		%player% ha(s|ve)(n't| not) powertool[s] enable[d]
+
+#CondEssentialsSocialSpyEnabled
+condition:
+	patterns:
+		%player% ha(s|ve) social spy[ enable[d]]
+		%player% does(n't| not) ha(s|ve) social spy[ enable[d]]
+		%player% ha(s|ve)(n't| not) social spy[ enable[d]]
+
+#CondEssentialsVanish
+condition:
+	patterns:
+		%player% is vanish[ed]
+		%player% is(n't| not) vanish[ed]
+
+#CondEven
+condition:
+	patterns:
+		%number% is even
+		%number% is(n't| not) even
+
+#CondOdd
+condition:
+	patterns:
+		%number% is odd
+		%number% is(n't| not) odd
+
+#On AFK Toggle
+event "afk_toggle":
+	patterns:
+		[on] afk[ status] (change|toggle)
+	event-values: player
+
+#On Anvil GUI
+event "anvil_gui":
+	patterns:
+		[on] (close|confirm|done)[ a[n]] anvil gui name[d] %string%
+		[on] (close|confirm|done)[ a[n]] anvil gui
+	event-values: string, inventory, player
+
+#On User Balance Update
+event "user_balance_update":
+	patterns:
+		[on] [user ](balance|money) (update|change)
+	event-values: double, player
+
+#On Vehicle Steer Backward
+event "vehicle_steer_backward":
+	patterns:
+		[on] vehicle steer backward
+	event-values: player
+
+#On Vehicle Steer Forward
+event "vehicle_steer_forward":
+	patterns:
+		[on] vehicle steer forward
+	event-values: player
+
+#On Vehicle Steer Jump
+event "vehicle_steer_jump":
+	patterns:
+		[on] vehicle steer jump
+	event-values: player
+
+#On Vehicle Steer Left
+event "vehicle_steer_left":
+	patterns:
+		[on] vehicle steer left
+	event-values: player
+
+#On Vehicle Steer Right
+event "vehicle_steer_right":
+	patterns:
+		[on] vehicle steer right
+	event-values: player
+
+#ExprAnvilGUIInputText
+expression:
+	patterns:
+		[input ]text of anvil( |-)gui
+	return type: Text
+#ExprAnvilGUIName
+expression:
+	patterns:
+		name of anvil( |-)gui
+	return type: Text
+#ExprBlockPower
+expression:
+	patterns:
+		power of %block%
+		%block%['s] power
+	return type: integer
+#ExprClientVersion
+expression:
+	patterns:
+		(minecraft|mc) version of %player%
+	return type: integer
+#ExprCooldownLeftTime
+expression:
+	patterns:
+		cooldown[ left][ time] %string%
+		cooldown[ left][ time] %string% of %player%
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: Timespan
+#ExprCountry
+expression:
+	patterns:
+		country of ip %string%
+		country of %player%
+		country code of ip %string%
+		country code of %player%
+		ip %string%['s] country
+		%player%['s] country
+		ip %string%['s] country code
+		%player%['s] country code
+	return type: Text
+#ExprEssentialsHome
+expression:
+	patterns:
+		home of %player%
+		%player%['s] home
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	return type: Location
+#ExprEssentialsHome
+expression:
+	patterns:
+		home %string% of %player%
+		%player%['s] home %string%
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	return type: Location
+#ExprEssentialsHomes
+expression:
+	patterns:
+		homes of %player%
+		%player%['s] homes
+	return type: Text
+#ExprEssentialsJail
+expression:
+	patterns:
+		jail of %player%
+		%player%['s] jail
+	set:
+#		(internal code)
+	return type: Text
+#ExprEssentialsJailTimeout
+expression:
+	patterns:
+		jail timeout of %player%
+		%player%['s] jail timeout
+	set:
+#		(internal code)
+	return type: long
+#ExprEssentialsLastAccountName
+expression:
+	patterns:
+		last account name of %player%
+		%player%['s] last account name
+	return type: Text
+#ExprEssentialsLastLoginAddress
+expression:
+	patterns:
+		last login address of %player%
+		%player%['s] last login address
+	return type: Text
+#ExprEssentialsLogoutLocation
+expression:
+	patterns:
+		log[ ]out[ location] of %player%
+		%player%['s] log[ ]out[ location]
+	return type: Location
+#ExprEssentialsMuteTimeout
+expression:
+	patterns:
+		mute timeout of %player%
+		%player%['s] mute timeout
+	set:
+#		(internal code)
+	return type: long
+#ExprEssentialsNickname
+expression:
+	patterns:
+		essential[s] nick[ ]name %player%
+		%player%['s] essential[s] nick[ ]name
+	set:
+#		(internal code)
+	return type: Text
+#ExprListSort
+expression:
+	patterns:
+		%objects% (sorted|in order)
+	return type: Object
+#ExprMathsAbsoluteValue
+expression:
+	patterns:
+		abs[olute] [value of ]%number%
+	return type: double
+#ExprMathsCubeRoot
+expression:
+	patterns:
+		cube root of %number%
+		cbrt[ of] %number%
+	return type: double
+#ExprMathsDegreesToRad
+expression:
+	patterns:
+		%number% deg[ree[s]][ converted] (to|in) rad[ian[s]]
+	return type: double
+#ExprMathsExp
+expression:
+	patterns:
+		exp[onential][ of] %number%
+	return type: double
+#ExprMathsExpBase
+expression:
+	patterns:
+		exp[onential] %number% in base %number%
+		exp[onential] in base %number% of %number%
+	return type: double
+#ExprMathsLogBase
+expression:
+	patterns:
+		log[arithm] %number% in base %number%
+		log[arithm] in base %number% of %number%
+	return type: double
+#ExprMathsPi
+expression:
+	patterns:
+		speed of[ the] light
+		light['s] speed
+	return type: double
+#ExprMathsPi
+expression:
+	patterns:
+		pi
+	return type: double
+#ExprMathsRadToDegrees
+expression:
+	patterns:
+		%number% rad[ian[s]][ converted] (to|in) deg[ree[s]]
+	return type: double
+#ExprMathsStatsAverage
+expression:
+	patterns:
+		average of %numbers%
+	return type: double
+#ExprMathsStatsMedian
+expression:
+	patterns:
+		median of %numbers%
+	return type: double
+#ExprRandomAlphaNumericString
+expression:
+	patterns:
+		[a ]random alpha[ ]numeric[al] (text|string) of length %integer%
+	return type: Text
+#ExprRandomLicenceCode
+expression:
+	patterns:
+		[a ]random license code
+	return type: Text
+#ExprRandomUUID
+expression:
+	patterns:
+		[a ]random uuid
+	return type: Object
+#ExprReturnOfMethodWithParams
+expression:
+	patterns:
+		return of (function|method) %string% with param[meter][s] %objects% in class[ named] %string%
+	return type: Object
+#ExprReturnOfMethodWithoutParams
+expression:
+	patterns:
+		return of (function|method) %string% [without param[meter][s]] in class[ named] %string%
+	return type: Object

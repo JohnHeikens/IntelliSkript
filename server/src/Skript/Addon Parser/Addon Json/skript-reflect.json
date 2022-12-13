@@ -61,18 +61,6 @@
         "[on] [(all)] %javatypes% [(at|on|with) priority <.+>]"
       ],
       "cancellable": true
-    },
-    {
-      "id": "custom_event",
-      "name": "On custom event",
-      "patterns": [
-        "[on] [on] first network join",
-        "[on] [on] citizen interact",
-        "[on] [on] redis command",
-        "[on] [on] network (leave|quit)",
-        "[on] [on] network join"
-      ],
-      "cancellable": true
     }
   ],
   "conditions": [
@@ -105,64 +93,9 @@
       "patterns": [
         "(parse[d] later) <.+>"
       ]
-    },
-    {
-      "id": "CustomCondition",
-      "name": "CustomCondition",
-      "patterns": [
-        "%object% has offline permission %string%",
-        "%offlineplayer% is a bedrock user",
-        "%offlineplayer% is friends with %offlineplayer%",
-        "%entity% is ticking",
-        "axoserver named %string% exists",
-        "%offlineplayer% isn't on this server",
-        "%offlineplayer% doesn't have offline permission %string%",
-        "%offlineplayer% is on [the] network",
-        "%offlineplayer% is on this server",
-        "axoserver named %string% is online"
-      ]
     }
   ],
   "effects": [
-    {
-      "id": "CustomEffect",
-      "name": "CustomEffect",
-      "patterns": [
-        "wait non async [for] %timespan%",
-        "chuckle read %string% from %player% in network %boolean%",
-        "[make|let] chuckle note %string%",
-        "[let|make] chuckle wait for reaction",
-        "chuckle execute command %string%",
-        "[let|make] chuckle greet %player% in network %boolean%",
-        "register %offlineplayer% to the database",
-        "make %entity% damage %entity% by %number% using %damagecause%",
-        "make server named %string% execute [console] command %string%",
-        "play chat notification",
-        "send %offlineplayer% to axoserver [named] %string%",
-        "send %offlineplayer% to [a] backup server",
-        "set line %number% of network motd to %string%",
-        "make server named %string% execute code %string%",
-        "play chat notification to %player%",
-        "run bash lines %strings%",
-        "senddebug %string%",
-        "softkick %player%",
-        "create void world named %string%",
-        "wait for typing %string%",
-        "axosend %string% to %offlineplayer%",
-        "stop [the] server safely",
-        "play notification %string% [with volume %number%] [with pitch %number%] to %player% [in channel %string%]",
-        "run bash lines %strings% as root",
-        "play notification %string% [with pitch %number%]",
-        "set line matching %string% in file %string% to %string%",
-        "send lag notification because [of] %string%",
-        "make all servers execute [console] command %string%",
-        "[let|make] chuckle message %string% to %player%",
-        "make bungee[cord] execute [console] command %string%",
-        "react to kill of %entity% by %entity%",
-        "[let|make] chuckle say %string% in network %boolean%",
-        "tame %entities% to %player%"
-      ]
-    },
     {
       "id": "EffCallEvent",
       "name": "EffCallEvent",
@@ -222,60 +155,6 @@
   ],
   "expressions": [
     {
-      "id": "CustomExpression",
-      "name": "CustomExpression",
-      "return type": "Object",
-      "patterns": [
-        "%players%'[s] ignorars",
-        "network wide list %string%",
-        "%offlineplayers%'[s] profile %string%",
-        "%offlineplayers%'[s] profile name",
-        "[the] offline prefix of %offlineplayers%",
-        "[the] profile name of %offlineplayers%",
-        "%number% axp as levels",
-        "%number% rounded randomly",
-        "%entities%'[s] collidability",
-        "%offlineplayers%'[s] offline suffix",
-        "[the] chat channel of %players%",
-        "[the] colorized name of %objects%",
-        "%string% repeated %number% times",
-        "[the] collidability of %entities%",
-        "[all] players [online] (at|on) [the] network",
-        "%offlineplayers%'[s] axoserver",
-        "warp [named|with name] %string%",
-        "[the] axo nickname of %offlineplayers%",
-        "[the] full axo name of %offlineplayers%",
-        "url encoded %string%",
-        "%offlineplayers%'[s] axo nickname",
-        "%offlineplayers%'[s] full axo name",
-        "player [named|with name] %string%",
-        "url from %string% with parameters %strings%",
-        "[the] profile %string% of %offlineplayers%",
-        "[the] axoserver of %offlineplayers%",
-        "[all] players [online] (at|on) [the] [axo]server [named|with name] %string%",
-        "bold %string%",
-        "%entities%'[s] collision exemptions",
-        "%offlineplayers%'[s] axp",
-        "%offlineplayers%'[s] chuckle name",
-        "%objects%'[s] colorized name",
-        "%number% axp levels as axp",
-        "network wide variable %string%",
-        "[the] offline suffix of %offlineplayers%",
-        "%offlineplayers%'[s] offline prefix",
-        "%number% notes higher",
-        "[the] ignorars of %players%",
-        "%string% as essentialscolors",
-        "placeholder replaced %string% for %offlineplayer%",
-        "%numbers%'[s] sign",
-        "[the] sign of %numbers%",
-        "[the] axp of %offlineplayers%",
-        "%players%'[s] chat channel",
-        "all registered players",
-        "[the] collision exemptions of %entities%",
-        "[the] chuckle name of %offlineplayers%"
-      ]
-    },
-    {
       "id": "ExprArrayAccess",
       "name": "ExprArrayAccess",
       "return type": "Object",
@@ -321,15 +200,6 @@
       "return type": "javaobject",
       "patterns": [
         "\\[%objects%[ as %javatype%[ ]]\\]"
-      ]
-    },
-    {
-      "id": "ExprCustomEvent",
-      "name": "ExprCustomEvent",
-      "return type": "event",
-      "patterns": [
-        "[a] [new] custom event %string% [(with|using)] data %objects%",
-        "[a] [new] custom event %string% [(with|using) [[event-]values] %objects%] [[and] [(with|using)] data %objects%]"
       ]
     },
     {

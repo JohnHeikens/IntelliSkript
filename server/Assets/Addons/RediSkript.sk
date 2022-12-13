@@ -1,0 +1,42 @@
+#AUTOMATIC GENERATED SKRIPT FILE
+#COPYRIGHT JOHN HEIKENS
+
+#EffSendMessage
+effect:
+	patterns:
+		send redis message[s] %strings% to [channel] %string%
+
+#On redis message
+event "redis_message":
+	patterns:
+		[on] redis message
+	event-values: string, date
+
+#ExprChannel
+expression:
+	patterns:
+		redis channel
+	return type: Text
+#ExprMessage
+expression:
+	patterns:
+		redis message
+	return type: Text
+#ExprMessageDate
+expression:
+	patterns:
+		redis message date
+	return type: Date
+#ExprVariableInChannel
+expression:
+	patterns:
+		variable[s] %strings% in [redis] [channel] %string%
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	delete:
+#		(internal code)
+	return type: Object

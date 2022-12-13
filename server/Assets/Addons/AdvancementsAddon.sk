@@ -1,0 +1,42 @@
+#AUTOMATIC GENERATED SKRIPT FILE
+#COPYRIGHT JOHN HEIKENS
+
+#EffAwardAdvancement
+effect:
+	patterns:
+		(award|give) [all criteria of] advancement %advancement% to %player%
+
+#EffCreateAdvancement
+effect:
+	patterns:
+		(make|create) [a[n]] advancement [[with] name[d]] %string%[[(,| and)] [with]] title %string%[[(,| and)] [with]] desc[ription] %string%[[(,| and)] [with]] icon %string%[[(,| and)] [with]] trigger %string%[[(,| and)] [with]] background %string%[[(,| and)] [for]] world %string%[[(,| and)] [with]] item %itemtype%
+
+#EffRevokeAdvancement
+effect:
+	patterns:
+		(revoke|take|remove) [all criteria of] advancement %advancement% from %player%
+
+#On [player] advancement (award|get|complete)
+event "[player]_advancement_(award|get|complete)":
+	patterns:
+		[on] [AdvancementsAddon] [player] advancement (award|get|complete)
+	event-values: world, advancement, player, namespacedkey
+
+#ExprAdvancementCriteria
+expression:
+	patterns:
+		advancement criteria of %advancement%
+		%advancement%'s advancement criteria
+	return type: Text
+#ExprAdvancementKey
+expression:
+	patterns:
+		advancement [name[ ]spaced] key of %advancement%
+		%advancement%'s advancement [name[ ]spaced] key
+	return type: NamespacedKey
+#ExprAdvancementProgress
+expression:
+	patterns:
+		advancement progress of %advancement% (for|of|from) %player%
+		%player%'s advancement progress for %advancement%
+	return type: Object

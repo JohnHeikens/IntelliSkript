@@ -1,45 +1,12 @@
+import { NestHierarchy } from './NestHierarchy';
 
-export class SkriptNestHierarchy {
-	start = 0;
-	end = 0;
+export class SkriptNestHierarchy extends NestHierarchy<SkriptNestHierarchy> {
 	character = '';
 
-	children: SkriptNestHierarchy[] = [];
-	//positions:number[] = [];
-	//characters = "";
-	getActiveNode(): SkriptNestHierarchy {
-		if (this.children.length > 0 && this.children[this.children.length - 1].end == 0) {
-			return this.children[this.children.length - 1].getActiveNode();
-		}
-		return this;
-	}
+	override children: SkriptNestHierarchy[] = [];
 
-
-	constructor(start: number, character: string) {
-		this.start = start;
+	constructor(start: number, character: string, end = 0) {
+		super(start, end);
 		this.character = character;
-	}
-
-	getChildNodeAt(pos: number): SkriptNestHierarchy | undefined{
-		for(const child of this.children) {
-			if(pos >= child.start && pos < child.end){
-				return child;
-			} 
-		}
-		return undefined;
-	}
-	getMatchingClosingbrace(pos: number): number | undefined {
-		const childNode = this.getChildNodeAt(pos);
-		if(childNode){
-			if(childNode.start == pos){
-				return childNode.end;
-			}
-			else{
-				return childNode.getMatchingClosingbrace(pos);
-			}
-		}
-		else{
-			return undefined;
-		}
 	}
 }

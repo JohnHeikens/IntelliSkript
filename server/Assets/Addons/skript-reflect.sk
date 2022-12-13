@@ -1,0 +1,276 @@
+#AUTOMATIC GENERATED SKRIPT FILE
+#COPYRIGHT JOHN HEIKENS
+
+#EffCallEvent
+effect:
+	patterns:
+		call [event] %events%
+
+#EffContinue
+effect:
+	patterns:
+		continue
+
+#EffDelayEffect
+effect:
+	patterns:
+		delay [the] [current] effect
+
+#EffExpressionStatement
+effect:
+	patterns:
+		[(await)] %javaobject%
+
+#EffImport
+effect:
+	patterns:
+		import <((?:[_a-zA-Z$][\w$]*\.)*(?:[_a-zA-Z$][\w$]*))(?:\s+as ([_a-zA-Z$][\w$]*))?>
+
+#EffNegateCondition
+effect:
+	patterns:
+		negate [the] [current] condition
+
+#EffReturn
+effect:
+	patterns:
+		return [%objects%]
+
+#EffRunSection
+effect:
+	patterns:
+		run section %section% [(sync|async)] [with [arguments] %objects%] [and store [the] result in %objects%] [(and wait)]
+
+#CondEventCancelled
+condition:
+	patterns:
+		%events% (is|are) cancelled
+		%events% (isn't|is not|aren't|are not) cancelled
+
+#CondExpressionStatement
+condition:
+	patterns:
+		[(await)] %javaobject%
+
+#CondIsInstanceOf
+condition:
+	patterns:
+		%objects% (is|are) [a[n]] instance[s] of %javatypes%
+		%objects% (is not|isn't|are not|aren't) [a[n]] instance[s] of %javatypes%
+
+#CondParseLater
+condition:
+	patterns:
+		(parse[d] later) <.+>
+
+#Consent
+event "consent":
+	patterns:
+		skript-(mirror|reflect), I know what I'm doing
+
+#Define Condition
+event "define_condition":
+	patterns:
+		[(local)] condition <.+>
+		[(local)] condition
+		[(local)] %*classinfos% property condition <.+>
+
+#Define Constant
+event "define_constant":
+	patterns:
+		option <.+>
+
+#Define Effect
+event "define_effect":
+	patterns:
+		[(local)] effect <.+>
+		[(local)] effect
+
+#Define Event
+event "define_event":
+	patterns:
+		[(local)] [custom] event %string%
+
+#Define Expression
+event "define_expression":
+	patterns:
+		[(local)] [((plural|non(-|[ ])single))] expression <.+>
+		[(local)] [((plural|non(-|[ ])single))] expression
+		[(local)] [((plural|non(-|[ ])single))] %*classinfos% property <.+>
+
+#Import
+event "import":
+	patterns:
+		import
+
+#On Bukkit
+event "bukkit":
+	patterns:
+		[on] [(all)] %javatypes% [(at|on|with) priority <.+>]
+
+#ExprArrayAccess
+expression:
+	patterns:
+		%javaobject%\[%number%\]
+	set:
+#		(internal code)
+	delete:
+#		(internal code)
+	return type: Object
+#ExprBits
+expression:
+	patterns:
+		[the] (bit %number%|bit(s| range) [from] %number%( to |[ ]-[ ])%number%) of %numbers%
+		%numbers%'[s] (bit %number%|bit(s| range) [from] %number%( to |[ ]-[ ])%number%)
+	get:
+#		(internal code)
+	return type: Number
+#ExprChangeValue
+expression:
+	patterns:
+		[the] change value[(s)]
+	return type: Object
+#ExprClassReference
+expression:
+	patterns:
+		(<(boolean|byte|double|char|short|float|int|long)>|%javatype%).class
+	return type: javaobject
+#ExprCollect
+expression:
+	patterns:
+		\[%objects%[ as %javatype%[ ]]\]
+	return type: javaobject
+#ExprCustomEventValue
+expression:
+	patterns:
+		[the] [event-]<.+>
+	get:
+#		(internal code)
+	return type: Object
+#ExprEvent
+expression:
+	patterns:
+		[the] event
+	return type: event
+#ExprEventClasses
+expression:
+	patterns:
+		event-classes
+	return type: javatype
+#ExprEventData
+expression:
+	patterns:
+		[extra] [event(-| )]data %string%
+	return type: Object
+#ExprExpression
+expression:
+	patterns:
+		[the] expr[ession][(s)](-| )<\d+>
+	return type: Object
+#ExprFunction
+expression:
+	patterns:
+		[the] function(s| [reference[s]]) %strings% [called with [[the] [arg[ument][s]]] %objects%]
+	return type: Object
+#ExprJavaCall
+expression:
+	patterns:
+		[(try)] %object%..%string%[(([%objects%]))]
+		[(try)] %object%.<(\[[\w.$]*])?([^0-9. \[\]][^. \[\]]*\b)(\[[\w.$, ]*])?>[(([%objects%]))]
+		[(try)] [a] new %javatype%([%objects%])
+	return type: Object
+#ExprJavaError
+expression:
+	patterns:
+		[the] [last] [java] (throwable|exception|error)
+	return type: Object
+#ExprJavaType
+expression:
+	patterns:
+		[the] [java] class %string%
+	return type: javatype
+#ExprJavaTypeOf
+expression:
+	patterns:
+		[the] [java] class[es] of %objects%
+		%objects%'[s] [java] class[es]
+	return type: javatype
+#ExprMatchedPattern
+expression:
+	patterns:
+		[the] [matched] pattern
+	return type: Number
+#ExprMemberNames
+expression:
+	patterns:
+		[the] (field|method) names of %objects%
+		%objects%'[s] (field|method) names
+	return type: Text
+#ExprMembers
+expression:
+	patterns:
+		[the] (fields|methods|constructors) of %objects%
+		%objects%'[s] (fields|methods|constructors)
+	return type: Text
+#ExprNewArray
+expression:
+	patterns:
+		new (<(boolean|byte|double|char|short|float|int|long)>|%javatype%)\[%number%\]
+	return type: javaobject
+#ExprParseMark
+expression:
+	patterns:
+		[the] [parse[r]] mark
+	return type: Number
+#ExprParseRegex
+expression:
+	patterns:
+		[the] [parse[r]] (regex|regular expression)(-| )<\d+>
+	return type: Text
+#ExprParseTags
+expression:
+	patterns:
+		[the] parse[r] tags
+	return type: Text
+#ExprProxy
+expression:
+	patterns:
+		[a] [new] proxy [instance] of %javatypes% (using|from) %objects%
+	return type: Object
+#ExprRawExpression
+expression:
+	patterns:
+		[the] raw %objects%
+	return type: Object
+#ExprSpread
+expression:
+	patterns:
+		...%object%
+	return type: Object
+#ImportHandler
+expression:
+	patterns:
+		ChatChannel
+		LuckPerms
+		Player
+		Set
+		User
+		LuckPermsProvider
+		MineverseChatAPI
+		MineverseChatPlayer
+		IWarps
+		Essentials
+		ServerCommandEvent
+		VaultHook
+		PlaceholderAPI
+		EntityDamageByEntityEvent
+		JavaString
+		UUID
+		Bukkit
+		World
+	return type: javatype
+#LitNullObject
+expression:
+	patterns:
+		null
+	return type: null

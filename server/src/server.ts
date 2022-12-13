@@ -39,9 +39,10 @@ import {
 import { SkriptWorkSpace } from './Skript/Section/SkriptWorkSpace';
 import assert = require('assert');
 import { TokenTypes } from './TokenTypes';
-import { AddonParser } from './Skript/Addon Parser/AddonParser';
-import * as fs from 'fs';
+import { AddonParser, intelliSkriptAddonSkFilesDirectory } from './Skript/Addon Parser/AddonParser';
 import path = require('path');
+import * as fs from 'fs';
+import { intelliSkriptServerDirectory, release } from './IntelliSkriptConstants';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -53,46 +54,32 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 //workspace folders
 const currentWorkSpaces: SkriptWorkSpace[] = [];
 
+let addonFileWorkSpace: SkriptWorkSpace;
 //files without any workspace
-const currentLooseFiles: SkriptFile[] = [];
+let looseWorkSpace: SkriptWorkSpace;//SkriptFile[] = [];
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = true;
 let hasDiagnosticRelatedInformationCapability = false;
 
-function getSkriptWorkSpaceByUri(uri: string): SkriptWorkSpace | undefined {
+function getSkriptWorkSpaceByFileUri(uri: string): SkriptWorkSpace | undefined {
 	for (const ws of currentWorkSpaces) {
-		if (ws.uri.startsWith(uri)) {
+		if (ws.uri?.startsWith(uri)) {
 			return ws;
 		}
 	}
-	return undefined;
-}
-
-function getLooseFileIndexByUri(uri: string): number | undefined {
-	for (let i = 0; i < currentLooseFiles.length; i++) {
-		if (currentLooseFiles[i].document.uri == uri) {
-			return i;
-		}
-	}
-	return undefined;
-}
-
-function getLooseFileByUri(uri: string): SkriptFile | undefined {
-	for (const f of currentLooseFiles) {
-		if (f.document.uri == uri) {
-			return f;
-		}
-	}
-	return undefined;
+	return looseWorkSpace;
+	//return undefined;
 }
 
 function getSkriptFileByUri(uri: string): SkriptFile | undefined {
-	const ws = getSkriptWorkSpaceByUri(uri);
+	const ws = getSkriptWorkSpaceByFileUri(uri);
 	if (ws) {
 		return ws.getSkriptFileByUri(uri);
 	}
-	return getLooseFileByUri(uri);
+	else {
+		return looseWorkSpace.getSkriptFileByUri(uri);
+	}
 }
 
 let semanticTokensLegend: SemanticTokensLegend | undefined;
@@ -127,10 +114,16 @@ function computeLegend(capability: SemanticTokensClientCapabilities): SemanticTo
 }
 
 connection.onInitialize((params: InitializeParams) => {
+	//currentWorkSpaces.push(new SkriptWorkSpace());
 	if (params.workspaceFolders != null) {
-		for (const folder of params.workspaceFolders)
-			currentWorkSpaces.push(new SkriptWorkSpace(folder.uri));
+		for (const folder of params.workspaceFolders) {
+			const ws = new SkriptWorkSpace(addonFileWorkSpace, folder.uri);
+			ws.parent = addonFileWorkSpace;
+			//ws.eventPatterns = addonFileWorkSpace.eventPatterns;//TODO: clone patterns to workspace
+			currentWorkSpaces.push(ws);
+		}
 	}
+
 	const capabilities = params.capabilities;
 
 	// Does the client support the `workspace/configuration` request?
@@ -242,9 +235,43 @@ connection.onInitialize((params: InitializeParams) => {
 	});
 });
 
+
+
+function InitializeAddonSkripts() {
+	addonFileWorkSpace = new SkriptWorkSpace(undefined, intelliSkriptAddonSkFilesDirectory);
+
+	fs.readdir(intelliSkriptAddonSkFilesDirectory, undefined, function (err: NodeJS.ErrnoException | null, files: string[]) {
+		if (err) {
+			console.error("Could not list the directory.", err);
+			process.exit(1);
+		}
+
+		files.forEach(function (file, index) {
+			// Make one pass and make the file complete
+			const completePath = path.join(intelliSkriptAddonSkFilesDirectory, file);
+
+			const document = TextDocument.create("file:///" + completePath, "sk", 0, fs.readFileSync(completePath, "utf8"));
+			const context = new SkriptContext(document);
+			const skriptFile = new SkriptFile(addonFileWorkSpace, context);
+			addonFileWorkSpace.files.push(skriptFile);
+		});
+	});
+	looseWorkSpace = new SkriptWorkSpace(addonFileWorkSpace);
+}
+function delay(ms: number) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
 connection.onInitialized(async () => {
 
-	fs.writeFileSync('C:\\Users\\Eigenaar\\OneDrive\\Documenten\\test files\\Skript.sk',AddonParser.parseFile());
+	//works for the client only
+	//const myExtDir = vscode.extensions.getExtension ("JohnHeikens.IntelliSkript").extensionPath;
+	if (!release) {
+		AddonParser.ParseFiles();
+		//await delay(1000);//give the debugger time to start
+
+	}
+
+	InitializeAddonSkripts();
 
 	if (hasConfigurationCapability) {
 		// Register for all configuration changes.
@@ -258,7 +285,7 @@ connection.onInitialized(async () => {
 
 	//compatibility with all main vscode plugins
 	const sel: DocumentSelector = [
-		{ pattern: '**/*.sk'}
+		{ pattern: '**/*.sk' }
 		//{ language: 'skript' },
 		//{ language: 'Sk-VSC' },
 		//{ language: 'sk' },
@@ -365,11 +392,7 @@ function getDocumentSettings(resource: string): Thenable<IntelliSkriptSettings> 
 // Only keep settings for open documents
 documents.onDidClose(e => {
 	documentSettings.delete(e.document.uri);
-	const i = getLooseFileIndexByUri(e.document.uri);
-	if (i != undefined) {
-		currentLooseFiles.splice(i, 1);
-	}
-	const ws = getSkriptWorkSpaceByUri(e.document.uri);
+	const ws = getSkriptWorkSpaceByFileUri(e.document.uri);
 	if (ws) {
 		const fileIndex = ws.getSkriptFileIndexByUri(e.document.uri);
 		if (fileIndex != undefined) {
@@ -393,7 +416,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
 	const context = new SkriptContext(textDocument);
 
-	const ws = getSkriptWorkSpaceByUri(textDocument.uri);
+	const ws = getSkriptWorkSpaceByFileUri(textDocument.uri);
 
 	if (ws) {
 		const fileIndex = ws.getSkriptFileIndexByUri(textDocument.uri);
@@ -406,19 +429,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 		}
 		else {
 			//add document to skript workspace
-			ws.files.push(new SkriptFile(undefined, context));
-		}
-	}
-	else {
-		const fileIndex = getLooseFileIndexByUri(textDocument.uri);
-		if (fileIndex == undefined) {
-			currentLooseFiles.push(new SkriptFile(undefined, context));
-		}
-		else {
-			context.currentBuilder = currentLooseFiles[fileIndex].builder;
-			delete currentLooseFiles[fileIndex];
-			const currentFile = new SkriptFile(undefined, context);
-			currentLooseFiles[fileIndex] = currentFile;
+			ws.files.push(new SkriptFile(ws, context));
 		}
 	}
 
@@ -438,6 +449,10 @@ connection.onDefinition((params): DefinitionLink[] => {
 	if (f) {
 		const lines = f.document.getText().split('\n');
 		const clickedLineText = lines[params.position.line];
+		const indentationEndIndex = SkriptFile.getIndentationEndIndex(clickedLineText);
+		if (params.position.character < indentationEndIndex) {
+			return [];//clicked on indentation
+		}
 
 		const variableRegex = /\{(.*?)\}/g;
 		let match;
@@ -469,6 +484,32 @@ connection.onDefinition((params): DefinitionLink[] => {
 						}
 					}];
 				}
+			}
+		}
+
+		//check for patterns
+		const h = exactSection.lineInfo.get(params.position.line);
+		if (h) {
+			const relativePosition = params.position.character - indentationEndIndex;
+			const match = h.getDeepestChildNodeAt(relativePosition);
+			if (match.matchedPattern) {
+				const pattern = match.matchedPattern;
+				//const definitionLocation = pattern.definitionLocation;
+
+				//const targetLineRange = {
+				//	start: { line: definitionLocation.range.start.line, character: SkriptFile.getIndentationEndIndex(targetLine) },
+				//	end: { line:  definitionLocation.range.end.line, character: targetLine.length }
+				//};
+
+				return [{
+					targetUri: pattern.definitionLocation.uri,
+					targetRange: pattern.definitionLocation.range,
+					targetSelectionRange: pattern.definitionLocation.range,
+					originSelectionRange: {
+						start: { line: params.position.line, character: indentationEndIndex + match.start },
+						end: { line: params.position.line, character: indentationEndIndex + match.end }
+					}
+				}];
 			}
 		}
 	}
@@ -678,3 +719,4 @@ documents.listen(connection);
 
 // Listen on the connection
 connection.listen();
+
