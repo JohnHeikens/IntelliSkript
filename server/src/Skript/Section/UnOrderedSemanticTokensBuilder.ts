@@ -21,10 +21,10 @@ export class UnOrderedSemanticTokensBuilder {
 	push(token: SemanticToken): void {
 		this.tokens.push(token);
 	}
-	previousResult(id: string) : void{
+	previousResult(id: string): void {
 		this._builder.previousResult(id);
 	}
-	private pushSorted() : void {
+	private pushSorted(): void {
 		const sortedTokens = this.tokens.sort((a, b) => {
 			if (a.position.line != b.position.line)
 				return a.position.line - b.position.line;
@@ -35,11 +35,12 @@ export class UnOrderedSemanticTokensBuilder {
 
 		//add the sorted tokens to the token map
 		//may cause problems with overlapping tokens
-		sortedTokens.forEach(token => 
+		sortedTokens.forEach(token =>
 			this._builder.push(token.position.line, token.position.character, token.length, token.type, token.modifier)
-			);
+		);
+		this.tokens = [];
 	}
-	buildEdits() : SemanticTokens | SemanticTokensDelta {
+	buildEdits(): SemanticTokens | SemanticTokensDelta {
 		this.pushSorted();
 		return this._builder.buildEdits();
 	}

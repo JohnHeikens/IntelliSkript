@@ -577,6 +577,8 @@ connection.languages.semanticTokens.onDelta((params) => {
 		return { data: [] };
 	}
 	else {
+		//const result = file.builder.build();
+
 		const result = file.builder.buildEdits();
 		if (result.resultId != undefined) {
 			//already tell the builder that next builds will be deltas

@@ -128,11 +128,11 @@ export class SkriptContext {
 
 		let lastEnd = currentHierarchyNode.start;
 		for (const child of currentHierarchyNode.children) {
-			HighLightDetails(lastEnd, child.start + 1);
+			HighLightDetails(lastEnd, child.start);
 			this.highLightRecursively(child);
 			lastEnd = child.end;
 		}
-		HighLightDetails(lastEnd, currentHierarchyNode.end + 1);
+		HighLightDetails(lastEnd, currentHierarchyNode.end);
 	}
 
 	createHierarchy(addDiagnostics = false) {

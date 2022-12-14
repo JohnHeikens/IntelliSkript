@@ -366,31 +366,37 @@ export class PatternTree {
 							//optional
 							const node = regExpHierarchy.getChildNodeStartAt(i + 1);
 							if (node) {
-								//this is an optional segment. the space should only be added if the option is chosen.
-								//for example:
-								//in (the)? bus -> in( the)? bus
-								//(in)? the bus -> (in )? the bus
-								//(in )?(the)? bus -> (in )?(the )?bus
-								//(in )?(the )? bus -> (in )?(the  )? bus -> (in )? (the )? bus
-								if (fixedString[node.end + 1] == '?') {
-									let newFixedString;
-									const spaceLeft = fixedString[i - 1] == ' ';
-									const endPos = node.end + 2;
-									const spaceRight = fixedString[endPos] == ' ';
-									const startLeft = ((i == 0) || fixedString[i - 1] == '^');
-									if (spaceRight && (spaceLeft || startLeft)) {
-										fixedString = fixedString.substring(0, node.end) + " )?" + fixedString.substring(endPos + 1);
-										continue fixLoop;//recalculate hierarchy
-									}
-									else {
-										if (spaceLeft) {
-											const endRight = ((endPos) == fixedString.length) || fixedString[endPos] == '$';
-											if (endRight || !spaceRight) {
-												//incorrect regex, move the brace 1 place
-												//test [so+-+me] thing -> test( some)? thing
-												newFixedString = fixedString.substring(0, i - 1) + '( ' + fixedString.substring(node.start);
-												fixedString = newFixedString;
-												continue fixLoop;//recalculate hierarchy
+								//check if this node has been fixed alreaddy
+								if ((fixedString[node.end - 1] != ' ') && (fixedString[node.start] != ' ')) {
+
+									//this is an optional segment. the space should only be added if the option is chosen.
+									//for example:
+									//in (the)? bus -> in( the)? bus
+									//(in)? the bus -> (in )? the bus
+									//(in )?(the)? bus -> (in )?(the )?bus
+									//(in )?(the )? bus -> (in )?(the  )? bus -> (in )? (the )? bus
+									if (fixedString[node.end + 1] == '?') {
+										let newFixedString;
+										const spaceLeft = fixedString[i - 1] == ' ';
+										const endPos = node.end + 2;
+										const spaceRight = (fixedString[endPos] == ' ');
+										const startLeft = ((i == 0) || fixedString[i - 1] == '^');
+										if (spaceRight && (spaceLeft || startLeft)) {
+											fixedString = fixedString.substring(0, node.end) + " )?" + fixedString.substring(endPos + 1);
+											//regExpHierarchy = createRegExpHierarchy(fixedString);
+											continue fixLoop;//recalculate hierarchy
+										}
+										else {
+											if (spaceLeft) {
+												const endRight = ((endPos) == fixedString.length) || fixedString[endPos] == '$';
+												if (endRight || !spaceRight) {
+													//incorrect regex, move the brace 1 place
+													//test [so+-+me] thing -> test( some)? thing
+													newFixedString = fixedString.substring(0, i - 1) + '( ' + fixedString.substring(node.start);
+													fixedString = newFixedString;
+													//regExpHierarchy = createRegExpHierarchy(fixedString);
+													continue fixLoop;//recalculate hierarchy
+												}
 											}
 										}
 									}
