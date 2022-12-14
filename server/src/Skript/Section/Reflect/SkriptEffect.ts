@@ -5,6 +5,7 @@ import{
 	SkriptSection
 
 } from "../SkriptSection";
+import { TokenTypes } from '../../../TokenTypes';
 export class SkriptEffect extends SkriptPatternContainerSection{
 	createSection(context: SkriptContext): SkriptSection {
 		const regex = /^(parse|trigger|pattern(|s))$/;
@@ -12,6 +13,9 @@ export class SkriptEffect extends SkriptPatternContainerSection{
 
 		if (result == null){
 			context.addDiagnostic(0, context.currentString.length, "cannot recognize this section. make sure to put your code for the effect in triggers");
+		}
+		else{
+			context.addToken(TokenTypes.keyword, 0, context.currentString.length);
 		}
 		return super.createSection(context);
 	}

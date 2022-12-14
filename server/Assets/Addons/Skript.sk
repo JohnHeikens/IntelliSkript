@@ -1972,7 +1972,7 @@ event "block_fertilize":
 event "block_growth":
 	patterns:
 		[on] (plant|crop|block) grow[(th|ing)] [[of] %itemtypes%]
-	event-values: vent-block, block, world, location
+	event-values: past event-block, block, world, location
 
 #On Book Edit
 #Called when a player edits a book.
@@ -2007,7 +2007,7 @@ event "book_sign":
 event "break_mine":
 	patterns:
 		[on] [block] (break[ing]|min(e|ing)) [[of] %itemtypes/blockdatas%]
-	event-values: vent-block, block, world, player, entity, entity, location,  event-block
+	event-values: past event-block, block, world, player, entity, entity, location, future event-block
 
 #On Bucket Empty
 #Called when a player empties a bucket. You can also use the place event with a check for water or lava.
@@ -2018,7 +2018,7 @@ event "bucket_empty":
 	patterns:
 		[on] bucket empty[ing]
 		[on] [player] empty[ing] [a] bucket
-	event-values: vent-block, block, world, player
+	event-values: past event-block, block, world, player
 
 #On Bucket fill
 #Called when a player fills a bucket.
@@ -2029,7 +2029,7 @@ event "bucket_fill":
 	patterns:
 		[on] bucket fill[ing]
 		[on] [player] fill[ing] [a] bucket
-	event-values: block, world, player,  event-block
+	event-values: block, world, player, future event-block
 
 #On Burn
 #Called when a block is destroyed by fire.
@@ -2054,7 +2054,7 @@ event "burn":
 event "can_build_check":
 	patterns:
 		[on] [block] can build check
-	event-values: vent-block, block, world, player, location
+	event-values: past event-block, block, world, player, location
 
 #On Chat
 #Called whenever a player chats. Use chat format to change message format, use chat recipients to edit chat recipients.
@@ -2352,7 +2352,7 @@ event "explosion_prime":
 event "fade":
 	patterns:
 		[on] [block] fad(e|ing) [[of] %itemtypes/blockdatas%]
-	event-values: vent-block, block, world, location,  event-block
+	event-values: past event-block, block, world, location, future event-block
 
 #On Firework Explode
 #Called when a firework explodes.
@@ -2412,7 +2412,7 @@ event "flow":
 	patterns:
 		[on] [block] flow[ing]
 		[on] block mov(e|ing)
-	event-values: block, world, location,  event-block
+	event-values: block, world, location, future event-block
 
 #On Form
 #Called when a block is created, but not by a player, e.g. snow forms due to snowfall, water freezes in cold biomes. This isn't called when block spreads (mushroom growth, water physics etc.), as it has its own event (see spread event).
@@ -2424,7 +2424,7 @@ event "flow":
 event "form":
 	patterns:
 		[on] [block] form[ing] [[of] %itemtypes/blockdatas%]
-	event-values: vent-block, block, world, location
+	event-values: past event-block, block, world, location
 
 #On Fuel Burn
 #Called when a furnace burns an item from its fuel slot.
@@ -2468,7 +2468,7 @@ event "gliding_state_change":
 event "grow":
 	patterns:
 		[on] grow [of (%structuretype%|%itemtype%)]
-	event-values: vent-block, block, world, location,  event-block
+	event-values: past event-block, block, world, location, future event-block
 
 #On Hand Item Swap
 #Called whenever a player swaps the items in their main- and offhand slots.
@@ -2637,7 +2637,7 @@ event "item_merge":
 	patterns:
 		[on] (item[ ][stack]|[item] %itemtypes%) merg(e|ing)
 		[on] item[ ][stack] merg(e|ing) [[of] %itemtypes%]
-	event-values: world, commandsender, itementity, entity, itemtype, location,  event-itementity
+	event-values: world, commandsender, itementity, entity, itemtype, location, future event-itementity
 
 #On Item Spawn
 #Called whenever an item stack is spawned in a world, e.g. as drop of a block or mob, a player throwing items out of their inventory, or a dispenser dispensing an item (not shooting it).
@@ -2747,7 +2747,7 @@ event "lightning_strike":
 event "move":
 	patterns:
 		[on] %entitydata% (move|walk|step)
-	event-values: vent-location, block, teleportcause, world, commandsender, player, entity, location
+	event-values: past event-location, block, teleportcause, world, commandsender, player, entity, location
 
 #On Move On
 #Called when a player moves onto a certain type of block. Please note that using this event can cause lag if there are many players online.
@@ -2758,7 +2758,7 @@ event "move":
 event "move_on":
 	patterns:
 		[on] (step|walk)[ing] (on|over) %*itemtypes%
-	event-values: vent-location, block, teleportcause, world, player
+	event-values: past event-location, block, teleportcause, world, player
 
 #On Physics
 #Called when a physics check is done on a block. By cancelling this event you can prevent some things from happening, e.g. sand falling, dirt turning into grass, torches dropping if their supporting block is destroyed, etc.Please note that using this event might cause quite some lag since it gets called extremely often.
@@ -2828,7 +2828,7 @@ event "piston_retract":
 event "place":
 	patterns:
 		[on] [block] (plac(e|ing)|build[ing]) [[of] %itemtypes/blockdatas%]
-	event-values: vent-block, direction, block, world, player, entity, location
+	event-values: past event-block, direction, block, world, player, entity, location
 
 #On Player World Change
 #Called when a player enters a world. Does not work with other entities!
@@ -2840,7 +2840,7 @@ event "place":
 event "player_world_change":
 	patterns:
 		[on] [player] world chang(ing|e[d])
-	event-values: vent-world, world, player
+	event-values: past event-world, world, player
 
 #On Portal
 #Called when a player uses a nether or end portal. Cancel the event to prevent the player from teleporting.
@@ -2850,7 +2850,7 @@ event "player_world_change":
 event "portal":
 	patterns:
 		[on] [player] portal
-	event-values: vent-location, block, teleportcause, world, player
+	event-values: past event-location, block, teleportcause, world, player
 
 #On Portal Create
 #Called when a portal is created, either by a player or mob lighting an obsidian frame on fire, or by a nether portal creating its teleportation target in the nether/overworld.
@@ -3169,7 +3169,7 @@ event "sponge_absorb":
 event "spread":
 	patterns:
 		[on] spread[ing]
-	event-values: vent-block, block, world, location
+	event-values: past event-block, block, world, location
 
 #On Sprint Toggle
 #Called when a player starts or stops sprinting. Use is sprinting to get whether the player was sprinting before the event was called.
@@ -3228,7 +3228,7 @@ event "target":
 event "teleport":
 	patterns:
 		[on] [player] teleport[ing]
-	event-values: vent-location, block, teleportcause, world, player
+	event-values: past event-location, block, teleportcause, world, player
 
 #On Throwing of an Egg
 #Called when a player throws an egg. You can just use the shoot event in most cases, as this event is intended to support changing the hatched mob and its chance to hatch, but Skript does not yet support that.

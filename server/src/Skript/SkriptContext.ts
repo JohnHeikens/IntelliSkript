@@ -2,9 +2,7 @@ import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
 
-import {
-	Diagnostic, DiagnosticSeverity
-} from 'vscode-languageserver/node';
+import { Diagnostic, DiagnosticSeverity, Location } from 'vscode-languageserver/node';
 import { SkriptNestHierarchy } from '../Nesting/SkriptNestHierarchy';
 
 import {
@@ -14,6 +12,7 @@ import { SemanticToken, UnOrderedSemanticTokensBuilder } from './Section/UnOrder
 import { TokenModifiers } from '../TokenModifiers';
 import { TokenTypes } from '../TokenTypes';
 import { SkriptFile } from './Section/SkriptFile';
+import { IntelliSkriptConstants } from '../IntelliSkriptConstants';
 
 //TOODO: make context able to 'push' and 'pop' (make a function able to modify the context or create an instance while keeping reference to the same diagnostics list
 export class SkriptContext {
@@ -65,13 +64,27 @@ export class SkriptContext {
 	}
 
 	//CAUTION! HIGHLIGHTING SHOULD BE DONE IN ORDER
-	addToken(relativePosition: number, length: number, type: TokenTypes, modifier: TokenModifiers = TokenModifiers.abstract): void {
+	addToken(type: TokenTypes, relativePosition: number = 0, length: number = this.currentString.length, modifier: TokenModifiers = TokenModifiers.abstract): void {
 		const absolutePosition = this.currentDocument.positionAt(this.currentPosition + relativePosition);
 		this.currentBuilder.push(new SemanticToken(absolutePosition, length, type, modifier));
 	}
 
+	getLocation(start: number, length: number): Location {
+		const StartPosition = this.currentDocument.positionAt(this.currentPosition + start);
+		return {
+			uri: this.currentDocument.uri,
+			range: {
+				start: StartPosition,
+				end: {
+					line: StartPosition.line,
+					character: StartPosition.character + length
+				}
+			}
+		};
+	}
+
 	addDiagnostic(relativePosition: number, length: number, message: string, severity: DiagnosticSeverity = DiagnosticSeverity.Error, code?: string, data: unknown = undefined): void {
-		if(severity == DiagnosticSeverity.Error){
+		if (severity == DiagnosticSeverity.Error) {
 			this.hasErrors = true;
 		}
 		const diagnostic: Diagnostic = {
@@ -83,7 +96,7 @@ export class SkriptContext {
 			message: message,
 			source: 'IntelliSkript (click on the error code) -> ',
 			data: data,
-			code: code? code : "IntelliSkript->Undocumented",
+			code: code ? code : "IntelliSkript->Undocumented",
 			codeDescription: { href: 'https://pex.li/intelliskript/' }//https://github.com/JohnHeikens/IntelliSkript/wiki
 		};
 		this.diagnostics.push(diagnostic);
@@ -94,20 +107,22 @@ export class SkriptContext {
 		const HighLightDetails = (start: number, end: number) => {
 			const length = end - start;
 			if (currentHierarchyNode.character == '"') {
-				this.addToken(start, length, TokenTypes.string);
+				this.addToken(TokenTypes.string, start, length);
 			}
 			else if (currentHierarchyNode.character == '{') {
-				this.addToken(start, length, TokenTypes.variable);
+				this.addToken(TokenTypes.variable, start, length);
 			}
 			else {
-				const numberRegExp = /\b(?<!\.)[0-9]{1,}(\.[0-9]{1,}|)(?!\.)\b/g;
 				let p: RegExpExecArray | null;
+				let regEx = RegExp(IntelliSkriptConstants.NumberRegExp, "g");
 				const lastIndex = start;
-				while ((p = numberRegExp.exec(this.currentString.substring(start, end)))) {
-					//this.addToken(lastIndex, (start + p.index) - lastIndex, TokenTypes.number);
-					this.addToken(start + p.index, p[0].length, TokenTypes.number);
+				while ((p = regEx.exec(this.currentString.substring(start, end)))) {
+					this.addToken(TokenTypes.number, start + p.index, p[0].length);
 				}
-				//this.addToken(lastIndex, end - lastIndex, TokenTypes.keyword);
+				regEx = RegExp(IntelliSkriptConstants.BooleanRegExp, "g");
+				while ((p = regEx.exec(this.currentString.substring(start, end)))) {
+					this.addToken(TokenTypes.keyword, start + p.index, p[0].length);
+				}
 			}
 		};
 
@@ -115,14 +130,9 @@ export class SkriptContext {
 		for (const child of currentHierarchyNode.children) {
 			HighLightDetails(lastEnd, child.start + 1);
 			this.highLightRecursively(child);
-			//this.addToken(lastEnd, child.start - lastEnd, TokenTypes.string);
 			lastEnd = child.end;
 		}
 		HighLightDetails(lastEnd, currentHierarchyNode.end + 1);
-		//this.addToken(lastEnd, currentHierarchyNode.end + 1 - lastEnd, TokenTypes.string);
-		//for (const child of currentHierarchyNode.children) {
-		//	this.highLightRecursively(child);
-		//}
 	}
 
 	createHierarchy(addDiagnostics = false) {
@@ -149,10 +159,10 @@ export class SkriptContext {
 			}
 			else if (this.currentString[i] == '%') {
 				const node = this.hierarchy.getActiveNode();
-				if(node.character == '"'){
-					if(this.currentString[i + 1] == '%'){
-                        i++; continue;//skip escaped string characters
-                    }
+				if (node.character == '"') {
+					if (this.currentString[i + 1] == '%') {
+						i++; continue;//skip escaped string characters
+					}
 				}
 				if (node.character == '%') {
 					node.end = i;//pop

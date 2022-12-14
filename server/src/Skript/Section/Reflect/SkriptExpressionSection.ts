@@ -2,6 +2,7 @@ import { SkriptContext } from '../../SkriptContext';
 import { SkriptSection } from '../SkriptSection';
 import { SkriptType } from '../../SkriptType';
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
+import { TokenTypes } from '../../../TokenTypes';
 export class SkriptExpressionSection extends SkriptPatternContainerSection {
 	//set y to x
 	hasGet = false;
@@ -19,6 +20,7 @@ export class SkriptExpressionSection extends SkriptPatternContainerSection {
 	hasRemoveAll = false;
 	returnType = new SkriptType();
 	createSection(context: SkriptContext): SkriptSection {
+		let recognized = true;
 		if (context.currentString == "get") {
 			this.hasGet = true;
 		}
@@ -46,8 +48,12 @@ export class SkriptExpressionSection extends SkriptPatternContainerSection {
 
 
 			if (result == null) {
+				recognized = false;
 				context.addDiagnostic(0, context.currentString.length, "cannot recognize this section");
 			}
+		}
+		if(recognized){
+			context.addToken(TokenTypes.keyword);
 		}
 		return super.createSection(context);
 	}

@@ -272,7 +272,7 @@ event "flight_toggle":
 event "generic_move":
 	patterns:
 		[on] any move[ment]
-	event-values: vent-location, block, teleportcause, world, player
+	event-values: past event-location, block, teleportcause, world, player
 
 #On Horse Jump
 event "horse_jump":

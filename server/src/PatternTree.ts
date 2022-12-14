@@ -10,6 +10,49 @@ function removeDuplicates<T>(array: T[]): T[] {
 	return array.filter((value, index) => array.indexOf(value) === index);
 }
 
+function convertSkriptPatternToRegExp(pattern: string, hierarchy: SkriptNestHierarchy): string {
+	function convertString(input: string): string {
+		const replaceRegex = /\?|\+|\*|\/|\./;
+		return input.replace(replaceRegex, "\\$1");
+	}
+	let currentPosition = hierarchy.start;
+	let fixedString = '';
+	for (const child of hierarchy.children) {
+		if (child.start - 1 > currentPosition) {
+			fixedString += convertString(pattern.substring(currentPosition, child.start - 1));
+		}
+		if (child.character == '[') {
+			fixedString += '(';
+		}
+		else if (child.character == '(') {
+			fixedString += child.character;
+		}
+		else if (child.character == '|') {
+			if (child.start > hierarchy.start) {
+				fixedString += child.character;
+			}
+		}
+		if (child.character == '<') {
+			fixedString += pattern.substring(child.start, child.end);
+		}
+		else {
+			fixedString += convertSkriptPatternToRegExp(pattern, child);
+		}
+		if (child.character == '[') {
+			fixedString += ')?';
+		}
+		else if (child.character == '(') {
+			fixedString += ')';
+		}
+		currentPosition = child.end + 1;
+	}
+	if (currentPosition < hierarchy.end) {
+		fixedString += convertString(pattern.substring(currentPosition, hierarchy.end));
+	}
+	return fixedString;
+	//let fixedString = pattern.substring(hierarchy.start, hierarchy.children[
+}
+
 function createRegExpHierarchy(regExString: string): SkriptNestHierarchy {
 
 	const openBraces = "([<";//< starts a regular expression, we don't have to create a hierarchy in there
@@ -75,11 +118,11 @@ function createRegExpHierarchy(regExString: string): SkriptNestHierarchy {
 
 export class PatternData {
 	definitionLocation: Location;
-	section: SkriptPatternContainerSection;
+	section?: SkriptPatternContainerSection;
 	skriptPatternString: string;
 	regexPatternString: string;
 	patternRegExp: RegExp;
-	constructor(skriptPatternString: string, regexPatternString: string, definitionLocation: Location, section: SkriptPatternContainerSection) {
+	constructor(skriptPatternString: string, regexPatternString: string, definitionLocation: Location, section?: SkriptPatternContainerSection) {
 		this.skriptPatternString = skriptPatternString;
 		this.regexPatternString = regexPatternString;
 		this.patternRegExp = new RegExp(regexPatternString);
@@ -118,7 +161,7 @@ export class PatternTreeElement {
 
 	getMatchingPatternPart(pattern: string, index: number): PatternData | undefined {
 		if (this.endNode) {// && (index == (pattern.length))) {
-			if(index == pattern.length || (pattern[index + 1] == ' ')){
+			if (index == pattern.length || (pattern[index + 1] == ' ')) {
 				return this.endNode;
 			}
 		}
@@ -189,14 +232,58 @@ export class PatternTreeElement {
 		}
 		return currentElements;
 	}
+	clone(): PatternTreeElement {
+		const clone = new PatternTreeElement();
+		clone.patternKey = this.patternKey;
+		clone.endNode = this.endNode;
+		clone.children = new Map<string, PatternTreeElement>();
+		for (const [key, value] of this.children) {
+			//this method is definitely not optimized for memory usage as the nodes aren't linked anymore after this
+			//am option would be to have an optimization function which links all identical nodes as references to a single node
+			//the performance of this tree will increase the less memory it uses because the nodes will be placed in the L1 slots instead of the L2 slots for example
+			clone.children.set(key, value.clone());
+		}
+		return clone;
+	}
+	merge(other: PatternTreeElement): void {
+		for (const [key, value] of other.children) {
+			const k = this.children.get(key);
+			if (k) {
+				k.merge(value);
+			}
+			else {
+				this.children.set(key, value.clone());
+			}
+		}
+		if (other.endNode) {
+			this.endNode = other.endNode;
+		}
+	}
 }
 
-
-export class PatternTree extends PatternTreeElement {
+export class PatternTree {
+	root: PatternTreeElement | undefined;
 	incompatiblePatterns: PatternData[] = [];
+	compatiblePatterns: PatternData[] = [];
 
+	merge(other: PatternTree): void {
+		this.incompatiblePatterns.push(...other.incompatiblePatterns);
+		this.compatiblePatterns.push(...other.compatiblePatterns);
+	}
 
-
+	private addToTree(data: PatternData): void {
+		const regExpHierarchy = createRegExpHierarchy(data.regexPatternString);
+		const endNodes = this.root.addPatternPart(data.regexPatternString, [this.root], regExpHierarchy);
+		for (const node of endNodes) {
+			node.endNode = data;
+		}
+	}
+	compile(): void {
+		this.root = new PatternTreeElement();
+		for (const p of this.compatiblePatterns) {
+			this.addToTree(p);
+		}
+	}
 
 	createHierarchy(context: SkriptContext): SkriptNestHierarchy {
 		const openBraces = "([<";//< starts a regular expression, we don't have to create a hierarchy in there
@@ -256,60 +343,17 @@ export class PatternTree extends PatternTreeElement {
 		return hierarchy;
 	}
 
-	convertToRegExp(pattern: string, hierarchy: SkriptNestHierarchy): string {
-		function convertString(input: string): string {
-			const replaceRegex = /\?|\+|\*|\/|\./;
-			return input.replace(replaceRegex, "\\$1");
-		}
-		let currentPosition = hierarchy.start;
-		let fixedString = '';
-		for (const child of hierarchy.children) {
-			if (child.start - 1 > currentPosition) {
-				fixedString += convertString(pattern.substring(currentPosition, child.start - 1));
-			}
-			if (child.character == '[') {
-				fixedString += '(';
-			}
-			else if (child.character == '(') {
-				fixedString += child.character;
-			}
-			else if (child.character == '|') {
-				if (child.start > hierarchy.start) {
-					fixedString += child.character;
-				}
-			}
-			if (child.character == '<') {
-				fixedString += pattern.substring(child.start, child.end);
-			}
-			else {
-				fixedString += this.convertToRegExp(pattern, child);
-			}
-			if (child.character == '[') {
-				fixedString += ')?';
-			}
-			else if (child.character == '(') {
-				fixedString += ')';
-			}
-			currentPosition = child.end + 1;
-		}
-		if (currentPosition < hierarchy.end) {
-			fixedString += convertString(pattern.substring(currentPosition, hierarchy.end));
-		}
-		return fixedString;
-		//let fixedString = pattern.substring(hierarchy.start, hierarchy.children[
-	}
-
-	addPattern(context: SkriptContext, pattermSectop: SkriptPatternContainerSection) {
 
 
+	addPattern(context: SkriptContext, patternSection: SkriptPatternContainerSection) {
 		const Hierarchy = this.createHierarchy(context);
 		if (!context.hasErrors) {
-			let fixedString = this.convertToRegExp(context.currentString, Hierarchy);
+			let fixedString = convertSkriptPatternToRegExp(context.currentString, Hierarchy);
 
 			try {
 				fixedString = fixedString.trim();
 
-				let regExpHierarchy;
+				let regExpHierarchy: SkriptNestHierarchy;
 
 				//flags: U -> ungreedy, g -> global
 				fixedString = fixedString.replace(/%.*?%/g, '%');
@@ -351,18 +395,8 @@ export class PatternTree extends PatternTreeElement {
 										}
 									}
 								}
-								//else {
-								//	newFixedString = fixedString.substring(0, i - 1) + '(' + fixedString.substring(node.start);
-								//}
 							}
 						}
-						//else if (fixedString[i] == '<') {
-						//	//regex -> remove braces since this is a regex already
-						//	const node = regExpHierarchy.getChildNodeStartAt(i + 1);
-						//	if (node) {
-						//		fixedString = fixedString.substring(0, node.start - 1) + fixedString.substring(node.start, node.end) + fixedString.substring(node.end + 1);
-						//	}
-						//}
 					}
 					break;
 				}
@@ -372,19 +406,15 @@ export class PatternTree extends PatternTreeElement {
 				const data = new PatternData(context.currentString, fixedString, Location.create(context.currentDocument.uri, {
 					start: context.currentDocument.positionAt(context.currentPosition),
 					end: context.currentDocument.positionAt(context.currentPosition + context.currentString.length)
-				}), pattermSectop);
-				if (context.currentString == "expr-<[0-9]+>") {
-					for (let i = 0; i < 2; i++) {
-						i += 1;
-					}
-				}
-				if (/\d\+|(?<!\\)(\+|\*)/.exec(fixedString)) {
+				}), patternSection);
+
+				if (/\d\+|(?<!\\)(\+|\*|\.)/.exec(fixedString)) {
 					//regex is not compatible with the tree
 					this.incompatiblePatterns.push(data);
 				} else {
-					const endNodes = this.addPatternPart(fixedString, [this], regExpHierarchy);
-					for (const node of endNodes) {
-						node.endNode = data;
+					this.compatiblePatterns.push(data);
+					if (this.root) {
+						this.addToTree(data);
 					}
 				}
 			}
@@ -402,11 +432,13 @@ export class PatternTree extends PatternTreeElement {
 				context.addDiagnostic(0, context.currentString.length, message);
 			}
 		}
+
 	}
 
-
+	//the tree should be compiled before this method is called
 	getMatchingPatterns(testString: string, shouldContinue: patternResultProcessor): PatternData | undefined {
-		const data = super.getMatchingPatternPart(testString, 0);
+		if (!this.root) this.compile();
+		const data = this.root.getMatchingPatternPart(testString, 0);
 		if (data) {
 			if (!shouldContinue(data)) {
 				return data;

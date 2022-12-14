@@ -22,10 +22,10 @@ import { SkriptEventSection } from './Reflect/SkriptEventSection';
 import { SkriptExpressionSection } from './Reflect/SkriptExpressionSection';
 import { SkriptOptionsSection } from './SkriptOptionsSection';
 import { SkriptOption } from '../SkriptOption';
-import { PatternTree, PatternData, patternResultProcessor } from '../../PatternTree';
 import { SkriptEventListenerSection } from './SkriptEventListenerSection';
 import { SkriptPropertySection } from './Reflect/SkriptPropertySection';
 import { SkriptType } from '../SkriptType';
+import { PatternTreeContainer, PatternType } from '../PatternTreeContainer';
 
 function removeRemainder(toDivide: number, toDivideBy: number): number {
 	return Math.floor(toDivide / toDivideBy) * toDivideBy;
@@ -38,26 +38,18 @@ export class SkriptFile extends SkriptSection {
 
 	options: SkriptOption[] = [];
 
+	patterns: PatternTreeContainer = new PatternTreeContainer();
 
-	getPatternData(pattern: string, shouldContinue: patternResultProcessor): PatternData | undefined {
-		const result = this.workSpace.effectPatterns.getMatchingPatterns(pattern, shouldContinue);
-		if (result) {
-			return result;
-		}
-		else if (this.workSpace.parent) {
-			const parent = this.workSpace.parent as SkriptWorkSpace;
-			return parent.effectPatterns.getMatchingPatterns(pattern, shouldContinue);
-		}
-		else {
-			return undefined;
-		}
+	addPattern(context: SkriptContext, patternContainerSection: SkriptPatternContainerSection, type: PatternType): void {
+		this.patterns.addPattern(context, patternContainerSection, type);
+		this.workSpace.patterns.addPattern(context, patternContainerSection, type);
 	}
 
 	createSection(context: SkriptContext): SkriptSection {
 		const spaceIndex = context.currentString.indexOf(" ");
 		let patternStartIndex = spaceIndex == -1 ? undefined : spaceIndex + 1;
 		const sectionKeyword = spaceIndex == -1 ? context.currentString : context.currentString.substring(0, spaceIndex);
-		context.addToken(0, sectionKeyword.length, TokenTypes.keyword);
+		context.addToken(TokenTypes.keyword, 0, sectionKeyword.length);
 		let s: SkriptSection;
 		if (sectionKeyword == "function") {
 			s = new SkriptFunction(context, this);
@@ -85,10 +77,10 @@ export class SkriptFile extends SkriptSection {
 			const result = /^((local )?((plural|non-single) )?expression)( .*|)/.exec(context.currentString);
 			if (result) {
 				s = new SkriptExpressionSection(context, this);
-				if (result[4]){
+				if (result[4]) {
 					patternStartIndex = result[1].length + 1;
 				}
-				else{
+				else {
 					patternStartIndex = undefined;
 				}
 			}
@@ -98,10 +90,10 @@ export class SkriptFile extends SkriptSection {
 					s = new SkriptPropertySection(context, new SkriptType(propertyResult[2].substring(1)), this);
 				}
 				else {
-					const pattern = this.workSpace.eventPatterns.getMatchingPatterns(context.currentString,
+					const pattern = this.workSpace.getPatternData(context.currentString,
 						() => {
 							return false;
-						});
+						}, PatternType.event);
 					if (pattern) {
 						//event
 						s = new SkriptEventListenerSection(context, pattern);
@@ -113,8 +105,8 @@ export class SkriptFile extends SkriptSection {
 			}
 		}
 		if ((patternStartIndex != undefined) && (s instanceof SkriptPatternContainerSection)) {
-			const currentTree = ((s instanceof SkriptEventSection) ? this.workSpace.eventPatterns : this.workSpace.effectPatterns);
-			currentTree.addPattern(context.push(patternStartIndex), s);
+			const currentPatternType = ((s instanceof SkriptEventSection) ? PatternType.event : PatternType.effect);
+			this.addPattern(context.push(patternStartIndex), s, currentPatternType);
 		}
 		return s;
 	}
@@ -130,7 +122,7 @@ export class SkriptFile extends SkriptSection {
 
 
 	constructor(workSpace: SkriptWorkSpace, context: SkriptContext) {
-		super(context, undefined);
+		super(context, workSpace);
 		context.currentSkriptFile = this;
 		this.builder = context.currentBuilder;
 		this.workSpace = workSpace;
@@ -150,6 +142,8 @@ export class SkriptFile extends SkriptSection {
 		let expectedIndentationCount = 0;
 		let currentIndentationString = "";
 
+		let lastCodeLine = 0;//the index of the last line which contained code, so no lines with comments
+
 		function popStacks(stacksToPop: number) {
 			if (stacksToPop > 0) {
 				if (context.currentSection != undefined) {
@@ -164,7 +158,7 @@ export class SkriptFile extends SkriptSection {
 						}
 					}
 					for (let i = 0; i < stacksToPop; i++) {
-						context.currentSection.endLine = currentLineIndex;
+						context.currentSection.endLine = lastCodeLine;// currentLineIndex;
 						context.currentSection = context.currentSection?.parent instanceof SkriptSection ? context.currentSection?.parent as SkriptSection : undefined;
 						if (!context.currentSection) {
 							break;
@@ -269,11 +263,13 @@ export class SkriptFile extends SkriptSection {
 				}
 				else {
 					//context.currentString = trimmedLine;
-					trimmedContext.currentSection?.processLine?.(trimmedContext);
+					trimmedContext.currentSection.processLine?.(trimmedContext);
+					//trimmedContext.currentSection.endLine = context.currentLine;
 				}
+				lastCodeLine = currentLineIndex;
 			}
 			if (commentIndex != -1) {
-				currentLineContext.addToken(commentIndex, currentLine.length - commentIndex, TokenTypes.comment);
+				currentLineContext.addToken(TokenTypes.comment, commentIndex, currentLine.length - commentIndex);
 			}
 			currentLineIndex++;
 			currentLineStartPosition += currentLine.length + 1;

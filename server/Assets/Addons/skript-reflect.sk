@@ -140,13 +140,6 @@ expression:
 	patterns:
 		\[%objects%[ as %javatype%[ ]]\]
 	return type: javaobject
-#ExprCustomEventValue
-expression:
-	patterns:
-		[the] [event-]<.+>
-	get:
-#		(internal code)
-	return type: Object
 #ExprEvent
 expression:
 	patterns:

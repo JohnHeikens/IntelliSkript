@@ -114,7 +114,9 @@ export class AddonParser {
 						if (index > 0) {
 							str += ", ";
 						}
-						str += line.substring("event-".length);
+						const eventValueParserRegExp = /(event-)?(.*)/;
+
+						str += eventValueParserRegExp.exec(line)[2];
 					}
 				});
 				str += "\n";
@@ -122,16 +124,18 @@ export class AddonParser {
 
 		});
 		file.expressions?.forEach(expression => {
-			str += generalData(expression);
-			str += "expression:\n";
-			str += patterns(expression);
-			if (expression.changers) {
-				expression.changers.forEach(changer => {
-					str += "\t" + (changer == "unknown" ? "get" : changer) + ":\n";
-					str += "#\t\t(internal code)\n";
-				});
+			if (expression.name != "ExprCustomEventValue") {
+				str += generalData(expression);
+				str += "expression:\n";
+				str += patterns(expression);
+				if (expression.changers) {
+					expression.changers.forEach(changer => {
+						str += "\t" + (changer == "unknown" ? "get" : changer) + ":\n";
+						str += "#\t\t(internal code)\n";
+					});
+				}
+				str += "\treturn type: " + expression["return type"];
 			}
-			str += "\treturn type: " + expression["return type"];
 		});
 		return str;
 	}

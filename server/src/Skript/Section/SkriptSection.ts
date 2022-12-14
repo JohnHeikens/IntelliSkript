@@ -8,13 +8,12 @@ import { Location, DiagnosticSeverity, MarkupContent } from 'vscode-languageserv
 //IMPORT BELOW TO AVOID CIRCULAR DEPENDENCIES
 
 export class SkriptSection extends SkriptSectionGroup {
-	definedVariables: Array<SkriptVariable> = [];
 
 	startLine: number;
 	endLine: number;
 	lineInfo: Map<number, SkriptPatternMatchHierarchy> = new Map<number, SkriptPatternMatchHierarchy>();
 
-	constructor(context: SkriptContext, parent?: SkriptSection) {
+	constructor(context: SkriptContext, parent?: SkriptSectionGroup) {
 		super(parent);
 		this.startLine = context.currentDocument.positionAt(context.currentPosition).line;
 		this.endLine = this.startLine;
@@ -44,7 +43,9 @@ export class SkriptSection extends SkriptSectionGroup {
 	private detectPatternsRecursively(context: SkriptContext, currentNode: SkriptNestHierarchy): SkriptPatternMatchHierarchy[] {
 
 		function convert(input: string): string {
-			return input.replace(/((?<=( |^))-{0,1})(\d+)(\.\d+)?(?!\.)\b/, '%');
+			let result = input.replace(new RegExp(IntelliSkriptConstants.NumberRegExp, "g"), '%');
+			result = result.replace(new RegExp(IntelliSkriptConstants.BooleanRegExp, "g"), '%');
+			return result;
 		}
 
 		const results: SkriptPatternMatchHierarchy[] = [];
@@ -109,11 +110,11 @@ export class SkriptSection extends SkriptSectionGroup {
 						return false;//found
 					}
 				};
-				let result: PatternData | undefined = context.currentSkriptFile.getPatternData(pattern, patternProcessor);
+				let result: PatternData | undefined = this.getPatternData(pattern, patternProcessor, PatternType.effect);
 				let match;
 				const spaceRegex = / /g;
 				while ((!result) && (match = spaceRegex.exec(pattern))) {
-					result = context.currentSkriptFile.getPatternData(pattern.substring(match.index + 1), patternProcessor);
+					result = context.currentSkriptFile.getPatternData(pattern.substring(match.index + 1), patternProcessor, PatternType.effect);
 				}
 				if (result) {
 					//match.index won't help
@@ -165,8 +166,16 @@ export class SkriptSection extends SkriptSectionGroup {
 				isIfStatement = true;
 			}
 		}
-		if (context.currentString.startsWith("if")) {
+		if (context.currentString.startsWith("if ")) {
 			isIfStatement = true;
+			context.addToken(TokenTypes.keyword, 0, "if".length);
+		}
+		else if (context.currentString.startsWith("else if")) {
+			isIfStatement = true;
+			context.addToken(TokenTypes.keyword, 0, "else if".length);
+		}
+		else if (context.currentString == "else") {
+			context.addToken(TokenTypes.keyword, 0, "else".length);
 		}
 		if (isIfStatement) {
 			return new SkriptConditionSection(context, this);
@@ -180,9 +189,13 @@ export class SkriptSection extends SkriptSectionGroup {
 
 
 }
-import { SkriptConditionSection } from './Reflect/SkriptConditionSection'; import { SkriptNestHierarchy } from '../../Nesting/SkriptNestHierarchy'; 
+import { SkriptConditionSection } from './Reflect/SkriptConditionSection'; import { SkriptNestHierarchy } from '../../Nesting/SkriptNestHierarchy';
 import { PatternData, patternResultProcessor } from '../../PatternTree';
 import { SkriptEventListenerSection } from './SkriptEventListenerSection';
 import { SkriptPatternMatchHierarchy } from '../SkriptPatternMatchHierarchy';
 import assert = require('assert');
+import { IntelliSkriptConstants } from '../../IntelliSkriptConstants';
+import { mainModule } from 'process';
+import { TokenTypes } from '../../TokenTypes';
+import { PatternType } from '../PatternTreeContainer';
 

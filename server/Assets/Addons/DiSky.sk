@@ -648,7 +648,7 @@ event "entity_dropdown_click":
 event "guild_afk_channel_event":
 	patterns:
 		[on] [discord] guild afk channel (change|update) [seen by %string%]
-	event-values: vent-voicechannel, voicechannel, bot, guild,  event-voicechannel
+	event-values: past event-voicechannel, voicechannel, bot, guild, future event-voicechannel
 
 #On Guild AFK Timeout Event
 #Fired when a afk timeout of a guild changes can be used to get the old/new timeout value, the author and the guild.
@@ -657,7 +657,7 @@ event "guild_afk_channel_event":
 event "guild_afk_timeout_event":
 	patterns:
 		[on] [discord] guild afk timeout (change|update) [seen by %string%]
-	event-values: vent-object, object, bot, guild,  event-object
+	event-values: past event-object, object, bot, guild, future event-object
 
 #On Guild Ban Event
 #Fired when a user is banned from a guild. A member doesn't exist here because the member is not in the guild anymore! Can be used to get the banned user, the author and the guild.
@@ -675,7 +675,7 @@ event "guild_ban_event":
 event "guild_banner_event":
 	patterns:
 		[on] [discord] guild banner (change|update) [seen by %string%]
-	event-values: vent-string, string, bot, guild,  event-string
+	event-values: past event-string, string, bot, guild, future event-string
 
 #On Guild Boost Count Update
 #Fired when a boost count of a guild changes - can be used to get the old/new count, and the guild.
@@ -684,7 +684,7 @@ event "guild_banner_event":
 event "guild_boost_count_update":
 	patterns:
 		[on] [discord] guild boost count (change|update) [seen by %string%]
-	event-values: vent-integer, integer, bot, guild,  event-integer
+	event-values: past event-integer, integer, bot, guild, future event-integer
 
 #On Guild Boost Tier Update
 #Fired when a boost tier of a guild changes - can be used to get the old/new tier, and the guild.
@@ -693,7 +693,7 @@ event "guild_boost_count_update":
 event "guild_boost_tier_update":
 	patterns:
 		[on] [discord] guild boost tier (change|update) [seen by %string%]
-	event-values: vent-string, string, bot, guild,  event-string
+	event-values: past event-string, string, bot, guild, future event-string
 
 #On Guild Icon Event
 #Fired when the icon of a guild changes can be used to get the old/new icon, the author and the guild.
@@ -702,7 +702,7 @@ event "guild_boost_tier_update":
 event "guild_icon_event":
 	patterns:
 		[on] [discord] guild icon (change|update) [seen by %string%]
-	event-values: vent-string, string, bot, guild,  event-string
+	event-values: past event-string, string, bot, guild, future event-string
 
 #On Guild Join Event
 #Fired when the bot joins in a guild.
@@ -720,7 +720,7 @@ event "guild_join_event":
 event "guild_name_event":
 	patterns:
 		[on] [discord] guild name (update|change) [seen by %string%]
-	event-values: vent-string, string, bot, guild,  event-string
+	event-values: past event-string, string, bot, guild, future event-string
 
 #On Guild Owner Event
 #Fired when a owner of a guild changes can be used to get the old/new owner, the author and the guild.
@@ -729,7 +729,7 @@ event "guild_name_event":
 event "guild_owner_event":
 	patterns:
 		[on] [discord] guild owner (change|update) [seen by %string%]
-	event-values: vent-member, member, bot, guild,  event-member
+	event-values: past event-member, member, bot, guild, future event-member
 
 #On Guild Ready Event
 #Fired when a guild is fully loaded.
@@ -745,7 +745,7 @@ event "guild_ready_event":
 event "guild_splash_event":
 	patterns:
 		[on] [discord] guild splash (change|update) [seen by %string%]
-	event-values: vent-string, string, bot, guild,  event-string
+	event-values: past event-string, string, bot, guild, future event-string
 
 #On Guild Unban Event
 #Fired when a user is unbanned can be used to get the unbanned user, the author and the guild.
@@ -781,7 +781,7 @@ event "invite_delete_event":
 event "member_accept_screen_event":
 	patterns:
 		[on] [discord] [guild] member screen accept [seen by %string%]
-	event-values: vent-boolean, member, boolean, bot, guild,  event-boolean
+	event-values: past event-boolean, member, boolean, bot, guild, future event-boolean
 
 #On Member Avatar Event
 #Fired when a member changes their avatar.
@@ -790,7 +790,7 @@ event "member_accept_screen_event":
 event "member_avatar_event":
 	patterns:
 		[on] [discord] [guild] member avatar (change|update) [seen by %string%]
-	event-values: vent-string, string, member, bot, guild,  event-string
+	event-values: past event-string, string, member, bot, guild, future event-string
 
 #On Member Boost Event
 #Fired when a member starts or stops boosting a guild can be used to get the old/new boosting time and the guild.
@@ -799,7 +799,7 @@ event "member_avatar_event":
 event "member_boost_event":
 	patterns:
 		[on] [discord] [guild] member boost (change|update) [seen by %string%]
-	event-values: vent-object, bot, object, guild,  event-object
+	event-values: past event-object, bot, object, guild, future event-object
 
 #On Member Join Event
 #Fired when a member joins a guild.
@@ -826,7 +826,7 @@ event "member_leave_event":
 event "member_nickname_event":
 	patterns:
 		[on] [discord] [guild] member nickname (change|update) [seen by %string%]
-	event-values: vent-string, string, member, bot, guild,  event-string
+	event-values: past event-string, string, member, bot, guild, future event-string
 
 #On Member Voice Join Event
 #Fired when a member joins a voice or a stage channel, also fires when a member moves to another channel
@@ -835,7 +835,7 @@ event "member_nickname_event":
 event "member_voice_join_event":
 	patterns:
 		[on] [discord] [member] voice [channel] join [seen by %string%]
-	event-values: vent-stagechannel, vent-voicechannel, vent-audiohannel, member, stagechannel, voicechannel, bot, audiohannel, guild,  event-stagechannel,  event-voicechannel,  event-audiohannel
+	event-values: past event-stagechannel, past event-voicechannel, past event-audiohannel, member, stagechannel, voicechannel, bot, audiohannel, guild, future event-stagechannel, future event-voicechannel, future event-audiohannel
 
 #On Member Voice Leave Event
 #Fired when a member leaves a voice or a stage channel
@@ -943,7 +943,7 @@ event "role_add_event":
 event "role_color_change":
 	patterns:
 		[on] [discord] [guild] role color (update|change) [seen by %string%]
-	event-values: guild, role,  event-color
+	event-values: guild, role, future event-color
 
 #On Role Create
 #Fired when a role is created in a guild
@@ -970,7 +970,7 @@ event "role_delete":
 event "role_hoist_change":
 	patterns:
 		[on] [discord] [guild] role hoist[ed] (update|change) [seen by %string%]
-	event-values: vent-boolean, boolean, bot, guild, role,  event-boolean
+	event-values: past event-boolean, boolean, bot, guild, role, future event-boolean
 
 #On Role Icon Change
 #Fired when the icon of a role changes.
@@ -979,7 +979,7 @@ event "role_hoist_change":
 event "role_icon_change":
 	patterns:
 		[on] [discord] [guild] role icon (update|change) [seen by %string%]
-	event-values: vent-string, string, bot, guild, role,  event-string
+	event-values: past event-string, string, bot, guild, role, future event-string
 
 #On Role Name Change
 #Fired when the name of a role changes.
@@ -988,7 +988,7 @@ event "role_icon_change":
 event "role_name_change":
 	patterns:
 		[on] [discord] [guild] role name (update|change) [seen by %string%]
-	event-values: vent-string, string, bot, guild, role,  event-string
+	event-values: past event-string, string, bot, guild, role, future event-string
 
 #On Role Permission Change
 #Fired when the permissions of a role changes.
@@ -1006,7 +1006,7 @@ event "role_permission_change":
 event "role_position_change":
 	patterns:
 		[on] [discord] [guild] role position (update|change) [seen by %string%]
-	event-values: vent-integer, integer, bot, guild, role,  event-integer
+	event-values: past event-integer, integer, bot, guild, role, future event-integer
 
 #On Role Remove Event
 #Fired when a member removes roles from another member, it's a log action so event-author returns who made the action event-roles returns a list of removed roles
@@ -1087,7 +1087,7 @@ event "user_activity_order_event":
 event "user_avatar_event":
 	patterns:
 		[on] [discord] user avatar (change|update) [seen by %string%]
-	event-values: vent-string, user, string, bot,  event-string
+	event-values: past event-string, user, string, bot, future event-string
 
 #On User Command
 #Fired when someone click on an user application command.
@@ -1105,7 +1105,7 @@ event "user_command":
 event "user_discriminator_event":
 	patterns:
 		[on] [discord] user discriminator (change|update) [seen by %string%]
-	event-values: vent-string, user, string, bot,  event-string
+	event-values: past event-string, user, string, bot, future event-string
 
 #On User Name Event
 #Fired when a user changes its name (not nickname).
@@ -1114,7 +1114,7 @@ event "user_discriminator_event":
 event "user_name_event":
 	patterns:
 		[on] [discord] user name (change|update) [seen by %string%]
-	event-values: vent-string, user, string, bot,  event-string
+	event-values: past event-string, user, string, bot, future event-string
 
 #On User Online Status Event
 #Fired when a user changes its online status.
@@ -1123,7 +1123,7 @@ event "user_name_event":
 event "user_online_status_event":
 	patterns:
 		[on] [discord] user online status (change|update) [seen by %string%]
-	event-values: vent-onlinestatus, user, onlinestatus, member, bot, guild,  event-onlinestatus
+	event-values: past event-onlinestatus, user, onlinestatus, member, bot, guild, future event-onlinestatus
 
 #On User Typing Event
 #Fired when a user starts typing in a channel.

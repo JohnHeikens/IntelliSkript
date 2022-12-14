@@ -419,18 +419,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 	const ws = getSkriptWorkSpaceByFileUri(textDocument.uri);
 
 	if (ws) {
-		const fileIndex = ws.getSkriptFileIndexByUri(textDocument.uri);
-		if (fileIndex) {
-			//temporarily delete (it's recalculating) so an error will be thrown if anything ever tries accessing a recalculating file
-			context.currentBuilder = ws.files[fileIndex].builder;
-			delete ws.files[fileIndex];
-			const currentFile = new SkriptFile(ws, context);
-			ws.files[fileIndex] = currentFile;
-		}
-		else {
-			//add document to skript workspace
-			ws.files.push(new SkriptFile(ws, context));
-		}
+		ws.validateTextDocument(textDocument, context);
 	}
 
 	const diagnostics: Diagnostic[] = context.diagnostics;
