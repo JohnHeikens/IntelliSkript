@@ -31,7 +31,7 @@ export class SkriptContext {
 	//reference variables
 	currentSkriptFile: SkriptFile | undefined;
 	currentDocument: TextDocument;
-	currentBuilder: UnOrderedSemanticTokensBuilder = new UnOrderedSemanticTokensBuilder();
+	currentBuilder: UnOrderedSemanticTokensBuilder;
 	diagnostics: Diagnostic[] = [];
 
 	//variables which can change in push()
@@ -40,7 +40,7 @@ export class SkriptContext {
 	currentPosition = 0;
 	currentLine = 0;
 	hierarchy: SkriptNestHierarchy | undefined = undefined;
-	constructor(currentDocument: TextDocument, currentString: string | undefined = undefined, currentBuilder: UnOrderedSemanticTokensBuilder = new UnOrderedSemanticTokensBuilder()) {
+	constructor(currentDocument: TextDocument, currentString: string | undefined = undefined, currentBuilder: UnOrderedSemanticTokensBuilder = new UnOrderedSemanticTokensBuilder(currentDocument)) {
 		this.currentString = currentString == undefined ? currentDocument.getText() : currentString;
 		this.currentDocument = currentDocument;
 		this.currentBuilder = currentBuilder;
@@ -64,10 +64,11 @@ export class SkriptContext {
 	}
 
 	//CAUTION! HIGHLIGHTING SHOULD BE DONE IN ORDER
-	addToken(type: TokenTypes, relativePosition: number = 0, length: number = this.currentString.length, modifier: TokenModifiers = TokenModifiers.abstract): void {
+	addToken(type: TokenTypes, relativePosition = 0, length = this.currentString.length, zIndex = 0, modifier: TokenModifiers = TokenModifiers.abstract): void {
 		const absolutePosition = this.currentDocument.positionAt(this.currentPosition + relativePosition);
-		this.currentBuilder.push(new SemanticToken(absolutePosition, length, type, modifier));
+		this.currentBuilder.push(new SemanticToken(absolutePosition, length, type, modifier, zIndex));
 	}
+
 
 	getLocation(start: number, length: number): Location {
 		const StartPosition = this.currentDocument.positionAt(this.currentPosition + start);
@@ -123,6 +124,8 @@ export class SkriptContext {
 				while ((p = regEx.exec(this.currentString.substring(start, end)))) {
 					this.addToken(TokenTypes.keyword, start + p.index, p[0].length);
 				}
+				//check if any patterns are matched around here
+				this.addToken(TokenTypes.lambdaFunction, start, end, -1);
 			}
 		};
 

@@ -246,7 +246,6 @@ export class SkriptFile extends SkriptSection {
 				const trimmedContext = currentLineContext.push(indentationEndIndex, trimmedLine.length);
 				trimmedContext.createHierarchy(true);
 				assert(trimmedContext.hierarchy != undefined);
-				trimmedContext.highLightRecursively(trimmedContext.hierarchy);
 
 				if (trimmedLine.endsWith(":")) {
 
@@ -266,6 +265,7 @@ export class SkriptFile extends SkriptSection {
 					trimmedContext.currentSection.processLine?.(trimmedContext);
 					//trimmedContext.currentSection.endLine = context.currentLine;
 				}
+				trimmedContext.highLightRecursively(trimmedContext.hierarchy);
 				lastCodeLine = currentLineIndex;
 			}
 			if (commentIndex != -1) {
