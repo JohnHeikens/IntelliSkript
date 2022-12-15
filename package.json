@@ -3,7 +3,7 @@
 	"description": "IntelliSense for skript",
 	"author": "John Heikens",
 	"license": "GNU",
-	"version": "1.6.2",
+	"version": "1.6.3",
 	"icon": "icon.png",
 	"repository": {
 		"type": "git",
