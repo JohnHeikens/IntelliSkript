@@ -1,6 +1,26 @@
 #AUTOMATIC GENERATED SKRIPT FILE
 #COPYRIGHT JOHN HEIKENS
 
+#event
+type:
+	patterns:
+		event[s]
+
+#javaobject
+type:
+	patterns:
+		javaobject[s]
+
+#javatype
+type:
+	patterns:
+		javatype[s]
+
+#null
+type:
+	patterns:
+		null
+
 #EffCallEvent
 effect:
 	patterns:

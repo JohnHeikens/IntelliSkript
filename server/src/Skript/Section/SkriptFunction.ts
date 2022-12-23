@@ -1,10 +1,10 @@
-import { Location, Range, DiagnosticSeverity } from 'vscode-languageserver/node';
+import { DiagnosticSeverity } from 'vscode-languageserver/node';
+import { TokenTypes } from '../../TokenTypes';
 import { SkriptContext } from '../SkriptContext';
+import { SkriptVariable } from '../SkriptVariable';
 import {
 	SkriptSection
-
 } from "./SkriptSection";
-import { SkriptVariable } from '../SkriptVariable';
 export class SkriptFunction extends SkriptSection {
 	name: string;
 	//context.currentString should be 'function example(a: string, b: number) :: string' for example
@@ -28,9 +28,9 @@ export class SkriptFunction extends SkriptSection {
 					const variableDefinitionParts = currentArgumentString.text.split(":");
 					if (variableDefinitionParts.length == 2) {
 						const variableName = "_" + variableDefinitionParts[0].trim();
-						const currentPosition = specializedContext.currentPosition + currentArgumentString.index;
-						const Loc = Location.create(context.currentDocument.uri, Range.create(context.currentDocument.positionAt(currentPosition), context.currentDocument.positionAt(currentPosition + variableDefinitionParts[0].trim().length)));
-						this.definedVariables.push(new SkriptVariable(Loc, variableName, variableDefinitionParts[1].trim()));
+						const loc = specializedContext.getLocation(currentArgumentString.index, variableDefinitionParts[0].trim().length);
+						this.definedVariables.push(new SkriptVariable(loc, variableName, variableDefinitionParts[1].trim(), true));
+						specializedContext.addToken(TokenTypes.parameter, currentArgumentString.index, variableDefinitionParts[0].trim().length);
 					}
 					else {
 						specializedContext.addDiagnostic(currentArgumentString.index, currentArgumentString.text.length, "unrecognized function argument (no \":\" found)");

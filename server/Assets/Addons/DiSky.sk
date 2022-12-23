@@ -1,6 +1,259 @@
 #AUTOMATIC GENERATED SKRIPT FILE
 #COPYRIGHT JOHN HEIKENS
 
+#activity
+type:
+	patterns:
+		activity
+
+#attachment
+type:
+	patterns:
+		attachment
+
+#audiohannel
+type:
+	patterns:
+		audiohannel
+
+#auditlogentry
+type:
+	patterns:
+		auditlogentry
+
+#ban
+type:
+	patterns:
+		ban
+
+#bot
+type:
+	patterns:
+		bot
+
+#button
+type:
+	patterns:
+		button
+
+#buttonstyle
+#Examples:
+#unknown, primary, secondary, success, danger, link
+type:
+	patterns:
+		buttonstyle
+
+#category
+type:
+	patterns:
+		category
+
+#channel
+type:
+	patterns:
+		channel
+
+#channelaction
+type:
+	patterns:
+		channelaction
+
+#channeltype
+type:
+	patterns:
+		channeltype
+
+#discordcommand
+type:
+	patterns:
+		discordcommand
+
+#dropdown
+type:
+	patterns:
+		dropdown
+
+#embedbuilder
+type:
+	patterns:
+		embedbuilder
+
+#emote
+type:
+	patterns:
+		emote
+
+#forumchannel
+type:
+	patterns:
+		forumchannel
+
+#forumtag
+type:
+	patterns:
+		forumtag
+
+#guild
+type:
+	patterns:
+		guild
+
+#guildchannel
+type:
+	patterns:
+		guildchannel
+
+#interactionhook
+type:
+	patterns:
+		interactionhook
+
+#invite
+type:
+	patterns:
+		invite
+
+#member
+type:
+	patterns:
+		member
+
+#message
+type:
+	patterns:
+		message
+
+#messagecreatebuilder
+type:
+	patterns:
+		messagecreatebuilder
+
+#modal
+type:
+	patterns:
+		modal
+
+#newschannel
+type:
+	patterns:
+		newschannel
+
+#onlinestatus
+#Examples:
+#online, idle, do not disturb, invisible, offline, unknown
+type:
+	patterns:
+		onlinestatus
+
+#optiontype
+#Examples:
+#unknown, sub command, sub command group, string, integer, boolean, user, channel, role, mentionable, number, attachment
+type:
+	patterns:
+		optiontype
+
+#permission
+#Examples:
+#manage channel, manage server, view audit logs, view channel, view guild insights, manage roles, manage permissions, manage webhooks, manage emojis and stickers, manage events, create instant invite, kick members, ban members, nickname change, nickname manage, moderate members, message add reaction, message send, message tts, message manage, message embed links, message attach files, message history, message mention everyone, message ext emoji, use application commands, message ext sticker, manage threads, create public threads, create private threads, message send in threads, priority speaker, voice stream, voice connect, voice speak, voice mute others, voice deaf others, voice move others, voice use vad, voice start activities, request to speak, administrator, unknown
+type:
+	patterns:
+		permission
+
+#privatechannel
+type:
+	patterns:
+		privatechannel
+
+#role
+type:
+	patterns:
+		role
+
+#roleaction
+type:
+	patterns:
+		roleaction
+
+#row
+type:
+	patterns:
+		row
+
+#scheduledevent
+type:
+	patterns:
+		scheduledevent
+
+#selectoption
+type:
+	patterns:
+		selectoption
+
+#slashchoice
+type:
+	patterns:
+		slashchoice
+
+#slashcommand
+type:
+	patterns:
+		slashcommand
+
+#slashcommandgroup
+type:
+	patterns:
+		slashcommandgroup
+
+#slashoption
+type:
+	patterns:
+		slashoption
+
+#stagechannel
+type:
+	patterns:
+		stagechannel
+
+#sticker
+type:
+	patterns:
+		sticker
+
+#subslashcommand
+type:
+	patterns:
+		subslashcommand
+
+#textchannel
+type:
+	patterns:
+		textchannel
+
+#textinput
+type:
+	patterns:
+		textinput
+
+#threadchannel
+type:
+	patterns:
+		threadchannel
+
+#user
+type:
+	patterns:
+		user
+
+#userprofile
+type:
+	patterns:
+		userprofile
+
+#voicechannel
+type:
+	patterns:
+		voicechannel
+
 #Archive / Unarchive Thread
 #Archive or unarchive a specific thread.
 #since 4.4.0

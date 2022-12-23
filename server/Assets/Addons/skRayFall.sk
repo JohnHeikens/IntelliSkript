@@ -1,6 +1,24 @@
 #AUTOMATIC GENERATED SKRIPT FILE
 #COPYRIGHT JOHN HEIKENS
 
+#Bossbar Color
+#A data type to call the colors for the new 1.9 bossbars.
+type:
+	patterns:
+		bossbarcolor
+
+#Bossbar Flag
+#Bar Flags to support the new 1.9 bossbars.
+type:
+	patterns:
+		bossbarflag
+
+#Bossbar Style
+#Bossbar styles to support the new 1.9 BossBar.
+type:
+	patterns:
+		bossbarstyle
+
 #Add Player to ID Based Bossbar
 #Add a player to an ID based Bossbar.
 effect:

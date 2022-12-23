@@ -3,26 +3,26 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 import {
-	createConnection,
-	TextDocuments,
-	Diagnostic,
-	ProposedFeatures,
-	InitializeParams,
-	DidChangeConfigurationNotification,
-	TextDocumentSyncKind,
-	InitializeResult,
-	DefinitionLink,
-	WorkspaceChange,
 	ChangeAnnotation,
 	CodeAction,
 	CodeActionKind,
-	SemanticTokensRegistrationOptions,
-	SemanticTokensLegend,
-	SemanticTokensClientCapabilities,
-	SemanticTokensRegistrationType,
+	DefinitionLink,
+	Diagnostic,
+	DidChangeConfigurationNotification,
 	DocumentSelector,
+	InitializeParams,
+	InitializeResult,
+	ProposedFeatures,
+	SemanticTokensClientCapabilities,
+	SemanticTokensLegend,
+	SemanticTokensRegistrationOptions,
+	SemanticTokensRegistrationType,
 	SymbolInformation,
-	SymbolKind
+	SymbolKind,
+	TextDocumentSyncKind,
+	TextDocuments,
+	WorkspaceChange,
+	createConnection
 } from 'vscode-languageserver/node';
 
 import {
@@ -33,16 +33,19 @@ import {
 	SkriptFile
 } from "./Skript/Section/SkriptFile";
 
+import * as fs from 'fs';
+import * as IntelliSkriptConstants from './IntelliSkriptConstants';
+import { AddonParser, intelliSkriptAddonSkFilesDirectory } from './Skript/Addon Parser/AddonParser';
+import { SkriptWorkSpace } from './Skript/Section/SkriptWorkSpace';
 import {
 	SkriptContext
 } from './Skript/SkriptContext';
-import { SkriptWorkSpace } from './Skript/Section/SkriptWorkSpace';
-import assert = require('assert');
 import { TokenTypes } from './TokenTypes';
-import { AddonParser, intelliSkriptAddonSkFilesDirectory } from './Skript/Addon Parser/AddonParser';
+import assert = require('assert');
 import path = require('path');
-import * as fs from 'fs';
-import { IntelliSkriptConstants } from './IntelliSkriptConstants';
+import { Sleep } from './Thread';
+import { URI } from 'vscode-uri';
+
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -62,10 +65,20 @@ let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = true;
 let hasDiagnosticRelatedInformationCapability = false;
 
-function getSkriptWorkSpaceByFileUri(uri: string): SkriptWorkSpace | undefined {
+//function resolveUri(uri: string) : string
+//{
+//	return uri.substring('file:///'.length).replace('%3A', ':');
+//}
+
+function getSkriptWorkSpaceByFileUri(uri: string): SkriptWorkSpace {
+	//const resolvedUri = resolveUri(uri);
 	for (const ws of currentWorkSpaces) {
-		if (ws.uri?.startsWith(uri)) {
-			return ws;
+		if (ws.uri)
+		{
+			const relativePath = path.relative(ws.uri, uri);
+			if (!relativePath.startsWith('.')) {
+				return ws;
+			}	
 		}
 	}
 	return looseWorkSpace;
@@ -113,9 +126,19 @@ function computeLegend(capability: SemanticTokensClientCapabilities): SemanticTo
 	return { tokenTypes, tokenModifiers };
 }
 
-connection.onInitialize((params: InitializeParams) => {
+connection.onInitialize(async (params: InitializeParams) => {
+	//works for the client only
+	//const myExtDir = vscode.extensions.getExtension ("JohnHeikens.IntelliSkript").extensionPath;
+	if (!IntelliSkriptConstants.IsReleaseMode) {
+		await Sleep(5000);//give the debugger time to start
+		AddonParser.ParseFiles();
+	}
+
+	InitializeAddonSkripts();
+
 	//currentWorkSpaces.push(new SkriptWorkSpace());
 	if (params.workspaceFolders != null) {
+		console.log(params.workspaceFolders);
 		for (const folder of params.workspaceFolders) {
 			const ws = new SkriptWorkSpace(addonFileWorkSpace, folder.uri);
 			ws.parent = addonFileWorkSpace;
@@ -238,7 +261,8 @@ connection.onInitialize((params: InitializeParams) => {
 
 
 function InitializeAddonSkripts() {
-	addonFileWorkSpace = new SkriptWorkSpace(undefined, intelliSkriptAddonSkFilesDirectory);
+	addonFileWorkSpace = new SkriptWorkSpace(undefined, URI.file(intelliSkriptAddonSkFilesDirectory).toString());
+	currentWorkSpaces.push(addonFileWorkSpace);
 
 	fs.readdir(intelliSkriptAddonSkFilesDirectory, undefined, function (err: NodeJS.ErrnoException | null, files: string[]) {
 		if (err) {
@@ -250,7 +274,7 @@ function InitializeAddonSkripts() {
 			// Make one pass and make the file complete
 			const completePath = path.join(intelliSkriptAddonSkFilesDirectory, file);
 
-			const document = TextDocument.create("file:///" + completePath, "sk", 0, fs.readFileSync(completePath, "utf8"));
+			const document = TextDocument.create(URI.file(completePath).toString(), "sk", 0, fs.readFileSync(completePath, "utf8"));
 			const context = new SkriptContext(document);
 			const skriptFile = new SkriptFile(addonFileWorkSpace, context);
 			addonFileWorkSpace.files.push(skriptFile);
@@ -258,20 +282,8 @@ function InitializeAddonSkripts() {
 	});
 	looseWorkSpace = new SkriptWorkSpace(addonFileWorkSpace);
 }
-function delay(ms: number) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}
 connection.onInitialized(async () => {
 
-	//works for the client only
-	//const myExtDir = vscode.extensions.getExtension ("JohnHeikens.IntelliSkript").extensionPath;
-	if (!IntelliSkriptConstants.IsReleaseMode) {
-		AddonParser.ParseFiles();
-		//await delay(1000);//give the debugger time to start
-
-	}
-
-	InitializeAddonSkripts();
 
 	if (hasConfigurationCapability) {
 		// Register for all configuration changes.
@@ -400,7 +412,6 @@ documents.onDidClose(e => {
 		}
 	}
 });
-
 
 
 // The content of a text document has changed. This event is emitted

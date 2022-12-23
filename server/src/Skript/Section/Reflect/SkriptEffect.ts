@@ -1,11 +1,10 @@
-import { SkriptContext } from '../../SkriptContext';
 import { DiagnosticSeverity } from 'vscode-languageserver/node';
-import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
-import{
-	SkriptSection
-
-} from "../SkriptSection";
 import { TokenTypes } from '../../../TokenTypes';
+import type { SkriptContext } from '../../SkriptContext';
+import {
+	SkriptSection
+} from "../SkriptSection";
+import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 export class SkriptEffect extends SkriptPatternContainerSection{
 	createSection(context: SkriptContext): SkriptSection {
 		const regex = /^(parse|trigger|pattern(|s))$/;
@@ -20,6 +19,6 @@ export class SkriptEffect extends SkriptPatternContainerSection{
 		return super.createSection(context);
 	}
 	processLine(context: SkriptContext): void {
-		context.addDiagnostic(0, context.currentString.length, "make sure to put your code for the effect in triggers", DiagnosticSeverity.Error, "IntelliSkript->section->wrong");
+		context.addDiagnostic(0, context.currentString.length, "make sure to put your code for the effect in triggers", DiagnosticSeverity.Error, "IntelliSkript->Section->Wrong");
 	}
 }

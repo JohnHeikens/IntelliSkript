@@ -1,6 +1,11 @@
 #AUTOMATIC GENERATED SKRIPT FILE
 #COPYRIGHT JOHN HEIKENS
 
+#datasource
+type:
+	patterns:
+		datasource[s]
+
 #EffExecuteStatement
 effect:
 	patterns:

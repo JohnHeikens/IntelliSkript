@@ -1,31 +1,31 @@
-import {
-	SkriptSection
-} from "./SkriptSection";
+import { SkriptSection } from "./SkriptSection";
 
 import { SkriptFunction } from './SkriptFunction';
 
-import {
-	SkriptContext
-} from '../SkriptContext';
-import { SkriptCommand } from './SkriptCommand';
-import { SkriptEffect } from './Reflect/SkriptEffect';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { SkriptWorkSpace } from './SkriptWorkSpace';
-import { SkriptImportSection } from './Reflect/SkriptImportSection';
 import { DiagnosticSeverity } from 'vscode-languageserver/node';
+import { stopAtFirstResultProcessor } from '../../Pattern/patternResultProcessor';
 import { TokenTypes } from '../../TokenTypes';
-import { UnOrderedSemanticTokensBuilder } from './UnOrderedSemanticTokensBuilder';
-import { SkriptPatternContainerSection } from './Reflect/SkriptPatternContainerSection';
-import { SkriptConditionSection } from './Reflect/SkriptConditionSection';
-import assert = require('assert');
+import { PatternTreeContainer } from '../PatternTreeContainer';
+import { PatternType } from "../../Pattern/PatternType";
+import { SkriptContext } from '../SkriptContext';
+import { SkriptOption } from '../SkriptOption';
+import { SkriptTypeSection } from './IntelliSkript/SkriptTypeSection';
+import { SkriptConditionProcessorSection } from './Reflect/SkriptConditionProcessorSection';
+import { SkriptEffect as SkriptEffectSection } from './Reflect/SkriptEffect';
 import { SkriptEventSection } from './Reflect/SkriptEventSection';
 import { SkriptExpressionSection } from './Reflect/SkriptExpressionSection';
-import { SkriptOptionsSection } from './SkriptOptionsSection';
-import { SkriptOption } from '../SkriptOption';
-import { SkriptEventListenerSection } from './SkriptEventListenerSection';
+import { SkriptImportSection } from './Reflect/SkriptImportSection';
+import { SkriptPatternContainerSection } from './Reflect/SkriptPatternContainerSection';
 import { SkriptPropertySection } from './Reflect/SkriptPropertySection';
-import { SkriptType } from '../SkriptType';
-import { PatternTreeContainer, PatternType } from '../PatternTreeContainer';
+import { SkriptCommandSection as SkriptCommandSection } from './SkriptCommand';
+import { SkriptEventListenerSection } from './SkriptEventListenerSection';
+import { SkriptOptionsSection } from './SkriptOptionsSection';
+import { SkriptWorkSpace } from './SkriptWorkSpace';
+import { UnOrderedSemanticTokensBuilder } from './UnOrderedSemanticTokensBuilder';
+import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
+import { PatternData } from '../../Pattern/PatternData';
+import assert = require('assert');
 
 function removeRemainder(toDivide: number, toDivideBy: number): number {
 	return Math.floor(toDivide / toDivideBy) * toDivideBy;
@@ -40,9 +40,9 @@ export class SkriptFile extends SkriptSection {
 
 	patterns: PatternTreeContainer = new PatternTreeContainer();
 
-	addPattern(context: SkriptContext, patternContainerSection: SkriptPatternContainerSection, type: PatternType): void {
-		this.patterns.addPattern(context, patternContainerSection, type);
-		this.workSpace.patterns.addPattern(context, patternContainerSection, type);
+	addPattern(pattern: PatternData): void {
+		this.patterns.addPattern(pattern);
+		this.workSpace.patterns.addPattern(pattern);
 	}
 
 	createSection(context: SkriptContext): SkriptSection {
@@ -50,13 +50,13 @@ export class SkriptFile extends SkriptSection {
 		let patternStartIndex = spaceIndex == -1 ? undefined : spaceIndex + 1;
 		const sectionKeyword = spaceIndex == -1 ? context.currentString : context.currentString.substring(0, spaceIndex);
 		context.addToken(TokenTypes.keyword, 0, sectionKeyword.length);
-		let s: SkriptSection;
+		let s: SkriptSection | undefined;
 		if (sectionKeyword == "function") {
 			s = new SkriptFunction(context, this);
 
 		}
 		else if (sectionKeyword == "command") {
-			s = new SkriptCommand(context, this);
+			s = new SkriptCommandSection(context, this);
 		}
 		else if (sectionKeyword == "import") {
 			s = new SkriptImportSection(context, this);
@@ -65,19 +65,22 @@ export class SkriptFile extends SkriptSection {
 			s = new SkriptEventSection(context, this);
 		}
 		else if (sectionKeyword == "condition") {
-			s = new SkriptConditionSection(context, this);
+			s = new SkriptConditionProcessorSection(context, this);
 		}
 		else if (sectionKeyword == "effect") {
-			s = new SkriptEffect(context, this);
+			s = new SkriptEffectSection(context, this);
 		}
 		else if (sectionKeyword == "options") {
 			s = new SkriptOptionsSection(context, this);
+		}
+		else if (sectionKeyword == "type") {
+			s = new SkriptTypeSection(context, this);
 		}
 		else {
 			const result = /^((local )?((plural|non-single) )?expression)( .*|)/.exec(context.currentString);
 			if (result) {
 				s = new SkriptExpressionSection(context, this);
-				if (result[4]) {
+				if (result[5]) {
 					patternStartIndex = result[1].length + 1;
 				}
 				else {
@@ -85,30 +88,38 @@ export class SkriptFile extends SkriptSection {
 				}
 			}
 			else {
-				const propertyResult = /^(local )?(.+) property .*/.exec(context.currentString);
+				const propertyResult = /^(local )?((plural|non-single) )?(.+) property .*/.exec(context.currentString);
 				if (propertyResult) {
-					s = new SkriptPropertySection(context, new SkriptType(propertyResult[2].substring(1)), this);
+					const data = this.getTypeData(propertyResult[4]);
+					if (data)
+					{
+						s = new SkriptPropertySection(context, data, this);
+					}
+					else{
+						context.addDiagnostic(0, context.currentString.length, "property type not recognized");
+					}
 				}
 				else {
-					const pattern = this.workSpace.getPatternData(context.currentString,
+					const pattern = this.workSpace.getPatternData(new SkriptPatternCall(context.currentString, PatternType.event),
 						() => {
 							return false;
-						}, PatternType.event);
+						});
 					if (pattern) {
 						//event
 						s = new SkriptEventListenerSection(context, pattern);
-					}
-					else {
-						return super.createSection(context);
 					}
 				}
 			}
 		}
 		if ((patternStartIndex != undefined) && (s instanceof SkriptPatternContainerSection)) {
-			const currentPatternType = ((s instanceof SkriptEventSection) ? PatternType.event : PatternType.effect);
-			this.addPattern(context.push(patternStartIndex), s, currentPatternType);
+			s.addPattern(context.push(patternStartIndex));
+			//const currentPatternType = (
+			//	(s instanceof SkriptEventSection) ? PatternType.event :  
+			//	(s instanceof SkriptTypeSection) ? PatternType.type :
+			//	PatternType.effect);
+			//this.addPattern(context.push(patternStartIndex), s, currentPatternType);
 		}
-		return s;
+		return s ? s : super.createSection(context);
 	}
 
 	processLine(context: SkriptContext): void {
@@ -119,12 +130,11 @@ export class SkriptFile extends SkriptSection {
 		return line.search(/(?!( |\t))/);
 	}
 
-
-
 	constructor(workSpace: SkriptWorkSpace, context: SkriptContext) {
 		super(context, workSpace);
 		context.currentSkriptFile = this;
 		this.builder = context.currentBuilder;
+		context.currentBuilder.startNextBuild();
 		this.workSpace = workSpace;
 		this.document = context.currentDocument;
 		context.currentSection = this;
@@ -244,8 +254,8 @@ export class SkriptFile extends SkriptSection {
 					}
 				}
 				const trimmedContext = currentLineContext.push(indentationEndIndex, trimmedLine.length);
-				trimmedContext.createHierarchy(true);
-				assert(trimmedContext.hierarchy != undefined);
+				//trimmedContext.createHierarchy(true);
+				//assert(trimmedContext.hierarchy != undefined);
 
 				if (trimmedLine.endsWith(":")) {
 
@@ -262,10 +272,9 @@ export class SkriptFile extends SkriptSection {
 				}
 				else {
 					//context.currentString = trimmedLine;
-					trimmedContext.currentSection.processLine?.(trimmedContext);
+					trimmedContext.currentSection?.processLine?.(trimmedContext);
 					//trimmedContext.currentSection.endLine = context.currentLine;
 				}
-				trimmedContext.highLightRecursively(trimmedContext.hierarchy);
 				lastCodeLine = currentLineIndex;
 			}
 			if (commentIndex != -1) {

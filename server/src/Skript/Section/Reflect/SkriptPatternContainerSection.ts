@@ -1,12 +1,19 @@
-import { SkriptContext } from '../../SkriptContext';
-import { SkriptPatternSection } from './SkriptPatternSection';
-import { SkriptSection } from '../SkriptSection';
 import { TokenTypes } from '../../../TokenTypes';
-import { PatternType } from '../../PatternTreeContainer';
+import { PatternType } from "../../../Pattern/PatternType";
+import { SkriptContext } from '../../SkriptContext';
+import { SkriptSection } from '../SkriptSection';
+import { SkriptPatternSection } from './SkriptPatternSection';
+import { PatternTree } from '../../../Pattern/PatternTree';
+import assert = require('assert');
 
 export class SkriptPatternContainerSection extends SkriptSection {
 	addPattern(context: SkriptContext): void {
-		context.currentSkriptFile.addPattern(context, this, PatternType.effect);
+		assert(context.currentSkriptFile != undefined);
+		const pattern = PatternTree.parsePattern( context, this, PatternType.effect);
+		if(pattern)
+		{
+			context.currentSkriptFile.addPattern(pattern);
+		}
 	}
 
 	createSection(context: SkriptContext): SkriptSection {

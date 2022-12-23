@@ -1,26 +1,25 @@
-import { PatternTree, PatternData, patternResultProcessor } from '../PatternTree';
+import { PatternData } from "../Pattern/PatternData";
+import { PatternTree } from '../Pattern/PatternTree';
+import { PatternResultProcessor } from "../Pattern/patternResultProcessor";
+import { PatternType } from '../Pattern/PatternType';
+import type { SkriptPatternContainerSection } from './Section/Reflect/SkriptPatternContainerSection';
 import { SkriptContext } from './SkriptContext';
-import { SkriptPatternContainerSection } from './Section/Reflect/SkriptPatternContainerSection';
+import { PatternMatcher } from '../Pattern/PatternMatcher';
+import { SkriptPatternCall } from '../Pattern/SkriptPattern';
 
-export enum PatternType {
-	effect,
-	event,
-	count
-}
-
-export class PatternTreeContainer {
+export class PatternTreeContainer implements PatternMatcher {
 	trees = new Array<PatternTree>(PatternType.count);
 	constructor() {
 		for (let i = 0; i < PatternType.count; i++) {
 			this.trees[i] = new PatternTree();
 		}
 	}
-	getPatternData(testString: string, shouldContinue: patternResultProcessor, type: PatternType = PatternType.effect): PatternData | undefined {
-		return this.trees[type].getMatchingPatterns(testString, shouldContinue);
+	getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
+		return this.trees[testPattern.type].getPatternData(testPattern, shouldContinue);
 	}
 
-	addPattern(context: SkriptContext, section: SkriptPatternContainerSection, type: PatternType): void {
-		this.trees[type].addPattern(context, section);
+	addPattern(pattern: PatternData): void {
+		this.trees[pattern.type].addPattern(pattern);
 	}
 
 	merge(other: PatternTreeContainer): void {

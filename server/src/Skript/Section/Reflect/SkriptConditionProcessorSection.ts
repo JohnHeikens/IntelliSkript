@@ -1,5 +1,5 @@
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 
-export class SkriptConditionSection extends SkriptPatternContainerSection{
+export class SkriptConditionProcessorSection extends SkriptPatternContainerSection{
 	
 }

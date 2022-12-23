@@ -1,6 +1,43 @@
 #AUTOMATIC GENERATED SKRIPT FILE
 #COPYRIGHT JOHN HEIKENS
 
+#AdvancementFrame
+type:
+	patterns:
+		advancementframe[s]
+
+#Anvil Click Type
+type:
+	patterns:
+		anvil[ ]click[[ ]type]
+
+#Client World Border
+type:
+	patterns:
+		clientworldborder[s]
+
+#Item Slots Armour
+type:
+	patterns:
+		itemslot[s]
+
+#Player Block Dig Type
+#The different types that trigger a player block dig event.
+type:
+	patterns:
+		[block][ ]dig[ ]type[s]
+
+#Sound
+type:
+	patterns:
+		sound[s]
+
+#Steer Movements
+#Movements define direction in the steer vehicle event.
+type:
+	patterns:
+		movement[s]
+
 #Armour Change Client Side
 #Change what a player is wearing for another player, client side.
 effect:

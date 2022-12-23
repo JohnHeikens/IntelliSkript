@@ -1,18 +1,17 @@
-import {
-	TextDocument
-} from 'vscode-languageserver-textdocument';
-
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Diagnostic, DiagnosticSeverity, Location } from 'vscode-languageserver/node';
 import { SkriptNestHierarchy } from '../Nesting/SkriptNestHierarchy';
-
-import {
-	SkriptSection
-} from "./Section/SkriptSection";
-import { SemanticToken, UnOrderedSemanticTokensBuilder } from './Section/UnOrderedSemanticTokensBuilder';
+import * as IntelliSkriptConstants from '../IntelliSkriptConstants';
+import { stopAtFirstResultProcessor } from '../Pattern/patternResultProcessor';
 import { TokenModifiers } from '../TokenModifiers';
 import { TokenTypes } from '../TokenTypes';
+import { PatternType } from "../Pattern/PatternType";
+import { SkriptSection } from "./Section/SkriptSection";
+import { SemanticToken, UnOrderedSemanticTokensBuilder } from './Section/UnOrderedSemanticTokensBuilder';
+import { SkriptTypeState } from "./SkriptTypeState";
 import { SkriptFile } from './Section/SkriptFile';
-import { IntelliSkriptConstants } from '../IntelliSkriptConstants';
+import { SkriptPatternCall } from '../Pattern/SkriptPattern';
+import assert = require('assert');
 
 //TOODO: make context able to 'push' and 'pop' (make a function able to modify the context or create an instance while keeping reference to the same diagnostics list
 export class SkriptContext {
@@ -111,7 +110,7 @@ export class SkriptContext {
 				this.addToken(TokenTypes.string, start, length);
 			}
 			else if (currentHierarchyNode.character == '{') {
-				this.addToken(TokenTypes.variable, start, length);
+				//token already added by document validator
 			}
 			else {
 				let p: RegExpExecArray | null;
@@ -125,7 +124,7 @@ export class SkriptContext {
 					this.addToken(TokenTypes.keyword, start + p.index, p[0].length);
 				}
 				//check if any patterns are matched around here
-				this.addToken(TokenTypes.lambdaFunction, start, end, -1);
+				//this.addToken(TokenTypes.parameter, start, end, -1);
 			}
 		};
 
@@ -199,7 +198,7 @@ export class SkriptContext {
 					}
 					else if (addDiagnostics) {
 						//unmatched closing brace found!
-						this.addDiagnostic(i, 1, "unmatched closing character found", DiagnosticSeverity.Error, "IntelliSkript->nest->unmatched");
+						this.addDiagnostic(i, 1, "unmatched closing character found", DiagnosticSeverity.Error, "IntelliSkript->Nest->UnMatched");
 					}
 				}
 			}
@@ -210,7 +209,7 @@ export class SkriptContext {
 
 			const lastActiveNode = this.hierarchy.getActiveNode();
 			if (lastActiveNode != this.hierarchy) {
-				this.addDiagnostic(lastActiveNode.start, 1, "no matching closing character found", DiagnosticSeverity.Error, "IntelliSkript->nest->no matching");
+				this.addDiagnostic(lastActiveNode.start, 1, "no matching closing character found", DiagnosticSeverity.Error, "IntelliSkript->Nest->No Matching");
 			}
 		}
 		this.hierarchy.end = this.currentString.length;
@@ -260,4 +259,43 @@ export class SkriptContext {
 		results[indexes.length] = { text: this.currentString.substring(currentIndex, end), index: currentIndex };
 		return results;
 	}
+
+	parseTypes(str: string): SkriptTypeState | undefined {
+		assert(this.currentSection);
+		//const str = this.currentString.substring(start, end);
+		const result = new SkriptTypeState();
+		let parts : string[];
+		if (str[0] == '*') {
+			result.isLiteral = true;
+			parts = str.substring(1).split('/');
+		}
+		else if (str[0] == '-') {
+			result.canBeEmpty = true;
+			parts = str.substring(1).split('/');
+		}
+		else {
+			parts = str.split('/');
+		}
+		for (let i = 0; i < parts.length; i++) {
+			if (parts[i].endsWith('s')) {
+				const singleType = parts[i].substring(0, parts[i].length - 1);
+				const typePattern = this.currentSection.getPatternData(new SkriptPatternCall(singleType, PatternType.type), stopAtFirstResultProcessor);
+				if (typePattern) {
+					result.isArray = true;
+					result.possibleTypes.push(typePattern);
+					continue;
+				}
+			}
+
+			const typePattern = this.currentSection.getPatternData(new SkriptPatternCall(parts[i], PatternType.type), stopAtFirstResultProcessor);
+			if (typePattern) {
+				result.possibleTypes.push(typePattern);
+			}
+			else {
+				return undefined;
+			}
+		}
+		return result;
+	}
 }
+

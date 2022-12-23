@@ -1,6 +1,34 @@
 #AUTOMATIC GENERATED SKRIPT FILE
 #COPYRIGHT JOHN HEIKENS
 
+#Bungee connection
+#Represents a new bungee connection
+#since 1.0.0
+type:
+	patterns:
+		bungeeconn
+
+#Bungee player
+#Represents a player on the network
+#since 1.0.0
+type:
+	patterns:
+		bungeeplayer
+
+#Bungee player
+#Represents a player on the network
+#since 1.1.0
+type:
+	patterns:
+		bungeeserver
+
+#Bungee server builder
+#Represents a bungee server builder
+#since 2.0.0
+type:
+	patterns:
+		serverbuilder
+
 #Broadcast message to server
 #Broadcasts a message to a server in the network
 #since 1.0.3 - 1.1.0: Usage of BungeeServer type

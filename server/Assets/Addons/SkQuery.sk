@@ -1,6 +1,51 @@
 #AUTOMATIC GENERATED SKRIPT FILE
 #COPYRIGHT JOHN HEIKENS
 
+#art
+type:
+	patterns:
+		art[s]
+
+#displayslot
+type:
+	patterns:
+		displayslot[s]
+
+#lambda
+type:
+	patterns:
+		lambda
+
+#markup
+type:
+	patterns:
+		markup
+
+#moonphase
+type:
+	patterns:
+		moonphase[s]
+
+#predicate
+type:
+	patterns:
+		predicate
+
+#profession
+type:
+	patterns:
+		profession[s]
+
+#queryresult
+type:
+	patterns:
+		queryresult[s]
+
+#worldborder
+type:
+	patterns:
+		worldborder[s]
+
 #Branch
 effect:
 	patterns:

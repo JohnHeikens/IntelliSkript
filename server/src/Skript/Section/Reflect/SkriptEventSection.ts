@@ -1,8 +1,10 @@
-import { PatternData } from '../../../PatternTree';
-import { PatternType } from '../../PatternTreeContainer';
+import { PatternData } from "../../../Pattern/PatternData";
+import { PatternType } from "../../../Pattern/PatternType";
 import { SkriptContext } from '../../SkriptContext';
 import { SkriptSection } from '../SkriptSection';
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
+import { PatternTree } from '../../../Pattern/PatternTree';
+import assert = require('assert');
 export class SkriptEventSection extends SkriptPatternContainerSection {
 	eventValues: PatternData[] | undefined = undefined;
 
@@ -24,18 +26,31 @@ export class SkriptEventSection extends SkriptPatternContainerSection {
 			this.eventValues = new Array(valueStrings.length);
 			for (let i = 0; i < valueStrings.length; i++) {
 				//valueStrings.forEach(element => {
-				this.eventValues[i] = new PatternData("[the] [event( |-)]]" + valueStrings[i], "(the )?(event( |-))?" + valueStrings[i], context.getLocation(currentPosition, valueStrings[i].length), this);
+				const types = context.parseTypes(valueStrings[i]);
+				if (types) {
+					this.eventValues[i] = new PatternData("[the] [event( |-)]]" + valueStrings[i], "(the )?(event( |-))?" + valueStrings[i], context.getLocation(currentPosition, valueStrings[i].length), [types], PatternType.effect, this);
+				}
+				else{
+					this.eventValues.splice(i, 1);
+				}
 				currentPosition += valueStrings[i].length + ", ".length;
 			}
 		}
-		else if (context.currentString.startsWith("pattern: ")) {
-			context.currentSkriptFile.addPattern(context.push("pattern: ".length), this, PatternType.event);
-		}
 		else {
-			context.addDiagnostic(0, context.currentString.length, "can't understand this line");
+			return super.processLine(context);
 		}
+		//else if (context.currentString.startsWith("pattern: ")) {
+		//	context.currentSkriptFile.addPattern(context.push("pattern: ".length), this, PatternType.event);
+		//}
+		//else {
+		//	context.addDiagnostic(0, context.currentString.length, "can't understand this line");
+		//}
 	}
 	override addPattern(context: SkriptContext): void {
-		context.currentSkriptFile.addPattern(context, this, PatternType.event);
+		assert(context.currentSkriptFile != undefined);
+		const pattern = PatternTree.parsePattern(context, this, PatternType.event);
+		if (pattern) {
+			context.currentSkriptFile.addPattern(pattern);
+		}
 	}
 }

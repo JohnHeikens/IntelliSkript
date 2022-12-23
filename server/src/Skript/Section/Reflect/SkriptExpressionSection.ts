@@ -1,8 +1,8 @@
-import { SkriptContext } from '../../SkriptContext';
-import { SkriptSection } from '../SkriptSection';
-import { SkriptType } from '../../SkriptType';
-import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 import { TokenTypes } from '../../../TokenTypes';
+import { SkriptContext } from '../../SkriptContext';
+import { SkriptTypeState } from "../../SkriptTypeState";
+import { SkriptSection } from '../SkriptSection';
+import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 export class SkriptExpressionSection extends SkriptPatternContainerSection {
 	//set y to x
 	hasGet = false;
@@ -18,7 +18,7 @@ export class SkriptExpressionSection extends SkriptPatternContainerSection {
 	hasReset = false;
 	//delete x::*
 	hasRemoveAll = false;
-	returnType = new SkriptType();
+	returnType = new SkriptTypeState();
 	createSection(context: SkriptContext): SkriptSection {
 		let recognized = true;
 		if (context.currentString == "get") {
@@ -59,7 +59,19 @@ export class SkriptExpressionSection extends SkriptPatternContainerSection {
 	}
 	processLine(context: SkriptContext): void {
 		if (context.currentString.startsWith("return type: ")) {
-			this.returnType = new SkriptType(context.currentString.substring("return type: ".length).toLowerCase());
+			const parsedType = context.parseTypes(context.currentString.substring("return type: ".length).toLowerCase());
+			if (parsedType)
+			{
+				this.returnType = parsedType;
+			}
+			else {
+				const obj = context.parseTypes("object");
+				if(obj)
+				{
+					this.returnType = obj;
+				}
+			}
+			//this.returnType = new skriptt(context.currentString.substring("return type: ".length).toLowerCase());
 		}
 		//TODO throw error
 	}

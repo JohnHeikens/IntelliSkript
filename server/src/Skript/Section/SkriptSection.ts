@@ -1,21 +1,31 @@
-import {
-	SkriptContext
-} from '../SkriptContext';
+import { DiagnosticSeverity, Location } from 'vscode-languageserver/node';
+import * as IntelliSkriptConstants from '../../IntelliSkriptConstants';
+import { SkriptNestHierarchy } from '../../Nesting/SkriptNestHierarchy';
+//import { PatternData } from "../../Pattern/PatternData";
+import { PatternResultProcessor, stopAtFirstResultProcessor } from '../../Pattern/patternResultProcessor';
+import { TokenTypes } from '../../TokenTypes';
+import { PatternType } from "../../Pattern/PatternType";
+import { SkriptContext } from '../SkriptContext';
+import { SkriptPatternMatchHierarchy } from '../SkriptPatternMatchHierarchy';
 import { SkriptVariable } from '../SkriptVariable';
+import { SkriptEventListenerSection } from './SkriptEventListenerSection';
 import { SkriptSectionGroup } from './SkriptSectionGroup';
-import { Location, DiagnosticSeverity, MarkupContent } from 'vscode-languageserver/node';
+//import { SkriptConditionSection } from './SkriptConditionSection';
+import assert = require('assert');
+import { PatternData } from '../../Pattern/PatternData';
+import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
+import { SkriptTypeState } from '../SkriptTypeState';
 //const variablePattern = /\{(.*)\}/g;
 //IMPORT BELOW TO AVOID CIRCULAR DEPENDENCIES
 
 export class SkriptSection extends SkriptSectionGroup {
-
 	startLine: number;
 	endLine: number;
 	lineInfo: Map<number, SkriptPatternMatchHierarchy> = new Map<number, SkriptPatternMatchHierarchy>();
 
 	constructor(context: SkriptContext, parent?: SkriptSectionGroup) {
 		super(parent);
-		this.startLine = context.currentDocument.positionAt(context.currentPosition).line;
+		this.startLine = context.currentLine;
 		this.endLine = this.startLine;
 	}
 
@@ -33,31 +43,51 @@ export class SkriptSection extends SkriptSectionGroup {
 		return undefined;
 	}
 
-	addVariableReference(referenceLocation: Location, name: string): void {
+	addVariableReference(referenceLocation: Location, name: string): SkriptVariable {
 		const existingVariable = this.getVariableByName(name);
-		if (!existingVariable) {
-			this.definedVariables.push(new SkriptVariable(referenceLocation, name, "unknown"));
+		if (existingVariable) {
+			return existingVariable;
 		}
+		else {
+			const newVariable = new SkriptVariable(referenceLocation, name, "unknown");
+			this.definedVariables.push(newVariable);
+			return newVariable;
+		}
+	}
+
+	getTypeData(typeName: string): PatternData | undefined {
+		return this.getPatternData(new SkriptPatternCall(typeName, PatternType.type), stopAtFirstResultProcessor);
 	}
 
 	private detectPatternsRecursively(context: SkriptContext, currentNode: SkriptNestHierarchy): SkriptPatternMatchHierarchy[] {
 
-		function convert(input: string): string {
-			let result = input.replace(new RegExp(IntelliSkriptConstants.NumberRegExp, "g"), '%');
-			result = result.replace(new RegExp(IntelliSkriptConstants.BooleanRegExp, "g"), '%');
-			return result;
-		}
+		const patternArguments: Map<number, SkriptTypeState> = new Map<number, SkriptTypeState>();
+		const convert = ((start: number, input: string): string => {
+			let m: RegExpMatchArray | null;
+			const numberGlobalRegExp = new RegExp(IntelliSkriptConstants.NumberRegExp, "g");
+			while ((m = numberGlobalRegExp.exec(input))) {
+				assert(m.index != undefined);
+				const numberData = this.getTypeData("number");
+				if(numberData)
+				{
+					patternArguments.set(m.index, new SkriptTypeState(numberData));
+					context.addToken(TokenTypes.number, start + m.index, m[0].length);	
+				}
+			}
+			//const booleanGlobalRegExp = new RegExp(IntelliSkriptConstants.BooleanRegExp, "g");
+			//while ((m = booleanGlobalRegExp.exec(input))) {
+			//	patternArguments.set(m.index, new SkriptTypeState(this.getTypeData("boolean")));
+			//	context.addToken(TokenTypes.enum, start + m.index, m[0].length);
+			//}
+
+			//const result = input.replace(numberGlobalRegExp, '%');
+			//result = result.replace(booleanGlobalRegExp, '%');
+			return input;
+		});
 
 		const results: SkriptPatternMatchHierarchy[] = [];
 		const childResultList: SkriptPatternMatchHierarchy[][] = new Array(currentNode.children.length);
 
-		if (currentNode.character == '{') {
-			this.addVariableReference(Location.create(context.currentDocument.uri,
-				{
-					start: context.currentDocument.positionAt(context.currentPosition + currentNode.start),
-					end: context.currentDocument.positionAt(context.currentPosition + currentNode.end)
-				}), context.currentString.substring(currentNode.start, currentNode.end));
-		}
 
 		for (let i = 0; i < currentNode.children.length; i++) {
 			//for (const currentChild of currentNode.children) {
@@ -70,51 +100,65 @@ export class SkriptSection extends SkriptSectionGroup {
 			let pattern = '';
 			let currentPosition = currentNode.start;
 
+
+
 			//pattern = pattern.replace(/\{.*\}/g, '%');
 
 			for (let i = 0; i < currentNode.children.length; i++) {
+				const child = currentNode.children[i];
 				//for (const currentChild of currentNode.children) {
-				if ('"{('.includes(currentNode.children[i].character)) {//string or variable
-					if (currentNode.children[i].character == '(') {
+				if ('"{('.includes(child.character)) {//string or variable
+					if (child.character == '(') {
 						if (childResultList[i].length == 0) continue;
 					}
-					pattern += convert(context.currentString.substring(currentPosition, currentNode.children[i].start - 1) + '%');
-					currentPosition = currentNode.children[i].end + 1;
+					else if (child.character == '{') {
+						//variable
+						//const variable = this.
+						const variable = this.addVariableReference(Location.create(context.currentDocument.uri,
+							{
+								start: context.currentDocument.positionAt(context.currentPosition + child.start),
+								end: context.currentDocument.positionAt(context.currentPosition + child.end)
+							}), context.currentString.substring(child.start, child.end));
+						context.addToken(variable.isParameter ? TokenTypes.parameter : TokenTypes.variable, child.start, child.end - child.start);
+						const objectData = this.getTypeData("object");
+						if(objectData)
+						{
+							patternArguments.set(child.start - 1, new SkriptTypeState(objectData));
+						}
+					}
+					pattern += convert(currentPosition, context.currentString.substring(currentPosition, child.start - 1) + '%');
+					currentPosition = child.end + 1;
 				}
 			}
-			pattern += convert(context.currentString.substring(currentPosition, currentNode.end));
+			pattern += convert(currentPosition, context.currentString.substring(currentPosition, currentNode.end));
 
 			//loop over sentence and try to replace as much as possible
 			//add the change value to {_test} -> add the change value to % -> add % to %
 			if (context.currentSkriptFile) {
-				const patternProcessor: patternResultProcessor = (pattern: PatternData) => {
-					if (pattern.skriptPatternString.includes("[event-]")) {
-						//check if this is a custom event
-						let currentCheckSection = this as SkriptSection;
-						for (; ;) {
-							if (currentCheckSection instanceof SkriptEventListenerSection) {
-								//if(currentCheckSection.eventPattern.section
-								return false;//correct
-							}
-							if (currentCheckSection.parent && currentCheckSection.parent instanceof SkriptSection) {
-								currentCheckSection = currentCheckSection.parent;
-							}
-							else {
-								return true;
-							}
-						}
-
-						//return true;//this wildcard pattern should be ignored for now
+				const patternProcessor: PatternResultProcessor = (pattern: PatternData) => {
+					//this pattern includes a wildcard
+					if (/(\(.*\)\?)?\.\+/.test(pattern.regexPatternString)) {
+						return true;
 					}
 					else {
 						return false;//found
 					}
 				};
-				let result: PatternData | undefined = this.getPatternData(pattern, patternProcessor, PatternType.effect);
-				let match;
+				let result: PatternData | undefined = this.getPatternData(new SkriptPatternCall(pattern, PatternType.effect, Array.from(patternArguments.values())), patternProcessor);
+				let match: RegExpMatchArray | null;
 				const spaceRegex = / /g;
 				while ((!result) && (match = spaceRegex.exec(pattern))) {
-					result = context.currentSkriptFile.getPatternData(pattern.substring(match.index + 1), patternProcessor, PatternType.effect);
+					const cutArguments: SkriptTypeState[] = [];
+					assert(match.index != undefined);
+					//'cut' arguments out
+					patternArguments.forEach((argument, key) => {
+						assert(match != null);
+						assert(match.index != undefined);
+						if (key >= match.index) {
+							cutArguments.push(argument);
+						}
+					});
+					result = context.currentSkriptFile.getPatternData(new SkriptPatternCall(pattern.substring(match.index + 1), PatternType.effect, cutArguments), patternProcessor);
 				}
 				if (result) {
 					//match.index won't help
@@ -177,9 +221,9 @@ export class SkriptSection extends SkriptSectionGroup {
 		else if (context.currentString == "else") {
 			context.addToken(TokenTypes.keyword, 0, "else".length);
 		}
-		if (isIfStatement) {
-			return new SkriptConditionSection(context, this);
-		}
+		//if (isIfStatement) {
+		//	return new SkriptConditionSection(context, this);
+		//}
 		return new SkriptSection(context, this);
 	}
 	getExactSectionAtLine(line: number): SkriptSection {
@@ -189,13 +233,4 @@ export class SkriptSection extends SkriptSectionGroup {
 
 
 }
-import { SkriptConditionSection } from './Reflect/SkriptConditionSection'; import { SkriptNestHierarchy } from '../../Nesting/SkriptNestHierarchy';
-import { PatternData, patternResultProcessor } from '../../PatternTree';
-import { SkriptEventListenerSection } from './SkriptEventListenerSection';
-import { SkriptPatternMatchHierarchy } from '../SkriptPatternMatchHierarchy';
-import assert = require('assert');
-import { IntelliSkriptConstants } from '../../IntelliSkriptConstants';
-import { mainModule } from 'process';
-import { TokenTypes } from '../../TokenTypes';
-import { PatternType } from '../PatternTreeContainer';
 

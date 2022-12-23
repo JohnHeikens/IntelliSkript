@@ -1,10 +1,13 @@
-import { SkriptSection } from './SkriptSection';
-import { SkriptVariable } from '../SkriptVariable';
 import { Hierarchy } from '../../Hierarchy';
-import { PatternData, patternResultProcessor } from '../../PatternTree';
-import { PatternType } from '../PatternTreeContainer';
+import { PatternData } from "../../Pattern/PatternData";
+import { PatternResultProcessor } from "../../Pattern/patternResultProcessor";
+import { PatternType } from "../../Pattern/PatternType";
+import { SkriptVariable } from '../SkriptVariable';
+import { SkriptSection } from './SkriptSection';
+import { PatternMatcher } from '../../Pattern/PatternMatcher';
+import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
 
-export class SkriptSectionGroup extends Hierarchy<SkriptSectionGroup> {
+export class SkriptSectionGroup extends Hierarchy<SkriptSectionGroup> implements PatternMatcher {
 	definedVariables: Array<SkriptVariable> = [];
 	override children: SkriptSection[] = [];
 	constructor(parent?: SkriptSectionGroup) {
@@ -22,7 +25,7 @@ export class SkriptSectionGroup extends Hierarchy<SkriptSectionGroup> {
 		//throw new Error("skriptsectiongroup without derivation");
 		return undefined;
 	}
-	getPatternData(pattern: string, shouldContinue: patternResultProcessor, patternType: PatternType): PatternData | undefined {
-		return this.parent ? this.parent.getPatternData(pattern, shouldContinue, patternType) : undefined;
+	getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
+		return this.parent ? this.parent.getPatternData(testPattern, shouldContinue) : undefined;
 	}
 }

@@ -1,8 +1,9 @@
 //import * as SkriptJson from './Addon Json/WolvSK.json';
 
-import { IntelliSkriptConstants } from '../../IntelliSkriptConstants';
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
+import * as IntelliSkriptConstants from '../../IntelliSkriptConstants';
+import * as Thread from '../../Thread';
 export const intelliSkriptAddonSkFilesDirectory = path.join(IntelliSkriptConstants.ServerAssetsDirectory, "Addons");
 export class GeneralJson {
 	name = "";
@@ -30,7 +31,7 @@ export class ExpressionJson extends PatternJson {
 	"return type" = "";
 }
 
-export class TypeJson extends GeneralJson {
+export class TypeJson extends PatternJson {
 
 }
 export class fileJson {
@@ -76,12 +77,14 @@ export class AddonParser {
 			return str;
 		}
 
-		function patterns(elem: PatternJson): string {
+		function patterns(elem: PatternJson, noSpaces = false): string {
 			let str = "";
 			str += "\tpatterns:\n";
 			elem.patterns.forEach(line => {
 				if (line != "") {
-
+					if (noSpaces) {
+						line = line.replace(/(?<!\[) | (?!\])/, '[ ]');
+					}
 					str += "\t\t" + line + "\n";
 				}
 			});
@@ -90,6 +93,12 @@ export class AddonParser {
 
 		let str = "#AUTOMATIC GENERATED SKRIPT FILE\n";
 		str += "#COPYRIGHT JOHN HEIKENS\n";
+		//define types at first as they are used in effects and other patterns
+		file.types?.forEach(type => {
+			str += generalData(type);
+			str += "type:\n";
+			str += patterns(type, true);
+		});
 		file.effects?.forEach(effect => {
 			str += generalData(effect);
 			str += "effect:\n";
@@ -116,7 +125,12 @@ export class AddonParser {
 						}
 						const eventValueParserRegExp = /(event-)?(.*)/;
 
-						str += eventValueParserRegExp.exec(line)[2];
+						const valueName : RegExpExecArray | null = eventValueParserRegExp.exec(line);
+						if (valueName)
+						{
+							str += valueName[2];
+						}
+
 					}
 				});
 				str += "\n";
@@ -151,6 +165,7 @@ export class AddonParser {
 			fs.mkdirSync(intelliSkriptAddonSkFilesDirectory, { recursive: true });
 		}
 		const jsonDirectory = path.join(IntelliSkriptConstants.ServerSrcDirectory, "Skript", "Addon Parser", "Addon Json");
+		console.log("Parsing JSON files in " + jsonDirectory);
 		fs.readdir(jsonDirectory, undefined, function (err: NodeJS.ErrnoException | null, files: string[]) {
 
 			files.forEach(function (file, index) {

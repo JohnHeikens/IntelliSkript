@@ -1,8 +1,11 @@
-import { PatternData, patternResultProcessor } from '../../PatternTree';
+import assert = require('assert');
+import { PatternData } from "../../Pattern/PatternData";
+import { PatternResultProcessor } from "../../Pattern/patternResultProcessor";
+import { PatternType } from "../../Pattern/PatternType";
+import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
 import { SkriptContext } from '../SkriptContext';
-import { SkriptSection } from './SkriptSection';
 import { SkriptEventSection } from './Reflect/SkriptEventSection';
-import { PatternType } from '../PatternTreeContainer';
+import { SkriptSection } from './SkriptSection';
 
 export class SkriptEventListenerSection extends SkriptSection {
 
@@ -11,15 +14,16 @@ export class SkriptEventListenerSection extends SkriptSection {
 		super(context, context.currentSkriptFile);
 		this.eventPattern = eventPattern;
 	}
-	override getPatternData(pattern: string, shouldContinue: patternResultProcessor, type: PatternType): PatternData | undefined {
-		if (type == PatternType.effect) {
+	override getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
+		if (testPattern.type == PatternType.effect) {
 			const s = this.eventPattern.section as SkriptEventSection;
+			assert(s.eventValues);
 			for (let i = 0; i < s.eventValues.length; i++) {
-				if (s.eventValues[i].patternRegExp.test(pattern)) {
+				if (s.eventValues[i].patternRegExp.test(testPattern.pattern)) {
 					return s.eventValues[i];
 				}
 			}
 		}
-		return super.getPatternData(pattern, shouldContinue, type);
+		return super.getPatternData(testPattern, shouldContinue);
 	}
 }

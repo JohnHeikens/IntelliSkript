@@ -6,7 +6,8 @@
 		"rootDir": "src",
 		"lib": ["es2020"],
 		"sourceMap": true,
-		"allowJs": false
+		"allowJs": false,
+		"strict": true
 	},
 	"include": [
 		"src"

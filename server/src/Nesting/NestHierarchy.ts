@@ -1,4 +1,3 @@
-import { SkriptNestHierarchy } from './SkriptNestHierarchy';
 export class NestHierarchy<t extends NestHierarchy<t>> {
 	start = 0;
 	end = 0;

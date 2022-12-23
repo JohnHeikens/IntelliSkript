@@ -1,10 +1,12 @@
+import { TextDocument } from 'vscode-languageserver-textdocument';
+import { PatternData } from "../../Pattern/PatternData";
+import { PatternResultProcessor } from "../../Pattern/patternResultProcessor";
+import { PatternTreeContainer } from '../PatternTreeContainer';
+import { PatternType } from "../../Pattern/PatternType";
+import { SkriptContext } from '../SkriptContext';
 import { SkriptFile } from './SkriptFile';
 import { SkriptSectionGroup } from './SkriptSectionGroup';
-import { SkriptVariable } from '../SkriptVariable';
-import { PatternData, patternResultProcessor, PatternTree } from '../../PatternTree';
-import { PatternType, PatternTreeContainer } from '../PatternTreeContainer';
-import { TextDocument } from 'vscode-languageserver-textdocument';
-import { SkriptContext } from '../SkriptContext';
+import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
 
 export class SkriptWorkSpace extends SkriptSectionGroup {
 	//the 'childsections' variable is not used here. TODO somehow merge the childsections and files variable
@@ -42,9 +44,10 @@ export class SkriptWorkSpace extends SkriptSectionGroup {
 		this.uri = workSpaceUri;
 	}
 
-	override getPatternData(pattern: string, shouldContinue: patternResultProcessor, type: PatternType): PatternData | undefined {
-		const result = this.patterns.getPatternData(pattern, shouldContinue, type);
-		return result ? result : super.getPatternData(pattern, shouldContinue, type);
+	override getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
+	//override getPatternData(pattern: string, shouldContinue: PatternResultProcessor, type: PatternType): PatternData | undefined {
+		const result = this.patterns.getPatternData(testPattern, shouldContinue);
+		return result ? result : super.getPatternData(testPattern, shouldContinue);
 	}
 
 	//override getVariableByName(name: string): SkriptVariable | undefined {

@@ -1,0 +1,13 @@
+#SKRIPT FILE WITH MISSING SKRIPT PATTERNS
+#COPYRIGHT JOHN HEIKENS
+
+type entity[ ]data:
+
+type structure[ ]type:
+
+type item[ ]stack:
+
+type class[ ]info:
+
+type inventory[ ]holder:
+

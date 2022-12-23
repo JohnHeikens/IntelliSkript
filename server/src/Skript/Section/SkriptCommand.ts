@@ -1,20 +1,21 @@
-import { SkriptContext } from '../SkriptContext';
+import { PatternData } from "../../Pattern/PatternData";
+import { PatternResultProcessor } from "../../Pattern/patternResultProcessor";
 import { TokenTypes } from '../../TokenTypes';
-import{
+import { PatternType } from "../../Pattern/PatternType";
+import { SkriptContext } from '../SkriptContext';
+import {
 	SkriptSection
-
 } from "./SkriptSection";
-import { PatternData, patternResultProcessor } from '../../PatternTree';
-import { PatternType } from '../PatternTreeContainer';
+import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
 
 const playerRegExpString = "(the )?player";
 const playerRegExp = new RegExp(playerRegExpString);
-export class SkriptCommand extends SkriptSection{
+export class SkriptCommandSection extends SkriptSection{
 	playerPatternData: PatternData;
 	//context.currentString should be 'command /test <string> :: string' for example
 	constructor(context: SkriptContext, parent: SkriptSection){
 		super(context, parent);
-		this.playerPatternData = new PatternData("[the] player", playerRegExpString, context.getLocation(0, "command".length));
+		this.playerPatternData = new PatternData("[the] player", playerRegExpString, context.getLocation(0, "command".length), [], PatternType.effect);
 		const regex = /command (\/|)(((?! ).){1,})( ((?! ).){1,}){0,}/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);
 		if (result == null){
@@ -38,9 +39,9 @@ export class SkriptCommand extends SkriptSection{
 			context.addDiagnostic(0, context.currentString.length, "make sure to put your code for the command in triggers");
 		}
 	}
-	override getPatternData(pattern: string, shouldContinue: patternResultProcessor, type: PatternType): PatternData | undefined {
-		if (type == PatternType.effect) {
-			if(playerRegExp.test(pattern)){
+	override getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
+		if (testPattern.type == PatternType.effect) {
+			if(playerRegExp.test(testPattern.pattern)){
 				return this.playerPatternData;
 			}
 			//const s = this.eventPattern.section as SkriptEventSection;
@@ -50,6 +51,6 @@ export class SkriptCommand extends SkriptSection{
 			//	}
 			//}
 		}
-		return super.getPatternData(pattern, shouldContinue, type);
+		return super.getPatternData(testPattern, shouldContinue);
 	}
 }

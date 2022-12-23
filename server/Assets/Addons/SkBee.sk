@@ -1,6 +1,151 @@
 #AUTOMATIC GENERATED SKRIPT FILE
 #COPYRIGHT JOHN HEIKENS
 
+#Bound
+#Represents a 3D bounding box between 2 points
+#since 1.0.0
+type:
+	patterns:
+		bound
+
+#Environment
+#The environment of a world.
+#since 1.8.0
+#Examples:
+#set environment of {_creator} to nether
+type:
+	patterns:
+		environment[s]
+
+#Game Event
+#Represents a Minecraft 'GameEvent', mainly used by Skulk Sensors. Requires MC 1.17+.
+#See McWiki for more details -> https://minecraft.fandom.com/wiki/Sculk_SensorVibration_amplitudes
+#since 1.14.0
+type:
+	patterns:
+		game[ ]event[s]
+
+#Material Choice
+#Represents a set of materials/minecraft tags which can be used in some recipes. 
+#Requires Minecraft 1.13+
+#since 1.10.0
+#Examples:
+#set {_a} to material choice of diamond sword, diamond shovel and diamond hoe
+#set {_a} to material choice of every sword
+#set {_a} to material choice of minecraft tag "doors"
+type:
+	patterns:
+		material[ ]choice[s]
+
+#Minecraft Tag
+#Represents a tag provided by Minecraft. Requires Minecraft 1.13+
+#since 1.10.0
+#Examples:
+#set {_i} to minecraft tag "doors"
+#set {_tag} to minecraft tag "trapdoors"
+#set {_tags::*} to minecraft tags "wall_signs" and "wooden_doors"
+#set {_tag} to "minecraft:climbable"
+#loop minecraft tags:
+#	send "-%loop-value%" to console
+type:
+	patterns:
+		[minecraft[ ]]tag[s]
+
+#NBT - Compound
+#Represents the NBT compound of an entity/block/item.
+#since 1.6.0
+#Examples:
+#set {_a} to nbt compound of player
+type:
+	patterns:
+		nbt[ ]compound
+
+#NBT - Tag Type
+#Represents a type of NBT tag.
+#since 1.10.0
+#Examples:
+#set byte tag "points" of {_nbt} to 1
+#set compound tag "tool" of {_nbt} to nbt compound of player's tool
+type:
+	patterns:
+		nbt[ ]type[s]
+
+#Particle
+#Represents a particle which can be used in the 'Particle Spawn' effect.
+#Some particles require extra data, these are distinguished by their data type within the square brackets.
+#DustOption, DustTransition and Vibration each have their own functions to build the appropriate data for these particles.
+#since 1.9.0
+#Examples:
+#play 1 of soul at location of player
+#play 10 of dust using dustOption(green, 10) at location of player
+#play 3 of item using player's tool at location of player
+#play 1 of block using dirt at location of player
+#play 1 of dust_color_transition using dustTransition(blue, green, 3) at location of player
+#play 1 of vibration using vibration({loc1}, {loc2}, 1 second) at {loc1}
+type:
+	patterns:
+		particle[s]
+
+#Structure
+#Represents a structure that can be saved or pasted into a world. Requires MC 1.17.1+
+#Use the 'Structure-Object' expression to get a new/existing structure object.
+#since 1.12.0
+type:
+	patterns:
+		structure[s]
+
+#Structure - Mirror
+#Represents the different states of mirroring for a structure. Requires MC 1.17.1+
+#since 1.12.0
+#Examples:
+#set mirror of structure {_s} to front back
+type:
+	patterns:
+		mirror[s]
+
+#Structure - Rotation
+#Represents the different states of rotation for a structure. Requires MC 1.17.1+
+#since 1.12.0
+#Examples:
+#set rotation of structure {_s} to clockwise 90
+type:
+	patterns:
+		structure[ ]rotation[s]
+
+#Team - Option
+#Represents an option for a team.
+type:
+	patterns:
+		team[ ]option[s]
+
+#Team - Option Status
+#Represents an option status for a team option
+type:
+	patterns:
+		team[ ]option[ ]status
+
+#Text Component - Base Component
+#Text components used for hover/click events. Due to the complexity of these, 
+#they can NOT be long term stored in variables.
+#since 1.5.0
+#Examples:
+#set {_t} to text component from "CLICK FOR OUR DISCORD"
+#set hover event of {_t} to a new hover event showing "Clicky Clicky!"
+#set click event of {_t} to a new click event to open url "https://OurDiscord.com"
+#send component {_t} to player
+type:
+	patterns:
+		base[ ]component[s]
+
+#World Type
+#The type of a world
+#since 1.8.0
+#Examples:
+#set world type of {_creator} to flat
+type:
+	patterns:
+		world[ ]type[s]
+
 #Board - Clear
 #Clear the scoreboard of a player.
 #since 1.0.0

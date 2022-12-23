@@ -1,6 +1,18 @@
 #AUTOMATIC GENERATED SKRIPT FILE
 #COPYRIGHT JOHN HEIKENS
 
+#Advancement
+#A type that represents the Advancement class from Spigot.
+type:
+	patterns:
+		advancement[s]
+
+#NamespacedKey
+#A type that represents the NamespacedKey class from Spigot.
+type:
+	patterns:
+		namespacedkey|key
+
 #EffAwardAdvancement
 effect:
 	patterns:

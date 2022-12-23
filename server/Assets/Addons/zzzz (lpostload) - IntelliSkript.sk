@@ -1,0 +1,10 @@
+#SKRIPT FILE WITH MISSING SKRIPT PATTERNS
+#COPYRIGHT JOHN HEIKENS
+
+#literal boolean
+expression (true|false):
+    return type: boolean
+
+#literal number
+expression <((?<=( |^))-{0,1})(\d+)(\.\d+)?(?!\.)\b>:
+    return type: number
