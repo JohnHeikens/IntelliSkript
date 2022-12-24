@@ -52,23 +52,21 @@ export class SkriptExpressionSection extends SkriptPatternContainerSection {
 				context.addDiagnostic(0, context.currentString.length, "cannot recognize this section");
 			}
 		}
-		if(recognized){
+		if (recognized) {
 			context.addToken(TokenTypes.keyword);
 		}
 		return super.createSection(context);
 	}
 	processLine(context: SkriptContext): void {
 		if (context.currentString.startsWith("return type: ")) {
-			const parsedType = context.parseTypes(context.currentString.substring("return type: ".length).toLowerCase());
-			if (parsedType)
-			{
-				this.returnType = parsedType;
+			const parsedType = this.parseType(context, "return type: ".length);
+			if (parsedType) {
+				this.returnType = new SkriptTypeState(parsedType);
 			}
 			else {
-				const obj = context.parseTypes("object");
-				if(obj)
-				{
-					this.returnType = obj;
+				const obj = this.getTypeData("object");
+				if (obj) {
+					this.returnType = new SkriptTypeState(obj);
 				}
 			}
 			//this.returnType = new skriptt(context.currentString.substring("return type: ".length).toLowerCase());

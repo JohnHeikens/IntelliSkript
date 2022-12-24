@@ -15,6 +15,7 @@ import assert = require('assert');
 import { PatternData } from '../../Pattern/PatternData';
 import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
 import { SkriptTypeState } from '../SkriptTypeState';
+import { TokenModifiers } from '../../TokenModifiers';
 //const variablePattern = /\{(.*)\}/g;
 //IMPORT BELOW TO AVOID CIRCULAR DEPENDENCIES
 
@@ -59,6 +60,60 @@ export class SkriptSection extends SkriptSectionGroup {
 		return this.getPatternData(new SkriptPatternCall(typeName, PatternType.type), stopAtFirstResultProcessor);
 	}
 
+	parseType(context: SkriptContext, start = 0, end = context.currentString.length): PatternData | undefined {
+		const data = this.getTypeData(context.currentString.substring(start, end));
+		let modifier;
+		if (data) {
+			modifier = TokenModifiers.abstract;
+		}
+		else {
+			modifier = TokenModifiers.deprecated;
+			context.addDiagnostic(start, end - start, "cannot recognize type", DiagnosticSeverity.Error);
+		}
+		context.addToken(TokenTypes.type, start, end - start, 1, modifier);
+		return data;
+	}
+
+	parseTypes(context: SkriptContext, start = 0, end = context.currentString.length): SkriptTypeState | undefined {
+		const str = context.currentString.substring(start, end);
+		const result = new SkriptTypeState();
+		let parts: string[];
+		let currentPosition = start;
+		if (str[0] == '*') {
+			result.isLiteral = true;
+			currentPosition++;
+			parts = str.substring(1).split('/');
+		}
+		else if (str[0] == '-') {
+			result.canBeEmpty = true;
+			currentPosition++;
+			parts = str.substring(1).split('/');
+		}
+		else {
+			parts = str.split('/');
+		}
+		for (let i = 0; i < parts.length; currentPosition += (parts[i].length + '/'.length), i++) {
+			if (parts[i].endsWith('s')) {
+				const singleType = parts[i].substring(0, parts[i].length - 1);
+				const typePattern = this.getPatternData(new SkriptPatternCall(singleType, PatternType.type), stopAtFirstResultProcessor);
+				if (typePattern) {
+					result.isArray = true;
+					result.possibleTypes.push(typePattern);
+					continue;
+				}
+			}
+
+			const typePattern = this.getPatternData(new SkriptPatternCall(parts[i], PatternType.type), stopAtFirstResultProcessor);
+			if (typePattern) {
+				result.possibleTypes.push(typePattern);
+			}
+			else {
+				return undefined;
+			}
+		}
+		return result;
+	}
+
 	private detectPatternsRecursively(context: SkriptContext, currentNode: SkriptNestHierarchy): SkriptPatternMatchHierarchy[] {
 
 		const patternArguments: Map<number, SkriptTypeState> = new Map<number, SkriptTypeState>();
@@ -68,10 +123,9 @@ export class SkriptSection extends SkriptSectionGroup {
 			while ((m = numberGlobalRegExp.exec(input))) {
 				assert(m.index != undefined);
 				const numberData = this.getTypeData("number");
-				if(numberData)
-				{
-					patternArguments.set(m.index, new SkriptTypeState(numberData));
-					context.addToken(TokenTypes.number, start + m.index, m[0].length);	
+				if (numberData) {
+					//patternArguments.set(m.index, new SkriptTypeState(numberData));
+					context.addToken(TokenTypes.number, start + m.index, m[0].length);
 				}
 			}
 			//const booleanGlobalRegExp = new RegExp(IntelliSkriptConstants.BooleanRegExp, "g");
@@ -120,11 +174,15 @@ export class SkriptSection extends SkriptSectionGroup {
 								end: context.currentDocument.positionAt(context.currentPosition + child.end)
 							}), context.currentString.substring(child.start, child.end));
 						context.addToken(variable.isParameter ? TokenTypes.parameter : TokenTypes.variable, child.start, child.end - child.start);
-						const objectData = this.getTypeData("object");
-						if(objectData)
-						{
+						const objectData = this.getTypeData("unknown");
+						if (objectData) {
 							patternArguments.set(child.start - 1, new SkriptTypeState(objectData));
 						}
+					}
+					else if (child.character == '"') {
+						const stringData = this.getTypeData("string");
+						if (stringData)
+							patternArguments.set(child.start, new SkriptTypeState(stringData));
 					}
 					pattern += convert(currentPosition, context.currentString.substring(currentPosition, child.start - 1) + '%');
 					currentPosition = child.end + 1;
@@ -134,41 +192,52 @@ export class SkriptSection extends SkriptSectionGroup {
 
 			//loop over sentence and try to replace as much as possible
 			//add the change value to {_test} -> add the change value to % -> add % to %
-			if (context.currentSkriptFile) {
-				const patternProcessor: PatternResultProcessor = (pattern: PatternData) => {
-					//this pattern includes a wildcard
-					if (/(\(.*\)\?)?\.\+/.test(pattern.regexPatternString)) {
-						return true;
-					}
-					else {
-						return false;//found
-					}
-				};
-				let result: PatternData | undefined = this.getPatternData(new SkriptPatternCall(pattern, PatternType.effect, Array.from(patternArguments.values())), patternProcessor);
-				let match: RegExpMatchArray | null;
-				const spaceRegex = / /g;
-				while ((!result) && (match = spaceRegex.exec(pattern))) {
-					const cutArguments: SkriptTypeState[] = [];
+			assert(context.currentSkriptFile);
+			const patternProcessor: PatternResultProcessor = (pattern: PatternData) => {
+				//this pattern includes a wildcard
+				if (/(\(.*\)\?)?\.\+/.test(pattern.regexPatternString)) {
+					return true;
+				}
+				else {
+					return false;//found
+				}
+			};
+			let result: PatternData | undefined = this.getPatternData(new SkriptPatternCall(pattern, PatternType.effect, Array.from(patternArguments.values())), patternProcessor);
+			let match: RegExpMatchArray | null;
+			const spaceRegex = / /g;
+			while ((!result) && (match = spaceRegex.exec(pattern))) {
+				const cutArguments: SkriptTypeState[] = [];
+				assert(match.index != undefined);
+				//'cut' arguments out
+				patternArguments.forEach((argument, key) => {
+					assert(match != null);
 					assert(match.index != undefined);
-					//'cut' arguments out
-					patternArguments.forEach((argument, key) => {
-						assert(match != null);
-						assert(match.index != undefined);
-						if (key >= match.index) {
-							cutArguments.push(argument);
-						}
-					});
-					result = context.currentSkriptFile.getPatternData(new SkriptPatternCall(pattern.substring(match.index + 1), PatternType.effect, cutArguments), patternProcessor);
-				}
-				if (result) {
-					//match.index won't help
-					const node = new SkriptPatternMatchHierarchy(currentNode.start, currentNode.end, result);
-					results.push(node);
-				}
-				else if (currentNode.character != '(') {
-					context.addDiagnostic(currentNode.start, currentNode.end - currentNode.start, "can't understand this line (pattern detection is a work in progress. please report on discord)", DiagnosticSeverity.Hint);
+					if (key >= match.index) {
+						cutArguments.push(argument);
+					}
+				});
+				result = context.currentSkriptFile.getPatternData(new SkriptPatternCall(pattern.substring(match.index + 1), PatternType.effect, cutArguments), patternProcessor);
+			}
+			if (result) {
+				//match.index won't help
+				const node = new SkriptPatternMatchHierarchy(currentNode.start, currentNode.end, result);
+				results.push(node);
+			}
+			else if (currentNode.character != '(') {
+				context.addDiagnostic(currentNode.start, currentNode.end - currentNode.start, "can't understand this line (pattern detection is a work in progress. please report on discord)", DiagnosticSeverity.Hint);
+			}
+		}
+		else if (currentNode.character == '"') {
+			let currentPosition = currentNode.start - 1;
+
+			for (let i = 0; i < currentNode.children.length; i++) {
+				{
+					const child = currentNode.children[i];
+					context.addToken(TokenTypes.string, currentPosition, child.start - currentPosition);
+					currentPosition = child.end;
 				}
 			}
+			context.addToken(TokenTypes.string, currentPosition, currentNode.end + 1 - currentPosition);
 		}
 		return results;
 	}

@@ -375,7 +375,7 @@ event "tab_complete":
 expression:
 	patterns:
 		index %number% of %objects%
-	return type: Object
+	return type: object
 #ExprArrowCrit
 expression:
 	patterns:
@@ -385,7 +385,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #ExprArrowKnockback
 expression:
 	patterns:
@@ -395,7 +395,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprArt
 expression:
 	patterns:
@@ -422,7 +422,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Inventory
+	return type: inventory
 #ExprBlastRadius
 expression:
 	patterns:
@@ -432,7 +432,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprBlockChunk
 expression:
 	patterns:
@@ -447,7 +447,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #ExprBlockCube
 expression:
 	patterns:
@@ -462,7 +462,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #ExprBlockInChunk
 expression:
 	patterns:
@@ -477,7 +477,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #ExprBorder
 expression:
 	patterns:
@@ -495,7 +495,7 @@ expression:
 		%worldborders%'[s] [world[ ]border[s]] center
 	set:
 #		(internal code)
-	return type: Location
+	return type: location
 #ExprBorderDamageAmount
 expression:
 	patterns:
@@ -503,7 +503,7 @@ expression:
 		%worldborders%'[s] [world[ ]border[s]] damage [amount]
 	set:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprBorderDamageBuffer
 expression:
 	patterns:
@@ -511,7 +511,7 @@ expression:
 		%worldborders%'[s] [world[ ]border[s]] [damage] buffer
 	set:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprBorderSize
 expression:
 	patterns:
@@ -522,7 +522,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprBorderWarningDistance
 expression:
 	patterns:
@@ -530,7 +530,7 @@ expression:
 		%worldborders%'[s] [world[ ]border[s]] warning distance
 	set:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprBorderWarningTime
 expression:
 	patterns:
@@ -542,22 +542,22 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprCharacterIndex
 expression:
 	patterns:
 		char[acter][s] at [index] %numbers% (within|in) %strings%
-	return type: Text
+	return type: text
 #ExprCheck
 expression:
 	patterns:
 		check[ed] %predicate%
-	return type: Boolean
+	return type: boolean
 #ExprColoredPotion
 expression:
 	patterns:
 		blank %potioneffecttype% [colo[u]r[ed]] potion
-	return type: Item / Material
+	return type: item
 #ExprComparisons
 expression:
 	patterns:
@@ -567,7 +567,7 @@ expression:
 		%object%[ ]\<[ ]%object%
 		%object%[ ]\>=[ ]%object%
 		%object%[ ]\<=[ ]%object%
-	return type: Boolean
+	return type: boolean
 #ExprComplicatedMath
 expression:
 	patterns:
@@ -585,17 +585,17 @@ expression:
 		signum %number%
 		(sqrt|square root)[ of] %number%
 		(%number% factorial|%number%!)
-	return type: Number
+	return type: number
 #ExprDefaultValue
 expression:
 	patterns:
 		%object%[ ]?[ ]%object%
-	return type: Object
+	return type: object
 #ExprDirectionFromTo
 expression:
 	patterns:
 		direction from %location% to %location%
-	return type: Direction
+	return type: direction
 #ExprEnchantLevel
 expression:
 	patterns:
@@ -612,7 +612,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #ExprExplodedBlocks
 expression:
 	patterns:
@@ -627,7 +627,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #ExprFlightMode
 expression:
 	patterns:
@@ -637,17 +637,17 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #ExprFormerLocation
 expression:
 	patterns:
 		[the] (past|former) move[ment] [location]
-	return type: Location
+	return type: location
 #ExprGlowingItemStack
 expression:
 	patterns:
 		[skquery] glowing %itemstacks%
-	return type: Item / Material
+	return type: item
 #ExprHealthScale
 expression:
 	patterns:
@@ -657,7 +657,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprHealthScaleMode
 expression:
 	patterns:
@@ -667,7 +667,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #ExprHotbarSlot
 expression:
 	patterns:
@@ -681,22 +681,22 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprIIf
 expression:
 	patterns:
 		%boolean%[ ]?[ ]%object%[ ]:[ ]%object%
-	return type: Object
+	return type: object
 #ExprImageLocal
 expression:
 	patterns:
 		[the] [buffered[ ]]image stored as %string%
-	return type: Object
+	return type: object
 #ExprImageURL
 expression:
 	patterns:
 		[the] [buffered[ ]]image from [url] %string%
-	return type: Object
+	return type: object
 #ExprIncendiaryExplosion
 expression:
 	patterns:
@@ -706,7 +706,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #ExprInput
 expression:
 	patterns:
@@ -723,12 +723,12 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Object
+	return type: object
 #ExprInventoryName
 expression:
 	patterns:
 		inventory (title|name)
-	return type: Text
+	return type: text
 #ExprInventoryNameContainer
 expression:
 	patterns:
@@ -736,7 +736,7 @@ expression:
 		%inventories%'[s] inventory (title|name)[s]
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #ExprInventorySerials
 expression:
 	patterns:
@@ -744,7 +744,7 @@ expression:
 		%inventory%'[s] serialized contents
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #ExprItemStackSize
 expression:
 	patterns:
@@ -754,18 +754,18 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprKeyString
 expression:
 	patterns:
 		random %number% (char|long|length) string from [charset] %markup%
-	return type: Text
+	return type: text
 #ExprLambdaConcatenate
 expression:
 	patterns:
 		%lambda%\>%lambda%
 		%predicate%\>%predicate%
-	return type: Object
+	return type: object
 #ExprLandBoats
 expression:
 	patterns:
@@ -775,13 +775,13 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #ExprLoadedChunks
 expression:
 	patterns:
 		[the] loaded chunks of %worlds%
 		%worlds%'[s] loaded chunks
-	return type: Chunk
+	return type: chunk
 #ExprMaxSpeed
 expression:
 	patterns:
@@ -791,19 +791,19 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprMessageFormat
 expression:
 	patterns:
 		message format
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #ExprModulus
 expression:
 	patterns:
 		%number% mod %number%
-	return type: Number
+	return type: number
 #ExprMoonPhase
 expression:
 	patterns:
@@ -816,12 +816,12 @@ expression:
 expression:
 	patterns:
 		(nl|new[ ]line)
-	return type: Text
+	return type: text
 #ExprNotBoolean
 expression:
 	patterns:
 		(!|not )%boolean%
-	return type: Boolean
+	return type: boolean
 #ExprNthPrime
 expression:
 	patterns:
@@ -831,7 +831,7 @@ expression:
 expression:
 	patterns:
 		null
-	return type: Object
+	return type: object
 #ExprOpenInventory
 expression:
 	patterns:
@@ -847,13 +847,13 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Inventory
+	return type: inventory
 #ExprPluginVersion
 expression:
 	patterns:
 		[the] version of %string%
 		%string%'[s] version
-	return type: Text
+	return type: text
 #ExprPrimer
 expression:
 	patterns:
@@ -865,29 +865,29 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #ExprRadix
 expression:
 	patterns:
 		radix %number% of %number%
-	return type: Text
+	return type: text
 #ExprRegexMatches
 expression:
 	patterns:
 		groups %number% of %string% matched (to|with|against) %string%
-	return type: Text
+	return type: text
 #ExprRomanNumeralFrom
 expression:
 	patterns:
 		[the] arabic num(ber|eral) of %strings%
 		%strings%'[s] arabic num(ber|eral)
-	return type: Number
+	return type: number
 #ExprRomanNumeralTo
 expression:
 	patterns:
 		[the] roman num(ber|eral) of %numbers%
 		%numbers%'[s] roman num(ber|eral)
-	return type: Text
+	return type: text
 #ExprSQLQuery
 expression:
 	patterns:
@@ -897,25 +897,25 @@ expression:
 expression:
 	patterns:
 		objects in column %string% from %queryresult%
-	return type: Object
+	return type: object
 #ExprSerial
 expression:
 	patterns:
 		[the] serialized inventory of %player%
 		%player%'[s] serialized inventory
-	return type: Text
+	return type: text
 #ExprTabCompleteArgument
 expression:
 	patterns:
 		arg[ument] at %number%
-	return type: Text
+	return type: text
 #ExprTabCompletions
 expression:
 	patterns:
 		[tab] (completions|suggestions)
 	add:
 #		(internal code)
-	return type: Text
+	return type: text
 #ExprTameOwner
 expression:
 	patterns:
@@ -925,7 +925,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Player
+	return type: player
 #ExprTileEntities
 expression:
 	patterns:
@@ -941,7 +941,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #ExprTimeAbs
 expression:
 	patterns:
@@ -951,7 +951,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Time
+	return type: time
 #ExprTimeRel
 expression:
 	patterns:
@@ -963,7 +963,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Time
+	return type: time
 #ExprTntSource
 expression:
 	patterns:
@@ -975,17 +975,17 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #ExprURLText
 expression:
 	patterns:
 		text from [url] %string%
-	return type: Text
+	return type: text
 #ExprValues
 expression:
 	patterns:
 		[all ]enum values of %classinfo%
-	return type: Text
+	return type: text
 #ExprVillagerJob
 expression:
 	patterns:
@@ -1000,7 +1000,7 @@ expression:
 expression:
 	patterns:
 		%objects% where %predicate%
-	return type: Object
+	return type: object
 #ExprYaml
 expression:
 	patterns:
@@ -1009,4 +1009,4 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Object
+	return type: object

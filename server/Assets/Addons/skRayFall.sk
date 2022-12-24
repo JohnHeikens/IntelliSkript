@@ -723,33 +723,33 @@ event "armorstand_damage":
 expression:
 	patterns:
 		(absolute|complex|abs) number of %itemstack% in %player%['s] (inventory|inv)
-	return type: Number
+	return type: number
 #Armor Value
 #Get a players armor value.
 expression:
 	patterns:
 		%player%['s] armo[u]r value
-	return type: Number
+	return type: number
 #Citizen ID
 #Get the id number of a citizen from an entity.
 #Citizens
 expression:
 	patterns:
 		citizen id of %entity%
-	return type: Number
+	return type: number
 #Citizen Owner
 #Gets the owner of a citizen.
 #Citizens
 expression:
 	patterns:
 		owner of (citizen|npc) %number%
-	return type: Text
+	return type: text
 #Convert Text to Location
 #Convert a comma separated string of x, y and z cords into a location. eg. "1.3,4.5,1.5" to a location
 expression:
 	patterns:
 		%string% converted to location
-	return type: Location
+	return type: location
 #General Citizen
 #Get the general entity for a citizen
 #Citizens
@@ -762,20 +762,20 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #Group Score Value
 #These expressions will get either the name or value of a group based score.
 expression:
 	patterns:
 		group score (name|title) (of|from) id %string%
 		group score (value|number) (of|from) id %string%
-	return type: Text
+	return type: text
 #Info of Enchantment
 #Get the presentable info of a specific enchantment number of an item.
 expression:
 	patterns:
 		info of enchant[ment] %number% (of|on) %itemstack%
-	return type: Text
+	return type: text
 #Last Created Citizen ID
 #Checks for:
 #* The last created citizen
@@ -789,13 +789,13 @@ expression:
 expression:
 	patterns:
 		last created citizen [id]
-	return type: Number
+	return type: number
 #Meta Data
 #Get the meta data value for an entity
 expression:
 	patterns:
 		meta %string% for %entity%
-	return type: Text
+	return type: text
 #Name of Citizen
 #Used for:
 #* Checking citizen names
@@ -805,13 +805,13 @@ expression:
 expression:
 	patterns:
 		name of citizen %number%
-	return type: Text
+	return type: text
 #Name/Title of Sidebar
 #Get the name/title of a players side bar.
 expression:
 	patterns:
 		sidebar (title|name) for %player%
-	return type: Text
+	return type: text
 #No NBT
 #Removes all NBT tags by:
 #Item Stack
@@ -819,13 +819,13 @@ expression:
 expression:
 	patterns:
 		%itemstacks% with no nbt
-	return type: Item / Material
+	return type: item
 #Number of Enchantments
 #Get the number of enchantments on an item.
 expression:
 	patterns:
 		number of enchant[ment]s on %itemstack%
-	return type: Number
+	return type: number
 #Shiny Item
 #Show Items by:
 #* Glow
@@ -835,26 +835,26 @@ expression:
 expression:
 	patterns:
 		shiny %itemstacks%
-	return type: Item / Material
+	return type: item
 #Single ID Score Value
 #These expressions will get either the name or value of a ID based score.
 expression:
 	patterns:
 		score (name|title) (of|from) id %string%
 		score (value|number) (of|from) id %string%
-	return type: Text
+	return type: text
 #Title/Name of BossBar
 #Get the name of an ID based Bossbar.
 expression:
 	patterns:
 		(title|name) of bossbar %string%
-	return type: Text
+	return type: text
 #Value/Progress of Bossbar
 #Get the value of an ID based Bossbar.
 expression:
 	patterns:
 		(value|progress) of bossbar %string%
-	return type: Number
+	return type: number
 #skRayFall Offhand
 #Manipulate items in the players offhand/secondary hand.
 #Examples:
@@ -868,4 +868,4 @@ expression:
 		item in %player%['s] offhand
 	set:
 #		(internal code)
-	return type: Item / Material
+	return type: item

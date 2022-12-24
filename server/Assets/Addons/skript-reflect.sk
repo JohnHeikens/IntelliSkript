@@ -136,7 +136,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Object
+	return type: object
 #ExprBits
 expression:
 	patterns:
@@ -144,12 +144,12 @@ expression:
 		%numbers%'[s] (bit %number%|bit(s| range) [from] %number%( to |[ ]-[ ])%number%)
 	get:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprChangeValue
 expression:
 	patterns:
 		[the] change value[(s)]
-	return type: Object
+	return type: object
 #ExprClassReference
 expression:
 	patterns:
@@ -174,29 +174,29 @@ expression:
 expression:
 	patterns:
 		[extra] [event(-| )]data %string%
-	return type: Object
+	return type: object
 #ExprExpression
 expression:
 	patterns:
 		[the] expr[ession][(s)](-| )<\d+>
-	return type: Object
+	return type: object
 #ExprFunction
 expression:
 	patterns:
 		[the] function(s| [reference[s]]) %strings% [called with [[the] [arg[ument][s]]] %objects%]
-	return type: Object
+	return type: object
 #ExprJavaCall
 expression:
 	patterns:
 		[(try)] %object%..%string%[(([%objects%]))]
 		[(try)] %object%.<(\[[\w.$]*])?([^0-9. \[\]][^. \[\]]*\b)(\[[\w.$, ]*])?>[(([%objects%]))]
 		[(try)] [a] new %javatype%([%objects%])
-	return type: Object
+	return type: object
 #ExprJavaError
 expression:
 	patterns:
 		[the] [last] [java] (throwable|exception|error)
-	return type: Object
+	return type: object
 #ExprJavaType
 expression:
 	patterns:
@@ -212,19 +212,19 @@ expression:
 expression:
 	patterns:
 		[the] [matched] pattern
-	return type: Number
+	return type: number
 #ExprMemberNames
 expression:
 	patterns:
 		[the] (field|method) names of %objects%
 		%objects%'[s] (field|method) names
-	return type: Text
+	return type: text
 #ExprMembers
 expression:
 	patterns:
 		[the] (fields|methods|constructors) of %objects%
 		%objects%'[s] (fields|methods|constructors)
-	return type: Text
+	return type: text
 #ExprNewArray
 expression:
 	patterns:
@@ -234,32 +234,32 @@ expression:
 expression:
 	patterns:
 		[the] [parse[r]] mark
-	return type: Number
+	return type: number
 #ExprParseRegex
 expression:
 	patterns:
 		[the] [parse[r]] (regex|regular expression)(-| )<\d+>
-	return type: Text
+	return type: text
 #ExprParseTags
 expression:
 	patterns:
 		[the] parse[r] tags
-	return type: Text
+	return type: text
 #ExprProxy
 expression:
 	patterns:
 		[a] [new] proxy [instance] of %javatypes% (using|from) %objects%
-	return type: Object
+	return type: object
 #ExprRawExpression
 expression:
 	patterns:
 		[the] raw %objects%
-	return type: Object
+	return type: object
 #ExprSpread
 expression:
 	patterns:
 		...%object%
-	return type: Object
+	return type: object
 #ImportHandler
 expression:
 	patterns:

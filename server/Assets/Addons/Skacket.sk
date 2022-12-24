@@ -148,7 +148,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Location
+	return type: location
 #ExprClientBorderOldRadius
 expression:
 	patterns:
@@ -160,7 +160,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprClientBorderPortalTeleportBoundary
 expression:
 	patterns:
@@ -172,7 +172,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprClientBorderRadius
 expression:
 	patterns:
@@ -184,7 +184,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprClientBorderSpeed
 expression:
 	patterns:
@@ -196,7 +196,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprClientBorderWarningDistance
 expression:
 	patterns:
@@ -212,7 +212,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprClientBorderWarningTime
 expression:
 	patterns:
@@ -228,39 +228,39 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Timespan
+	return type: timespan
 #ExprClientWorldBorder
 expression:
 	patterns:
 		[a] new client [side] [world] border (with|for) %worlds%
-	return type: Client World Border
+	return type: client world border
 #ExprLines
 expression:
 	patterns:
 		[the] lines
-	return type: Text
+	return type: text
 #ExprMovement
 expression:
 	patterns:
 		[the] movements
-	return type: Steer Movements
+	return type: steer movements
 #ExprPitch
 expression:
 	patterns:
 		[the] pitch
-	return type: Number
+	return type: number
 #ExprRawSlot
 expression:
 	patterns:
 		[the] [clicked] raw slot
-	return type: Number
+	return type: number
 #ExprSoundLocation
 expression:
 	patterns:
 		[the] sound location
-	return type: Number
+	return type: number
 #ExprVolume
 expression:
 	patterns:
 		[the] volume
-	return type: Number
+	return type: number

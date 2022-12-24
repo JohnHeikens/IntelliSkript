@@ -39,16 +39,16 @@ expression:
 	patterns:
 		advancement criteria of %advancement%
 		%advancement%'s advancement criteria
-	return type: Text
+	return type: text
 #ExprAdvancementKey
 expression:
 	patterns:
 		advancement [name[ ]spaced] key of %advancement%
 		%advancement%'s advancement [name[ ]spaced] key
-	return type: NamespacedKey
+	return type: namespacedkey
 #ExprAdvancementProgress
 expression:
 	patterns:
 		advancement progress of %advancement% (for|of|from) %player%
 		%player%'s advancement progress for %advancement%
-	return type: Object
+	return type: object

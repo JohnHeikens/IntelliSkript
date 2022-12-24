@@ -8,3 +8,6 @@ expression (true|false):
 #literal number
 expression <((?<=( |^))-{0,1})(\d+)(\.\d+)?(?!\.)\b>:
     return type: number
+
+expression console:
+    return type: commandsender

@@ -207,286 +207,286 @@ event "unzip":
 expression:
 	patterns:
 		[skutil[ities] ](en|de)code base[ ]64 %string%
-	return type: Text
+	return type: text
 #ExprCaseLength
 expression:
 	patterns:
 		[skutil[ities] ]number of (upper|lower)case char[acter]s in %string%
-	return type: Number
+	return type: number
 #ExprClearAccented
 expression:
 	patterns:
 		[skutil[ities] ]clear accented chars from %string%
-	return type: Text
+	return type: text
 #ExprCpuCores
 expression:
 	patterns:
 		[skutil[ities] ]number of (cpu|processor) cores
 		[skutil[ities] ](cpu|processor) core count
-	return type: Number
+	return type: number
 #ExprCpuSpec
 expression:
 	patterns:
 		[skutil[ities] ](name|arch[itecture]) of (cpu|processor)
 		[skutil[ities] ](cpu|processor) (name|arch[itecture])
-	return type: Text
+	return type: text
 #ExprDateInner
 expression:
 	patterns:
 		[skutil[ities] ](year|month|month name|day of year|day of month|day of week|day name|hours|minutes|seconds) from date %date%
 		[skutil[ities] ]date %date%'s (year|month|month name|day of year|day of month|day of week|day name|hours|minutes|seconds)
-	return type: Text
+	return type: text
 #ExprDateParsed
 expression:
 	patterns:
 		[skutil[ities] ]%string% parsed as date[ formatted as %string%]
-	return type: Date
+	return type: date
 #ExprDateToUnix
 expression:
 	patterns:
 		[skutil[ities] ]convert date %date% to unix[ date]
 		[skutil[ities] ]date %date% as unix[ date]
-	return type: Number
+	return type: number
 #ExprDirList
 expression:
 	patterns:
 		[skutil[ities] ]files in dir[ectory](| including sub dir[ectorie]s) %string%
 		[skutil[ities] ]dir[ectory](| including sub dir[ectorie]s) %string%'s files
-	return type: Text
+	return type: text
 #ExprDiskSpace
 expression:
 	patterns:
 		[skutil[ities] ]disk's (total|free|usable) space
 		[skutil[ities] ](total|free|usable) space on disk
-	return type: Text
+	return type: text
 #ExprEncrypt
 expression:
 	patterns:
 		[skutil[ities] ](en|de)crypt %string% using %string% with key %string%
-	return type: Text
+	return type: text
 #ExprFile
 expression:
 	patterns:
 		[event-]file
-	return type: Object
+	return type: object
 #ExprFileDirSize
 expression:
 	patterns:
 		[skutil[ities] ]size of (file|dir[ectory]) %string%
 		[skutil[ities] ](file|dir[ectory]) %string%'s size
-	return type: Text
+	return type: text
 #ExprFileDirSizeBytes
 expression:
 	patterns:
 		[skutil[ities] ]size of (file|dir[ectory]) %string% in bytes
 		[skutil[ities] ](file|dir[ectory]) %string%'s size in bytes
-	return type: Number
+	return type: number
 #ExprFileLines
 expression:
 	patterns:
 		[skutil[ities] ]line count of file %string%
 		[skutil[ities] ]file %string%'s line count
-	return type: Number
+	return type: number
 #ExprFileNameExt
 expression:
 	patterns:
 		[skutil[ities] ](name|extension) of file %string%
 		[skutil[ities] ]file %string%'s (name|extension)
-	return type: Text
+	return type: text
 #ExprFileTimeAttributes
 expression:
 	patterns:
 		[skutil[ities] ]file %string%'s (last modified|creation|last access) value
 		[skutil[ities] ](last modified|creation|last access) value of file %string%
-	return type: Number
+	return type: number
 #ExprFromBin
 expression:
 	patterns:
 		[skutil[ities] ]convert bin[ary] %string% to ((text|string)|decimal|hexa[decimal]|octal)
 		[skutil[ities] ]bin[ary] %string% as ((text|string)|decimal|hexa[decimal]|octal)
-	return type: Text
+	return type: text
 #ExprFromString
 expression:
 	patterns:
 		[skutil[ities] ]convert (text|string) %string% to (ascii|unicode)
 		[skutil[ities] ](text|string) %string% as (ascii|unicode)
-	return type: Text
+	return type: text
 #ExprFromUnicode
 expression:
 	patterns:
 		[skutil[ities] ]convert unicode %string% to ((text|string)|ascii)
 		[skutil[ities] ]unicode %string% as ((text|string)|ascii)
-	return type: Text
+	return type: text
 #ExprGetJsonIDS
 expression:
 	patterns:
 		[skutil[ities] ]content of json value( |'s) %strings% from text %string%
 		[skutil[ities] ]value's %strings%'s json contents from text %string%
-	return type: Text
+	return type: text
 #ExprGetPathASR
 expression:
 	patterns:
 		[skutil[ities] ]((absolute|complete)|short|relative) path of %string%
 		[skutil[ities] ]%string%'s ((absolute|complete)|short|relative) path
-	return type: Text
+	return type: text
 #ExprGetRegion
 expression:
 	patterns:
 		[skutil[ities] ]region of server
 		[skutil[ities] ]server's region
-	return type: Text
+	return type: text
 #ExprGetSysProp
 expression:
 	patterns:
 		[skutil[ities] ]system property (os arch|os name|os version|java home|user dir|user home|user name|user lang[uage]|user timezone|line separator|file separator|path separator|file encoding)
-	return type: Text
+	return type: text
 #ExprGetTimeZone
 expression:
 	patterns:
 		[skutil[ities] ]time[ ]zone of server
 		[skutil[ities] ]server's time[ ]zone
-	return type: Text
+	return type: text
 #ExprHash
 expression:
 	patterns:
 		[skutil[ities] ]hash[ed] %string% using %string%
-	return type: Text
+	return type: text
 #ExprHexToRgb
 expression:
 	patterns:
 		[skutil[ities] ]convert hex %string% to rgb
 		[skutil[ities] ]hex %string% as rgb
-	return type: Text
+	return type: text
 #ExprHexaToNum
 expression:
 	patterns:
 		[skutil[ities] ]convert hexa[decimal] %string% to num[ber]
 		[skutil[ities] ]hexa[decimal] %string% as num[ber]
-	return type: Number
+	return type: number
 #ExprLoaded
 expression:
 	patterns:
 		[skutil[ities] ]number of[ loaded] ((commands|cmds)|functions|s(c|k)ripts|triggers|statements|variables|aliases|events|effects|expressions|conditions)
-	return type: Number
+	return type: number
 #ExprLoadedList
 expression:
 	patterns:
 		[skutil[ities] ](plugins|addons) list
 		[skutil[ities] ]list of (plugins|addons)
-	return type: Text
+	return type: text
 #ExprMirrorTxt
 expression:
 	patterns:
 		[skutil[ities] ](mirror[ed]|flip[ped]|reverse[d]) %string%
-	return type: Text
+	return type: text
 #ExprMorse
 expression:
 	patterns:
 		[skutil[ities] ](en|de)code morse[ code] %string%
-	return type: Text
+	return type: text
 #ExprNumToHexa
 expression:
 	patterns:
 		convert num[ber] %number% to hexa[decimal]
 		[skutil[ities] ]num[ber] %number% as hexa[decimal]
-	return type: Text
+	return type: text
 #ExprRam
 expression:
 	patterns:
 		[skutil[ities] ](free|total|max) (ram|memory)
-	return type: Number
+	return type: number
 #ExprRandomizeString
 expression:
 	patterns:
 		[skutil[ities] ]randomize %string%
-	return type: Text
+	return type: text
 #ExprRgbToHex
 expression:
 	patterns:
 		[skutil[ities] ]convert rgb %number%, %number%, %number% to hex
 		[skutil[ities] ]rgb %number%, %number%, %number% as hex
-	return type: Text
+	return type: text
 #ExprRunCmdOutput
 expression:
 	patterns:
 		[skutil[ities] ][last ]output of executed (bash|batch|sh) (command|cmd)
 		[skutil[ities] ][last ]executed (bash|batch|sh) (command|cmd)'s output
-	return type: Text
+	return type: text
 #ExprSysTime
 expression:
 	patterns:
 		[skutil[ities] ][current ]system (nanos[econds]|millis[econds]|seconds)
-	return type: Number
+	return type: number
 #ExprTimeInTimeZone
 expression:
 	patterns:
 		[skutil[ities] ][current ]time in time[ ]zone %string%
 		[skutil[ities] ][current ]time[ ]zone %string%'s time
-	return type: Text
+	return type: text
 #ExprTimeZoneList
 expression:
 	patterns:
 		[skutil[ities] ][all ]time[ ]zones
-	return type: Text
+	return type: text
 #ExprToAscii
 expression:
 	patterns:
 		[skutil[ities] ]convert ascii %numbers% to ((text|string)|unicode)
 		[skutil[ities] ]ascii %numbers% as ((text|string)|unicode)
-	return type: Text
+	return type: text
 #ExprToBin
 expression:
 	patterns:
 		[skutil[ities] ]convert ((text|string)|decimal|hexa[decimal]|octal) %string% to bin[ary]
 		[skutil[ities] ]((text|string)|decimal|hexa[decimal]|octal) %string% as bin[ary]
-	return type: Text
+	return type: text
 #ExprToUpperLower
 expression:
 	patterns:
 		[skutil[ities] ]convert (text|string) %string% to (uppercase|lowercase)
-	return type: Text
+	return type: text
 #ExprUnixToDate
 expression:
 	patterns:
 		[skutil[ities] ]convert unix[ date] %number% to date
 		[skutil[ities] ]unix[ date] %number% as date
-	return type: Date
+	return type: date
 #ExprUnixToFormattedDate
 expression:
 	patterns:
 		[skutil[ities] ]convert unix[ date] %number% to date formatted as %string%
 		[skutil[ities] ]unix[ date] %number% as date formatted as %string%
-	return type: Text
+	return type: text
 #ExprUrlContents
 expression:
 	patterns:
 		[skutil[ities] ]contents from url %string%
 		[skutil[ities] ]url %string%'s contents
-	return type: Text
+	return type: text
 #ExprUrlLastModified
 expression:
 	patterns:
 		[skutil[ities] ]last modified value of url %string%
 		[skutil[ities] ]url %string%'s last modified value
-	return type: Number
+	return type: number
 #ExprUrlLines
 expression:
 	patterns:
 		[skutil[ities] ]line count of url %string%
 		[skutil[ities] ]url %string%'s line count
-	return type: Number
+	return type: number
 #ExprUrlOnlineState
 expression:
 	patterns:
 		[skutil[ities] ]online stat(us|e) of url %string%
 		[skutil[ities] ]url %string%'s online stat(us|e)
-	return type: Boolean
+	return type: boolean
 #ExprUrlReadLine
 expression:
 	patterns:
 		[skutil[ities] ]line %number% from url %string%
 		[skutil[ities] ]url %string%'s line %number%
-	return type: Text
+	return type: text
 #ExprUrlResponseCode
 expression:
 	patterns:
@@ -498,55 +498,55 @@ expression:
 	patterns:
 		[skutil[ities] ]ssl algorithm of url %string%
 		[skutil[ities] ]url %string%'s ssl algorithm
-	return type: Text
+	return type: text
 #ExprUrlSSLIssueExpire
 expression:
 	patterns:
 		[skutil[ities] ]ssl (issue|expire) value of url %string%
 		[skutil[ities] ]url %string%'s ssl (issue|expire) value
-	return type: Number
+	return type: number
 #ExprUrlSSLSerialNumber
 expression:
 	patterns:
 		[skutil[ities] ]ssl serial number of url %string%
 		[skutil[ities] ]url %string%'s ssl serial number
-	return type: Text
+	return type: text
 #ExprUrlSSLVerifier
 expression:
 	patterns:
 		[skutil[ities] ]ssl verifier of url %string%
 		[skutil[ities] ]url %string%'s ssl verifier
-	return type: Text
+	return type: text
 #ExprUrlSSLVersion
 expression:
 	patterns:
 		[skutil[ities] ]ssl version of url %string%
 		[skutil[ities] ]url %string%'s ssl version
-	return type: Number
+	return type: number
 #ExprUrlSize
 expression:
 	patterns:
 		[skutil[ities] ]size of url %string%
 		[skutil[ities] ]url %string%'s size
-	return type: Text
+	return type: text
 #ExprUrlSizeBytes
 expression:
 	patterns:
 		[skutil[ities] ]size of url %string% in bytes
 		[skutil[ities] ]url %string%'s size in bytes
-	return type: Number
+	return type: number
 #ExprVersion
 expression:
 	patterns:
 		[skutil[ities] ]%string%'s version
 		[skutil[ities] ]version of %string%
-	return type: Text
+	return type: text
 #ExprZipList
 expression:
 	patterns:
 		[skutil[ities] ]files in zip[ file] %string%
 		[skutil[ities] ]zip[ file] %string%'s files
-	return type: Text
+	return type: text
 #SExprEditLine
 expression:
 	patterns:
@@ -554,7 +554,7 @@ expression:
 		[skutil[ities] ]file %string%'s line %number%
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #SExprFileAttribute
 expression:
 	patterns:
@@ -564,7 +564,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #SExprFileContents
 expression:
 	patterns:
@@ -574,7 +574,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #SExprFileOwner
 expression:
 	patterns:
@@ -582,7 +582,7 @@ expression:
 		[skutil[ities] ]file %string%'s owner
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #SExprYaml
 expression:
 	patterns:
@@ -591,4 +591,4 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Object
+	return type: object

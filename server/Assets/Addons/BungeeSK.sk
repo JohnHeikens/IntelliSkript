@@ -184,10 +184,10 @@ effect:
 #Examples:
 #on load:
 #	create new bungee connection:
-		set address of connection to "127.0.0.1"
-		set port of connection to 20000
-		set password of connection to "abcd"
-	start new connection with connection
+#		set address of connection to "127.0.0.1"
+#		set port of connection to 20000
+#		set password of connection to "abcd"
+#	start new connection with connection
 effect:
 	patterns:
 		start new connection with %bungeeconn%
@@ -207,10 +207,10 @@ effect:
 #Examples:
 #on load:
 #	create new bungee connection:
-		set address of connection to "127.0.0.1"
-		set port of connection to 20000
-		set password of connection to "abcd"
-	start new connection with connection
+#		set address of connection to "127.0.0.1"
+#		set port of connection to 20000
+#		set password of connection to "abcd"
+#	start new connection with connection
 condition:
 	patterns:
 		(create|init) new bungee connection
@@ -251,10 +251,10 @@ condition:
 #Examples:
 #command /isconnected:
 #	trigger:
-		if client is not connected:
-			send "Not connected !"
-		if client is connected:
-			send "Connected as well !"
+#		if client is not connected:
+#			send "Not connected !"
+#		if client is connected:
+#			send "Connected as well !"
 condition:
 	patterns:
 		client is connected
@@ -412,7 +412,7 @@ expression:
 		%serverbuilder%'[s] (ip|address)
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #Address of connection
 #Set the address of a connection
 #since 1.0.0
@@ -424,7 +424,7 @@ expression:
 		%bungeeconn%'[s] (ip|address)
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #All of the bungee players
 #Returns every bungee player on the network
 #since 1.0.0
@@ -434,7 +434,7 @@ expression:
 expression:
 	patterns:
 		[(all [[of] the]|the)] bungee players
-	return type: Bungee player
+	return type: bungee player
 #All of the bungee players on specific server
 #Returns every bungee player on a specific server
 #since 1.0.2
@@ -444,7 +444,7 @@ expression:
 expression:
 	patterns:
 		[(all [[of] the]|the)] bungee players on %bungeeserver%
-	return type: Bungee player
+	return type: bungee player
 #All of the bungee servers
 #Returns every server in the bungeecord config
 #since 1.0.0, 1.1.0: Returns BungeeServer
@@ -454,7 +454,7 @@ expression:
 expression:
 	patterns:
 		[(all [[of] the]|the)] [bungee] servers
-	return type: Bungee player
+	return type: bungee player
 #Bungee address of bungee server
 #Get the address of a server precised in the Bungeecord config
 #since 1.1.0
@@ -464,7 +464,7 @@ expression:
 	patterns:
 		[the] bungee address of %bungeeserver%
 		%bungeeserver%'[s] bungee address
-	return type: Text
+	return type: text
 #Bungee motd of bungee server
 #Get the MOTD of a server precised in the Bungeecord config
 #since 1.1.0
@@ -474,7 +474,7 @@ expression:
 	patterns:
 		[the] bungee motd of %bungeeserver%
 		%bungeeserver%'[s] bungee motd
-	return type: Text
+	return type: text
 #Bungee name of bungee server
 #Get the name of a server precised in the Bungeecord config
 #since 1.1.0
@@ -484,7 +484,7 @@ expression:
 	patterns:
 		[the] bungee name of %bungeeserver%
 		%bungeeserver%'[s] bungee name
-	return type: Text
+	return type: text
 #Bungee player from name
 #Get bungee player from his name
 #since 1.0.0, 1.1.0: Add of 'named'
@@ -493,7 +493,7 @@ expression:
 expression:
 	patterns:
 		bungee[ ]player (with name|named) %string%
-	return type: Bungee player
+	return type: bungee player
 #Bungee player from uuid
 #Get bungee player from his uuid
 #since 1.1.0
@@ -502,7 +502,7 @@ expression:
 expression:
 	patterns:
 		bungee[ ]player with uuid %string%
-	return type: Bungee player
+	return type: bungee player
 #Bungee port of bungee server
 #Get the port of a server precised in the Bungeecord config
 #since 1.1.0
@@ -521,37 +521,37 @@ expression:
 expression:
 	patterns:
 		bungee[ ]server (with name|named) %string%
-	return type: Bungee player
+	return type: bungee player
 #Custom request from other Bungee server
 #Send a custom request to another Bungee server, and get the response. This can be any value, as long as it could be stored in a variable
 #since 2.0.0
 #Examples:
 #broadcast custom request "hello" from bungee server named "lobby"
 #
-On the other server
-on custom request:
-	if event-string is "hello":
-		set custom request response to "hi !"
+#On the other server
+#on custom request:
+#	if event-string is "hello":
+#		set custom request response to "hi !"
 expression:
 	patterns:
 		custom request [named] %string% from [server] %bungeeserver%
-	return type: Object
+	return type: object
 #Custom request response
 #Set the response of a custom request
 #since 2.0.0
 #Examples:
 #broadcast custom request "hello" from bungee server named "lobby"
 #
-On the other server
-on custom request:
-	if event-string is "hello":
-		set custom request response to "hi !"
+#On the other server
+#on custom request:
+#	if event-string is "hello":
+#		set custom request response to "hi !"
 expression:
 	patterns:
 		custom request response
 	set:
 #		(internal code)
-	return type: Object
+	return type: object
 #Get a bungee server from its address and port
 #Get one of the servers precised in the Bungeecord config whose address and port match
 #since 1.1.0
@@ -560,7 +560,7 @@ expression:
 expression:
 	patterns:
 		bungee[ ]server with address %string% and port %integer%
-	return type: Bungee player
+	return type: bungee player
 #Get bungee server from Spigot
 #Get the bungee server associated to the Spigot server
 #since 2.0.0
@@ -569,15 +569,15 @@ expression:
 expression:
 	patterns:
 		this bungee[ ]server
-	return type: Bungee player
+	return type: bungee player
 #Global variables stored on the Bungeecord
 #Set, get and delete a global variable stored on the Bungeecord. Value can be boolean, number or string.
 #since 1.1.0
 #Examples:
 #set global variable "rank.%player%" to "Admin"
 #set {_rank} to global variable "rank.%player%"
-set global variable "money.%player%" to 1000
-set global variable "test.%player%" to true
+#set global variable "money.%player%" to 1000
+#set global variable "test.%player%" to true
 expression:
 	patterns:
 		global var[iable] [named] %string%
@@ -589,7 +589,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Object
+	return type: object
 #IP address of BungeePlayer
 #Gets the IP address of a BungeePlayer
 #since 1.1.0
@@ -599,35 +599,35 @@ expression:
 	patterns:
 		[the] ip [address] of %bungeeplayer%
 		%bungeeplayer%'[s] ip [address]
-	return type: Text
+	return type: text
 #Last created bungee server builder
 #Returns the last created bungee server builder inside of a scope
 #since 2.0.0
 #Examples:
 #create new bungee server:
 #	set name of server builder to "lobby2"
-	set address of server builder to "127.0.0.1"
-	set port of server builder to 25567
-	set motd of server builder to "This is lobby number 2"
-put server into bungeecord
+#	set address of server builder to "127.0.0.1"
+#	set port of server builder to 25567
+#	set motd of server builder to "This is lobby number 2"
+#put server into bungeecord
 expression:
 	patterns:
 		[the] [last] [(generated|created)] [bungee] server [builder]
-	return type: Bungee server builder
+	return type: bungee server builder
 #Last created connection
 #Returns the last created connection inside of a scope
 #since 1.0.0
 #Examples:
 #on load:
 #	create new bungee connection:
-		set address of connection to "127.0.0.1"
-		set port of connection to 20000
-		set password of connection to "abcd"
-	start new connection with connection
+#		set address of connection to "127.0.0.1"
+#		set port of connection to 20000
+#		set password of connection to "abcd"
+#	start new connection with connection
 expression:
 	patterns:
 		[the] [last] [(generated|created)] (connection|server)
-	return type: Bungee connection
+	return type: bungee connection
 #MOTD of bungee server builder
 #Set the MOTD of a bungee server builder
 #since 2.0.0
@@ -639,7 +639,7 @@ expression:
 		%serverbuilder%'[s] motd
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #Name of BungeePlayer
 #Gets the name of a BungeePlayer
 #since 2.0.0
@@ -649,7 +649,7 @@ expression:
 	patterns:
 		[the] [user]name of %bungeeplayer%
 		%bungeeplayer%'[s] [user]name
-	return type: Text
+	return type: text
 #Name of bungee server builder
 #Set the name of a bungee server builder
 #since 2.0.0
@@ -661,7 +661,7 @@ expression:
 		%serverbuilder%'[s] name
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #Password of connection
 #Set the password to connect to a bungeecord server.
 #since 1.0.0
@@ -673,7 +673,7 @@ expression:
 		%bungeeconn%'[s] password
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #Ping's MOTD
 #The MOTD displayed when a player pings the proxy
 #since 2.0.0
@@ -685,7 +685,7 @@ expression:
 		ping motd
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #Ping's address
 #Returns the IP address of the player pinging the proxy
 #since 2.0.0
@@ -696,7 +696,7 @@ expression:
 	patterns:
 		bungee ip of pinger
 		pinger's bungee ip [address]
-	return type: Text
+	return type: text
 #Ping's favicon URL
 #The favicon URL displayed in a proxy ping event
 #since 2.0.0
@@ -708,7 +708,7 @@ expression:
 		favicon [url]
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #Ping's hover list
 #The hover list displayed when hovering the player's size in the ping's list.
 #since 2.0.0
@@ -720,7 +720,7 @@ expression:
 		hover list
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #Ping's maximum size of connected players
 #The maximum size of the connected players in a proxy ping event
 #since 2.0.0
@@ -744,7 +744,7 @@ expression:
 		protocol message
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #Ping's protocol version
 #The protocol version number in a proxy ping event. For further informations, see https://wiki.vg/Protocol_version_numbers
 #since 2.0.0
@@ -803,7 +803,7 @@ expression:
 	patterns:
 		[the] server of %bungeeplayer%
 		%bungeeplayer%'[s] server
-	return type: Bungee player
+	return type: bungee player
 #Server switch event past server
 #Gets the server where the player was from in a server switch event
 #since 1.0.0 - 1.1.0: Returns bungee server
@@ -813,7 +813,7 @@ expression:
 expression:
 	patterns:
 		past-server
-	return type: Bungee player
+	return type: bungee player
 #UUID of bungee player
 #Get the UUID of a player on the network
 #since 1.0.0
@@ -823,4 +823,4 @@ expression:
 	patterns:
 		[the] bungee uuid of %bungeeplayer%
 		%bungeeplayer%'[s] bungee uuid
-	return type: Text
+	return type: text

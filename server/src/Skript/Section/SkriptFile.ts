@@ -81,19 +81,20 @@ export class SkriptFile extends SkriptSection {
 			if (result) {
 				s = new SkriptExpressionSection(context, this);
 				if (result[5]) {
-					patternStartIndex = result[1].length + 1;
+					patternStartIndex = result[1].length + " ".length;
 				}
 				else {
 					patternStartIndex = undefined;
 				}
 			}
 			else {
-				const propertyResult = /^(local )?((plural|non-single) )?(.+) property .*/.exec(context.currentString);
+				const propertyResult = /^((local )?((plural|non-single) )?(.+) property) .*/.exec(context.currentString);
 				if (propertyResult) {
-					const data = this.getTypeData(propertyResult[4]);
+					const data = this.getTypeData(propertyResult[5]);
 					if (data)
 					{
 						s = new SkriptPropertySection(context, data, this);
+						patternStartIndex = propertyResult[1].length + " ".length;
 					}
 					else{
 						context.addDiagnostic(0, context.currentString.length, "property type not recognized");
@@ -289,5 +290,10 @@ export class SkriptFile extends SkriptSection {
 
 			currentLineIndex++;
 		}
+	}
+	toString() : string {
+		const uri = this.document.uri;
+		//uri will always have the same \ method, no matter what platform the coder is on
+		return uri.substring(uri.lastIndexOf("/"));
 	}
 }

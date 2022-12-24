@@ -16,17 +16,17 @@ event "redis_message":
 expression:
 	patterns:
 		redis channel
-	return type: Text
+	return type: text
 #ExprMessage
 expression:
 	patterns:
 		redis message
-	return type: Text
+	return type: text
 #ExprMessageDate
 expression:
 	patterns:
 		redis message date
-	return type: Date
+	return type: date
 #ExprVariableInChannel
 expression:
 	patterns:
@@ -39,4 +39,4 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Object
+	return type: object

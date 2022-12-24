@@ -1,7 +1,6 @@
 import { Hierarchy } from '../../Hierarchy';
 import { PatternData } from "../../Pattern/PatternData";
 import { PatternResultProcessor } from "../../Pattern/patternResultProcessor";
-import { PatternType } from "../../Pattern/PatternType";
 import { SkriptVariable } from '../SkriptVariable';
 import { SkriptSection } from './SkriptSection';
 import { PatternMatcher } from '../../Pattern/PatternMatcher';

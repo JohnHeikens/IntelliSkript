@@ -70,7 +70,7 @@ event "luckperms_-_promote_event":
 expression:
 	patterns:
 		[[the] names of] [(all [[of] the]|the)] [LuckPerm[s]] groups
-	return type: Text
+	return type: text
 #LuckPerms - Group of Player
 #Returns the group of a player.
 #Examples:
@@ -81,21 +81,21 @@ expression:
 		%player%'s [primary] [LuckPerm[s]] group
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #LuckPerms - New Group
 #Returns the new group of a player in the group change event.
 expression:
 	patterns:
 		[the] new [LuckPerm[s]] group [of [the] player]
 		[the] player's new [LuckPerm[s]] group
-	return type: Text
+	return type: text
 #LuckPerms - Old Group
 #Returns the old group of a player in the group change event.
 expression:
 	patterns:
 		[the] old [LuckPerm[s]] group [of [the] player]
 		[the] player's old [LuckPerm[s]] group
-	return type: Text
+	return type: text
 #LuckPerms - Permissions of Group
 #Returns the permissions of a group.
 #Examples:
@@ -112,7 +112,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #LuckPerms - Permissions of Player
 #Returns the permissions of a player.
 #Examples:
@@ -129,7 +129,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #LuckPerms - Prefix of Player
 #Returns the prefix of a player.
 #Examples:
@@ -140,7 +140,7 @@ expression:
 		%player%'s [active] [LuckPerm[s]] prefix
 		[the] [active] [LuckPerm[s]] suffix of %player%
 		%player%'s [active] [LuckPerm[s]] suffix
-	return type: Text
+	return type: text
 #LuckPerms - Weight of Group
 #Returns the weight of a group.
 #Examples:
@@ -151,4 +151,4 @@ expression:
 		[the] [LuckPerm[s]] group [(named|with name)] %string%'s (priority|weight)
 	set:
 #		(internal code)
-	return type: Number
+	return type: number

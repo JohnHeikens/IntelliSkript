@@ -11,3 +11,17 @@ type class[ ]info:
 
 type inventory[ ]holder:
 
+#this type is used internally (if a variable has an unknown type, like global variables as they can be changed asynchronously)
+type unknown:
+
+type long:
+    inherits: number
+
+type float:
+    inherits: number
+
+type byte:
+    inherits: number
+
+type integer:
+    inherits: number

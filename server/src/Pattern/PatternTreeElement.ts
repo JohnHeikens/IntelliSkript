@@ -13,7 +13,7 @@ export class PatternTreeElement {
 
 	getMatchingPatternPart(pattern: string, index: number): PatternData | undefined {
 		if (this.endNode) { // && (index == (pattern.length))) {
-			if (index == pattern.length || (pattern[index + 1] == ' ')) {
+			if (index == pattern.length || (pattern[index] == ' ')) {
 				return this.endNode;
 			}
 		}

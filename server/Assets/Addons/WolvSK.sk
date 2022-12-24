@@ -232,12 +232,12 @@ event "vehicle_steer_right":
 expression:
 	patterns:
 		[input ]text of anvil( |-)gui
-	return type: Text
+	return type: text
 #ExprAnvilGUIName
 expression:
 	patterns:
 		name of anvil( |-)gui
-	return type: Text
+	return type: text
 #ExprBlockPower
 expression:
 	patterns:
@@ -262,7 +262,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Timespan
+	return type: timespan
 #ExprCountry
 expression:
 	patterns:
@@ -274,7 +274,7 @@ expression:
 		%player%['s] country
 		ip %string%['s] country code
 		%player%['s] country code
-	return type: Text
+	return type: text
 #ExprEssentialsHome
 expression:
 	patterns:
@@ -284,7 +284,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Location
+	return type: location
 #ExprEssentialsHome
 expression:
 	patterns:
@@ -294,13 +294,13 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Location
+	return type: location
 #ExprEssentialsHomes
 expression:
 	patterns:
 		homes of %player%
 		%player%['s] homes
-	return type: Text
+	return type: text
 #ExprEssentialsJail
 expression:
 	patterns:
@@ -308,7 +308,7 @@ expression:
 		%player%['s] jail
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #ExprEssentialsJailTimeout
 expression:
 	patterns:
@@ -322,19 +322,19 @@ expression:
 	patterns:
 		last account name of %player%
 		%player%['s] last account name
-	return type: Text
+	return type: text
 #ExprEssentialsLastLoginAddress
 expression:
 	patterns:
 		last login address of %player%
 		%player%['s] last login address
-	return type: Text
+	return type: text
 #ExprEssentialsLogoutLocation
 expression:
 	patterns:
 		log[ ]out[ location] of %player%
 		%player%['s] log[ ]out[ location]
-	return type: Location
+	return type: location
 #ExprEssentialsMuteTimeout
 expression:
 	patterns:
@@ -350,12 +350,12 @@ expression:
 		%player%['s] essential[s] nick[ ]name
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #ExprListSort
 expression:
 	patterns:
 		%objects% (sorted|in order)
-	return type: Object
+	return type: object
 #ExprMathsAbsoluteValue
 expression:
 	patterns:
@@ -419,24 +419,24 @@ expression:
 expression:
 	patterns:
 		[a ]random alpha[ ]numeric[al] (text|string) of length %integer%
-	return type: Text
+	return type: text
 #ExprRandomLicenceCode
 expression:
 	patterns:
 		[a ]random license code
-	return type: Text
+	return type: text
 #ExprRandomUUID
 expression:
 	patterns:
 		[a ]random uuid
-	return type: Object
+	return type: object
 #ExprReturnOfMethodWithParams
 expression:
 	patterns:
 		return of (function|method) %string% with param[meter][s] %objects% in class[ named] %string%
-	return type: Object
+	return type: object
 #ExprReturnOfMethodWithoutParams
 expression:
 	patterns:
 		return of (function|method) %string% [without param[meter][s]] in class[ named] %string%
-	return type: Object
+	return type: object

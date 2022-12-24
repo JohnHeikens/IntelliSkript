@@ -216,8 +216,10 @@ export class PatternTree implements PatternMatcher {
 		return hierarchy;
 	}
 
-	static fixRegExpHierarchically(currentString: string, hierarchy: SkriptNestHierarchy, hasSpaceLeft = true): string {
-		let lastSpaceCheck = hierarchy.start;
+	static fixRegExpHierarchically(currentString: string, hierarchy: SkriptNestHierarchy): string {
+		//wether the current expression NEEDS a space to the right or it can 'lend' it to a child
+		let canLendSpaceRight = true;
+		let lastLendCheck = hierarchy.start - 1;
 		let lastFixIndex = hierarchy.start;
 		let fixedString = '';
 		for (let i = 0; i < hierarchy.children.length; i++) {
@@ -226,30 +228,37 @@ export class PatternTree implements PatternMatcher {
 			if (node.character == '(') {
 				if (currentString[node.end + ')'.length] == '?') {
 					const spaceCheckPosition = node.start - 2;
-					hasSpaceLeft = (lastSpaceCheck == spaceCheckPosition) ? hasSpaceLeft : currentString[spaceCheckPosition] == ' ';
-					const childResult = this.fixRegExpHierarchically(currentString, node, hasSpaceLeft);
+					const hasSpaceLeft = currentString[spaceCheckPosition] == ' ';
+					const childResult = this.fixRegExpHierarchically(currentString, node);
 
 					if (hasSpaceLeft) {
 						fixedString += currentString.substring(lastFixIndex, node.start - ' ('.length) + '( ';
 						fixedNode = true;
 						fixedString += childResult;
 						lastFixIndex = node.end;
+						lastLendCheck = node.end + ')'.length;
+						canLendSpaceRight = true;
 					}
 					else {
 						const hasSpaceRight = currentString[node.end + ')?'.length] == ' '; //not correct, it could be that there is another child to the right of here
 						if (hasSpaceRight) {
-							fixedNode = true;
-							fixedString += currentString.substring(lastFixIndex, node.start);
-							fixedString += childResult + ' )?';
-							lastFixIndex = node.end + ')? '.length;
-							lastSpaceCheck = node.end + ' )'.length;
+							if (lastLendCheck != spaceCheckPosition) canLendSpaceRight = hasSpaceLeft;//update
+							//needsSpaceRight = lastSpaceCheck != spaceCheckPosition ? !hasSpaceLeft : needsSpaceRight;
+							if (canLendSpaceRight) {
+								fixedNode = true;
+								fixedString += currentString.substring(lastFixIndex, node.start);
+								fixedString += childResult + ' )?';
+								lastFixIndex = node.end + ')? '.length;
+								//canLendSpaceRight will already be true
+								lastLendCheck = node.end + ' )'.length;
+							}
 						}
 					}
 				}
 			}
 			if (!fixedNode) {
 				fixedString += currentString.substring(lastFixIndex, node.start);
-				const childResult = this.fixRegExpHierarchically(currentString, node, hasSpaceLeft);
+				const childResult = this.fixRegExpHierarchically(currentString, node);
 				fixedString += childResult;
 				lastFixIndex = node.end;
 			}
@@ -260,6 +269,7 @@ export class PatternTree implements PatternMatcher {
 
 	static parsePattern(context: SkriptContext, patternSection: SkriptPatternContainerSection, type: PatternType): PatternData | undefined {
 		const Hierarchy = this.createHierarchy(context);
+		assert(context.currentSection);
 		if (!context.hasErrors) {
 			let m: RegExpMatchArray | null;
 			const expressionArguments: SkriptTypeState[] = [];
@@ -268,18 +278,18 @@ export class PatternTree implements PatternMatcher {
 				assert(m.index != undefined);
 				const typeString = m[1];
 
-				const result = context.parseTypes(typeString);
+				const result = context.currentSection.parseTypes(context, m.index + 1, m.index + 1 + m[1].length);
 				context.addToken(TokenTypes.type, m.index + 1, typeString.length);
 				if (result) {
 					expressionArguments.push(result);
 				}
 				else {
 					context.addDiagnostic(m.index + 1, typeString.length, "this type is not recognized", DiagnosticSeverity.Error, "IntelliSkript->Type->Not Recognized");
-					const obj = context.parseTypes('object');
+					const obj = context.currentSection.getTypeData('object');
 					if (obj) {
-						expressionArguments.push(obj);
+						expressionArguments.push(new SkriptTypeState(obj));
 					}
-					else{
+					else {
 						shouldReturn = true;
 					}
 				}

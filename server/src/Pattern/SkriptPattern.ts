@@ -28,13 +28,15 @@ export class SkriptPatternCall {
         this.expressionArguments = expressionArguments;
     }
 
-    compareArgumentTypes(testPattern: PatternData): boolean {
-        if (this.expressionArguments.length != testPattern.expressionArguments.length) {
+    //test this on expressionPattern
+    compareArgumentTypes(expressionPattern: PatternData): boolean {
+        //testpattern may be longer than the expression but that's okay
+        if (this.expressionArguments.length < expressionPattern.expressionArguments.length) {
             return false;
         }
         else {
-            for (let i = 0; i < this.expressionArguments.length; i++) {
-                if (!this.expressionArguments[i].overlaps(testPattern.expressionArguments[i])) {
+            for (let i = 0; i < expressionPattern.expressionArguments.length; i++) {
+                if (!this.expressionArguments[i].canBeInstanceOf(expressionPattern.expressionArguments[i])) {
                     return false;
                 }
             }

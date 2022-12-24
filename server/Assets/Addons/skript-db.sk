@@ -21,7 +21,7 @@ event "complete_of_sql_query":
 expression:
 	patterns:
 		[the] [last] (sql|db|data(base|[ ]source)) error
-	return type: Text
+	return type: text
 #ExprDataSource
 expression:
 	patterns:
@@ -31,9 +31,9 @@ expression:
 expression:
 	patterns:
 		sql query
-	return type: Text
+	return type: text
 #ExprUnsafe
 expression:
 	patterns:
 		unsafe %string%
-	return type: Text
+	return type: text

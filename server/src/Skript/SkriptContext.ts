@@ -259,43 +259,5 @@ export class SkriptContext {
 		results[indexes.length] = { text: this.currentString.substring(currentIndex, end), index: currentIndex };
 		return results;
 	}
-
-	parseTypes(str: string): SkriptTypeState | undefined {
-		assert(this.currentSection);
-		//const str = this.currentString.substring(start, end);
-		const result = new SkriptTypeState();
-		let parts : string[];
-		if (str[0] == '*') {
-			result.isLiteral = true;
-			parts = str.substring(1).split('/');
-		}
-		else if (str[0] == '-') {
-			result.canBeEmpty = true;
-			parts = str.substring(1).split('/');
-		}
-		else {
-			parts = str.split('/');
-		}
-		for (let i = 0; i < parts.length; i++) {
-			if (parts[i].endsWith('s')) {
-				const singleType = parts[i].substring(0, parts[i].length - 1);
-				const typePattern = this.currentSection.getPatternData(new SkriptPatternCall(singleType, PatternType.type), stopAtFirstResultProcessor);
-				if (typePattern) {
-					result.isArray = true;
-					result.possibleTypes.push(typePattern);
-					continue;
-				}
-			}
-
-			const typePattern = this.currentSection.getPatternData(new SkriptPatternCall(parts[i], PatternType.type), stopAtFirstResultProcessor);
-			if (typePattern) {
-				result.possibleTypes.push(typePattern);
-			}
-			else {
-				return undefined;
-			}
-		}
-		return result;
-	}
 }
 

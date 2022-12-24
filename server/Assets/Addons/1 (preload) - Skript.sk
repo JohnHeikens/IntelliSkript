@@ -346,7 +346,7 @@ type:
 type:
 	patterns:
 		living[ ]entit(y|ies)
-
+	inherits: entity
 #Location
 #A location in a world. Locations are world-specific and even store a direction, e.g. if you save a location and later teleport to it you will face the exact same direction you did when you saved the location.
 #since 1.0
@@ -407,7 +407,7 @@ type:
 type:
 	patterns:
 		player[s]
-
+	inherits: offline player, entity, command sender
 #Potion Effect
 #A potion effect, including the potion effect type, tier and duration.
 #since 2.5.2
@@ -726,7 +726,7 @@ effect:
 #Set the player's display name to "&lt;red&gt;%name of player%"
 #set the block above the victim to lava
 # add:
-#add 2 to the player's health  preferably use '<a href='#heal'>heal</a>' for this
+#add 2 to the player's health  preferably use '<a href='heal'>heal</a>' for this
 #add argument to {blacklist::*}
 #give a diamond pickaxe of efficiency 5 to the player
 #increase the data value of the clicked block by 1
@@ -4031,7 +4031,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #Affected Entities
 #The affected entities in the area cloud effect event.
 #since 2.4
@@ -4049,7 +4049,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Living Entity
+	return type: living entity
 #All Groups
 #All the groups a player can have. This expression requires Vault and a compatible permissions plugin to be installed.
 #since 2.2-dev35
@@ -4062,7 +4062,7 @@ expression:
 expression:
 	patterns:
 		all groups
-	return type: Text
+	return type: text
 #All Permissions
 #Returns all permissions of the defined player(s). Note that the modifications to resulting list do not actually change permissions.
 #since 2.2-dev33
@@ -4072,7 +4072,7 @@ expression:
 	patterns:
 		[(all [[of] the]|the)] permissions (from|of) %players%
 		[(all [[of] the]|the)] %players%'[s] permissions
-	return type: Text
+	return type: text
 #All Scripts
 #Returns all of the scripts, or just the enabled or disabled ones.
 #since 2.5
@@ -4087,7 +4087,7 @@ expression:
 		[all [of the]] scripts [(without ([subdirectory] paths|parents))]
 		[all [of the]] (enabled|loaded) scripts [(without ([subdirectory] paths|parents))]
 		[all [of the]] (disabled|unloaded) scripts [(without ([subdirectory] paths|parents))]
-	return type: Text
+	return type: text
 #All commands
 #Returns all registered commands or all script commands.
 #since 2.6
@@ -4097,7 +4097,7 @@ expression:
 expression:
 	patterns:
 		[(all|the|all [of] the)] [registered] [(script)] commands
-	return type: Text
+	return type: text
 #Alphabetical Sort
 #Sorts given strings in alphabetical order.
 #since 2.2-dev18b
@@ -4106,7 +4106,7 @@ expression:
 expression:
 	patterns:
 		alphabetically sorted %strings%
-	return type: Text
+	return type: text
 #Altitude
 #Effectively an alias of 'y-coordinate of …', it represents the height of some object above bedrock.
 #since 1.4.3
@@ -4118,7 +4118,7 @@ expression:
 	patterns:
 		[the] altitude[s] of %locations%
 		%locations%'[s] altitude[s]
-	return type: Number
+	return type: number
 #Amount
 #The amount of something.
 #Please note that amount of %items% will not return the number of items, but the number of stacks, e.g. 1 for a stack of 64 torches. To get the amount of items in a stack, see the item amount expression.
@@ -4175,7 +4175,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Enchantment Type
+	return type: enchantment type
 #Argument
 #Only usable in command events. Holds the value of an argument given to the command, e.g. if the command "/tell &lt;player&gt; &lt;text&gt;" is used like "/tell Njol Hello Njol!" argument 1 is the player named "Njol" and argument 2 is "Hello Njol!".
 #One can also use the type of the argument instead of its index to address the argument, e.g. in the above example 'player-argument' is the same as 'argument 1'.
@@ -4196,7 +4196,7 @@ expression:
 		[the] arg[ument]( |-)%*classinfo%[( |-)<\d+>]
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #Arithmetic
 #Arithmetic expressions, e.g. 1 + 2, (health of player - 2) / 3, etc.
 #since 1.4.2
@@ -4229,7 +4229,7 @@ expression:
 		%number%[ ]^[ ]%number%
 	get:
 #		(internal code)
-	return type: Number
+	return type: number
 #Armour Slot
 #A part of a player's armour, i.e. the boots, leggings, chestplate or helmet.
 #since 1.0
@@ -4250,7 +4250,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Inventory Slot
+	return type: inventory slot
 #Arrow Knockback Strength
 #An arrow's knockback strength.
 #since 2.5.1
@@ -4317,7 +4317,7 @@ expression:
 		[the] (attacked|damaged|victim) [<(.+)>]
 	get:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #Attacker
 #The attacker of a damage event, e.g. when a player attacks a zombie this expression represents the player.
 #Please note that the attacker can also be a block, e.g. a cactus or lava, but this expression will not be set in these cases.
@@ -4336,7 +4336,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #Bed
 #The bed location of a player, i.e. the spawn point of a player if he ever slept in a bed and the bed still exists and is unobstructed.
 #since 2.0
@@ -4353,7 +4353,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Location
+	return type: location
 #Biome
 #The biome at a certain location. Please note that biomes are only defined for x/z-columns
 #(i.e. the altitude (y-coordinate) doesn't matter), up until Minecraft 1.15.x.
@@ -4371,7 +4371,7 @@ expression:
 		%locations%'[s] biome
 	set:
 #		(internal code)
-	return type: Biome
+	return type: biome
 #Block
 #The block involved in the event, e.g. the clicked block or the placed block.
 #Can optionally include a direction as well, e.g. 'block above' or 'block in front of the player'.
@@ -4391,7 +4391,7 @@ expression:
 		[the] block %direction% [%location%]
 	get:
 #		(internal code)
-	return type: Block
+	return type: block
 #Block Data
 #Get the block data associated with a block. This data can also be used to set blocks.
 #since 2.5, 2.5.2 (set)
@@ -4406,7 +4406,7 @@ expression:
 		%blocks%'[s] block[ ]data
 	set:
 #		(internal code)
-	return type: Block Data
+	return type: block data
 #Block Hardness
 #Obtains the block's hardness level (also known as "strength"). This number is used to calculate the time required to break each block.
 #since 2.6
@@ -4418,7 +4418,7 @@ expression:
 	patterns:
 		[the] [block] hardness of %itemtypes%
 		%itemtypes%'[s] [block] hardness
-	return type: Number
+	return type: number
 #Block Sphere
 #All blocks in a sphere around a center, mostly useful for looping.
 #since 1.0
@@ -4439,7 +4439,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #Blocks
 #Blocks relative to other blocks or between other blocks. Can be used to get blocks relative to other blocks or for looping.
 #Blocks from/to and between will return a straight line whereas blocks within will return a cuboid.
@@ -4468,7 +4468,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #Blocks in Region
 #All blocks in a region.
 #This expression requires a supported regions plugin to be installed.
@@ -4489,7 +4489,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #Book Author
 #The author of a book.
 #since 2.2-dev31
@@ -4506,7 +4506,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #Book Pages
 #The pages of a book.
 #since 2.2-dev31
@@ -4520,7 +4520,7 @@ expression:
 		%itemtypes%'s [book] (pages|content)
 		[book] page %number% of %itemtypes%
 		%itemtypes%'s [book] page %number%
-	return type: Text
+	return type: text
 #Book Title
 #The title of a book.
 #since 2.2-dev31
@@ -4537,7 +4537,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #Burn/Cook Time
 #The time a furnace takes to burn an item in a fuel burn event.
 #Can also be used to change the burn/cook time of a placed furnace.
@@ -4557,7 +4557,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Timespan
+	return type: timespan
 #Case Text
 #Copy of given text in Lowercase, Uppercase, Proper Case, camelCase, PascalCase, Snake_Case, and Kebab-Case
 #since 2.2-dev16 (lowercase and uppercase), 2.5 (advanced cases)
@@ -4591,7 +4591,7 @@ expression:
 		[(lower|upper|capital|screaming)[ ]]snake[ ]case %strings%
 		%strings% in [(lower|upper|capital)[ ]]kebab[ ]case
 		[(lower|upper|capital)[ ]]kebab[ ]case %strings%
-	return type: Text
+	return type: text
 #Chat Format
 #Can be used to get/retrieve the chat format. The sender of a message is represented by [player] or [sender], and the message by [message] or [msg].
 #since 2.2-dev31
@@ -4604,7 +4604,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #Chat Recipients
 #Recipients of chat events where this is called.
 #since 2.2-Fixes-v7, 2.2-dev35 (clearing recipients)
@@ -4625,7 +4625,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Player
+	return type: player
 #Chunk
 #The chunk a block, location or entity is in.
 #since 2.0
@@ -4635,7 +4635,7 @@ expression:
 	patterns:
 		[the] chunk[s] (of|%directions%) %locations%
 		%locations%'[s] chunk[s]
-	return type: Chunk
+	return type: chunk
 #Clicked Block/Entity/Inventory/Slot
 #The clicked block, entity, inventory, inventory slot, inventory click type or inventory action.
 #since 1.0, 2.2-dev35 (more clickable things)
@@ -4656,7 +4656,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Object
+	return type: object
 #Colour of
 #The colour of an item, can also be used to colour chat messages with "&lt;%colour of ...%&gt;this text is coloured!".
 #since 1.2
@@ -4670,7 +4670,7 @@ expression:
 		%blocks/itemtypes/entities/fireworkeffects%'[s] colo[u]r[s]
 	get:
 #		(internal code)
-	return type: Colour
+	return type: colour
 #Coloured / Uncoloured
 #Parses &lt;colour&gt;s and, optionally, chat styles in a message or removes
 #any colours and chat styles from the message. Parsing all
@@ -4691,7 +4691,7 @@ expression:
 		(colo[u]r-|colo[u]red )%strings%
 		(format-|formatted )%strings%
 		(un|non)[-](colo[u]r-|colo[u]red |format-|formatted )%strings%
-	return type: Text
+	return type: text
 #Command
 #The command that caused an 'on command' event (excluding the leading slash and all arguments)
 #since 2.0
@@ -4707,7 +4707,7 @@ expression:
 		[the] (full|complete|whole) command
 		[the] command [label]
 		[the] arguments
-	return type: Text
+	return type: text
 #Command Info
 #Get information about a command.
 #since 2.6
@@ -4738,7 +4738,7 @@ expression:
 		command %strings%'[s] permission message
 		[the] plugin [owner] of command %strings%
 		command %strings%'[s] plugin [owner]
-	return type: Text
+	return type: text
 #Command Sender
 #The player or the console who sent a command. Mostly useful in commands and command events.
 #If the command sender is a command block, its location can be retrieved by using %block's location%
@@ -4750,7 +4750,7 @@ expression:
 expression:
 	patterns:
 		[the] [command['s]] (sender|executor)
-	return type: Command Sender
+	return type: command sender
 #Compass Target
 #The location a player's compass is pointing at.
 #since 2.0
@@ -4767,7 +4767,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Location
+	return type: location
 #Console
 #Represents the server's console which can receive messages and execute commands
 #since 1.3.1
@@ -4777,7 +4777,7 @@ expression:
 expression:
 	patterns:
 		[the] (console|server)
-	return type: Command Sender
+	return type: command sender
 #Cooldown Time/Remaining Time/Elapsed Time/Last Usage/Bypass Permission
 #Only usable in command events. Represents the cooldown time, the remaining time, the elapsed time,
 #the last usage date, or the cooldown bypass permission.
@@ -4803,7 +4803,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Object
+	return type: object
 #Coordinate
 #Represents a given coordinate of a location. 
 #since 1.4.3
@@ -4816,7 +4816,7 @@ expression:
 		%locations%'[s] (x|y|z)(-| )(coord[inate]|pos[ition]|loc[ation])[s]
 	get:
 #		(internal code)
-	return type: Number
+	return type: number
 #Creature/Entity/Player/Projectile/Villager/Powered Creeper/etc.
 #The entity involved in an event (an entity is a player, a creature or an inanimate object like ignited TNT, a dropped item or an arrow).
 #You can use the specific type of the entity that's involved in the event, e.g. in a 'death of a creeper' event you can use 'the creeper' instead of 'the entity'.
@@ -4831,7 +4831,7 @@ expression:
 		[the] [event-]<.+>
 	get:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #Cursor Slot
 #The item which the player has on their cursor. This slot is always empty if player has no inventories open.
 #since 2.2-dev17
@@ -4852,7 +4852,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Inventory Slot
+	return type: inventory slot
 #Custom Chest Inventory
 #Returns a chest inventory with the given amount of rows and the name. Use the open inventory effect to open it.
 #since 2.2-dev34
@@ -4873,7 +4873,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Inventory
+	return type: inventory
 #Custom Model Data
 #Get/set the CustomModelData tag for an item. (Value is an integer between 0 and 99999999)
 #since 2.5
@@ -4906,7 +4906,7 @@ expression:
 expression:
 	patterns:
 		[the] damage
-	return type: Number
+	return type: number
 #Damage Cause
 #The damage cause of a damage event. Please click on the link for more information.
 #since 2.0
@@ -4915,7 +4915,7 @@ expression:
 expression:
 	patterns:
 		[the] damage (cause|type)
-	return type: Damage Cause
+	return type: damage cause
 #Damaged Item
 #Directly damages an item. In MC versions 1.12.2 and lower, this can be used to apply data values to items/blocks
 #since 2.4
@@ -4930,7 +4930,7 @@ expression:
 	patterns:
 		%itemtype% with (damage|data) [value] %number%
 		%itemtype% damaged by %number%
-	return type: Item Type
+	return type: item type
 #Data/Damage Value
 #The data/damage value of an item/block. Data values of blocks are only supported on 1.12.2 and below.
 #You usually don't need this expression as you can check and set items with aliases easily, 
@@ -4967,7 +4967,7 @@ expression:
 	patterns:
 		%timespan% (ago|in the past|before [the] [date] %date%)
 		%timespan% (later|(from|after) [the] [date] %date%)
-	return type: Date
+	return type: date
 #Default Value
 #A shorthand expression for giving things a default value. If the first thing isn't set, the second thing will be returned.
 #since 2.2-dev36
@@ -4976,7 +4976,7 @@ expression:
 expression:
 	patterns:
 		%objects% (otherwise|?) %objects%
-	return type: Object
+	return type: object
 #Difference
 #The difference between two values, e.g. numbers, dates or times.
 #since 1.4
@@ -4988,7 +4988,7 @@ expression:
 		difference (between|of) %object% and %object%
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #Difficulty
 #The difficulty of a world.
 #since 2.3
@@ -5000,7 +5000,7 @@ expression:
 		%worlds%'[s] difficult(y|ies)
 	set:
 #		(internal code)
-	return type: Difficulty
+	return type: difficulty
 #Direction
 #A helper expression for the direction type.
 #since 1.0 (basic), 2.0 (extended)
@@ -5026,7 +5026,7 @@ expression:
 		[%number% [(block|met(er|re))[s]]] in %entity/block%'[s] (direction|horizontal direction|facing|horizontal facing) (of|from|)
 		[%number% [(block|met(er|re))[s]]] (in[ ]front [of]|forward[s]|behind|backwards|[to the] (right|left) [of])
 		[%number% [(block|met(er|re))[s]]] horizontal[ly] (in[ ]front [of]|forward[s]|behind|backwards|to the (right|left) [of])
-	return type: Direction
+	return type: direction
 #Distance
 #The distance between two points.
 #since 1.0
@@ -5036,7 +5036,7 @@ expression:
 expression:
 	patterns:
 		[the] distance between %location% and %location%
-	return type: Number
+	return type: number
 #Drops
 #Only works in death events. Holds the drops of the dying creature. Drops can be prevented by removing them with "remove ... from drops", e.g. "remove all pickaxes from the drops", or "clear drops" if you don't want any drops at all.
 #since 1.0
@@ -5054,7 +5054,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Item Type
+	return type: item type
 #Drops Of Block
 #A list of the items that will drop when a block is broken.
 #since 2.5.1
@@ -5066,7 +5066,7 @@ expression:
 	patterns:
 		[(all|the|all [of] the)] drops of %blocks% [(using|with) %itemtype% [(as %entity%)]]
 		%blocks%'s drops [(using|with) %itemtype% [(as %entity%)]]
-	return type: Item Type
+	return type: item type
 #Element of
 #The first, last or a random element of a set, e.g. a list variable.
 #See also: random
@@ -5078,7 +5078,7 @@ expression:
 		([the] first|[the] last|[a] random|%number%(st|nd|rd|th)) element [out] of %objects%
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #Enchant Item
 #The enchant item in an enchant prepare event or enchant event.
 #It can be modified, but enchantments will still be applied in the enchant event.
@@ -5093,7 +5093,7 @@ expression:
 		[the] enchant[ed] item
 	set:
 #		(internal code)
-	return type: Item Type
+	return type: item type
 #Enchanting Experience Cost
 #The cost of enchanting in an enchant event.
 #This is number that was displayed in the enchantment table, not the actual number of levels removed.
@@ -5156,7 +5156,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Enchantment Offer
+	return type: enchantment offer
 #Enchantment Offer Enchantment Cost
 #The cost of an enchantment offer. This is displayed to the right of an enchantment offer.
 # If the cost is changed, it will always be at least 1.
@@ -5196,7 +5196,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Inventory
+	return type: inventory
 #Entities
 #All entities in all worlds, in a specific world, in a chunk or in a radius around a certain location, e.g. all players, all creepers in the player's world, or players in radius 100 of the player.
 #since 1.2.1, 2.5 (chunks)
@@ -5218,7 +5218,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #Entity AI
 #Returns whether an entity has AI.
 #since 2.5
@@ -5230,7 +5230,7 @@ expression:
 		%livingentities%'[s] (ai|artificial intelligence)
 	set:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #Entity Attribute
 #The numerical value of an entity's particular attribute.
 #Note that the movement speed attribute cannot be reliably used for players. For that purpose, use the speed expression instead.
@@ -5254,7 +5254,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #Entity Owner
 #The owner of a tameable entity, such as a horse or wolf.
 #since 2.5
@@ -5272,7 +5272,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Offline Player
+	return type: offline player
 #Exhaustion
 #The exhaustion of a player. This is mainly used to determine the rate of hunger depletion.
 #since 2.2-dev35
@@ -5294,7 +5294,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #Experience
 #How much experience was spawned in an experience spawn or block break event. Can be changed.
 #since 2.1, 2.5.3 (block break event)
@@ -5319,7 +5319,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Experience
+	return type: experience
 #Exploded Blocks
 #Get all the blocks that were destroyed in an explode event
 #since 2.5
@@ -5340,7 +5340,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #Explosion Block Yield
 #The percentage of exploded blocks dropped in an explosion event.
 #When changing the yield, a value greater than 1 will function the same as using 1.
@@ -5361,7 +5361,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Number
+	return type: number
 #Explosion Yield
 #The yield of the explosion in an explosion prime event. This is how big the explosion is.
 # When changing the yield, values less than 0 will be ignored.
@@ -5382,7 +5382,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Number
+	return type: number
 #Explosive Yield
 #The yield of an explosive (creeper, primed tnt, fireball, etc.). This is how big of an explosion is caused by the entity.
 #Read this wiki page for more information
@@ -5403,7 +5403,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Number
+	return type: number
 #Facing
 #The facing of an entity or block, i.e. exactly north, south, east, west, up or down (unlike direction which is the exact direction, e.g. '0.5 south and 0.7 east')
 #since 1.4
@@ -5417,7 +5417,7 @@ expression:
 		%livingentities/blocks%'[s] (horizontal|) facing
 	get:
 #		(internal code)
-	return type: Direction
+	return type: direction
 #Fall Distance
 #The distance an entity has fallen for.
 #since 2.5
@@ -5435,7 +5435,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Number
+	return type: number
 #Fertilized Blocks
 #The blocks fertilized in block fertilize events.
 #since 2.5
@@ -5455,7 +5455,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #Filter
 #Filters a list based on a condition. For example, if you ran 'broadcast "something" and "something else" where [string input is "something"]', only "something" would be broadcast as it is the only string that matched the condition.
 #since 2.2-dev36
@@ -5466,7 +5466,7 @@ expression:
 		%objects% (where|that match) \[<.+>\]
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #Filter Input
 #Represents the input in a filter expression. For example, if you ran 'broadcast "something" and "something else" where [input is "something"]the condition would be checked twice, using "something" and "something else" as the inputs.
 #since 2.2-dev36
@@ -5476,7 +5476,7 @@ expression:
 	patterns:
 		input
 		%*classinfo% input
-	return type: Object
+	return type: object
 #Final Damage
 #How much damage is done in a damage event, considering all types of damage reduction. Can NOT be changed.
 #since 2.2-dev19
@@ -5485,7 +5485,7 @@ expression:
 expression:
 	patterns:
 		[the] final damage
-	return type: Number
+	return type: number
 #Firework Effect
 #Represents a 'firework effect' which can be used in the launch firework effect.
 #since 2.4
@@ -5497,7 +5497,7 @@ expression:
 	patterns:
 		(|flickering|trailing|flickering trailing|trailing flickering) %fireworktype% [firework [effect]] colo[u]red %colors%
 		(|flickering|trailing|flickering trailing|trailing flickering) %fireworktype% [firework [effect]] colo[u]red %colors% fad(e|ing) [to] %colors%
-	return type: Firework Effect
+	return type: firework effect
 #Flight Mode
 #Whether the player(s) are allowed to fly. Use Make Fly effect to force player(s) to fly.
 #since 2.2-dev34
@@ -5512,7 +5512,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #Food Level
 #The food level of a player from 0 to 10. Has several aliases: food/hunger level/meter/bar. 
 #since 1.0
@@ -5532,7 +5532,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #Formatted Time
 #Converts date to human-readable text format. By default, 'yyyy-MM-dd HH:mm:ss z' (e.g. '2018-03-30 16:03:12 +01') will be used. For reference, see this Wikipedia article.
 #since 2.2-dev31
@@ -5541,7 +5541,7 @@ expression:
 expression:
 	patterns:
 		%dates% formatted [human-readable] [(with|as) %string%]
-	return type: Text
+	return type: text
 #Former/Future State
 #Represents the value of an expression before an event happened or the value it will have directly after the event, e.g. the old or new level respectively in a level change event.
 #Note: The past, future and present states of an expression are sometimes called 'time states' of an expression.
@@ -5565,7 +5565,7 @@ expression:
 		%object%(-to-be| after[(wards| the event)])
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #Furnace Slot
 #A slot of a furnace, i.e. either the ore, fuel or result slot.
 #Remember to use 'block' and not 'furnace', as 'furnace' is not an existing expression.
@@ -5590,7 +5590,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Inventory Slot
+	return type: inventory slot
 #Game Mode
 #The gamemode of a player. (Gamemodes)
 #since 1.0
@@ -5605,7 +5605,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Game Mode
+	return type: game mode
 #Gamerule Value
 #The gamerule value of a world.
 #since 2.5
@@ -5617,7 +5617,7 @@ expression:
 		[the] gamerule %gamerule% of %worlds%
 	set:
 #		(internal code)
-	return type: Gamerule Value
+	return type: gamerule value
 #Gliding State
 #Sets of gets gliding state of player. It allows you to set gliding state of entity even if they do not have an Elytra equipped.
 #since 2.2-dev21
@@ -5631,7 +5631,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #Glowing
 #Indicates if targeted entity is glowing (new 1.9 effect) or not. Glowing entities can be seen through walls.
 #since 2.2-dev18
@@ -5645,7 +5645,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #Gravity
 #If entity is affected by gravity or not, i.e. if it has Minecraft 1.10+ NoGravity flag.
 #since 2.2-dev21
@@ -5659,7 +5659,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #Group
 #The primary group or all groups of a player. This expression requires Vault and a compatible permissions plugin to be installed.
 #since 2.2-dev35
@@ -5682,7 +5682,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #Hanging Entity/Remover
 #Returns the hanging entity or remover in hanging break and place events.
 #since 2.6.2
@@ -5701,7 +5701,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #Hash
 #Hashes the given text using the MD5 or SHA-256 algorithms. Each algorithm is suitable for different use cases.<p>
 #MD5 is provided mostly for backwards compatibility, as it is outdated and not secure. 
@@ -5723,7 +5723,7 @@ expression:
 expression:
 	patterns:
 		%strings% hash[ed] with (MD5|SHA-256)
-	return type: Text
+	return type: text
 #Head location
 #The location of an entity's head, mostly useful for players and e.g. looping blocks in the player's line of sight.
 #Please note that this location is only accurate for entities whose head is exactly above their center, i.e. players, endermen, zombies, skeletons, etc., but not sheep, pigs or cows.
@@ -5736,7 +5736,7 @@ expression:
 	patterns:
 		[the] (head|eye[s]) [location[s]] of %livingentities%
 		%livingentities%'[s] (head|eye[s]) [location[s]]
-	return type: Location
+	return type: location
 #Heal Amount
 #The amount of health healed in a healing event.
 #since 2.5.1
@@ -5746,7 +5746,7 @@ expression:
 expression:
 	patterns:
 		[the] heal amount
-	return type: Number
+	return type: number
 #Heal Reason
 #The heal reason of a heal event. Please click on the link for more information.
 #since 2.5
@@ -5757,7 +5757,7 @@ expression:
 expression:
 	patterns:
 		(regen|health regain|heal) (reason|cause)
-	return type: Heal Reason
+	return type: heal reason
 #Health
 #The health of a creature, e.g. a player, mob, villager, etc. The minimum value is 0, and the maximum is the creature's max health (e.g. 10 for players).
 #since 1.0
@@ -5777,7 +5777,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #Hidden Players
 #The players hidden from a player that were hidden using the player visibility effect.
 #since 2.3
@@ -5793,7 +5793,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Player
+	return type: player
 #Highest Solid Block
 #Returns the highest solid block at the x and z coordinates of the world of a given location.
 #since 2.2-dev34
@@ -5812,7 +5812,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #Hostname
 #The hostname used by the connecting player to connect to the server in a connect event.
 #since 2.6.1
@@ -5823,7 +5823,7 @@ expression:
 expression:
 	patterns:
 		[the] (host|domain)[ ][name]
-	return type: Text
+	return type: text
 #Hotbar Button
 #The hotbar button clicked in an inventory click event.
 #since 2.5
@@ -5846,7 +5846,7 @@ expression:
 		%players%'[s] [([currently] selected|current)] hotbar slot
 	set:
 #		(internal code)
-	return type: Inventory Slot
+	return type: inventory slot
 #Hover List
 #The list when you hover on the player counts of the server in the server list.
 #This can be changed using texts or players in a server list ping event only. Adding players to the list means adding the name of the players.
@@ -5873,7 +5873,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #Humidity
 #Humidity of given blocks.
 #since 2.2-dev35
@@ -5883,7 +5883,7 @@ expression:
 	patterns:
 		[the] humidit(y|ies) of %blocks%
 		%blocks%'[s] humidit(y|ies)
-	return type: Number
+	return type: number
 #IP
 #The IP address of a player, or the connected player in a connect event, or the pinger in a server list ping event.
 #since 1.4, 2.2-dev26 (when used in connect event), 2.3 (when used in server list ping event)
@@ -5899,7 +5899,7 @@ expression:
 		IP[s][( |-)address[es]] of %players%
 		%players%'[s] IP[s][( |-)address[es]]
 		IP[( |-)address]
-	return type: Text
+	return type: text
 #Id
 #The id of a specific item. You usually don't need this expression as you can likely do everything with aliases.
 #since 1.0
@@ -5945,7 +5945,7 @@ expression:
 		%objects%'[s] (indexes|indices)
 		[sorted] (indices|indexes) of %objects% in (ascending|descending) order
 		[sorted] %objects%'[s] (indices|indexes) in (ascending|descending) order
-	return type: Text
+	return type: text
 #Inventory
 #The inventory of a block or player. You can usually omit this expression and can directly add or remove items to/from blocks or players.
 #since 1.0
@@ -5967,7 +5967,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Object
+	return type: object
 #Inventory Action
 #The inventory action of an inventory event. Please click on the link for more information.
 #since 2.2-dev16
@@ -5976,7 +5976,7 @@ expression:
 expression:
 	patterns:
 		[the] inventory action
-	return type: Inventory Action
+	return type: inventory action
 #Inventory Holder/Viewers/Rows/Slots
 #Gets the amount of rows/slots, viewers and holder of an inventory.NOTE: 'Viewers' expression returns a list of players viewing the inventory. Note that a player is considered to be viewing their own inventory and internal crafting screen even when said inventory is not open.
 #since 2.2-dev34, 2.5 (slots)
@@ -5994,7 +5994,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Object
+	return type: object
 #Inventory Slot
 #Represents a slot in an inventory. It can be used to change the item in an inventory too.
 #since 2.2-dev24
@@ -6018,7 +6018,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Inventory Slot
+	return type: inventory slot
 #Item
 #The item involved in an event, e.g. in a drop, dispense, pickup or craft event.
 #since unknown (before 2.1)
@@ -6029,7 +6029,7 @@ expression:
 expression:
 	patterns:
 		[the] item
-	return type: Item / Material
+	return type: item
 #Item Amount
 #The amount of an item stack.
 #since 2.2-dev24
@@ -6071,7 +6071,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Enchantment Type
+	return type: enchantment type
 #Item of an Entity
 #An item associated with an entity. For dropped item entities, it gets, obviously, the item that was dropped. For item frames, the item inside the frame is returned. For throwable projectiles (snowballs, enderpearls etc.),it gets the displayed item. Other entities do not have items associated with them.
 #since 2.2-dev35, 2.2-dev36 (improved), 2.5.2 (throwable projectiles)
@@ -6090,7 +6090,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Inventory Slot
+	return type: inventory slot
 #Item with CustomModelData
 #Get an item with a CustomModelData tag. (Value is an integer between 0 and 99999999)
 #since 2.5
@@ -6101,7 +6101,7 @@ expression:
 expression:
 	patterns:
 		%itemtype% with [custom] model data %number%
-	return type: Item Type
+	return type: item type
 #Item with Lore
 #Returns the given item type with the specified lore added to it.
 #If multiple strings are passed, each of them will be a separate line in the lore.
@@ -6112,7 +6112,7 @@ expression:
 expression:
 	patterns:
 		%itemtype% with [(a|the)] lore %strings%
-	return type: Item Type
+	return type: item type
 #Items
 #Items or blocks of a specific type, useful for looping.
 #since unknown (before 2.1)
@@ -6127,7 +6127,7 @@ expression:
 		[(all [[of] the]|the)] items of type[s] %itemtypes%
 		[(all [[of] the]|the|every)] block(s|[ ]types)
 		[(all [[of] the]|the)] blocks of type[s] %itemtypes%
-	return type: Item / Material
+	return type: item
 #Items In
 #All items in an inventory. Useful for looping or storing in a list variable.
 #Please note that the positions of the items in the inventory are not saved, only their order is preserved.
@@ -6150,7 +6150,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Inventory Slot
+	return type: inventory slot
 #Join & Split
 #Joins several texts with a common delimiter (e.g. ", "), or splits a text into multiple texts at a given delimiter.
 #since 2.1, 2.5.2 (regex support)
@@ -6164,7 +6164,7 @@ expression:
 		%string% split (at|using|by) [[the] delimiter] %string%
 		regex split %string% (at|using|by) [[the] delimiter] %string%
 		regex %string% split (at|using|by) [[the] delimiter] %string%
-	return type: Text
+	return type: text
 #Language
 #Currently selected game language of a player. The value of the language is not defined properly.
 #The vanilla Minecraft client will use lowercase language / country pairs separated by an underscore, but custom resource packs may use any format they wish.
@@ -6175,7 +6175,7 @@ expression:
 	patterns:
 		[the] [([currently] selected|current)] [game] (language|locale) [setting] of %players%
 		%players%'[s] [([currently] selected|current)] [game] (language|locale) [setting]
-	return type: Text
+	return type: text
 #Last Attacker
 #The last block or entity that attacked an entity.
 #since 2.5.1
@@ -6185,7 +6185,7 @@ expression:
 	patterns:
 		[the] last attacker of %entity%
 		%entity%'[s] last attacker
-	return type: Object
+	return type: object
 #Last Color
 #The colors used at the end of a string. The colors of the returned string will be formatted with their symbols.
 #since 2.6
@@ -6195,7 +6195,7 @@ expression:
 	patterns:
 		[the] last color[s] of %strings%
 		%strings%'[s] last color[s]
-	return type: Text
+	return type: text
 #Last Damage
 #The last damage that was done to an entity. Note that changing it doesn't deal more/less damage.
 #since 2.5.1
@@ -6211,7 +6211,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Number
+	return type: number
 #Last Damage Cause
 #Cause of last damage done to an entity
 #since 2.2-Fixes-V10
@@ -6231,7 +6231,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Damage Cause
+	return type: damage cause
 #Last Loaded Server Icon
 #Returns the last loaded server icon with the load server icon effect.
 #since 2.3
@@ -6241,7 +6241,7 @@ expression:
 expression:
 	patterns:
 		[the] [last[ly]] loaded server icon
-	return type: Server Icon
+	return type: server icon
 #Last Resource Pack Response
 #Returns the last resource pack response received from a player.
 #since 2.4
@@ -6252,7 +6252,7 @@ expression:
 	patterns:
 		[the] [last] resource pack response[s] of %players%
 		%players%'[s] [last] resource pack response[s]
-	return type: Resource Pack State
+	return type: resource pack state
 #Last Spawned Entity
 #Holds the entity that was spawned most recently with the spawn effect, drop with the drop effect or shot with the shoot effect. Please note that even though you can spawn multiple mobs simultaneously (e.g. with 'spawn 5 creepers'), only the last spawned mob is saved and can be used. If you spawn an entity, shoot a projectile and drop an item you can however access all them together.
 #since 1.3 (spawned entity), 2.0 (shot entity), 2.2-dev26 (dropped item)
@@ -6269,7 +6269,7 @@ expression:
 		[the] [last[ly]] dropped (item)
 	get:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #Last/First Login Time
 #When a player last/first logged in the server. 'last login' requires paper to get the last login, otherwise it will get the last time they were seen on the server.
 #since 2.5
@@ -6282,7 +6282,7 @@ expression:
 	patterns:
 		[the] (last|first) login of %offlineplayers%
 		%offlineplayers%'[s] (last|first) login
-	return type: Date
+	return type: date
 #Leash Holder
 #The leash holder of a living entity.
 #since 2.3
@@ -6298,7 +6298,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #Length
 #The length of a text, in number of characters.
 #since 2.1
@@ -6362,7 +6362,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #Light Level
 #Gets the light level at a certain location which ranges from 0 to 15.
 #It can be separated into sunlight (15 = direct sunlight, 1-14 = indirect) and block light (torches, glowstone, etc.). The total light level of a block is the maximum of the two different light types.
@@ -6391,7 +6391,7 @@ expression:
 		%location%'[s] (location|position)
 	get:
 #		(internal code)
-	return type: Location
+	return type: location
 #Location
 #The location where an event happened (e.g. at an entity or block), or a location relative to another (e.g. 1 meter above another location).
 #since 2.0
@@ -6404,7 +6404,7 @@ expression:
 		[the] (location|position) %directions% [%location%]
 	get:
 #		(internal code)
-	return type: Location
+	return type: location
 #Location At
 #Allows to create a location from three coordinates and a world.
 #since 2.0
@@ -6414,7 +6414,7 @@ expression:
 expression:
 	patterns:
 		[the] (location|position) [at] [(][x[ ][=[ ]]]%number%, [y[ ][=[ ]]]%number%, [and] [z[ ][=[ ]]]%number%[)] [[(in|of) [[the] world]] %world%]
-	return type: Location
+	return type: location
 #Loop value
 #The currently looped value.
 #since 1.0
@@ -6432,7 +6432,7 @@ expression:
 		[the] loop-<.+>
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #Lore
 #An item's lore.
 #since 2.1
@@ -6448,7 +6448,7 @@ expression:
 		[the] %number%(st|nd|rd|th) line of %itemstack/itemtype%'[s] lore
 	get:
 #		(internal code)
-	return type: Text
+	return type: text
 #MOTD
 #The message of the day in the server list. This can be changed in a server list ping event only.
 #'default MOTD' returns the default MOTD always and can't be changed.
@@ -6465,7 +6465,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #Max Durability
 #The maximum durability of an item.
 #since 2.5
@@ -6497,7 +6497,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #Max Minecart Speed
 #The maximum speed of a minecart.
 #since 2.5.1
@@ -6516,7 +6516,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #Max Players
 #The count of max players. This can be changed in a server list ping event only.
 #'real max players' returns the real count of max players of the server always and can't be changed.
@@ -6566,7 +6566,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Player
+	return type: player
 #Mending Repair Amount
 #The number of durability points an item is to be repaired in a mending event.
 # Modifying the repair amount will affect how much experience is given to the player after mending.
@@ -6610,7 +6610,7 @@ expression:
 		[the] death( |-)message
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #Metadata
 #Metadata is a way to store temporary data on entities, blocks and more that disappears after a server restart.
 #since 2.2-dev36
@@ -6626,7 +6626,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Object
+	return type: object
 #Middle of Location
 #Returns the middle/center of a location. In other words, returns the middle of the X, Z coordinates and the floor value of the Y coordinate of a location.
 #since 2.6.1
@@ -6640,7 +6640,7 @@ expression:
 	patterns:
 		[the] (middle|center) [point] of %location%
 		%location%'[s] (middle|center) [point]
-	return type: Location
+	return type: location
 #Minecart Derailed / Flying Velocity
 #The velocity of a minecart as soon as it has been derailed or as soon as it starts flying.
 #since 2.5.1
@@ -6657,7 +6657,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Vector
+	return type: vector
 #Money
 #How much virtual money a player has (can be changed). This expression requires Vault and a compatible economy plugin to be installed.
 #since 2.0, 2.5 (offline player support)
@@ -6680,7 +6680,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Money
+	return type: money
 #Moved blocks
 #Blocks which are moved in a piston event. Cannot be used outside of piston events.
 #since 2.2-dev27
@@ -6699,7 +6699,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #Name / Display Name / Tab List Name
 #Represents the Minecraft account, display or tab list name of a player, or the custom name of an item, entity, block, inventory, or gamerule.
 #<ul>
@@ -6748,7 +6748,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #Named Item/Inventory
 #Directly names an item/inventory, useful for defining a named item/inventory in a script. If you want to (re)name existing items/inventories you can either use this expression or use set <a href='ExprName'>name of &lt;item/inventory&gt; to &lt;text&gt;</code>.
 #since 2.0, 2.2-dev34 (inventories)
@@ -6762,7 +6762,7 @@ expression:
 		%itemtype/inventorytype% (named|with name[s]) %string%
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #New Line
 #Returns a line break separator.
 #since 2.5
@@ -6772,7 +6772,7 @@ expression:
 	patterns:
 		n[ew]l[ine]
 		line[ ]break
-	return type: Text
+	return type: text
 #No Damage Ticks
 #The number of ticks that an entity is invulnerable to damage for.
 #since 2.5
@@ -6802,7 +6802,7 @@ expression:
 expression:
 	patterns:
 		now
-	return type: Date
+	return type: date
 #Number of Characters
 #The number of uppercase, lowercase, or digit characters in a string.
 #since 2.5
@@ -6831,7 +6831,7 @@ expression:
 expression:
 	patterns:
 		[(all [[of] the]|the)] (numbers|integers|decimals) (between|from) %number% (and|to) %number%
-	return type: Number
+	return type: number
 #Offline players
 #All players that have ever joined the server. This includes the players currently online.
 #since 2.2-dev35
@@ -6840,7 +6840,7 @@ expression:
 expression:
 	patterns:
 		[(all [[of] the]|the)] offline[ ]players
-	return type: Offline Player
+	return type: offline player
 #Online Player Count
 #The amount of online players. This can be changed in a
 #server list ping event only to show fake online player amount.
@@ -6886,7 +6886,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Inventory
+	return type: inventory
 #Parse
 #Parses text as a given type, or as a given pattern.
 #This expression can be used in two different ways: One which parses the entire text as a single instance of a type, e.g. as a number, and one that parses the text according to a pattern.
@@ -6909,7 +6909,7 @@ expression:
 expression:
 	patterns:
 		%string% parsed as (%*classinfo%|"<.*>")
-	return type: Object
+	return type: object
 #Parse Error
 #The error which caused the last parse operation to fail, which might not be set if a pattern was used and the pattern didn't match the provided text at all.
 #since 2.0
@@ -6923,7 +6923,7 @@ expression:
 expression:
 	patterns:
 		[the] [last] [parse] error
-	return type: Text
+	return type: text
 #Passenger
 #The passenger of a vehicle, or the rider of a mob.
 #For 1.11.2 and above, it returns a list of passengers and you can use all changers in it.
@@ -6956,7 +6956,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #Ping
 #Pings of players, as Minecraft server knows them. Note that they will almost certainly be different from the ones you'd get from using ICMP echo requests. This expression is only supported on some server software (PaperSpigot).
 #since 2.2-dev36
@@ -6978,7 +6978,7 @@ expression:
 expression:
 	patterns:
 		[a[n]] (plain|unmodified) %itemtype%
-	return type: Item Type
+	return type: item type
 #Player List Header and Footer
 #The message above and below the player list in the tab menu.
 #since 2.4
@@ -6997,7 +6997,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #Player Protocol Version
 #Player's protocol version. For more information and list of protocol versions visit wiki.vg.
 #since 2.6.2
@@ -7021,7 +7021,7 @@ expression:
 	patterns:
 		[the] (head|skull) of %offlineplayers%
 		%offlineplayers%'[s] (head|skull)
-	return type: Item Type
+	return type: item type
 #Player Weather
 #The weather for a player.
 #since 2.2-dev34
@@ -7037,7 +7037,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Weather Type
+	return type: weather type
 #Portal
 #The blocks associated with a portal in the portal creation event.
 #since 2.4
@@ -7059,7 +7059,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #Potion Effect
 #Create a new potion effect to apply to an entity or item type. Do note that when applying potion effects 
 #to tipped arrows/lingering potions, Minecraft reduces the timespan.
@@ -7073,7 +7073,7 @@ expression:
 	patterns:
 		[new] potion effect of %potioneffecttype% [potion] [[[of] tier] %number%] [(without particles)] [for %timespan%]
 		[new] ambient potion effect of %potioneffecttype% [potion] [[[of] tier] %number%] [(without particles)] [for %timespan%]
-	return type: Potion Effect
+	return type: potion effect
 #Potion Effects
 #Represents the active potion effects of entities and itemtypes.
 #You can clear all potion effects of an entity/itemtype and add/remove a potion effect/type to/from an entity/itemtype.
@@ -7097,7 +7097,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Potion Effect
+	return type: potion effect
 #Prefix/Suffix
 #The prefix or suffix as defined in the server's chat plugin.
 #since 2.0
@@ -7112,7 +7112,7 @@ expression:
 		%players%'[s] [chat] (prefix|suffix)
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #Projectile Bounce State
 #A projectile's bounce state.
 #since 2.5.1
@@ -7125,7 +7125,7 @@ expression:
 		%projectiles%'[s] projectile bounce (state|ability|mode)
 	set:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #Projectile Critical State
 #A projectile's critical state. The only currently accepted projectiles are arrows and tridents.
 #since 2.5.1
@@ -7139,7 +7139,7 @@ expression:
 		%projectiles%'[s] (projectile|arrow) critical (state|ability|mode)
 	set:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #Protocol Version
 #The protocol version that will be sent as the protocol version of the server in a server list ping event. For more information and list of protocol versions visit wiki.vg.
 #If this protocol version doesn't match with the protocol version of the client, the client will see the version string.
@@ -7173,7 +7173,7 @@ expression:
 		[a] random %*classinfo% [out] of %objects%
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #Random Number
 #A random number or integer between two given numbers. Use 'number' if you want any number with decimal parts, or use use 'integer' if you only want whole numbers.
 #Please note that the order of the numbers doesn't matter, i.e. random number between 2 and 1 will work as well as random number between 1 and 2.
@@ -7184,7 +7184,7 @@ expression:
 expression:
 	patterns:
 		[a] random (integer|number) (from|between) %number% (to|and) %number%
-	return type: Number
+	return type: number
 #Random UUID
 #Returns a random UUID.
 #since 2.5.1
@@ -7193,7 +7193,7 @@ expression:
 expression:
 	patterns:
 		[a] random uuid
-	return type: Text
+	return type: text
 #Raw Name
 #The raw Minecraft material name of the given item. Note that this is not guaranteed to give same results on all servers.
 #since unknown (2.2)
@@ -7202,7 +7202,7 @@ expression:
 expression:
 	patterns:
 		(raw|minecraft|vanilla) name[s] of %itemtypes%
-	return type: Text
+	return type: text
 #Redstone Block Power
 #Power of a redstone block
 #since 2.5
@@ -7225,7 +7225,7 @@ expression:
 expression:
 	patterns:
 		[the] [event-]region
-	return type: Region
+	return type: region
 #Region Members & Owners
 #A list of members or owners of a region.
 #This expression requires a supported regions plugin to be installed.
@@ -7237,7 +7237,7 @@ expression:
 	patterns:
 		(all|the|) (members|owner[s]) of [[the] region[s]] %regions%
 		[[the] region[s]] %regions%'[s] (members|owner[s])
-	return type: Offline Player
+	return type: offline player
 #Regions At
 #All regions at a particular location.
 #This expression requires a supported regions plugin to be installed.
@@ -7253,7 +7253,7 @@ expression:
 expression:
 	patterns:
 		[the] region(s|) %direction% %locations%
-	return type: Region
+	return type: region
 #Remaining Air
 #How much time a player has left underwater before starting to drown.
 #since unknown (before 2.1)
@@ -7274,7 +7274,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Timespan
+	return type: timespan
 #Respawn location
 #The location that a player should respawn at. This is used within the respawn event.
 #since 2.2-dev35
@@ -7286,7 +7286,7 @@ expression:
 		[the] respawn location
 	set:
 #		(internal code)
-	return type: Location
+	return type: location
 #Reversed List
 #Reverses given list.
 #since 2.4
@@ -7297,7 +7297,7 @@ expression:
 		reversed %objects%
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #Rounding
 #Rounds numbers normally, up (ceiling) or down (floor) respectively.
 #since 2.0
@@ -7330,7 +7330,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #Scoreboard Tags
 #Scoreboard tags are simple list of texts stored directly in the data of an entity.
 #So this is a Minecraft related thing, not Bukkit, so the tags will not get removed when the server stops. You can visit visit Minecraft Wiki for more info.
@@ -7359,7 +7359,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #Script Name
 #Holds the current script's name (the file name without '.sk').
 #since 2.0
@@ -7372,7 +7372,7 @@ expression:
 	patterns:
 		[the] script[['s] name]
 		name of [the] script
-	return type: Text
+	return type: text
 #Sea Level
 #Gets the sea level of a world.
 #since 2.5.1
@@ -7396,7 +7396,7 @@ expression:
 expression:
 	patterns:
 		[the] [((default)|(shown|sent))] [server] icon
-	return type: Server Icon
+	return type: server icon
 #Shooter
 #The shooter of a projectile.
 #since 1.3.7
@@ -7413,7 +7413,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Living Entity
+	return type: living entity
 #Shuffled List
 #Shuffles given list randomly. This is done by replacing indices by random numbers in resulting list.
 #since 2.2-dev32
@@ -7424,7 +7424,7 @@ expression:
 		shuffled %objects%
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #Sign Text
 #A line of text on a sign. Can be changed, but remember that there is a 16 character limit per line (including colour codes that use 2 characters each).
 #since 1.3
@@ -7441,7 +7441,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Text
+	return type: text
 #Slot Index
 #Index of an an inventory slot. Other types of slots may or may not have indices. Note that comparing slots with numbers is also possible; if index of slot is same as the number, comparisonsucceeds. This expression is mainly for the cases where you must for some reason save the slot numbers.
 #since 2.2-dev35
@@ -7464,7 +7464,7 @@ expression:
 		sorted %objects%
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #Spawn
 #The spawn point of a world.
 #since 1.4.2
@@ -7477,7 +7477,7 @@ expression:
 		%worlds%'[s] spawn[s] [(point|location)[s]]
 	set:
 #		(internal code)
-	return type: Location
+	return type: location
 #Spawn Reason
 #The spawn reason in a spawn event.
 #since 2.3
@@ -7487,7 +7487,7 @@ expression:
 expression:
 	patterns:
 		[the] spawn[ing] reason
-	return type: Spawn Reason
+	return type: spawn reason
 #Spawner Type
 #Retrieves, sets, or resets the spawner's entity type
 #since 2.4
@@ -7503,7 +7503,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Entity Type
+	return type: entity type
 #Special Number
 #Special number values, namely NaN, Infinity and -Infinity
 #since 2.2-dev32d
@@ -7513,7 +7513,7 @@ expression:
 	patterns:
 		(NaN|[(-|minus)](infinity|∞)) value
 		value of (NaN|[(-|minus)](infinity|∞))
-	return type: Number
+	return type: number
 #Speed
 #A player's walking or flying speed. Both can be changed, but values must be between -1 and 1 (excessive values will be changed to -1 or 1 respectively). Negative values reverse directions.
 #Please note that changing a player's speed will change their FOV just like potions do.
@@ -7533,7 +7533,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #Subtext
 #Extracts part of a text. You can either get the first &lt;x&gt; characters, the last &lt;x&gt; characters, the character at index &lt;x&gt;, or the characters between indices &lt;x&gt; and &lt;y&gt;. The indices &lt;x&gt; and &lt;y&gt; should be between 1 and the length of the text (other values will be fit into this range).
 #since 2.1, 2.5.2 (character at, multiple strings support)
@@ -7548,7 +7548,7 @@ expression:
 		[the] (first|last) [%number%] character[s] of %strings%
 		[the] %number% (first|last) characters of %strings%
 		[the] character[s] at [(index|position|indexes|indices|positions)] %numbers% (in|of) %strings%
-	return type: Text
+	return type: text
 #TPS (ticks per second)
 #Returns the 3 most recent TPS readings, like the /tps command. This expression is only supported on some server software (PaperSpigot).
 #since 2.2-dev36
@@ -7560,7 +7560,7 @@ expression:
 		tps from [the] last 5[ ]m[inutes]
 		tps from [the] last 15[ ]m[inutes]
 		[the] tps
-	return type: Number
+	return type: number
 #Tamer
 #The tamer of an entity. Can only be used in entity tame events. You can use 'event-entity' to refer tamed entity itself.
 #since 2.2-dev25
@@ -7577,7 +7577,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Player
+	return type: player
 #Target
 #For players this is the entity at the crosshair, while for mobs and experience orbs it represents the entity they are attacking/following (if any).
 #since unknown (before 2.1)
@@ -7599,7 +7599,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #Targeted Block
 #The block at the crosshair. This regards all blocks that are not air as fully solid, e.g. torches will be like a solid stone block for this expression.
 #since 1.0
@@ -7624,7 +7624,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #Teleport Cause
 #The teleport cause within a player teleport event.
 #since 2.2-dev35
@@ -7634,7 +7634,7 @@ expression:
 expression:
 	patterns:
 		[the] teleport (cause|reason|type)
-	return type: Teleport Cause
+	return type: teleport cause
 #Temperature
 #Temperature at given block.
 #since 2.2-dev35
@@ -7644,7 +7644,7 @@ expression:
 	patterns:
 		[the] temperature[s] of %blocks%
 		%blocks%'[s] temperature[s]
-	return type: Number
+	return type: number
 #Ternary
 #A shorthand expression for returning something based on a condition.
 #since 2.2-dev36
@@ -7653,7 +7653,7 @@ expression:
 expression:
 	patterns:
 		%objects% if <.+>[,] (otherwise|else) %objects%
-	return type: Object
+	return type: object
 #Time
 #The time of a world.
 #since 1.0
@@ -7670,7 +7670,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Time
+	return type: time
 #Time Played
 #The amount of time a player has played for on the server. This info is stored in the player's statistics in the main world's data folder. Changing this will also change the player's stats which can be views in the client's statistics menu.
 #since 2.5
@@ -7689,7 +7689,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Timespan
+	return type: timespan
 #Time Since
 #The time that has passed since a date. If the given date is in the future, a value will not be returned.
 #since 2.5
@@ -7698,7 +7698,7 @@ expression:
 expression:
 	patterns:
 		[the] time since %dates%
-	return type: Timespan
+	return type: timespan
 #Tool
 #The item an entity is holding in their main or off hand.
 #since 1.0
@@ -7721,7 +7721,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Inventory Slot
+	return type: inventory slot
 #Type of
 #Type of a block, item, entity, inventory or potion effect.
 #Types of items and blocks are item types similar to them but have amounts
@@ -7738,7 +7738,7 @@ expression:
 		%entitydatas/itemtypes/inventories/potioneffects%'[s] type
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #UUID
 #The UUID of a player, entity or world.
 #In the future there will be an option to use a player's UUID instead of the name in variable names (i.e. when %player% is used), but for now this can be used.
@@ -7757,7 +7757,7 @@ expression:
 	patterns:
 		[the] UUID of %offlineplayers/worlds/entities%
 		%offlineplayers/worlds/entities%'[s] UUID
-	return type: Text
+	return type: text
 #Unbreakable Items
 #Creates unbreakable copies of given items.
 #since 2.2-dev13b
@@ -7766,7 +7766,7 @@ expression:
 expression:
 	patterns:
 		unbreakable %itemtypes%
-	return type: Item Type
+	return type: item type
 #Unix Date
 #Converts given Unix timestamp to a date. The Unix timespan represents the number of seconds elapsed since 1 January 1970.
 #since 2.5
@@ -7776,7 +7776,7 @@ expression:
 	patterns:
 		[the] unix date of %numbers%
 		%numbers%'[s] unix date
-	return type: Date
+	return type: date
 #Unix Timestamp
 #Converts given date to Unix timestamp. This is roughly how many seconds have elapsed since 1 January 1970.
 #since 2.2-dev31
@@ -7786,7 +7786,7 @@ expression:
 	patterns:
 		[the] unix timestamp of %dates%
 		%dates%'[s] unix timestamp
-	return type: Number
+	return type: number
 #Vectors - Angle Between
 #Gets the angle between two vectors.
 #since 2.2-dev28
@@ -7795,7 +7795,7 @@ expression:
 expression:
 	patterns:
 		[the] angle between [[the] vectors] %vector% and %vector%
-	return type: Number
+	return type: number
 #Vectors - Arithmetic
 #Arithmetic expressions for vectors.
 #since 2.2-dev28
@@ -7815,7 +7815,7 @@ expression:
 		%vector%[ ]--[ ]%vector%
 		%vector%[ ]**[ ]%vector%
 		%vector%[ ]//[ ]%vector%
-	return type: Vector
+	return type: vector
 #Vectors - Create from XYZ
 #Creates a vector from x, y and z values.
 #since 2.2-dev28
@@ -7824,7 +7824,7 @@ expression:
 expression:
 	patterns:
 		[a] [new] vector [(from|at|to)] %number%,[ ]%number%(,[ ]| and )%number%
-	return type: Vector
+	return type: vector
 #Vectors - Cross Product
 #Gets the cross product between two vectors.
 #since 2.2-dev28
@@ -7833,7 +7833,7 @@ expression:
 expression:
 	patterns:
 		%vector% cross %vector%
-	return type: Vector
+	return type: vector
 #Vectors - Cylindrical Shape
 #Forms a 'cylindrical shaped' vector using yaw to manipulate the current point.
 #since 2.2-dev28
@@ -7844,7 +7844,7 @@ expression:
 expression:
 	patterns:
 		[a] [new] cylindrical vector [(from|with)] [radius] %number%, [yaw] %number%(,| and) [height] %number%
-	return type: Vector
+	return type: vector
 #Vectors - Dot Product
 #Gets the dot product between two vectors.
 #since 2.2-dev28
@@ -7853,7 +7853,7 @@ expression:
 expression:
 	patterns:
 		%vector% dot %vector%
-	return type: Number
+	return type: number
 #Vectors - Length
 #Gets or sets the length of a vector.
 #since 2.2-dev28
@@ -7872,7 +7872,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Number
+	return type: number
 #Vectors - Location Vector Offset
 #Returns the location offset by vectors.
 #since 2.2-dev28
@@ -7882,7 +7882,7 @@ expression:
 	patterns:
 		%location% offset by [[the] vectors] %vectors%
 		%location%[ ]~[~][ ]%vectors%
-	return type: Location
+	return type: location
 #Vectors - Normalized
 #Returns the same vector but with length 1.
 #since 2.2-dev28
@@ -7892,7 +7892,7 @@ expression:
 	patterns:
 		normalize[d] %vector%
 		%vector% normalized
-	return type: Vector
+	return type: vector
 #Vectors - Random Vector
 #Creates a random vector.
 #since 2.2-dev28
@@ -7901,7 +7901,7 @@ expression:
 expression:
 	patterns:
 		[a] random vector
-	return type: Vector
+	return type: vector
 #Vectors - Spherical Shape
 #Forms a 'spherical shaped' vector using yaw and pitch to manipulate the current point.
 #since 2.2-dev28
@@ -7912,7 +7912,7 @@ expression:
 expression:
 	patterns:
 		[new] spherical vector [(from|with)] [radius] %number%, [yaw] %number%(,| and) [pitch] %number%
-	return type: Vector
+	return type: vector
 #Vectors - Squared Length
 #Gets the squared length of a vector.
 #since 2.2-dev28
@@ -7922,7 +7922,7 @@ expression:
 	patterns:
 		[the] squared length[s] of %vectors%
 		%vectors%'[s] squared length[s]
-	return type: Number
+	return type: number
 #Vectors - Vector Between Locations
 #Creates a vector between two locations.
 #since 2.2-dev28
@@ -7931,7 +7931,7 @@ expression:
 expression:
 	patterns:
 		[the] vector (from|between) %location% (to|and) %location%
-	return type: Vector
+	return type: vector
 #Vectors - Vector from Location
 #Creates a vector from a location.
 #since 2.2-dev28
@@ -7941,7 +7941,7 @@ expression:
 	patterns:
 		[the] vector (of|from|to) %location%
 		%location%'s vector
-	return type: Vector
+	return type: vector
 #Vectors - Vector from Pitch and Yaw
 #Creates a vector from a yaw and pitch value.
 #since 2.2-dev28
@@ -7950,7 +7950,7 @@ expression:
 expression:
 	patterns:
 		[a] [new] vector (from|with) yaw %number% and pitch %number%
-	return type: Vector
+	return type: vector
 #Vectors - Velocity
 #Gets or changes velocity of an entity.
 #since 2.2-dev31
@@ -7970,7 +7970,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Vector
+	return type: vector
 #Vectors - XYZ Component
 #Gets or changes the x, y or z component of a vector.
 #since 2.2-dev28
@@ -7991,7 +7991,7 @@ expression:
 		%vectors%'[s] [vector] (x|y|z) [component[s]]
 	get:
 #		(internal code)
-	return type: Number
+	return type: number
 #Vehicle
 #The vehicle an entity is in, if any. This can actually be any entity, e.g. spider jockeys are skeletons that ride on a spider, so the spider is the 'vehicle' of the skeleton.
 #See also: passenger
@@ -8010,7 +8010,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #Version
 #The version of Bukkit, Minecraft or Skript respectively.
 #since 2.0
@@ -8020,7 +8020,7 @@ expression:
 expression:
 	patterns:
 		([craft]bukkit|minecraft|skript)( |-)version
-	return type: Text
+	return type: text
 #Version String
 #The text to show if the protocol version of the server doesn't match with protocol version of the client. You can check the protocol version expression for more information about this.
 #This can only be set in a server list ping event.
@@ -8035,7 +8035,7 @@ expression:
 		[the] [(shown|custom)] version [(string|text)]
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #View Distance of Client
 #The view distance of the client. Can not be changed. This differs from the server side view distance of player as this will retrieve the view distance the player has set on their client.
 #since 2.5
@@ -8062,7 +8062,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Weather Type
+	return type: weather type
 #Whitelist
 #A server's whitelist.This expression can be used to add/remove players to/from the whitelist, to enable it and disable it (set whitelist to true / set whitelist to false), and to empty it (reset whitelist)
 #since 2.5.2
@@ -8081,7 +8081,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Offline Player
+	return type: offline player
 #World
 #The world the event occurred in.
 #since 1.0
@@ -8096,7 +8096,7 @@ expression:
 		%locations/entities/chunk%'[s] world
 	set:
 #		(internal code)
-	return type: World
+	return type: world
 #World Seed
 #The seed of given world. Note that it will be returned as Minecraft internally treats seeds, not as you specified it in world configuration.
 #since 2.2-dev35
@@ -8116,7 +8116,7 @@ expression:
 expression:
 	patterns:
 		[the] world [(named|with name)] %string%
-	return type: World
+	return type: world
 #Worlds
 #All worlds of the server, useful for looping.
 #since 1.0
@@ -8126,7 +8126,7 @@ expression:
 expression:
 	patterns:
 		[(all [[of] the]|the)] worlds
-	return type: World
+	return type: world
 #X of Item
 #An expression to be able to use a certain amount of items where the amount can be any expression. Please note that this expression is not stable and might be replaced in the future.
 #since 1.2
@@ -8137,7 +8137,7 @@ expression:
 		%number% of %itemstacks/itemtypes/entitytype%
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #Yaw / Pitch
 #The yaw or pitch of a location or vector.
 #since 2.0, 2.2-dev28 (vector yaw/pitch)
@@ -8155,4 +8155,4 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Number
+	return type: number

@@ -886,7 +886,7 @@ expression:
 	patterns:
 		[the] [anvil] (rename text|repair name) of %inventories%
 		%inventories%'[s] [anvil] (rename text|repair name)
-	return type: Text
+	return type: text
 #Anvil Repair Cost
 #Represents the anvil inventory's repair cost and maximum repair cost.
 #Repair cost = the experience cost (in levels) to complete the current repair.
@@ -915,7 +915,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Number
+	return type: number
 #Armor Change Event - Item
 #Get the old/new item in an armor change event. Defaults to new. When using set, it will set the slot that was changed, old/new will make no difference in this case. Requires Paper 1.12.2+
 #since 1.3.1
@@ -928,7 +928,7 @@ expression:
 		[(new|old)] armor item
 	set:
 #		(internal code)
-	return type: Item Type
+	return type: item type
 #Available Materials
 #Get a list of all available materials (will return as an itemtype, but it's a mix of blocks and items),
 #itemtypes, block types (will return as an item type, but only materials which can be placed use as a block) and block datas.
@@ -943,7 +943,7 @@ expression:
 		[all] available item[ ]types
 		[all] available block[ ]types
 		[all] available block[ ]datas
-	return type: Object
+	return type: object
 #Block Data - Block
 #Customize block data from a block. You can get all the tags in a block data or a specific tag.
 #You can set a specific tag of block data, or set blockdata of a block without updates
@@ -961,7 +961,7 @@ expression:
 		%blocks%'[s] block[ ](data|state) (tags|tag %string%|without update[s])
 	set:
 #		(internal code)
-	return type: Object
+	return type: object
 #Block Data - Item
 #Get block data from an item. You can get a string of block data, all the tags in a block data or a specific tag. 
 #You can also set a block data for an item or set a specific tag for block data. This syntax is only available for MC 1.14+
@@ -976,7 +976,7 @@ expression:
 		%itemtypes%'[s] item [block[ ]](data|state) [(tags|tag %string%)]
 	set:
 #		(internal code)
-	return type: Object
+	return type: object
 #Block in Chunk
 #Represents a block in a chunk. X/Z coords will be a value from 0 to 15.
 #since 1.13.0
@@ -996,7 +996,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #BlockState - BlockData
 #Represents the blockdata of a block in a structure. Requires MC 1.17.1+
 #since 1.12.3
@@ -1005,7 +1005,7 @@ expression:
 expression:
 	patterns:
 		block[ ]data of [blockstate[s]] %blockstates%
-	return type: Block Data
+	return type: block data
 #BlockState - ItemType
 #Represents the itemtype of a block in a structure. Requires MC 1.17.1+
 #since 1.12.3
@@ -1014,7 +1014,7 @@ expression:
 expression:
 	patterns:
 		[item[ ]]type of [blockstate[s]] %blockstates%
-	return type: Item Type
+	return type: item type
 #BlockState - Offset
 #Represents the offset of a block in a structure. This is a vector, distance from the starting block of a structure.
 #Requires MC 1.17.1+
@@ -1024,7 +1024,7 @@ expression:
 expression:
 	patterns:
 		offset of [blockstate[s]] %blockstates%
-	return type: Vector
+	return type: vector
 #Book Pages
 #Allows you to set pages in a book to text components. You can also retrieve the pages. Based on testing, a book's author/title needs to be set AFTER setting the pages, why? I have no idea!
 #since 1.8.0
@@ -1042,7 +1042,7 @@ expression:
 		page %number% of [book] %itemtype%
 	set:
 #		(internal code)
-	return type: Text Component - Base Component
+	return type: text component - base component
 #Bound - All Bounds
 #Get a list of all bounds, optionally in a specific world.
 #since 1.15.0
@@ -1055,7 +1055,7 @@ expression:
 	patterns:
 		[(all [[of] the]|the)] bound[s] [(in|of) %worlds%]
 		[(all [[of] the]|the)] bound id[s] [(in|of) %worlds%]
-	return type: Object
+	return type: object
 #Bound - At Location
 #Get a list of bounds/ids at a location.
 #since 1.0.0
@@ -1067,7 +1067,7 @@ expression:
 	patterns:
 		[(all [[of] the]|the)] bound[s] at %location%
 		[(all [[of] the]|the)] bound id[s] at %location%
-	return type: Object
+	return type: object
 #Bound - Blocks
 #All the blocks within a bound
 #since 1.0.0
@@ -1090,7 +1090,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #Bound - Coords
 #The coords and world of a bounding box. You can get the world/coords for a specific bound, you can also set the coords of a bounding box. You can NOT set the world of a bounding box. 
 #
@@ -1111,7 +1111,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Object
+	return type: object
 #Bound - Entities
 #Get all the entities within a bound. NOTE: If the chunk in a bound is unloaded, entities will also be unloaded.
 #since 1.15.0
@@ -1128,7 +1128,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #Bound - From ID
 #Get a bound object from a bound ID
 #since 1.0.0
@@ -1137,7 +1137,7 @@ expression:
 expression:
 	patterns:
 		bound (of|from|with) id %string%
-	return type: Bound
+	return type: bound
 #Bound - ID
 #Get/set the id of a bound. When setting the ID of a bound, if another bound has that ID, this will fail with an error in console.
 #You cannot set the IDs of multiple bounds at once.
@@ -1154,7 +1154,7 @@ expression:
 		%bounds%'[s] [bound] id
 	get:
 #		(internal code)
-	return type: Text
+	return type: text
 #Bound - Owners/Members
 #Represents the owners and members of a bound. Will be saved as UUIDs in the bound config.
 #since 1.15.0
@@ -1175,7 +1175,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Offline Player
+	return type: offline player
 #Chunk Coordinates
 #Represents the coordinates of a chunk.
 #since 1.13.0
@@ -1184,7 +1184,7 @@ expression:
 expression:
 	patterns:
 		chunk (x|z) of %chunk%
-	return type: Number
+	return type: number
 #Entity NoClip
 #Set or get the noClip status of an entity (This will not work on players)
 #since 1.0.2
@@ -1201,7 +1201,7 @@ expression:
 		%entities%'s no[( |-)]clip (state|mode)
 	set:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #Entity Visibility
 #Get/set visibility for entities. Armor stands on all versions, ItemFrames on 1.15+ and LivingEntities on 1.16.3+
 #since 1.7.0
@@ -1215,7 +1215,7 @@ expression:
 		%entities%'[s] visibility
 	set:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #EntityBlockStorage - Entity Count
 #Get the amount of entities currently stored in a storage block.
 #As of 1.15 this only includes beehives/bee nests! Requires Spigot/Paper 1.15.2+
@@ -1265,7 +1265,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Number
+	return type: number
 #Hidden Item Flags
 #Hides the item flags on items, allowing you to make super duper custom items. Dye item flag added in 1.5.0 and only available on 1.16.2+.
 #since 1.0.0
@@ -1279,7 +1279,7 @@ expression:
 	patterns:
 		%itemtype% with (all|enchant[s]|destroy[s]|potion[ ]effect[s]|unbreakable|attribute[s]|dye) flag[s] hidden
 		%itemtype% with hidden (all|enchant[s]|destroy[s]|potion[ ]effect[s]|unbreakable|attribute[s]|dye) flag[s]
-	return type: Item Type
+	return type: item type
 #Inventory Name
 #This is a temp placeholder for Skript's inventory name expression, which is broken in 1.14+
 #since 1.0.0
@@ -1289,7 +1289,7 @@ expression:
 	patterns:
 		[the] (custom|inv[entory]) name of %inventories%
 		%inventories%'[s] (custom|inv[entory]) name
-	return type: Text
+	return type: text
 #Knockback Attacker/Victim
 #The attacker/victim in an entity knockback event. Paper 1.12.2+
 #since 1.8.0
@@ -1307,7 +1307,7 @@ expression:
 #		(internal code)
 	remove all:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #Loaded Chunks
 #Represents all currently loaded chunks in a world.
 #since 1.13.0
@@ -1317,7 +1317,7 @@ expression:
 expression:
 	patterns:
 		[(all [[of] the]|the)] loaded chunks of %world%
-	return type: Chunk
+	return type: chunk
 #Material Choice
 #A material choice is a list of items or a minecraft tag, that can be used as an option in some recipes.
 #When using the 'every' item type, this will grab all relatable items in a list, ie: 'every sword'.
@@ -1332,7 +1332,7 @@ expression:
 	patterns:
 		material choice of %itemtypes%
 		material choice of %minecrafttag%
-	return type: Material Choice
+	return type: material choice
 #Minecraft Tag
 #Represents a Minecraft tag. This includes all vanilla item/block tags registered to the server.
 #Bukkit provides 2 lists, item tags and block tags. Some tags might be in both lists but still have the same effect.
@@ -1352,7 +1352,7 @@ expression:
 		minecraft [(item|block)] tag[s] %strings%
 		[all] minecraft [(item|block)] tags
 		[all] item[type]s of minecraft [(item|block)] tag[s] %strings%
-	return type: Object
+	return type: object
 #NBT - Compound of
 #Get the nbt compound of a block/entity/item/file. This is a more advanced version of NBT than just getting an NBT string 
 #which allows for better manipulation. Optionally you can return a copy of the compound. This way you can modify it without 
@@ -1371,7 +1371,7 @@ expression:
 		nbt compound [(copy)] (of|from) file[s] %strings%
 	add:
 #		(internal code)
-	return type: NBT - Compound
+	return type: nbt - compound
 #NBT - Item from NBT
 #This expression allows you to grab an item from NBT strings or compounds (compound support added in 1.6.0). 
 #This can be useful when wanting to grab items from file nbt, or nbt of an entity or an inventory holding block (like a chest or furnace).
@@ -1390,7 +1390,7 @@ expression:
 	patterns:
 		item[s] (from|of) nbt[s] %strings/nbtcompounds%
 		nbt item[s] (from|of) %strings/nbtcompounds%
-	return type: Item Type
+	return type: item type
 #NBT - Item with NBT
 #Give players items with NBT or even use items with NBT in GUIs
 #since 1.0.0
@@ -1400,7 +1400,7 @@ expression:
 expression:
 	patterns:
 		%itemtype% with [item( |-)]nbt %string/nbtcompound%
-	return type: Item Type
+	return type: item type
 #NBT - Item/Inventory Slot/Entity/Block/File
 #NBT of items, inventory slots, entities, tile entities (such as a furnace, hopper, brewing stand, banner, etc) or files. 
 #Supports get, set, add and reset. Reset will only properly work on an item, not entities or blocks. 
@@ -1429,7 +1429,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Object
+	return type: object
 #NBT - Pretty NBT String
 #Get a 'pretty' NBT string. This is colored the same as when using the vanilla Minecraft '/data' command. 
 #Splitting it will output kind of like a JSON output. Requires 1.13.2+
@@ -1442,7 +1442,7 @@ expression:
 	patterns:
 		pretty nbt (of|from) %nbtcompounds/strings% [(with|using) split %string%]
 		%nbtcompounds/strings%'[s] pretty nbt [(with|using) split %string%]
-	return type: Text
+	return type: text
 #NBT - Tag
 #Returns the value of the specified tag of the specified NBT. Also supports getting nested tags using a semi colon as a delimiter.
 #If the return value is a list, you can use it as a list, as it will automatically split it for ya.
@@ -1479,7 +1479,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Object
+	return type: object
 #NBT - Tag Type
 #Represents the NBT tag type of a tag in an NBT compound. This is mainly useful for debugging purposes.
 #since 1.13.1
@@ -1488,7 +1488,7 @@ expression:
 expression:
 	patterns:
 		[nbt[ ]]tag[ ]type of tag %string% of %nbtcompound%
-	return type: NBT - Tag Type
+	return type: nbt - tag type
 #NBT - Tags
 #Get all tags of an NBT compound.
 #since 1.14.2
@@ -1499,7 +1499,7 @@ expression:
 	patterns:
 		[the] nbt tags of %nbtcompound%
 		%nbtcompound%'[s] nbt tags
-	return type: Text
+	return type: text
 #NBT - UUID for NBT
 #Allows you to get an entity's UUID which can be represented in an NBT compound. Prior to 1.16 UUIDs were represented 
 #as most/least significant bits. As of 1.16, they are now represented as int arrays. If the player/entity is excluded, this 
@@ -1513,7 +1513,7 @@ expression:
 expression:
 	patterns:
 		uuid (int array[( as string)]|most[ bits]|least[ bits]) [(from|of) %offlineplayer/entity%]
-	return type: Object
+	return type: object
 #Pathfinding - Path Points
 #Get all the points along an entity's pathfinding path. Requires Paper 1.13+
 #since 1.5.0
@@ -1522,7 +1522,7 @@ expression:
 expression:
 	patterns:
 		path [points] of %livingentities%
-	return type: Location
+	return type: location
 #Pathfinding - Path Target
 #Set the path of an entity to target a specific location, with an optional speed
 #Get the location of the paths end. Delete will stop the entity from pathfinding. Requires Paper 1.13+
@@ -1540,7 +1540,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Location
+	return type: location
 #Recipe - All Recipes
 #Get a list of all recipes. May be from a specific item, may be just Minecraft recipes or custom recipes.
 #Due to some items having more than 1 recipe this may return multiple recipes. Requires 1.13+
@@ -1550,7 +1550,7 @@ expression:
 expression:
 	patterns:
 		[(all [[of] the]|the)] [((mc|minecraft)|custom)] recipe[s] [(for|of) %itemtypes%]
-	return type: Text
+	return type: text
 #Recipe - Ingredients of Recipe
 #Get the ingredients from a recipe. Requires 1.13+
 #since 1.4.0
@@ -1561,7 +1561,7 @@ expression:
 expression:
 	patterns:
 		[(all [[of] the]|the)] ingredients (for|of) recipe %string%
-	return type: Item Type
+	return type: item type
 #Stored Enchantments
 #Get/set the stored enchantments of an enchanted book.
 #since 1.0.0
@@ -1583,7 +1583,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Enchantment Type
+	return type: enchantment type
 #Structure - BlockStates
 #Get a list of the blockstates in a structure. This represents the palette of blocks a structure holds.
 #Requires MC 1.17.1+
@@ -1593,7 +1593,7 @@ expression:
 expression:
 	patterns:
 		blockstates of [structure] %structure%
-	return type: BlockState
+	return type: blockstate
 #Structure - Object
 #Create a new, empty structure or load a structure from file. 
 #If the file you have specified is not available, it will be created upon saving.
@@ -1609,7 +1609,7 @@ expression:
 expression:
 	patterns:
 		structure[s] named %strings%
-	return type: Structure
+	return type: structure
 #Structure - Properties
 #Represents different properties of a structure, including mirroring, rotation, inclusion of entities and integrity.
 #These properties are only used for placing the structure in a world, they are NOT saved to the structure file.
@@ -1636,7 +1636,7 @@ expression:
 		size of [structure] %structures%
 	set:
 #		(internal code)
-	return type: Object
+	return type: object
 #Tab Completion Argument
 #Get the argument or a list of all arguments in a tab complete event.
 #since 1.7.0
@@ -1651,7 +1651,7 @@ expression:
 expression:
 	patterns:
 		tab [complete] arg[ument](s|[(-| )]%number%)
-	return type: Text
+	return type: text
 #Tab Completions
 #Set the tab completions used in a tab complete event. 
 #You can specify which position in the command arguments also (will default to position 1). 
@@ -1679,7 +1679,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Text
+	return type: text
 #Target Block Exact
 #Returns the exact target block of a living entity.
 #Unlike Skript's target block expression, this takes the blocks' precise collision shapes into account.
@@ -1702,7 +1702,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Block
+	return type: block
 #Team - Color
 #Represents the color of a team. This will be the color of glow (if glowing) as well as display name color.
 #since 1.15.0
@@ -1716,7 +1716,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Colour
+	return type: colour
 #Team - Entries
 #Represents the entries of a team. You can add/remove players/entities to teams.
 #since 1.15.0
@@ -1732,7 +1732,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Entity
+	return type: entity
 #Team - Get Team
 #Get the team by name or of an entity.
 #since 1.15.0
@@ -1743,7 +1743,7 @@ expression:
 	patterns:
 		[[sk]bee] team named %string%
 		[[sk]bee] team of %entity%
-	return type: Team
+	return type: team
 #Team - Options
 #Represents an option for a team.
 #since 1.15.0
@@ -1755,7 +1755,7 @@ expression:
 		%beeteams%'[s] team option %teamoption%
 	set:
 #		(internal code)
-	return type: Team - Option Status
+	return type: team - option status
 #Team - Prefix/Suffix
 #Get/set the prefix/suffix of a team.
 #since 1.15.0
@@ -1771,7 +1771,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: Text
+	return type: text
 #Team - State
 #Represents the friendly fire and can see friendly invisibles states of a team.
 #since 1.15.0
@@ -1783,7 +1783,7 @@ expression:
 		%beeteams%'[s] (allow friendly fire|can see friendly invisibles) team state
 	set:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #Text Component - Click Event
 #Create a new click event. Supports run command, suggest command, open link and copy to clipboard.
 #since 1.5.0
@@ -1799,7 +1799,7 @@ expression:
 		[a] [new] click event to open (link|url) %string%
 		[a] [new] click event to copy %string% to clipboard
 		[a] [new] click event to change to page %number%
-	return type: Object
+	return type: object
 #Text Component - Click Event Of
 #Set the click event of a text component.
 #since 1.5.0
@@ -1812,7 +1812,7 @@ expression:
 	patterns:
 		[the] click event of %basecomponents%
 		%basecomponents%'[s] click event
-	return type: Object
+	return type: object
 #Text Component - Format
 #Change formatting options of text components. Most of these are pretty straight forward. Insertion means the text 
 #that will copy to chat when a player shift-clicks the component (Might not be available on all versions). Color supports color 
@@ -1830,7 +1830,7 @@ expression:
 		%basecomponents%'[s] (color|bold|italic|(obfuscate[d]|magic)|strikethrough|underline[d]|insert[ion]) format
 	set:
 #		(internal code)
-	return type: Object
+	return type: object
 #Text Component - Hover Event
 #Create a new hover event. Can show text or an item to a player. 'showing %itemtype%' requires Minecraft 1.16.2+
 #since 1.5.0
@@ -1842,7 +1842,7 @@ expression:
 	patterns:
 		[a] [new] hover event showing %strings%
 		[a] [new] hover event showing [item] %itemtype%
-	return type: Object
+	return type: object
 #Text Component - Hover Event Of
 #Set the hover event of a text component.
 #since 1.5.0
@@ -1854,7 +1854,7 @@ expression:
 	patterns:
 		[the] hover event of %basecomponents%
 		%basecomponents%'[s] hover event
-	return type: Object
+	return type: object
 #Text Component - New Text Component
 #Create a new text component. Can have hover and click events added to it. You can also create a translate component, 
 #this will send to the client, and the client will translate based on their language. You can use either an item type or a 
@@ -1877,7 +1877,7 @@ expression:
 		[a] [new] text component[s] (from|of) %strings%
 		[a] [new] translate component[s] (from|of) %objects%
 		[a] [new] translate component[s] (from|of) %string% (with|using) %objects%
-	return type: Text Component - Base Component
+	return type: text component - base component
 #Total Experience
 #Represents the total experience points the player currently has.
 #since 1.2.0
@@ -1910,7 +1910,7 @@ expression:
 	patterns:
 		[a] [new] world creator (with name|named) %string%
 		[a] [new] world creator (with name|named) %string% to (copy|clone) %world%
-	return type: World Creator
+	return type: world creator
 #World Creator Options
 #Set different options for world creators. See SkBee wiki for more details.
 #since 1.8.0
@@ -1926,4 +1926,4 @@ expression:
 		%worldcreator%'[s] (environment|world type|world seed|gen[erator] settings|generator|should gen[erate] structures|[is] hardcore|keep spawn loaded)
 	set:
 #		(internal code)
-	return type: Object
+	return type: object

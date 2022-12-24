@@ -45,7 +45,11 @@ export class AddonParser {
 	static parseFileJson(file: fileJson): string {
 		function format(str: string): string {
 			//trim() removes \n too
-			return str.replace("#", "").replace("\n", "\n#").replace("<br>", "\n#");
+			str = str.replace(/#/g, "");
+			str = str.replace(/<br>/g, "\n");//convert <br> to a new line
+			str = str.replace(/\\n/g, "\n");//convert \m to a new line
+			str = str.replace(/\n/g, "\n#");
+			return str;
 		}
 
 		function generalData(elem: GeneralJson): string {
@@ -83,7 +87,7 @@ export class AddonParser {
 			elem.patterns.forEach(line => {
 				if (line != "") {
 					if (noSpaces) {
-						line = line.replace(/(?<!\[) | (?!\])/, '[ ]');
+						line = line.replace(/(?<!\[) | (?!\])/g, '[ ]');
 					}
 					str += "\t\t" + line + "\n";
 				}
@@ -98,6 +102,14 @@ export class AddonParser {
 			str += generalData(type);
 			str += "type:\n";
 			str += patterns(type, true);
+			switch (type.name) {
+				case "Player":
+					str += "\tinherits: offline player, entity, command sender";
+					break;
+				case "Living Entity":
+					str += "\tinherits: entity";
+					break;
+			}
 		});
 		file.effects?.forEach(effect => {
 			str += generalData(effect);
@@ -125,9 +137,8 @@ export class AddonParser {
 						}
 						const eventValueParserRegExp = /(event-)?(.*)/;
 
-						const valueName : RegExpExecArray | null = eventValueParserRegExp.exec(line);
-						if (valueName)
-						{
+						const valueName: RegExpExecArray | null = eventValueParserRegExp.exec(line);
+						if (valueName) {
 							str += valueName[2];
 						}
 
@@ -148,7 +159,7 @@ export class AddonParser {
 						str += "#\t\t(internal code)\n";
 					});
 				}
-				str += "\treturn type: " + expression["return type"];
+				str += "\treturn type: " + expression["return type"].toLowerCase().replace(/(.*) \/ .*/, "$1");
 			}
 		});
 		return str;
@@ -177,7 +188,9 @@ export class AddonParser {
 				const fileData = JSON.parse(jsonString);
 				//if (fileData instanceof fileJson) {
 				const parseResult = AddonParser.parseFileJson(fileData);
-				const targetPath = path.join(intelliSkriptAddonSkFilesDirectory, file.substring(0, file.indexOf('.'))) + ".sk";
+				const inputFileName = file.substring(0, file.indexOf('.'));
+				const outputFileName = inputFileName == "Skript" ? "1 (preload) - Skript" : inputFileName;
+				const targetPath = path.join(intelliSkriptAddonSkFilesDirectory, outputFileName) + ".sk";
 				fs.writeFileSync(targetPath, parseResult);
 				//}
 				//else{

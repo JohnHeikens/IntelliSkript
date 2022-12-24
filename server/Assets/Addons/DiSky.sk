@@ -365,7 +365,7 @@ effect:
 #Examples:
 # We are in a slash command event!
 #reply with hidden "Wanna see a magic trick? ..." and store it in {_msg}
-wait a second
+#wait a second
 # The variable does not contains a 'real' message, it contains the interaction hook.edit {_msg} to show "Abracadabra!"
 effect:
 	patterns:
@@ -867,9 +867,9 @@ event "disky_error_exception":
 #Examples:
 #discord command move <member> <voicechannel>:
 #	prefixes: !
-	trigger:
-		reply with mention tag of arg-2
-		move arg-1 to arg-2
+#	trigger:
+#		reply with mention tag of arg-2
+#		move arg-1 to arg-2
 event "discord_command":
 	patterns:
 		[on] discord command <([^\s]+)( .+)?$>
@@ -1398,19 +1398,19 @@ expression:
 	patterns:
 		[the] activity (text|content|name) of %activity%
 		%activity%'[s] activity (text|content|name)
-	return type: Text
+	return type: text
 #ActivityType
 expression:
 	patterns:
 		[the] activity type of %activity%
 		%activity%'[s] activity type
-	return type: Text
+	return type: text
 #ActivityURL
 expression:
 	patterns:
 		[the] activity ur(i|l) of %activity%
 		%activity%'[s] activity ur(i|l)
-	return type: Text
+	return type: text
 #All Guild Guild Channels
 #Get every guild channel in the guild, including text, voice, stage, news, and thread channels.
 #Examples:
@@ -1445,7 +1445,7 @@ expression:
 	patterns:
 		[the] [discord] file ext[ension] of %attachment%
 		%attachment%'[s] [discord] file ext[ension]
-	return type: Text
+	return type: text
 #Attachments File Name
 #Get the file name of an attachment.
 #since 1.7
@@ -1453,7 +1453,7 @@ expression:
 	patterns:
 		[the] [discord] file name of %attachment%
 		%attachment%'[s] [discord] file name
-	return type: Text
+	return type: text
 #Attachments URL
 #Get the url of an attachment.
 #since 1.7
@@ -1461,14 +1461,14 @@ expression:
 	patterns:
 		[the] [discord] [attachment] ur(l|i) of %attachment%
 		%attachment%'[s] [discord] [attachment] ur(l|i)
-	return type: Text
+	return type: text
 #Ban Reason
 #The optional reason which say why the user of this ban was banned.
 expression:
 	patterns:
 		[the] [ban[ned]] reason of %ban%
 		%ban%'[s] [ban[ned]] reason
-	return type: Text
+	return type: text
 #Ban User
 #The user linked to this ban.
 expression:
@@ -1489,13 +1489,13 @@ expression:
 		%bot%'[s] [discord] bot name
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #BotPing
 expression:
 	patterns:
 		[the] [discord] bot ping of %bot%
 		%bot%'[s] [discord] bot ping
-	return type: Number
+	return type: number
 #BotPresence
 expression:
 	patterns:
@@ -1511,13 +1511,13 @@ expression:
 		%bot%'[s] [discord] bot token
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #BotUptime
 expression:
 	patterns:
 		[the] [discord] [bot] uptime of %bot%
 		%bot%'[s] [discord] [bot] uptime
-	return type: Timespan
+	return type: timespan
 #Channel Jump URL
 #Returns the jump-to URL for this channel.
 #Clicking this URL in the Discord client will cause the client to jump to the specified channel.
@@ -1527,7 +1527,7 @@ expression:
 	patterns:
 		[the] channel [jump] url of %channel%
 		%channel%'[s] channel [jump] url
-	return type: Text
+	return type: text
 #ChannelBitrate
 expression:
 	patterns:
@@ -1535,7 +1535,7 @@ expression:
 		%channel/channelaction%'[s] [channel] bitrate
 	set:
 #		(internal code)
-	return type: Number
+	return type: number
 #ChannelChannels
 expression:
 	patterns:
@@ -1549,7 +1549,7 @@ expression:
 		%channel/channelaction%'[s] [channel] max[imum] user[s]
 	set:
 #		(internal code)
-	return type: Number
+	return type: number
 #ChannelNSFW
 expression:
 	patterns:
@@ -1557,7 +1557,7 @@ expression:
 		%channel/channelaction%'[s] [channel] nsfw
 	set:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #ChannelName
 expression:
 	patterns:
@@ -1565,7 +1565,7 @@ expression:
 		%channel/channelaction%'[s] channel name
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #ChannelParent
 expression:
 	patterns:
@@ -1581,13 +1581,13 @@ expression:
 		%channel/channelaction%'[s] [channel] position
 	set:
 #		(internal code)
-	return type: Number
+	return type: number
 #ChannelRegion
 expression:
 	patterns:
 		[the] [channel] region of %channel/channelaction%
 		%channel/channelaction%'[s] [channel] region
-	return type: Object
+	return type: object
 #ChannelSlowmode
 expression:
 	patterns:
@@ -1595,7 +1595,7 @@ expression:
 		%channel/channelaction%'[s] [channel] slow[( |-)]mode
 	set:
 #		(internal code)
-	return type: Number
+	return type: number
 #ChannelTopic
 expression:
 	patterns:
@@ -1603,7 +1603,7 @@ expression:
 		%channel/channelaction%'[s] [channel] topic
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #Color from Hex
 #Get a color from a hexadecimal string.
 #Do not include the  in the string.
@@ -1612,7 +1612,7 @@ expression:
 expression:
 	patterns:
 		[the] (hex|color) %string%
-	return type: Colour
+	return type: colour
 #Command Localization
 #Represents the localization of the name or the description of a slash/sub command.
 #You can add **Locale Data** (check for expression) to them.
@@ -1622,7 +1622,7 @@ expression:
 	patterns:
 		[all] [the] (name|description)['s] (localization[s]|locale[s]) of %slashcommand/subslashcommand%
 		[all] [the] %slashcommand/subslashcommand%'[s] (name|description)['s] (localization[s]|locale[s])
-	return type: Object
+	return type: object
 #Creation Date
 #Get the creation date (as Skript date) of any ISnowFlake entity, including, but not limited to:
 #- Member
@@ -1638,7 +1638,7 @@ expression:
 	patterns:
 		[the] creat(ion|ed) date of %guild/member/user/role/channel%
 		%guild/member/user/role/channel%'[s] creat(ion|ed) date
-	return type: Date
+	return type: date
 #Current Argument
 #The current argument being completed.
 #Examples:
@@ -1646,7 +1646,7 @@ expression:
 expression:
 	patterns:
 		current( |-)arg[ument] [name]
-	return type: Text
+	return type: text
 #Default Forum Emoji
 #Represent the default emoji of a forum channel.
 #It's the mote that is added automatically once a new post is created.
@@ -1670,7 +1670,7 @@ expression:
 		[][the] arg[ument]( |-)%*classinfo%[( |-)<\d+>]
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #Discord ID
 #Get the unique long value (ID) that represent a discord entity.
 #Examples:
@@ -1680,7 +1680,7 @@ expression:
 	patterns:
 		[the] discord id of %channel/role/user/member/sticker/message/dropdown/button/guild%
 		%channel/role/user/member/sticker/message/dropdown/button/guild%'[s] discord id
-	return type: Text
+	return type: text
 #Discord Members of Guild / Channel
 #Returns a list of members.
 #For Message text-related channel & category, it returns members with permission to view the channel
@@ -1728,7 +1728,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Colour
+	return type: colour
 #EmbedAuthor
 expression:
 	patterns:
@@ -1746,7 +1746,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #EmbedAuthorIcon
 expression:
 	patterns:
@@ -1764,7 +1764,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #EmbedAuthorURL
 expression:
 	patterns:
@@ -1782,7 +1782,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #EmbedDescription
 expression:
 	patterns:
@@ -1800,7 +1800,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #EmbedFooter
 expression:
 	patterns:
@@ -1818,7 +1818,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #EmbedFooterIcon
 expression:
 	patterns:
@@ -1836,7 +1836,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #EmbedImage
 expression:
 	patterns:
@@ -1854,7 +1854,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #EmbedThumbnail
 expression:
 	patterns:
@@ -1872,7 +1872,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #EmbedTimeStamp
 expression:
 	patterns:
@@ -1890,7 +1890,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Date
+	return type: date
 #EmbedTitle
 expression:
 	patterns:
@@ -1908,7 +1908,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #EmbedTitleURL
 expression:
 	patterns:
@@ -1926,7 +1926,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #Emoji / Emote
 #Get an emoji or an emote from its name, ID or unicode.
 #- An emoji is discord-side only, can be used everywhere, and don't have any attached guild.
@@ -1951,7 +1951,7 @@ expression:
 	patterns:
 		[the] [the] emo(te|ji) (ur(i|l)|image [url]) of %emote%
 		%emote%'[s] [the] emo(te|ji) (ur(i|l)|image [url])
-	return type: Text
+	return type: text
 #Emote Name
 #Get the name of this emote.
 #This, instead of 'discord name of %emote%' will return the name of an emote, and not an emoji.
@@ -1965,7 +1965,7 @@ expression:
 		%emote%'[s] emo(te|ji) name
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #EnumBotStatus
 expression:
 	patterns:
@@ -1998,7 +1998,7 @@ expression:
 		(multiple|list|array) event-<.+>
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #ExprMaxRange
 expression:
 	patterns:
@@ -2008,7 +2008,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprMinRange
 expression:
 	patterns:
@@ -2018,7 +2018,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Number
+	return type: number
 #ExprNewInput
 expression:
 	patterns:
@@ -2038,7 +2038,7 @@ expression:
 		[a] [new] [slash][( |-)][command] group [with] [(the name|named)] %string% [and] with [the] desc[ription] %string%
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #ExprNewSlashOption
 expression:
 	patterns:
@@ -2053,7 +2053,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #ExprPresence
 expression:
 	patterns:
@@ -2072,7 +2072,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #ExprValue
 expression:
 	patterns:
@@ -2082,7 +2082,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #Get Audio Channel
 #This is an utility expression.
 #It will returns an Audio Channel out of the provided ID.
@@ -2303,7 +2303,7 @@ expression:
 	patterns:
 		[the] [guild] boost[(ing|er)] (amount|number|size) of %guild%
 		%guild%'[s] [guild] boost[(ing|er)] (amount|number|size)
-	return type: Number
+	return type: number
 #Guild Booster Role
 #Represent the booster role of this guild.
 #Any member that got this role is actually a booster of the guild.
@@ -2356,7 +2356,7 @@ expression:
 	patterns:
 		[the] [guild] verification level[s] of %guild%
 		%guild%'[s] [guild] verification level[s]
-	return type: Text
+	return type: text
 #Guild Voice Channels
 #Gets all voice channels of a guild.
 #Examples:
@@ -2381,7 +2381,7 @@ expression:
 		%guild%'[s] [discord] afk time[( |-)]out [second[s]]
 	set:
 #		(internal code)
-	return type: Number
+	return type: number
 #GuildBanner
 expression:
 	patterns:
@@ -2389,7 +2389,7 @@ expression:
 		%guild%'[s] [discord] banner
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #Inline Rich Message Builder
 #Create a new rich message in one line only.
 #WARNING: This could slow a lot the Skript's parsing time if used too many times!
@@ -2412,7 +2412,7 @@ expression:
 	patterns:
 		[the] invite code of %invite%
 		%invite%'[s] invite code
-	return type: Text
+	return type: text
 #Invite Inviter
 #Represent the user who created the invite.
 #Examples:
@@ -2430,7 +2430,7 @@ expression:
 	patterns:
 		[the] invite max age[s] of %invite%
 		%invite%'[s] invite max age[s]
-	return type: Number
+	return type: number
 #Invite Max Uses
 #Represent the max amount of times this invite can be used.
 #Examples:
@@ -2439,7 +2439,7 @@ expression:
 	patterns:
 		[the] invite max use[s] of %invite%
 		%invite%'[s] invite max use[s]
-	return type: Number
+	return type: number
 #Invite URL
 #Represent the plain Discord URL that people have to click on in order to join the invite's guild.
 #Examples:
@@ -2448,7 +2448,7 @@ expression:
 	patterns:
 		[the] invite url of %invite%
 		%invite%'[s] invite url
-	return type: Text
+	return type: text
 #Invite Uses
 #Represent the amount of times this invite has been used.
 #Examples:
@@ -2457,7 +2457,7 @@ expression:
 	patterns:
 		[the] invite use[s] of %invite%
 		%invite%'[s] invite use[s]
-	return type: Number
+	return type: number
 #Last DiSky Exception
 #Return the last occurred DiSky or Discord exception in the current event.
 #This expression is event-based, means you cannot get the last error that happened on another event.
@@ -2467,7 +2467,7 @@ expression:
 expression:
 	patterns:
 		[the] last (disky|discord) (error|exception)
-	return type: Text
+	return type: text
 #Last Embed
 #This expression returns the last generated embed using the embed builder.
 #since 1.0
@@ -2496,7 +2496,7 @@ expression:
 	patterns:
 		[the] [member] effective name[s] of %member%
 		%member%'[s] [member] effective name[s]
-	return type: Text
+	return type: text
 #Member Join Date
 #Represent the skript's date of the member's join date.
 #It cannot be changed.
@@ -2507,7 +2507,7 @@ expression:
 	patterns:
 		[the] [member] [member] join date of %member%
 		%member%'[s] [member] [member] join date
-	return type: Date
+	return type: date
 #Member Nickname
 #Represent the member nickname. Can be none if the member doesn't have any nickname currently.
 #USe 'effective name' expression to get member's name of its nickname is not set.
@@ -2522,7 +2522,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #Member Status
 #Represent the member's online status.
 #The online status is represented by the following values:
@@ -2537,7 +2537,7 @@ expression:
 	patterns:
 		[the] [member] [member] online[( |-)]status of %member%
 		%member%'[s] [member] [member] online[( |-)]status
-	return type: Text
+	return type: text
 #MemberVoiceChannel
 expression:
 	patterns:
@@ -2554,7 +2554,7 @@ expression:
 	patterns:
 		[the] mention [tag] of %channel/role/user/emote/member%
 		%channel/role/user/emote/member%'[s] mention [tag]
-	return type: Text
+	return type: text
 #Message Attachment
 #Get every attachment as custom object of a message
 #Examples:
@@ -2576,7 +2576,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: Object
+	return type: object
 #Message Builder Component Rows
 #Component rows of a message builder
 #See also: 'Creator Components Row'
@@ -2586,7 +2586,7 @@ expression:
 		[all] [the] %messagecreatebuilder/modal%'[s] [component[s]] row[s]
 	add:
 #		(internal code)
-	return type: Object
+	return type: object
 #Message Builder Content
 #Text content of a message builder
 #See also: 'Create (rich) Message'
@@ -2596,7 +2596,7 @@ expression:
 		%messagecreatebuilder%'[s] content
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #Message Builder Embeds
 #Embeds of a message builder
 #See also: 'Create (rich) Message'
@@ -2617,7 +2617,7 @@ expression:
 	patterns:
 		[the] [discord] [message] content of %message%
 		%message%'[s] [discord] [message] content
-	return type: Text
+	return type: text
 #Message Embeds
 #Get every embeds of a specific messages. Keep in mind only webhook are allowed to send more than one embed!
 #Examples:
@@ -2654,7 +2654,7 @@ expression:
 	patterns:
 		[the] [discord] [message] [jump] url of %message%
 		%message%'[s] [discord] [message] [jump] url
-	return type: Text
+	return type: text
 #Message Member Author
 #Get the member instance of the message's author. Can be null if it's in PM or not in guild!
 #Examples:
@@ -2754,7 +2754,7 @@ expression:
 		[the] [current] value[s] of [the] (text[( |-)]input|drop[( |-)]down) [with [the] id] %string%
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #Name of Discord Entity
 #This represent the current name of any discord entity that can hold one.
 #You can change name of every entity except member and user by defining a new text.
@@ -2767,7 +2767,7 @@ expression:
 		%channel/user/member/sticker/emote/role/guild%'[s] [the] discord name
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #New Button
 #Create a new button with an ID and some optional options. It can be either enabled or disabled, and either link or action. If the button is a link-type, then the ID will be the URL that the user will be redirect to.
 #Examples:
@@ -2825,7 +2825,7 @@ expression:
 	patterns:
 		new [forum] tag [named] %string% [with %emote%]
 		new moderated [forum] tag [named] %string% [with %emote%]
-	return type: Object
+	return type: object
 #New Locale Data
 #Returns the a new locale data for the given locale and the given value.
 #You have to provide the locale using its code (list can be found here: https://discord.com/developers/docs/referencelocales) and the value to set.
@@ -2835,7 +2835,7 @@ expression:
 expression:
 	patterns:
 		new local[e] [data] for %string% (as|with [value]) %string%
-	return type: Object
+	return type: object
 #New Message Command
 #Create a new message command, to be updated on discord later.
 #This will create a context command of MESSAGE type.
@@ -2845,7 +2845,7 @@ expression:
 expression:
 	patterns:
 		[a] [new] message[( |-)]command [with] [(the name|named)] %string%
-	return type: Object
+	return type: object
 #New Option Choice
 #Create a new slash command option choice with an unique name and a string or number value.
 #Choices are only available for STRING, NUMBER and INTEGER slash command option type.
@@ -2865,7 +2865,7 @@ expression:
 expression:
 	patterns:
 		[a] [new] user[( |-)]command [with] [(the name|named)] %string%
-	return type: Object
+	return type: object
 #NewCategoryAction
 expression:
 	patterns:
@@ -2920,7 +2920,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Object
+	return type: object
 #Profile Banner
 #Get the profile banner URL. If the user doesn't have a custom banner, this will return none.
 #Use the 'profile color' expression to get the color instead of the banner URL in that case!
@@ -2928,7 +2928,7 @@ expression:
 	patterns:
 		[the] profile banner [ur(l|i)] of %userprofile%
 		%userprofile%'[s] profile banner [ur(l|i)]
-	return type: Text
+	return type: text
 #Profile Color
 #Get the profile color accent. If the user have a custom banner, this will return none.
 #Use the 'profile banner' expression to get the avatar URL instead of the color accent in that case!
@@ -2936,7 +2936,7 @@ expression:
 	patterns:
 		[the] profile color [accent] of %userprofile%
 		%userprofile%'[s] profile color [accent]
-	return type: Colour
+	return type: colour
 #PropOptions
 expression:
 	patterns:
@@ -2944,7 +2944,7 @@ expression:
 		[all] [the] %slashcommand/subslashcommand/dropdown%'[s] option[s] [mapping[s]]
 	add:
 #		(internal code)
-	return type: Object
+	return type: object
 #RoleColor
 expression:
 	patterns:
@@ -2952,7 +2952,7 @@ expression:
 		%role/roleaction%'[s] role color
 	set:
 #		(internal code)
-	return type: Colour
+	return type: colour
 #RoleName
 expression:
 	patterns:
@@ -2960,7 +2960,7 @@ expression:
 		%role/roleaction%'[s] role name
 	set:
 #		(internal code)
-	return type: Text
+	return type: text
 #RolePosition
 expression:
 	patterns:
@@ -2968,7 +2968,7 @@ expression:
 		%role/roleaction%'[s] [discord] [role] position
 	set:
 #		(internal code)
-	return type: Number
+	return type: number
 #Row Builder Components
 #Components of a row builder
 #See also: 'Create (rich) Message'
@@ -2980,7 +2980,7 @@ expression:
 #		(internal code)
 	set:
 #		(internal code)
-	return type: Object
+	return type: object
 #Selected Entities
 #The list of the selected entities, in the current entity dropdown update event.
 #Examples:
@@ -2988,7 +2988,7 @@ expression:
 expression:
 	patterns:
 		select[ed] entit(y|ies)
-	return type: Object
+	return type: object
 #Selected Values
 #The list of the selected values' IDs, in the current dropdown update event.
 #Examples:
@@ -2996,7 +2996,7 @@ expression:
 expression:
 	patterns:
 		select[ed] value[s]
-	return type: Text
+	return type: text
 #Slash Command Argument
 #Represents a slash command argument.
 #The name is the ID used when defining the slash command.
@@ -3012,7 +3012,7 @@ expression:
 		[the] arg[ument] [(named|with name)] %string% as %optiontype%
 	get:
 #		(internal code)
-	return type: Object
+	return type: object
 #Sub-command Groups
 #Represent every sub-slash-command groups a slash command have.
 #You can add sub-slash-commands to a group, then add this group into the base slash command.
@@ -3048,7 +3048,7 @@ expression:
 		%forumchannel%'[s] [the] tag required
 	set:
 #		(internal code)
-	return type: Boolean
+	return type: boolean
 #Target Message
 #Represent the target message in a message command event.
 #It basically represent the message that was clicked on.
@@ -3085,7 +3085,7 @@ expression:
 expression:
 	patterns:
 		[the] use[d]( |-)alias[es]
-	return type: Text
+	return type: text
 #Used Argument
 #Return the plain formatter of the discord command's argument
 #You should however use (arg-1) for example which will return the argument value directly.
@@ -3093,7 +3093,7 @@ expression:
 expression:
 	patterns:
 		[the] use[d]( |-)arg[ument][s]
-	return type: Text
+	return type: text
 #Used Prefix
 #Return the used prefix in a discord command trigger section.
 #Examples:
@@ -3101,7 +3101,7 @@ expression:
 expression:
 	patterns:
 		[the] use[d]( |-)prefix[es]
-	return type: Text
+	return type: text
 #User / Bot / Guild Avatar
 #Return the avatar URL of any user, guild or bot.
 #This can be changed for guilds and bots only!
@@ -3118,7 +3118,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: Text
+	return type: text
 #User Badges
 #Represent every badges' name a user have.
 #This does not and cannot contain any intro-related badges (nitro membership or nitro boosting), it need OAuth2 to be enabled.
@@ -3128,7 +3128,7 @@ expression:
 	patterns:
 		[all] [the] [user] badge[s] of %user%
 		[all] [the] %user%'[s] [user] badge[s]
-	return type: Text
+	return type: text
 #User Discriminator
 #Represent the four digit number after the  of a user's name.
 #These, mixed with the user name itself, are unique.
@@ -3139,7 +3139,7 @@ expression:
 	patterns:
 		[the] [user] discriminator of %user%
 		%user%'[s] [user] discriminator
-	return type: Text
+	return type: text
 #User Locale
 #Get the language code defined as user-side client of Discord.
 #Basically, return the language user's client is loaded in.
@@ -3149,7 +3149,7 @@ expression:
 expression:
 	patterns:
 		[the] user['s] local[e] [(code|language)]
-	return type: Text
+	return type: text
 #User Mutual Guilds
 #Represent every guild that the bot and the user have in common.
 #Examples:
