@@ -50,7 +50,7 @@ export class SkriptSection extends SkriptSectionGroup {
 			return existingVariable;
 		}
 		else {
-			const newVariable = new SkriptVariable(referenceLocation, name, "unknown");
+			const newVariable = new SkriptVariable(referenceLocation, name);
 			this.definedVariables.push(newVariable);
 			return newVariable;
 		}
@@ -93,6 +93,7 @@ export class SkriptSection extends SkriptSectionGroup {
 			parts = str.split('/');
 		}
 		for (let i = 0; i < parts.length; currentPosition += (parts[i].length + '/'.length), i++) {
+			context.addToken(TokenTypes.type, currentPosition, parts[i].length);
 			if (parts[i].endsWith('s')) {
 				const singleType = parts[i].substring(0, parts[i].length - 1);
 				const typePattern = this.getPatternData(new SkriptPatternCall(singleType, PatternType.type), stopAtFirstResultProcessor);

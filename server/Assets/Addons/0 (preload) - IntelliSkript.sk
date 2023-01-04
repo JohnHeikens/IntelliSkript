@@ -20,6 +20,9 @@ type long:
 type float:
     inherits: number
 
+type double:
+    inherits: number
+
 type byte:
     inherits: number
 

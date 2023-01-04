@@ -29,6 +29,9 @@ export class SkriptCommandSection extends SkriptSection{
 		if (result == null){
 			context.addDiagnostic(0, context.currentString.length, "cannot recognize this section. make sure to put your code for the command in triggers");
 		}
+		else if (context.currentString != "trigger"){
+			context.addDiagnostic(0, context.currentString.length, "the " + context.currentString + " section has to be in one line. for example " + context.currentString + ": blahblahblah");
+		}
 		context.addToken(TokenTypes.keyword, 0, context.currentString.length);
 		return super.createSection(context);
 	}

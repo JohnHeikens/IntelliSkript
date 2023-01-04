@@ -4,7 +4,7 @@ import { Location } from 'vscode-languageserver/node';
 export class SkriptVariable {
 	firstReferenceLocation: Location;
 	namePattern: string;//can be "_ex" or "_ex::3::%string%"
-	type: string;
+
 	isParameter?: boolean;//true if this variable is a function argument
 
 	static convertNameStringToPattern(name: string) : string{
@@ -29,10 +29,9 @@ export class SkriptVariable {
 		}
 		return pattern;
 	}
-	constructor(firstReferenceLocation: Location, nameString: string, type: string, isArgument?: boolean) {
+	constructor(firstReferenceLocation: Location, nameString: string, isArgument?: boolean) {
 		this.firstReferenceLocation = firstReferenceLocation;
 		this.namePattern = SkriptVariable.convertNameStringToPattern(nameString);
-		this.type = type;
 		this.isParameter = isArgument;
 	}
     /**

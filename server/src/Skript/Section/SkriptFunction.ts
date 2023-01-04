@@ -10,7 +10,7 @@ export class SkriptFunction extends SkriptSection {
 	//context.currentString should be 'function example(a: string, b: number) :: string' for example
 	constructor(context: SkriptContext, parent: SkriptSection) {
 		super(context, parent);
-		const regex = /^function ([a-zA-Z1-9_]{1,})\((.*)\)(| :: (.*?))$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
+		const regex = /^function ([a-zA-Z0-9_]{1,})\((.*)\)(| :: (.*?))$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		//(,|and|)){1,}\)
 		const result = regex.exec(context.currentString);
 		if (result == null) {
@@ -28,9 +28,15 @@ export class SkriptFunction extends SkriptSection {
 					const variableDefinitionParts = currentArgumentString.text.split(":");
 					if (variableDefinitionParts.length == 2) {
 						const variableName = "_" + variableDefinitionParts[0].trim();
-						const loc = specializedContext.getLocation(currentArgumentString.index, variableDefinitionParts[0].trim().length);
-						this.definedVariables.push(new SkriptVariable(loc, variableName, variableDefinitionParts[1].trim(), true));
-						specializedContext.addToken(TokenTypes.parameter, currentArgumentString.index, variableDefinitionParts[0].trim().length);
+						const noSpaceResult = /(?! )/.exec(variableDefinitionParts[1]);
+						if (noSpaceResult)
+						{
+							const typeStartPosition = currentArgumentString.index + variableDefinitionParts[0].length + ":".length + noSpaceResult.index;
+							const initialType = this.parseTypes(specializedContext, typeStartPosition, typeStartPosition + variableDefinitionParts[1].length); 
+							const loc = specializedContext.getLocation(currentArgumentString.index, variableDefinitionParts[0].trim().length);
+							this.definedVariables.push(new SkriptVariable(loc, variableName, true));
+							specializedContext.addToken(TokenTypes.parameter, currentArgumentString.index, variableDefinitionParts[0].trim().length);	
+						}
 					}
 					else {
 						specializedContext.addDiagnostic(currentArgumentString.index, currentArgumentString.text.length, "unrecognized function argument (no \":\" found)");

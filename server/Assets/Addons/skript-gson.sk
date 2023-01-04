@@ -1,0 +1,425 @@
+#AUTOMATIC GENERATED SKRIPT FILE
+#COPYRIGHT JOHN HEIKENS
+
+#Json Element
+#Representing a JSON element, You can add to them, remove from them.. Also you can remove from/add to nested object/arrays
+#since 2.0.0
+#Examples:
+#on load:
+#	set {_e} to new json from text "{'some': {'a': {}}"
+# Adding
+#	add "some:bool;false" to {_e}
+# Remove
+#	remove "some:bool" from {_e}
+# Result
+#{"some": {"a": {}}
+type:
+	patterns:
+		json[[ ]element]
+
+#Append jsonelement/cached Json/Json file
+#You can append the jsonelement or the cached json or the json file
+#since 2.0.0
+#Examples:
+#command sk-example:
+#	trigger:
+#		append player's location with key "location" to cached json "your"
+#		send cached json "your" with pretty print
+#		set {_json} to new json from player's world
+#		append player's location with key "location" as new nested object "player:data:0" to {_json}
+#		send {_json} with pretty print
+#		set {_fileJson} to new json from file path "sk-gson\test.json"
+#		append player's location to file "sk-gson\test.json"
+#		set {_fileJson} to new json from file path "sk-gson\test.json"
+#		send {_fileJson} with pretty print
+effect:
+	patterns:
+		append [data] %object% [(:with key) %string%] [(:as nested) [object] %string%] to (1:%jsonelement%|2:file [path] %string%|3:[cached] json[-id] %string%)
+		append item %itemstack% [(:with key) %string%] [(:as nested) [object] %string%] to (1:%jsonelement%|2:file [path] %string%|3:[cached] json[-id] %string%)
+
+#Change value of JsonElements.
+#You can handle a JsonElement or cached Jsons. and change their data as you want.
+#since 2.0.0
+#Examples:
+#on load:
+#	set {-json} to new json from text "{'test': {'some': false}"
+#	change {-json} value "test:some" to item (iron sword named "The &acolored &fSword") and save it to json file "plugins/sk-gson/test.json"
+#	broadcast {-json}
+#	change cached json "json5" value "test:some" to item (iron sword named "The &acolored &fSword")
+#	broadcast cached json "json5"
+effect:
+	patterns:
+		change (1:%jsonelement%|2:[cached] json[(-| )id] %string%) [value] %string% to %object% [and (:save) it to [json file] %string%]
+		change (1:%jsonelement%|2:[cached] json[(-| )id] %string%) [value] %string% to item %itemstack% [and (:save) it to [json file] %string%]
+
+#Load json file as String ID
+#You can load the JsonFile to cache with custom ID
+#since 2.0.0
+#Examples:
+#on script load:
+#	load json file "plugins/skript-gson/test.json" as "gson-test"
+effect:
+	patterns:
+		load json file [path] %object% as %string%
+		load json file [path] %object%
+
+#Mapping Json to List
+#Mapping json to the List and get those values
+#since 1.4.0
+#Examples:
+#on load:
+#	set {_json} to json from string "{'test': 'test2': {}}"
+#	map {_json} to {_json::*}
+#	send {_json::*}
+effect:
+	patterns:
+		map [json from] %jsonelement% to %objects%
+
+#New JSON file.
+#Create a new json file with or without data.
+#since 2.0.0
+#Examples:
+#on load:
+#	set {_data} to new json from text "{'test': true}"
+#	new json file "gson/test.json"
+#	new json file "gson/test.json" with location(10,-10,10, world "World")
+#	new json file "gson/test.json" with {_data} with force
+#	new json file "gson/test.json" with item iron sword named "This is a test"
+#	new json file "gson/test.json" with new JsonObject
+#	new json file "gson/test.json" with new JsonArray
+effect:
+	patterns:
+		new json file %string% [(:with force)]
+		new json file %string% with %jsonelement% [(:with force)]
+		new json file %string% with %object% [(:with force)]
+		new json file %string% with new ((:jsonobject)|(:jsonarray)) [(:with force)]
+		new json file %string% with %itemstack% as item [(:with force)]
+
+#Remove cached json
+#You can basically remove the generic Json from the cached Json Map.
+#since 2.0.0
+#Examples:
+#on load:
+#	remove json "json5"
+#	send json "json5"
+effect:
+	patterns:
+		remove [cached] json[(-| )id] %string%
+
+#Save Json content to cached Json
+#Save changed content to cached json, and rewrite those values
+#since 2.0.0
+#Examples:
+#on script load:
+#	save [cached] json "your"
+effect:
+	patterns:
+		save [cached] json[(-| )id] %string%
+
+#Write jsonelement/cached Json/Json file
+#You can write/re-write the jsonelement or the cached json or the json file
+#since 2.0.0
+#Examples:
+#command sk-example:
+#	trigger:
+#		write player's location to cached json "your"
+#		send cached json "your" with pretty print
+#		set {_json} to new json from player's world
+#		write player's location to {_json}
+#		send {_json} with pretty print
+#		set {_fileJson} to new json from file path "sk-gson\test.json"
+#		write player's location to file "sk-gson\test.json"
+#		set {_fileJson} to new json from file path "sk-gson\test.json"
+#		send {_fileJson} with pretty print
+effect:
+	patterns:
+		write [data] %object% to (1:%jsonelement%|2:file [path] %string%|3:[cached] json[(-| )id] %string%)
+		write item %itemstack% to (1:%jsonelement%|2:file [path] %string%|3:[cached] json[(-| )id] %string%)
+
+#JSON File exists
+#You can simply check whether the JSON file exists or not.
+#since 1.3.1
+#Examples:
+#on load:
+#	json file path "test\test.json" exists:
+#		broadcast true
+condition:
+	patterns:
+		json file [path] %object% exists
+		json file [path] %object% does(n't| not) exists
+
+#JSON Has Key/Value's
+#Used to get information if the key or value exists in the JSON
+#since 1.2.0
+#Examples:
+#on script load:
+#	set {_j} to new json from string "{'Hello': {'Hi': 'There'}}"
+#	if {_j} has keys "Hello", "Hi":
+#		send true
+condition:
+	patterns:
+		%jsonelement% has ((:key|:value) %object%|(:keys|:values) %objects%)
+		%jsonelement% does(n't| not) have ((:key|:value) %object%|(:keys|:values) %objects%)
+
+#JSON empty
+#You can simply check if the file is empty.
+#since 1.3.0
+#Examples:
+#on script load:
+#	set {_j} to new json from string "{'Hello': 'There'}"
+#	{_j} is empty: 
+#		broadcast "is empty"
+condition:
+	patterns:
+		json %jsonelement% is empty
+		json %jsonelement% is(n't| not) empty
+
+#JSON is loaded
+#Ability to check if json is loaded or not.
+#since 1.4.0
+#Examples:
+#on script load:
+#	load json file "plugins/something.json" as "1"
+#	set {_json} to json from text "{'hello':false}"
+#	if {_json} is loaded:
+#		send "json %{_json}% is loaded!"
+condition:
+	patterns:
+		[cached] json %jsonelement% is loaded
+		[cached] json %jsonelement% is(n't| not) loaded
+
+#Type of JSON
+#You can simply check what type of object you are working with
+#since 1.0
+#Examples:
+#on load:
+#	set {_j} to new json from string "[1, false, 'test', null]"
+#	json {_j} is an array: 
+#		broadcast true
+condition:
+	patterns:
+		json %jsonelement% is an (:array|:object|:primitive)
+		json %jsonelement% is(n't| not) an (:array|:object|:primitive)
+
+#All cached Jsons
+#Print out all your saved json in the cache
+#since 2.0.0
+#Examples:
+#on load:
+#	send all cached json
+#	send all cached json as json formatted
+expression:
+	patterns:
+		all cached json [(:as json formatted)]
+		[only] %integer% of cached json [(:as json formatted)]
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: json element
+#Array or List formatted to JSON.
+#It allows you to convert the sheet back to Json!
+#Value changes don't work for nested objects, to change the values of a nested object use Change
+#since 1.3.0
+#Examples:
+#on script load:
+#	set {-json} to json from string "{'test': [1,2,3,false,null,'some'], 'test2': {'something': false}}"
+#	map {-json} to {_json::*}
+#	send "&9%{_json::*}'s form with pretty print%"
+expression:
+	patterns:
+		[the] (form|formatted json) of %objects%
+		%objects%'[s] (form|formatted json)
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: json element
+#Count of values or keys in the JSON
+#Return the result of count of keys/values are found in the Json.
+#since 2.0.0
+#Examples:
+#on load:
+#	set {_json} to new json from string "{'Hello': {'Hi': 'There'}}"
+#	send count of value "There" of {_json}
+#	send count of key "There" of json "your"
+expression:
+	patterns:
+		(count|number) of (:value|:key) %string% of %jsonelement%
+		(count|number) of (:value|:key) %string% of [cached] json %string%
+	return type: integer
+#Get element from Json
+#Get value element from JsonElement or cached Json Map.
+#since 2.0.0
+#Examples:
+#on load:
+#	set {_json} to new json from text "{'test': true}"
+#	set {-e} to element "test" from json {_json}
+#	set {-e} to element "test" from json "your"
+expression:
+	patterns:
+		element %string% from %jsonelement%
+		element %string% from [cached] json[(-| )id] %string%
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: object
+#Get elements from Json.
+#You can get all elements from Object/Array
+#since 2.0.2
+#Examples:
+#on load:
+#	set {_json} to new json from string "{'testArray': [1,2,3,4,5,{'nested': [1,2,3,4,5]}]}"
+#	loop all json elements "5:nested" from {_json}:
+#		send loop-value
+# 
+#	loop all json elements from {_json}:
+#		send loop-value
+expression:
+	patterns:
+		[all] [json] elements [%string%] from %jsonelement%
+	return type: object
+#Json outputting as pretty printed.
+#You can do colorize and smart output of your current json.
+#since 2.0.0
+#Examples:
+#on load:
+#	set {_json} to json from text "{'player': 'your name', 'number': 10, 'bool': false}"
+#	send {_json} pretty printed
+expression:
+	patterns:
+		%jsonelement% [with] pretty print[(ing|ed)]
+	return type: text
+#Json to Skript-Type
+#You can deserialize correct json to skript-type, for example a tool a location, etc.
+#since 2.0.0
+#Examples:
+#command saveLocToJson:
+#	trigger:
+#		set {-json} to new json from sender's location
+#		send "Saved location as JSON &e%{-json}%"
+#command teleporttoJson:
+#	trigger
+#		set {-loc} to {-json} parsed as skript-type
+#		send "You will be tp to &b%{-loc}%&r from Json"
+#		teleport sender to {-loc}
+expression:
+	patterns:
+		[json] %jsonelement% parsed as [a] skript( type|-type)
+	return type: object
+#Load cached Json File as string iD
+#You can load cached json as String id
+#since 2.0.0
+#Examples:
+#on script load:
+#	set {_json} to [cached] json "your"
+#	send {_json} with pretty print
+expression:
+	patterns:
+		[cached] json %string%
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: json element
+#New JSON from bunch sources (Text/File/Request)
+#since 2.0.0
+#Examples:
+#command example [<string>]:
+#	trigger:
+#		send new json from arg-1
+#		send new json from player's location
+#		send new json from player's tool
+#		send new json from text "{'title': 'skript-gson', 'number': 2.0}"
+#on load:
+#	set {_n} to 9.12
+#	send new json from text "{'number': ${_n}" with variables
+expression:
+	patterns:
+		[a] [new] json from (text|string) %object% [(:with variables)]
+		[a] [new] json from %itemstack%
+		[a] [new] json from %object%
+		[a] [new] json from file [(:relative)] [path] %string%
+		[a] [new] json from request %object%
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: object
+#Simple JsonObject/JsonArray
+#You can create empty array or object.
+#since 2.0.4 - 3EA
+#Examples:
+#on load:
+#	send new jsonobject
+#	send new jsonarray
+expression:
+	patterns:
+		[new] (json[-]:object|json[-]:array)
+	add:
+#		(internal code)
+	set:
+#		(internal code)
+	remove:
+#		(internal code)
+	remove all:
+#		(internal code)
+	delete:
+#		(internal code)
+	reset:
+#		(internal code)
+	return type: json element
+#Size of JSON
+#Return size of JSON elements.
+#since 1.0
+#Examples:
+#on load:
+#   set {-e} to new json from string "{'anything': [1,2,false]}"
+#   broadcast {-e}'size
+#   broadcast size of {-e}
+expression:
+	patterns:
+		[the] [json] size of %jsonelements%
+		%jsonelements%'[s] [json] size
+	return type: integer
