@@ -2,7 +2,7 @@ import { Hierarchy } from '../../Hierarchy';
 import { PatternData } from "../../Pattern/PatternData";
 import { PatternResultProcessor } from "../../Pattern/patternResultProcessor";
 import { SkriptVariable } from '../SkriptVariable';
-import { SkriptSection } from './SkriptSection';
+import { SkriptSection } from './SkriptSection/SkriptSection';
 import { PatternMatcher } from '../../Pattern/PatternMatcher';
 import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
 

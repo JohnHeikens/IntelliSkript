@@ -45,6 +45,7 @@ import assert = require('assert');
 import path = require('path');
 import { Sleep } from './Thread';
 import { URI } from 'vscode-uri';
+import { Position } from 'vscode-languageserver/node';
 
 
 // Create a connection for the server, using Node's IPC as a transport.
@@ -488,12 +489,10 @@ connection.onDefinition((params): DefinitionLink[] => {
 		}
 
 		//check for patterns
-		const h = exactSection.lineInfo.get(params.position.line);
-		if (h) {
-			const relativePosition = params.position.character - indentationEndIndex;
-			const match = h.getDeepestChildNodeAt(relativePosition);
-			if (match.matchedPattern) {
-				const pattern = match.matchedPattern;
+		const patternReference = f.matches.getDeepestChildNodeAt(f.document.offsetAt(params.position));
+		if (patternReference) {
+			if (patternReference.matchedPattern) {
+				const pattern = patternReference.matchedPattern;
 				//const definitionLocation = pattern.definitionLocation;
 
 				//const targetLineRange = {
@@ -501,13 +500,15 @@ connection.onDefinition((params): DefinitionLink[] => {
 				//	end: { line:  definitionLocation.range.end.line, character: targetLine.length }
 				//};
 
+				const start = f.document.positionAt(patternReference.start);
+
 				return [{
 					targetUri: pattern.definitionLocation.uri,
 					targetRange: pattern.definitionLocation.range,
 					targetSelectionRange: pattern.definitionLocation.range,
 					originSelectionRange: {
-						start: { line: params.position.line, character: indentationEndIndex + match.start },
-						end: { line: params.position.line, character: indentationEndIndex + match.end }
+						start: f.document.positionAt(patternReference.start),
+						end: f.document.positionAt(patternReference.end)
 					}
 				}];
 			}

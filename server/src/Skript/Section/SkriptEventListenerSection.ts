@@ -5,7 +5,7 @@ import { PatternType } from "../../Pattern/PatternType";
 import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
 import { SkriptContext } from '../SkriptContext';
 import { SkriptEventSection } from './Reflect/SkriptEventSection';
-import { SkriptSection } from './SkriptSection';
+import { SkriptSection } from './SkriptSection/SkriptSection';
 
 export class SkriptEventListenerSection extends SkriptSection {
 

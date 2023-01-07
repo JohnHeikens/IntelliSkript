@@ -2,7 +2,7 @@ import { PatternData } from '../../../Pattern/PatternData';
 import { PatternTree } from '../../../Pattern/PatternTree';
 import { PatternType } from '../../../Pattern/PatternType';
 import { SkriptContext } from '../../SkriptContext';
-import { SkriptSection } from '../SkriptSection';
+import { SkriptSection } from '../SkriptSection/SkriptSection';
 import { SkriptExpressionSection } from './SkriptExpressionSection';
 import { SkriptTypeState } from '../../SkriptTypeState';
 import assert = require('assert');

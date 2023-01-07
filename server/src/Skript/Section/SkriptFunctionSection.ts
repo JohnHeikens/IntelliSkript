@@ -4,7 +4,7 @@ import { SkriptContext } from '../SkriptContext';
 import { SkriptVariable } from '../SkriptVariable';
 import {
 	SkriptSection
-} from "./SkriptSection";
+} from "./SkriptSection/SkriptSection";
 export class SkriptFunction extends SkriptSection {
 	name: string;
 	//context.currentString should be 'function example(a: string, b: number) :: string' for example

@@ -4,4 +4,7 @@
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": true
 	},
+	"files.associations": {
+		"createbasicsection": "cpp"
+	},
 }

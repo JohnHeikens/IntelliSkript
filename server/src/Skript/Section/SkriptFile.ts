@@ -1,6 +1,6 @@
-import { SkriptSection } from "./SkriptSection";
+import { SkriptSection } from "./SkriptSection/SkriptSection";
 
-import { SkriptFunction } from './SkriptFunction';
+import { SkriptFunction } from './SkriptFunctionSection';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { DiagnosticSeverity } from 'vscode-languageserver/node';
@@ -12,7 +12,7 @@ import { SkriptContext } from '../SkriptContext';
 import { SkriptOption } from '../SkriptOption';
 import { SkriptTypeSection } from './IntelliSkript/SkriptTypeSection';
 import { SkriptConditionProcessorSection } from './Reflect/SkriptConditionProcessorSection';
-import { SkriptEffect as SkriptEffectSection } from './Reflect/SkriptEffect';
+import { SkriptEffect as SkriptEffectSection } from './Reflect/SkriptEffectSection';
 import { SkriptEventSection } from './Reflect/SkriptEventSection';
 import { SkriptExpressionSection } from './Reflect/SkriptExpressionSection';
 import { SkriptImportSection } from './Reflect/SkriptImportSection';
@@ -26,6 +26,7 @@ import { UnOrderedSemanticTokensBuilder } from './UnOrderedSemanticTokensBuilder
 import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
 import { PatternData } from '../../Pattern/PatternData';
 import assert = require('assert');
+import { SkriptPatternMatchHierarchy } from '../SkriptPatternMatchHierarchy';
 
 function removeRemainder(toDivide: number, toDivideBy: number): number {
 	return Math.floor(toDivide / toDivideBy) * toDivideBy;
@@ -39,6 +40,8 @@ export class SkriptFile extends SkriptSection {
 	options: SkriptOption[] = [];
 
 	patterns: PatternTreeContainer = new PatternTreeContainer();
+	matches: SkriptPatternMatchHierarchy = new SkriptPatternMatchHierarchy();
+
 
 	addPattern(pattern: PatternData): void {
 		this.patterns.addPattern(pattern);
@@ -88,17 +91,18 @@ export class SkriptFile extends SkriptSection {
 				}
 			}
 			else {
-				const propertyResult = /^((local )?((plural|non-single) )?(.+) property) .*/.exec(context.currentString);
+				const propertyResult = /^(((local )?((plural|non-single) )?)(.+) property) .*/.exec(context.currentString);
 				if (propertyResult) {
-					const data = this.getTypeData(propertyResult[5]);
-					if (data)
-					{
+					const typeStart = propertyResult[2].length;
+					const typeEnd = typeStart + propertyResult[6].length;
+					const data = this.parseType(context, typeStart, typeEnd);
+					if (data) {
 						s = new SkriptPropertySection(context, data, this);
-						patternStartIndex = propertyResult[1].length + " ".length;
+						patternStartIndex = propertyResult[2].length + " ".length;
 					}
-					else{
-						context.addDiagnostic(0, context.currentString.length, "property type not recognized");
-					}
+					//else {
+					//	context.addDiagnostic(0, context.currentString.length, "property type not recognized");
+					//}
 				}
 				else {
 					const pattern = this.workSpace.getPatternData(new SkriptPatternCall(context.currentString, PatternType.event),
@@ -291,7 +295,7 @@ export class SkriptFile extends SkriptSection {
 			currentLineIndex++;
 		}
 	}
-	toString() : string {
+	toString(): string {
 		const uri = this.document.uri;
 		//uri will always have the same \ method, no matter what platform the coder is on
 		return uri.substring(uri.lastIndexOf("/"));

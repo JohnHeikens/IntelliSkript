@@ -3,7 +3,7 @@ import { TokenTypes } from '../../../TokenTypes';
 import type { SkriptContext } from '../../SkriptContext';
 import {
 	SkriptSection
-} from "../SkriptSection";
+} from "../SkriptSection/SkriptSection";
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 export class SkriptEffect extends SkriptPatternContainerSection{
 	createSection(context: SkriptContext): SkriptSection {

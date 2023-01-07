@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { SkriptContext } from '../../SkriptContext';
-import { SkriptSection } from '../SkriptSection';
+import { SkriptSection } from '../SkriptSection/SkriptSection';
 
 export class SkriptPatternSection extends SkriptSection {
 

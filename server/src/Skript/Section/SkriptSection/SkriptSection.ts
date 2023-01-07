@@ -1,28 +1,33 @@
-import { DiagnosticSeverity, Location } from 'vscode-languageserver/node';
-import * as IntelliSkriptConstants from '../../IntelliSkriptConstants';
-import { SkriptNestHierarchy } from '../../Nesting/SkriptNestHierarchy';
+import { DiagnosticSeverity, Location, Position } from 'vscode-languageserver/node';
+import * as IntelliSkriptConstants from '../../../IntelliSkriptConstants';
+import { SkriptNestHierarchy } from '../../../Nesting/SkriptNestHierarchy';
 //import { PatternData } from "../../Pattern/PatternData";
-import { PatternResultProcessor, stopAtFirstResultProcessor } from '../../Pattern/patternResultProcessor';
-import { TokenTypes } from '../../TokenTypes';
-import { PatternType } from "../../Pattern/PatternType";
-import { SkriptContext } from '../SkriptContext';
-import { SkriptPatternMatchHierarchy } from '../SkriptPatternMatchHierarchy';
-import { SkriptVariable } from '../SkriptVariable';
-import { SkriptEventListenerSection } from './SkriptEventListenerSection';
-import { SkriptSectionGroup } from './SkriptSectionGroup';
+import { PatternResultProcessor, stopAtFirstResultProcessor } from '../../../Pattern/patternResultProcessor';
+import { TokenTypes } from '../../../TokenTypes';
+import { PatternType } from "../../../Pattern/PatternType";
+import { SkriptContext } from '../../SkriptContext';
+import { SkriptPatternMatchHierarchy } from '../../SkriptPatternMatchHierarchy';
+import { SkriptVariable } from '../../SkriptVariable';
+import { SkriptSectionGroup } from '../SkriptSectionGroup';
 //import { SkriptConditionSection } from './SkriptConditionSection';
 import assert = require('assert');
-import { PatternData } from '../../Pattern/PatternData';
-import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
-import { SkriptTypeState } from '../SkriptTypeState';
-import { TokenModifiers } from '../../TokenModifiers';
+import { PatternData } from '../../../Pattern/PatternData';
+import { SkriptPatternCall } from '../../../Pattern/SkriptPattern';
+import { SkriptTypeState } from '../../SkriptTypeState';
+import { TokenModifiers } from '../../../TokenModifiers';
+import { SkriptType } from '../../SkriptType';
+//import { createBasicSection } from './CreateBasicSection';
 //const variablePattern = /\{(.*)\}/g;
 //IMPORT BELOW TO AVOID CIRCULAR DEPENDENCIES
 
+//declare class SkriptConditionSection extends SkriptSection {
+//	constructor(context: SkriptContext, parent?: SkriptSectionGroup);
+//}
+//declare function createBasicSection(context: SkriptContext, parentSection: SkriptSection): SkriptSection;
 export class SkriptSection extends SkriptSectionGroup {
 	startLine: number;
 	endLine: number;
-	lineInfo: Map<number, SkriptPatternMatchHierarchy> = new Map<number, SkriptPatternMatchHierarchy>();
+
 
 	constructor(context: SkriptContext, parent?: SkriptSectionGroup) {
 		super(parent);
@@ -65,6 +70,7 @@ export class SkriptSection extends SkriptSectionGroup {
 		let modifier;
 		if (data) {
 			modifier = TokenModifiers.abstract;
+			context.addPatternMatch(data, start, end);
 		}
 		else {
 			modifier = TokenModifiers.deprecated;
@@ -94,28 +100,29 @@ export class SkriptSection extends SkriptSectionGroup {
 		}
 		for (let i = 0; i < parts.length; currentPosition += (parts[i].length + '/'.length), i++) {
 			context.addToken(TokenTypes.type, currentPosition, parts[i].length);
+			let typePattern: SkriptType | undefined;
 			if (parts[i].endsWith('s')) {
 				const singleType = parts[i].substring(0, parts[i].length - 1);
-				const typePattern = this.getPatternData(new SkriptPatternCall(singleType, PatternType.type), stopAtFirstResultProcessor);
+				typePattern = this.getPatternData(new SkriptPatternCall(singleType, PatternType.type), stopAtFirstResultProcessor);
 				if (typePattern) {
 					result.isArray = true;
-					result.possibleTypes.push(typePattern);
-					continue;
 				}
 			}
-
-			const typePattern = this.getPatternData(new SkriptPatternCall(parts[i], PatternType.type), stopAtFirstResultProcessor);
-			if (typePattern) {
-				result.possibleTypes.push(typePattern);
-			}
-			else {
-				return undefined;
+			if (!typePattern) {
+				typePattern = this.getPatternData(new SkriptPatternCall(parts[i], PatternType.type), stopAtFirstResultProcessor);
+				if (typePattern) {
+					result.possibleTypes.push(typePattern);
+					context.addPatternMatch(typePattern, currentPosition, currentPosition + parts[i].length);
+				}
+				else {
+					return undefined;
+				}
 			}
 		}
 		return result;
 	}
 
-	private detectPatternsRecursively(context: SkriptContext, currentNode: SkriptNestHierarchy): SkriptPatternMatchHierarchy[] {
+	detectPatternsRecursively(context: SkriptContext, currentNode: SkriptNestHierarchy): SkriptType[] {
 
 		const patternArguments: Map<number, SkriptTypeState> = new Map<number, SkriptTypeState>();
 		const convert = ((start: number, input: string): string => {
@@ -140,15 +147,15 @@ export class SkriptSection extends SkriptSectionGroup {
 			return input;
 		});
 
-		const results: SkriptPatternMatchHierarchy[] = [];
-		const childResultList: SkriptPatternMatchHierarchy[][] = new Array(currentNode.children.length);
+		const results: SkriptType[] = [];
+		const childResultList: SkriptType[][] = new Array(currentNode.children.length);
 
 
 		for (let i = 0; i < currentNode.children.length; i++) {
 			//for (const currentChild of currentNode.children) {
 			const childResults = this.detectPatternsRecursively(context, currentNode.children[i]);
 			childResultList[i] = childResults;
-			results.push(...childResults);
+			//results.push(...childResults);
 		}
 		//will also return true if currentNode.charachter is ''
 		if ('%('.includes(currentNode.character)) {
@@ -222,7 +229,9 @@ export class SkriptSection extends SkriptSectionGroup {
 			if (result) {
 				//match.index won't help
 				const node = new SkriptPatternMatchHierarchy(currentNode.start, currentNode.end, result);
-				results.push(node);
+				context.addPatternMatch(result, currentNode.start, currentNode.end);
+				results.push(result);
+				//results.push(node);
 			}
 			else if (currentNode.character != '(') {
 				context.addDiagnostic(currentNode.start, currentNode.end - currentNode.start, "can't understand this line (pattern detection is a work in progress. please report on discord)", DiagnosticSeverity.Hint);
@@ -250,17 +259,18 @@ export class SkriptSection extends SkriptSectionGroup {
 		context.createHierarchy(true);
 		if (!context.hasErrors) {
 			assert(context.hierarchy != undefined);
-			const results = this.detectPatternsRecursively(context, context.hierarchy);
-			//start fitting all the results in a hierarchy
-			if (results.length) {
-				const h = new SkriptPatternMatchHierarchy(0, context.currentString.length);
-				for (const result of results) {
-					//this method assumes that nodes don't overlap
-					const parentNode = h.getDeepestChildNodeAt(result.start);
-					parentNode.children.push(result);
-				}
-				this.lineInfo.set(context.currentLine, h);
-			}
+			this.detectPatternsRecursively(context, context.hierarchy);
+			//const results = this.detectPatternsRecursively(context, context.hierarchy);
+			////start fitting all the results in a hierarchy
+			//if (results.length) {
+			//	const h = new SkriptPatternMatchHierarchy(0, context.currentString.length);
+			//	for (const result of results) {
+			//		//this method assumes that nodes don't overlap
+			//		const parentNode = h.getDeepestChildNodeAt(result.start);
+			//		parentNode.children.push(result);
+			//	}
+			//	context.currentSkriptFile?.matches.children.push(h);
+			//}
 
 		}
 
@@ -271,14 +281,17 @@ export class SkriptSection extends SkriptSectionGroup {
 		let isIfStatement = false;
 		while ((p = checkPattern.exec(context.currentString))) {
 			const braceEndIndex = p.index + "check [".length;
-			const node = context.hierarchy?.getChildNodeAt(braceEndIndex);//without the brace because we need to check the brace
+			const node = context.hierarchy?.getChildNodeAt(braceEndIndex); // without the brace because we need to check the brace
 			if (node && node.start == braceEndIndex) {
 				context.addDiagnostic(
 					p.index + "check [".length,
 					node.end - node.start,
-					`add braces around here to increase skript (re)load performance`, DiagnosticSeverity.Information, "IntelliSkript->Performance->Braces->Lambda");
+					`add braces around here to increase skript(re) load performance`, DiagnosticSeverity.Information, "IntelliSkript->Performance->Braces->Lambda");
 				isIfStatement = true;
 			}
+		}
+		if (context.currentString.startsWith("loop ")){
+			return new SkriptLoopSection(context, this);
 		}
 		if (context.currentString.startsWith("if ")) {
 			isIfStatement = true;
@@ -291,10 +304,11 @@ export class SkriptSection extends SkriptSectionGroup {
 		else if (context.currentString == "else") {
 			context.addToken(TokenTypes.keyword, 0, "else".length);
 		}
-		//if (isIfStatement) {
-		//	return new SkriptConditionSection(context, this);
-		//}
+		if (isIfStatement) {
+			return new SkriptConditionSection(context, this);
+		}
 		return new SkriptSection(context, this);
+
 	}
 	getExactSectionAtLine(line: number): SkriptSection {
 		const childSection = this.getChildSectionAtLine(line);
@@ -304,3 +318,18 @@ export class SkriptSection extends SkriptSectionGroup {
 
 }
 
+import { SkriptLoopSection } from '../SkriptLoopSection';
+
+export class SkriptConditionSection extends SkriptSection {
+	constructor(context: SkriptContext, parent?: SkriptSectionGroup) {
+		super(context, parent);
+		const startPosition = context.currentString.startsWith("if ") ? "if ".length : 0;
+		const conditionContext = context.push(startPosition);
+		conditionContext.createHierarchy(true);
+		if (conditionContext.hierarchy)
+		{
+			const result = this.detectPatternsRecursively(conditionContext, conditionContext.hierarchy);
+		}
+	}
+
+}

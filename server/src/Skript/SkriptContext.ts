@@ -6,12 +6,14 @@ import { stopAtFirstResultProcessor } from '../Pattern/patternResultProcessor';
 import { TokenModifiers } from '../TokenModifiers';
 import { TokenTypes } from '../TokenTypes';
 import { PatternType } from "../Pattern/PatternType";
-import { SkriptSection } from "./Section/SkriptSection";
+import { SkriptSection } from "./Section/SkriptSection/SkriptSection";
 import { SemanticToken, UnOrderedSemanticTokensBuilder } from './Section/UnOrderedSemanticTokensBuilder';
 import { SkriptTypeState } from "./SkriptTypeState";
 import { SkriptFile } from './Section/SkriptFile';
 import { SkriptPatternCall } from '../Pattern/SkriptPattern';
 import assert = require('assert');
+import { SkriptPatternMatchHierarchy } from './SkriptPatternMatchHierarchy';
+import { PatternData } from '../Pattern/PatternData';
 
 //TOODO: make context able to 'push' and 'pop' (make a function able to modify the context or create an instance while keeping reference to the same diagnostics list
 export class SkriptContext {
@@ -258,6 +260,9 @@ export class SkriptContext {
 		}
 		results[indexes.length] = { text: this.currentString.substring(currentIndex, end), index: currentIndex };
 		return results;
+	}
+	addPatternMatch(data: PatternData, start = 0, end = this.currentString.length) {
+		this.currentSkriptFile?.matches.children.push(new SkriptPatternMatchHierarchy(start + this.currentPosition, end + this.currentPosition, data));
 	}
 }
 
