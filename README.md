@@ -14,7 +14,7 @@ more info? go to [https://pex.li/i](https://pex.li/i "click here to get more inf
 
 ## to make intelliskript work with other skript themes for VS Code:
 
-disable the 'IntelliSkript.UseColorTheme' setting `<br>`
+disable the 'IntelliSkript.UseColorTheme' setting
 ![setting](https://user-images.githubusercontent.com/50964021/205459970-b192de41-d5ad-4353-a734-9d6a39f1c3fe.gif)
 
 change the file association to the theme you'd like
@@ -36,5 +36,5 @@ IntelliSkript is the most advanced skript plugin for Visual Studio Code out ther
 - smart highlight
   (image to come)
 
-report issues at https://github.com/johnheikens/IntelliSkript/issues `<br>`
+report issues at https://github.com/johnheikens/IntelliSkript/issues
 do you have any question? go to https://discord.gg/D4Eh4yxM8z
