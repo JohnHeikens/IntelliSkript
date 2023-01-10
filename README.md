@@ -27,7 +27,7 @@ IntelliSkript is the most advanced skript plugin for Visual Studio Code out ther
 ### IntelliSkript can:
 
 - analyze syntax from loads of different skript addons and generate fake a file skript reflect file for each addon for documentation purposes
-- check syntax/indentation errors `<br>`
+- check syntax/indentation errors
   ![Animation](https://user-images.githubusercontent.com/50964021/204584349-18d29e3a-ed19-4f58-99be-f9e0d4fda7cf.gif)
 - go to definition on effects, variables, event values and function arguments
   ![image](https://user-images.githubusercontent.com/50964021/204463996-8b9ee466-41a5-45f9-bedd-e3fa9b320771.png)
