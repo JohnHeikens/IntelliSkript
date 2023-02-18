@@ -4,19 +4,18 @@
       "id": "CondFileExist",
       "name": "JSON File exists",
       "description": [
-        "You can simply check whether the JSON file exists or not."
+        "You can simply check whether the json-file exists or not."
       ],
       "examples": [
         "on load:",
-        "\tjson file path \"test\\test.json\" exists:",
-        "\t\tbroadcast true"
+        "\tbroadcast json file \"test\\test.json\" exists"
       ],
       "since": [
         "1.3.1"
       ],
       "patterns": [
-        "json file [path] %object% exists",
-        "json file [path] %object% does(n't| not) exists"
+        "json file %string% exists",
+        "json file %string% does(n't| not) exists"
       ]
     },
     {
@@ -27,7 +26,7 @@
       ],
       "examples": [
         "on script load:",
-        "\tset {_j} to new json from string \"{'Hello': {'Hi': 'There'}}\"",
+        "\tset {_j} to json from string \"{'Hello': {'Hi': 'There'}}\"",
         "\tif {_j} has keys \"Hello\", \"Hi\":",
         "\t\tsend true"
       ],
@@ -35,8 +34,8 @@
         "1.2.0"
       ],
       "patterns": [
-        "%jsonelement% has ((:key|:value) %object%|(:keys|:values) %objects%)",
-        "%jsonelement% does(n't| not) have ((:key|:value) %object%|(:keys|:values) %objects%)"
+        "%json% has ((:key|:value) %object%|(:keys|:values) %objects%)",
+        "%json% does(n't| not) have ((:key|:value) %object%|(:keys|:values) %objects%)"
       ]
     },
     {
@@ -47,63 +46,22 @@
       ],
       "examples": [
         "on script load:",
-        "\tset {_j} to new json from string \"{'Hello': 'There'}\"",
-        "\t{_j} is empty: ",
+        "\tset {_j} to json from string \"{'Hello': 'There'}\"",
+        "\tjson {_j} is empty: ",
         "\t\tbroadcast \"is empty\""
       ],
       "since": [
         "1.3.0"
       ],
       "patterns": [
-        "json %jsonelement% is empty",
-        "json %jsonelement% is(n't| not) empty"
-      ]
-    },
-    {
-      "id": "CondJsonLoaded",
-      "name": "JSON is loaded",
-      "description": [
-        "Ability to check if json is loaded or not."
-      ],
-      "examples": [
-        "on script load:",
-        "\tload json file \"plugins/something.json\" as \"1\"",
-        "\tset {_json} to json from text \"{'hello':false}\"",
-        "\tif {_json} is loaded:",
-        "\t\tsend \"json %{_json}% is loaded!\""
-      ],
-      "since": [
-        "1.4.0"
-      ],
-      "patterns": [
-        "[cached] json %jsonelement% is loaded",
-        "[cached] json %jsonelement% is(n't| not) loaded"
-      ]
-    },
-    {
-      "id": "CondJsonType",
-      "name": "Type of JSON",
-      "description": [
-        "You can simply check what type of object you are working with"
-      ],
-      "examples": [
-        "on load:",
-        "\tset {_j} to new json from string \"[1, false, 'test', null]\"",
-        "\tjson {_j} is an array: ",
-        "\t\tbroadcast true"
-      ],
-      "since": [
-        "1.0"
-      ],
-      "patterns": [
-        "json %jsonelement% is an (:array|:object|:primitive)",
-        "json %jsonelement% is(n't| not) an (:array|:object|:primitive)"
+        "json %json% is empty",
+        "json %json% is(n't| not) empty"
       ]
     }
   ],
   "effects": [
     {
-      "id": "EffAppendJsonElement",
+      "id": "EffAppend",
       "name": "Append jsonelement/cached Json/Json file",
       "description": [
         "You can append the jsonelement or the cached json or the json file"
@@ -114,32 +72,33 @@
         "\t\tappend player's location with key \"location\" to cached json \"your\"",
         "\t\tsend cached json \"your\" with pretty print",
         "",
-        "\t\tset {_json} to new json from player's world",
-        "\t\tappend player's location with key \"location\" as new nested object \"player:data:0\" to {_json}",
+        "\t\tset {_json} to json from player's world",
+        "\t\tappend player's location with key \"location\" as nested object \"player:data[0]\" to {_json}",
         "\t\tsend {_json} with pretty print",
         "",
-        "\t\tset {_fileJson} to new json from file path \"sk-gson\\test.json\"",
-        "\t\tappend player's location to file \"sk-gson\\test.json\"",
-        "\t\tset {_fileJson} to new json from file path \"sk-gson\\test.json\"",
+        "\t\tset {_fileJson} to json from file \"skJson\\test.json\"",
+        "\t\tappend player's location to file \"skJson\\test.json\"",
+        "\t\tset {_fileJson} to json from file \"skJson\\test.json\"",
         "\t\tsend {_fileJson} with pretty print"
       ],
       "since": [
-        "2.0.0"
+        "2.5.0"
       ],
       "patterns": [
-        "append [data] %object% [(:with key) %string%] [(:as nested) [object] %string%] to (1:%jsonelement%|2:file [path] %string%|3:[cached] json[-id] %string%)",
-        "append item %itemstack% [(:with key) %string%] [(:as nested) [object] %string%] to (1:%jsonelement%|2:file [path] %string%|3:[cached] json[-id] %string%)"
+        "append %object/json% [:with key %string%] [:as nested object %string%] to json file %string%",
+        "append %object% [:with key %string%] [:as nested object %string%] to (:cached json) %string%",
+        "append %object% [:with key %string%] [:as nested object %string%] to %json%"
       ]
     },
     {
-      "id": "EffChangeJsonElement",
+      "id": "EffChange",
       "name": "Change value of JsonElements.",
       "description": [
         "You can handle a JsonElement or cached Jsons. and change their data as you want."
       ],
       "examples": [
         "on load:",
-        "\tset {-json} to new json from text \"{'test': {'some': false}\"",
+        "\tset {-json} to json from text \"{'test': {'some': false}\"",
         "\tchange {-json} value \"test:some\" to item (iron sword named \"The &acolored &fSword\") and save it to json file \"plugins/sk-gson/test.json\"",
         "\tbroadcast {-json}",
         "",
@@ -150,30 +109,64 @@
         "2.0.0"
       ],
       "patterns": [
-        "change (1:%jsonelement%|2:[cached] json[(-| )id] %string%) [value] %string% to %object% [and (:save) it to [json file] %string%]",
-        "change (1:%jsonelement%|2:[cached] json[(-| )id] %string%) [value] %string% to item %itemstack% [and (:save) it to [json file] %string%]"
+        "change [:cached json] %json/string%['s] value %string% to %object%"
       ]
     },
     {
-      "id": "EffLoadJson",
-      "name": "Load json file as String ID",
+      "id": "EffCustomChanger",
+      "name": "Custom changer of Json. Supported SET/ADD/REMOVE/RESET",
       "description": [
-        "You can load the JsonFile to cache with custom ID"
+        "Custom changer of Json.",
+        "You can set/remove/reset or add data to/from any json what you want"
+      ],
+      "examples": [
+        "set {-json} to json from string \"{'list': [1,2,3,4]}\"",
+        "set {-data::*} to 1,false,2,true",
+        "set {-single} to location(0,10,10)",
+        "",
+        "set json values \"list\" of {_json} to {-data::*}",
+        "set json value \"list\" of {_json} to {-single}",
+        "set json value \"list[0]\" of {_json} to cached json \"your.input\"",
+        "",
+        "add json value {-single} to {-json}",
+        "add json values {-data::*} to {-json}",
+        "add json value {-single} to to cached json \"your.input\"",
+        "",
+        "remove json value \"list[1]\" from {-json}",
+        "remove json value \"list\" from {-json}",
+        "remove json value \"list[1]\" from cached json \"your.input\"",
+        "remove index 1 from nested object \"list\" of {-json}",
+        "remove object player's tool from nested object \"items\" of {-json}"
+      ],
+      "since": [
+        "2.5.1"
+      ],
+      "patterns": [
+        "set json value[s] %string% of [(:cached json)] %string/json% to %objects%",
+        "add json value[s] %objects% to [(:cached json)] %string/json%",
+        "remove json [[list]( |-)[:value]] %string% from [(:cached json)] %string/json%",
+        "remove [json] (:index|:object) %object% [from nested object %string%] of [(:cached json)] %string/json%"
+      ]
+    },
+    {
+      "id": "EffLoadJsonFileToCache",
+      "name": "Load json-file to internal cache",
+      "description": [
+        "You can load the json-file to cache with your defined string id"
       ],
       "examples": [
         "on script load:",
-        "\tload json file \"plugins/skript-gson/test.json\" as \"gson-test\""
+        "\tload json file \"plugins/skJson/test.json\" as \"skJson\""
       ],
       "since": [
-        "2.0.0"
+        "2.5.0"
       ],
       "patterns": [
-        "load json file [path] %object% as %string%",
-        "load json file [path] %object%"
+        "(load|link) json file %string% [(:as) %string%]"
       ]
     },
     {
-      "id": "EffMapJson",
+      "id": "EffMap",
       "name": "Mapping Json to List",
       "description": [
         "Mapping json to the List and get those values"
@@ -181,6 +174,7 @@
       "examples": [
         "on load:",
         "\tset {_json} to json from string \"{'test': 'test2': {}}\"",
+        "\tset {_json} to \"{\"\"test\"\": \"\"test2\"\": {}}\"",
         "\tmap {_json} to {_json::*}",
         "\tsend {_json::*}"
       ],
@@ -188,76 +182,73 @@
         "1.4.0"
       ],
       "patterns": [
-        "map [json from] %jsonelement% to %objects%"
+        "map %json/string% to %objects%"
       ]
     },
     {
       "id": "EffNewJsonFile",
-      "name": "New JSON file.",
+      "name": "New json file with given path",
       "description": [
-        "Create a new json file with or without data."
-      ],
-      "examples": [
-        "on load:",
-        "\tset {_data} to new json from text \"{'test': true}\"",
-        "\tnew json file \"gson/test.json\"",
-        "\tnew json file \"gson/test.json\" with location(10,-10,10, world \"World\")",
-        "\tnew json file \"gson/test.json\" with {_data} with force",
-        "\tnew json file \"gson/test.json\" with item iron sword named \"This is a test\"",
-        "\tnew json file \"gson/test.json\" with new JsonObject",
-        "\tnew json file \"gson/test.json\" with new JsonArray"
-      ],
-      "since": [
-        "2.0.0"
-      ],
-      "patterns": [
-        "new json file %string% [(:with force)]",
-        "new json file %string% with %jsonelement% [(:with force)]",
-        "new json file %string% with %object% [(:with force)]",
-        "new json file %string% with new ((:jsonobject)|(:jsonarray)) [(:with force)]",
-        "new json file %string% with %itemstack% as item [(:with force)]"
-      ]
-    },
-    {
-      "id": "RemoveCachedJson",
-      "name": "Remove cached json",
-      "description": [
-        "You can basically remove the generic Json from the cached Json Map."
-      ],
-      "examples": [
-        "on load:",
-        "\tremove json \"json5\"",
-        "\tsend json \"json5\""
-      ],
-      "since": [
-        "2.0.0"
-      ],
-      "patterns": [
-        "remove [cached] json[(-| )id] %string%"
-      ]
-    },
-    {
-      "id": "EffSaveCachedJson",
-      "name": "Save Json content to cached Json",
-      "description": [
-        "Save changed content to cached json, and rewrite those values"
+        "New json file with given path, with or without user data.",
+        "When the data was null, parser will automatically create a jsonobject inside the file",
+        "When you will handle big json payload i recommend you use 'async new json file ....' "
       ],
       "examples": [
         "on script load:",
-        "\tsave [cached] json \"your\""
+        "\tif json file \"...\" does not exists:",
+        "\t\tnew json file \"...\""
       ],
       "since": [
-        "2.0.0"
+        "2.5.0"
       ],
       "patterns": [
-        "save [cached] json[(-| )id] %string%"
+        "[:async] new json file %string% [with %object%]"
       ]
     },
     {
-      "id": "EffWriteJsonElement",
-      "name": "Write jsonelement/cached Json/Json file",
+      "id": "RemoveJsonFromCache",
+      "name": "Remove json from internal cache",
       "description": [
-        "You can write/re-write the jsonelement or the cached json or the json file"
+        "You can basically remove the json of given id from internal cache"
+      ],
+      "examples": [
+        "on load:",
+        "\tremove json \"test\""
+      ],
+      "since": [
+        "2.5.0"
+      ],
+      "patterns": [
+        "(remove|unlink) cached json %string%"
+      ]
+    },
+    {
+      "id": "EffSave",
+      "name": "Save content of cached json",
+      "description": [
+        "Save content of cached json of your given ID back to the file."
+      ],
+      "examples": [
+        "on unload:",
+        "\tsave all cached jsons",
+        "",
+        "command savedata:",
+        "\ttrigger:",
+        "\t\tsave cached json \"entity\""
+      ],
+      "since": [
+        "2.5.0"
+      ],
+      "patterns": [
+        "[:async] save cached json %string%",
+        "[:async] save all cached json[s]"
+      ]
+    },
+    {
+      "id": "EffWriteToJsonFile",
+      "name": "Write json/json file",
+      "description": [
+        "You can write/re-write to jsons"
       ],
       "examples": [
         "command sk-example:",
@@ -265,27 +256,20 @@
         "\t\twrite player's location to cached json \"your\"",
         "\t\tsend cached json \"your\" with pretty print",
         "",
-        "\t\tset {_json} to new json from player's world",
-        "\t\twrite player's location to {_json}",
-        "\t\tsend {_json} with pretty print",
-        "",
-        "\t\tset {_fileJson} to new json from file path \"sk-gson\\test.json\"",
-        "\t\twrite player's location to file \"sk-gson\\test.json\"",
-        "\t\tset {_fileJson} to new json from file path \"sk-gson\\test.json\"",
-        "\t\tsend {_fileJson} with pretty print"
+        "\t\tset {_json} to json from player's world",
+        "\t\twrite {_json} to json file \"*.json\""
       ],
       "since": [
         "2.0.0"
       ],
       "patterns": [
-        "write [data] %object% to (1:%jsonelement%|2:file [path] %string%|3:[cached] json[(-| )id] %string%)",
-        "write item %itemstack% to (1:%jsonelement%|2:file [path] %string%|3:[cached] json[(-| )id] %string%)"
+        "write %object% to json file %string%"
       ]
     }
   ],
   "expressions": [
     {
-      "id": "ExprGetAllCachedJson",
+      "id": "ExprGetAllCachedJsons",
       "name": "All cached Jsons",
       "description": [
         "Print out all your saved json in the cache"
@@ -293,28 +277,19 @@
       "examples": [
         "on load:",
         "\tsend all cached json",
-        "",
-        "\tsend all cached json as json formatted"
+        "\tsend 1 of cached jsons"
       ],
       "since": [
-        "2.0.0"
+        "2.5.0"
       ],
-      "return type": "Json Element",
-      "changers": [
-        "add",
-        "set",
-        "remove",
-        "remove all",
-        "delete",
-        "reset"
-      ],
+      "return type": "Object",
       "patterns": [
-        "all cached json [(:as json formatted)]",
-        "[only] %integer% of cached json [(:as json formatted)]"
+        "all cached json[s]",
+        "%integer% of cached json[s]"
       ]
     },
     {
-      "id": "ExprSkriptCollectionToJson",
+      "id": "ExprSkriptToJson",
       "name": "Array or List formatted to JSON.",
       "description": [
         "It allows you to convert the sheet back to Json!",
@@ -329,96 +304,106 @@
       "since": [
         "1.3.0"
       ],
-      "return type": "Json Element",
-      "changers": [
-        "add",
-        "set",
-        "remove",
-        "remove all",
-        "delete",
-        "reset"
-      ],
+      "return type": "json",
       "patterns": [
         "[the] (form|formatted json) of %objects%",
         "%objects%'[s] (form|formatted json)"
       ]
     },
     {
-      "id": "ExprJsonCount",
+      "id": "EffSimpleParse",
+      "name": "Basic Json Converter, from Json to any object for i.e. (Location, ItemStack, Inventory)",
+      "description": [
+        "You can deserialize correct json to skript-type, for example a tool a location, etc.",
+        "<code> Also you don't need use the converter, cause the json is converted automatically, use that only in some case.</p>"
+      ],
+      "examples": [
+        "command save_location",
+        "\ttrigger:",
+        "\t\tset {-json} to json from sender's location",
+        "\t\tsend \"Saved location as JSON &e%{-json}%\"",
+        "",
+        "command jsonTeleport:",
+        "\ttrigger",
+        "\t\t set {_location} to parsed {-json}",
+        "\t\tsend \"You will be tp to &b%{_location}%&r from Json\"",
+        "\t\tteleport sender to {_location}"
+      ],
+      "since": [
+        "2.6.21 - CleanUp code"
+      ],
+      "return type": "Object",
+      "patterns": [
+        "parsed %object%"
+      ]
+    },
+    {
+      "id": "SimpleExprJsonCount",
       "name": "Count of values or keys in the JSON",
       "description": [
         "Return the result of count of keys/values are found in the Json."
       ],
       "examples": [
         "on load:",
-        "\tset {_json} to new json from string \"{'Hello': {'Hi': 'There'}}\"",
+        "\tset {_json} to json from string \"{'Hello': {'Hi': 'There'}}\"",
         "\tsend count of value \"There\" of {_json}",
         "\tsend count of key \"There\" of json \"your\""
       ],
       "since": [
-        "2.0.0"
+        "2.5.0"
       ],
       "return type": "integer",
       "patterns": [
-        "(count|number) of (:value|:key) %string% of %jsonelement%",
-        "(count|number) of (:value|:key) %string% of [cached] json %string%"
+        "count of (:value|:key) %object% of %json%"
       ]
     },
     {
-      "id": "ExprGetElement",
-      "name": "Get element from Json",
+      "id": "SimpleExprGetCachedJson",
+      "name": "Get cached json",
       "description": [
-        "Get value element from JsonElement or cached Json Map."
+        "You can get json from cached internal storage by with a key defined by you"
+      ],
+      "examples": [
+        "on script load:",
+        "\tset {_json} to cached json \"your\"",
+        "\tsend {_json} with pretty print"
+      ],
+      "since": [
+        "2.5.0"
+      ],
+      "return type": "json",
+      "patterns": [
+        "cached json %string%"
+      ]
+    },
+    {
+      "id": "ExprGet",
+      "name": "Get element/elements from Json",
+      "description": [
+        "Get single value or values from the json",
+        "<p>",
+        "{\"test\": {\"player\": \"_F0cus__\"}, \"list\":[1,2,3,{\"some\":1}]}",
+        "</p>"
       ],
       "examples": [
         "on load:",
-        "\tset {_json} to new json from text \"{'test': true}\"",
-        "\tset {-e} to element \"test\" from json {_json}",
-        "",
-        "\tset {-e} to element \"test\" from json \"your\""
+        "\tset {-e} to element \"test\" of {_json}",
+        "\tsend {-e}",
+        "\tset {_json} to json from text \"{'test': [1,2,3,4,false]}\"",
+        "\tset {-e::*} to elements \"test\" from {_json} to player",
+        "\tsend {-e::*}"
       ],
       "since": [
-        "2.0.0"
-      ],
-      "return type": "Object",
-      "changers": [
-        "add",
-        "set",
-        "remove",
-        "remove all",
-        "delete",
-        "reset"
-      ],
-      "patterns": [
-        "element %string% from %jsonelement%",
-        "element %string% from [cached] json[(-| )id] %string%"
-      ]
-    },
-    {
-      "id": "ExprGetElements",
-      "name": "Get elements from Json.",
-      "description": [
-        "You can get all elements from Object/Array"
-      ],
-      "examples": [
-        "on load:",
-        "\tset {_json} to new json from string \"{'testArray': [1,2,3,4,5,{'nested': [1,2,3,4,5]}]}\"",
-        "\tloop all json elements \"5:nested\" from {_json}:",
-        "\t\tsend loop-value",
-        " ",
-        "\tloop all json elements from {_json}:",
-        "\t\tsend loop-value"
-      ],
-      "since": [
-        "2.0.2"
+        "2.5.0"
       ],
       "return type": "Object",
       "patterns": [
-        "[all] [json] elements [%string%] from %jsonelement%"
+        "(element|value) %string% (of|from) %object%",
+        "(elements|values) [%string%] (of|from) %object%"
       ]
     },
     {
-      "id": "ExprPrettyPrint",
+      "id": "SimpleExprPrettyPrint",
       "name": "Json outputting as pretty printed.",
       "description": [
         "You can do colorize and smart output of your current json."
@@ -426,178 +411,131 @@
       "examples": [
         "on load:",
         "\tset {_json} to json from text \"{'player': 'your name', 'number': 10, 'bool': false}\"",
-        "\tsend {_json} pretty printed"
+        "\tsend {_json} with pretty print"
       ],
       "since": [
         "2.0.0"
       ],
       "return type": "Text",
       "patterns": [
-        "%jsonelement% [with] pretty print[(ing|ed)]"
-      ]
-    },
-    {
-      "id": "EffParse",
-      "name": "Json to Skript-Type",
-      "description": [
-        "You can deserialize correct json to skript-type, for example a tool a location, etc."
-      ],
-      "examples": [
-        "command saveLocToJson:",
-        "\ttrigger:",
-        "\t\tset {-json} to new json from sender's location",
-        "\t\tsend \"Saved location as JSON &e%{-json}%\"",
-        "",
-        "command teleporttoJson:",
-        "\ttrigger",
-        "\t\tset {-loc} to {-json} parsed as skript-type",
-        "\t\tsend \"You will be tp to &b%{-loc}%&r from Json\"",
-        "\t\tteleport sender to {-loc}"
-      ],
-      "since": [
-        "2.0.0"
-      ],
-      "return type": "Object",
-      "patterns": [
-        "[json] %jsonelement% parsed as [a] skript( type|-type)"
-      ]
-    },
-    {
-      "id": "ExprLoadJson",
-      "name": "Load cached Json File as string iD",
-      "description": [
-        "You can load cached json as String id"
-      ],
-      "examples": [
-        "on script load:",
-        "\tset {_json} to [cached] json \"your\"",
-        "\tsend {_json} with pretty print"
-      ],
-      "since": [
-        "2.0.0"
-      ],
-      "return type": "Json Element",
-      "changers": [
-        "add",
-        "set",
-        "remove",
-        "remove all",
-        "delete",
-        "reset"
-      ],
-      "patterns": [
-        "[cached] json %string%"
+        "%json% with pretty print"
       ]
     },
     {
       "id": "ExprCreateJson",
-      "name": "New JSON from bunch sources (Text/File/Request)",
+      "name": "New json from bunch sources (Text/File/Request)",
+      "description": [
+        "You are able a create new json from bunch of sources",
+        "String/text any Skript object, and from Web/Url request"
+      ],
       "examples": [
         "command example [<string>]:",
         "\ttrigger:",
-        "\t\tsend new json from arg-1",
-        "\t\tsend new json from player's location",
-        "\t\tsend new json from player's tool",
-        "\t\tsend new json from text \"{'title': 'skript-gson', 'number': 2.0}\"",
+        "\t\tsend json from arg-1",
+        "\t\tsend json from player's location",
+        "\t\tsend json from player's tool",
+        "\t\tsend json from text \"{'title': 'skJson', 'number': 2.0}\"",
         "",
         "on load:",
         "\tset {_n} to 9.12",
-        "\tsend new json from text \"{'number': ${_n}\" with variables"
+        "\tsend json from text \"{'number': ${_n}\"",
+        "",
+        "on load:",
+        "\tsend json from request last response"
       ],
       "since": [
-        "2.0.0"
+        "2.5.0"
       ],
-      "return type": "Object",
-      "changers": [
-        "add",
-        "set",
-        "remove",
-        "remove all",
-        "delete",
-        "reset"
-      ],
+      "return type": "json",
       "patterns": [
-        "[a] [new] json from (text|string) %object% [(:with variables)]",
-        "[a] [new] json from %itemstack%",
-        "[a] [new] json from %object%",
-        "[a] [new] json from file [(:relative)] [path] %string%",
-        "[a] [new] json from request %object%"
+        "[a] json from (text|string) %string%",
+        "[a] json from %object%",
+        "[a] json from file [path] %string%",
+        "[a] json from request %object%",
+        "[a] new json from<.*>"
       ]
     },
     {
-      "id": "ExprNewJsonObjectArray",
+      "id": "ExprRawJson",
+      "name": "Representing a raw json.",
+      "description": [
+        "json from parsed json to a object"
+      ],
+      "examples": [
+        "command saveLocToJson:",
+        "\ttrigger:",
+        "\t\tset {-e} to json from player's location",
+        "\t\tsend raw {-e} with pretty print to console"
+      ],
+      "since": [
+        "2.6.2"
+      ],
+      "return type": "json",
+      "patterns": [
+        "raw json %json%"
+      ]
+    },
+    {
+      "id": "SimpleExprObjectArray",
       "name": "Simple JsonObject/JsonArray",
       "description": [
         "You can create empty array or object."
       ],
       "examples": [
         "on load:",
-        "\tsend new jsonobject",
-        "\tsend new jsonarray"
+        "\tsend jsonobject",
+        "\tsend jsonarray"
       ],
       "since": [
         "2.0.4 - 3EA"
       ],
-      "return type": "Json Element",
-      "changers": [
-        "add",
-        "set",
-        "remove",
-        "remove all",
-        "delete",
-        "reset"
-      ],
+      "return type": "json",
       "patterns": [
-        "[new] (json[-]:object|json[-]:array)"
+        "json[-]:object|json[-]:array"
       ]
     },
     {
-      "id": "ExprJsonSize",
+      "id": "ExprSizeOfJson",
       "name": "Size of JSON",
       "description": [
-        "Return size of JSON elements."
+        "Return size of JSON"
       ],
       "examples": [
         "on load:",
-        "   set {-e} to new json from string \"{'anything': [1,2,false]}\"",
-        "   broadcast {-e}'size",
-        "   broadcast size of {-e}"
+        "   set {-e} to json from string \"{'anything': [1,2,false]}\"",
+        "   broadcast {-e}'s json size",
+        "   broadcast json size of {-e}"
       ],
       "since": [
-        "1.0"
+        "2.5.0"
       ],
       "return type": "integer",
       "patterns": [
-        "[the] [json] size of %jsonelements%",
-        "%jsonelements%'[s] [json] size"
+        "[the] json size of %jsons%",
+        "%jsons%'[s] json size"
+      ]
+    },
+    {
+      "id": "SkJsonEffectTest",
+      "name": "SkJsonEffectTest",
+      "return type": "Boolean",
+      "patterns": [
+        "[skJson] version check"
       ]
     }
   ],
   "types": [
     {
       "id": "JsonElement",
-      "name": "Json Element",
+      "name": "json",
       "description": [
-        "Representing a JSON element, You can add to them, remove from them.. Also you can remove from/add to nested object/arrays"
-      ],
-      "examples": [
-        "on load:",
-        "\tset {_e} to new json from text \"{'some': {'a': {}}\"",
-        "",
-        "# Adding",
-        "\tadd \"some:bool;false\" to {_e}",
-        "",
-        "# Remove",
-        "\tremove \"some:bool\" from {_e}",
-        "",
-        "# Result",
-        "{\"some\": {\"a\": {}}"
+        "Represents a json element and its class `JsonElement.class`."
       ],
       "since": [
-        "2.0.0"
+        "2.5.0, 2.6.2 - Fix ItemStack Converter"
       ],
       "patterns": [
-        "json[[ ]element]"
+        "json"
       ]
     }
   ]
