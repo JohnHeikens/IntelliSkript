@@ -10,7 +10,7 @@ export class SkriptFunction extends SkriptSection {
 	//context.currentString should be 'function example(a: string, b: number) :: string' for example
 	constructor(context: SkriptContext, parent: SkriptSection) {
 		super(context, parent);
-		const regex = /^function ([a-zA-Z0-9_]{1,})\((.*)\)(| :: (.*?))$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
+		const regex = /^function ([a-zA-Z0-9_]{1,})\((.*)\)(| (?:::| returns ) (.*?))$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		//(,|and|)){1,}\)
 		const result = regex.exec(context.currentString);
 		if (result == null) {
