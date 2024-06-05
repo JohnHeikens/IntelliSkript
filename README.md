@@ -17,8 +17,7 @@ more info? go to [https://pex.li/i](https://pex.li/i "click here to get more inf
 disable the 'IntelliSkript.UseColorTheme' setting
 ![setting](https://user-images.githubusercontent.com/50964021/205459970-b192de41-d5ad-4353-a734-9d6a39f1c3fe.gif)
 
-change the file association to the theme you'd like
-![image](https://user-images.githubusercontent.com/50964021/205463033-63696532-1713-447a-a13c-b21f06b4bd13.png)
+this vs code extension doesn't work with Sk-VSC because it uses it's own language identifier (Sk-VSC) 🤦
 
 ## What is IntelliSkript?
 
