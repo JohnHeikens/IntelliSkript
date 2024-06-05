@@ -23,7 +23,7 @@ export class SkriptCommandSection extends SkriptSection{
 		}
 	}
 	createSection(context: SkriptContext): SkriptSection {
-		const regex = /^(aliases|executable by|usage|description|permission|cooldown|cooldown (message|bypass|storage)|trigger)$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
+		const regex = /^(aliases|executable by|prefix|usage|description|permission|cooldown|cooldown (message|bypass|storage)|trigger)$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);
 
 		if (result == null){
@@ -36,7 +36,7 @@ export class SkriptCommandSection extends SkriptSection{
 		return super.createSection(context);
 	}
 	processLine(context: SkriptContext): void {
-		const regex = /^(aliases|executable by|usage|description|permission( message|)|cooldown|cooldown (message|bypass|storage)): (.*)/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
+		const regex = /^(aliases|executable by|prefix|usage|description|permission( message|)|cooldown|cooldown (message|bypass|storage)): (.*)/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);
 		if (result == null){
 			context.addDiagnostic(0, context.currentString.length, "make sure to put your code for the command in triggers");
