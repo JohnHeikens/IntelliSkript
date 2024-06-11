@@ -3,7 +3,7 @@ import { PatternTree } from '../../../Pattern/PatternTree';
 import { PatternType } from "../../../Pattern/PatternType";
 import { SkriptContext } from '../../SkriptContext';
 import { SkriptPatternContainerSection } from '../Reflect/SkriptPatternContainerSection';
-import { PatternData } from '../../../Pattern/PatternData';
+import { PatternData } from '../../../Pattern/Data/PatternData';
 import { SkriptSectionGroup } from '../SkriptSectionGroup';
 export class SkriptTypeSection extends SkriptPatternContainerSection {
     baseClasses: PatternData[] = [];
@@ -35,7 +35,6 @@ export class SkriptTypeSection extends SkriptPatternContainerSection {
             this.patterns.push(pattern);
             assert(context.currentSkriptFile != undefined);
             context.currentSkriptFile.addPattern(pattern);
-            //context.currentSkriptFile.addPattern(context, this, PatternType.type);
         }
     }
     instanceOf(otherType: PatternData): boolean {

@@ -1,12 +1,13 @@
-import { SkriptType } from './SkriptType';
+import { TypeData } from '../Pattern/Data/PatternData';
 import { SkriptTypeSection } from './Section/IntelliSkript/SkriptTypeSection';
 
 export class SkriptTypeState {
-	possibleTypes: SkriptType[] = [];
+	//can be multiple types, like %string/number%
+	possibleTypes: TypeData[] = [];
 	isArray = false;
 	isLiteral = false;
 	canBeEmpty = false;
-	constructor(...possibleTypes: SkriptType[]) {
+	constructor(...possibleTypes: TypeData[]) {
 		this.possibleTypes = possibleTypes;
 	}
 	canBeInstanceOf(other: SkriptTypeState): boolean {
@@ -25,5 +26,17 @@ export class SkriptTypeState {
 		//	if (otherType.skriptPatternString.startsWith('object'))
 		//		return true;
 		return false;
+	}
+	equals(other: SkriptTypeState): boolean {
+		outerLoop: for (let i = 0; i < this.possibleTypes.length; i++) {
+			const t = this.possibleTypes[i];
+			for (let j = 0; j < other.possibleTypes.length; j++) {
+				if (t.equals(other.possibleTypes[j])) {
+					continue outerLoop;
+				}
+			}
+			return false;
+		}
+		return true;
 	}
 }

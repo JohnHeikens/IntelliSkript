@@ -10,19 +10,24 @@ import {
 	Diagnostic,
 	DidChangeConfigurationNotification,
 	DocumentSelector,
+	Hover,
 	InitializeParams,
 	InitializeResult,
+	MarkupContent,
+	MarkupKind,
 	ProposedFeatures,
+	Range,
 	SemanticTokensClientCapabilities,
 	SemanticTokensLegend,
 	SemanticTokensRegistrationOptions,
 	SemanticTokensRegistrationType,
 	SymbolInformation,
 	SymbolKind,
+	TextDocumentPositionParams,
 	TextDocumentSyncKind,
 	TextDocuments,
 	WorkspaceChange,
-	createConnection
+	createConnection,
 } from 'vscode-languageserver/node';
 
 import {
@@ -33,19 +38,15 @@ import {
 	SkriptFile
 } from "./Skript/Section/SkriptFile";
 
-import * as fs from 'fs';
 import * as IntelliSkriptConstants from './IntelliSkriptConstants';
-import { AddonParser, intelliSkriptAddonSkFilesDirectory } from './Skript/Addon Parser/AddonParser';
-import { SkriptWorkSpace } from './Skript/Section/SkriptWorkSpace';
-import {
-	SkriptContext
-} from './Skript/SkriptContext';
+import { AddonParser } from './Skript/Addon Parser/AddonParser';
+import { SkriptWorkSpace } from './Skript/WorkSpace/SkriptWorkSpace';
 import { TokenTypes } from './TokenTypes';
 import assert = require('assert');
-import path = require('path');
 import { Sleep } from './Thread';
-import { URI } from 'vscode-uri';
-import { Position } from 'vscode-languageserver/node';
+import { SkriptFolder } from './Skript/WorkSpace/SkriptFolder';
+import { SkriptVariable } from './Skript/SkriptVariable';
+import { PatternData } from './Pattern/Data/PatternData';
 
 
 // Create a connection for the server, using Node's IPC as a transport.
@@ -55,12 +56,9 @@ const connection = createConnection(ProposedFeatures.all);
 // Create a simple text document manager.
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
-//workspace folders
-const currentWorkSpaces: SkriptWorkSpace[] = [];
+//workspaces
 
-let addonFileWorkSpace: SkriptWorkSpace;
-//files without any workspace
-let looseWorkSpace: SkriptWorkSpace;//SkriptFile[] = [];
+let currentWorkSpace = new SkriptWorkSpace();
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = true;
@@ -70,31 +68,6 @@ let hasDiagnosticRelatedInformationCapability = false;
 //{
 //	return uri.substring('file:///'.length).replace('%3A', ':');
 //}
-
-function getSkriptWorkSpaceByFileUri(uri: string): SkriptWorkSpace {
-	//const resolvedUri = resolveUri(uri);
-	for (const ws of currentWorkSpaces) {
-		if (ws.uri)
-		{
-			const relativePath = path.relative(ws.uri, uri);
-			if (!relativePath.startsWith('.')) {
-				return ws;
-			}	
-		}
-	}
-	return looseWorkSpace;
-	//return undefined;
-}
-
-function getSkriptFileByUri(uri: string): SkriptFile | undefined {
-	const ws = getSkriptWorkSpaceByFileUri(uri);
-	if (ws) {
-		return ws.getSkriptFileByUri(uri);
-	}
-	else {
-		return looseWorkSpace.getSkriptFileByUri(uri);
-	}
-}
 
 let semanticTokensLegend: SemanticTokensLegend | undefined;
 function computeLegend(capability: SemanticTokensClientCapabilities): SemanticTokensLegend {
@@ -134,17 +107,15 @@ connection.onInitialize(async (params: InitializeParams) => {
 		await Sleep(5000);//give the debugger time to start
 		AddonParser.ParseFiles();
 	}
-
-	InitializeAddonSkripts();
+	currentWorkSpace.readAddonFiles();
 
 	//currentWorkSpaces.push(new SkriptWorkSpace());
 	if (params.workspaceFolders != null) {
 		console.log(params.workspaceFolders);
 		for (const folder of params.workspaceFolders) {
-			const ws = new SkriptWorkSpace(addonFileWorkSpace, folder.uri);
-			ws.parent = addonFileWorkSpace;
-			//ws.eventPatterns = addonFileWorkSpace.eventPatterns;//TODO: clone patterns to workspace
-			currentWorkSpaces.push(ws);
+			const f = new SkriptFolder(currentWorkSpace, folder.uri);
+			currentWorkSpace.children.push(f);
+			currentWorkSpace.addFolder(f);
 		}
 	}
 
@@ -167,7 +138,7 @@ connection.onInitialize(async (params: InitializeParams) => {
 
 	semanticTokensLegend = computeLegend(params.capabilities.textDocument!.semanticTokens!);
 	//return result;
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		//const result: InitializeResult = {
 		//	capabilities: {
 		//		textDocumentSync: TextDocumentSyncKind.Incremental,
@@ -190,7 +161,7 @@ connection.onInitialize(async (params: InitializeParams) => {
 				definitionProvider: true,
 				codeActionProvider: true,
 				//textDocumentSync: TextDocumentSyncKind.Full,
-				//hoverProvider: true,
+				hoverProvider: true,
 				//completionProvider: {
 				//	triggerCharacters: ['.'],
 				//	allCommitCharacters: [';'],
@@ -198,7 +169,6 @@ connection.onInitialize(async (params: InitializeParams) => {
 				//},
 				//signatureHelpProvider: {
 				//},
-				//definitionProvider: true,
 				//referencesProvider: { workDoneProgress: true },
 				//documentHighlightProvider: true,
 				//documentSymbolProvider: true,
@@ -259,30 +229,6 @@ connection.onInitialize(async (params: InitializeParams) => {
 	});
 });
 
-
-
-function InitializeAddonSkripts() {
-	addonFileWorkSpace = new SkriptWorkSpace(undefined, URI.file(intelliSkriptAddonSkFilesDirectory).toString());
-	currentWorkSpaces.push(addonFileWorkSpace);
-
-	fs.readdir(intelliSkriptAddonSkFilesDirectory, undefined, function (err: NodeJS.ErrnoException | null, files: string[]) {
-		if (err) {
-			console.error("Could not list the directory.", err);
-			process.exit(1);
-		}
-
-		files.forEach(function (file, index) {
-			// Make one pass and make the file complete
-			const completePath = path.join(intelliSkriptAddonSkFilesDirectory, file);
-
-			const document = TextDocument.create(URI.file(completePath).toString(), "sk", 0, fs.readFileSync(completePath, "utf8"));
-			const context = new SkriptContext(document);
-			const skriptFile = new SkriptFile(addonFileWorkSpace, context);
-			addonFileWorkSpace.files.push(skriptFile);
-		});
-	});
-	looseWorkSpace = new SkriptWorkSpace(addonFileWorkSpace);
-}
 connection.onInitialized(async () => {
 
 
@@ -351,7 +297,9 @@ connection.onDidChangeConfiguration(change => {
 	}
 
 	// Revalidate all open text documents
-	documents.all().forEach(validateTextDocument);
+
+	//for(document)
+	//documents.all().forEach(validateTextDocument, true);
 	//if (change.settings != null) {
 	//	if (hasConfigurationCapability) {
 	//		// Reset all cached document settings
@@ -387,33 +335,38 @@ function getGlobalSettings(): Thenable<IntelliSkriptSettings> {
 	return settings;
 }
 
-function getDocumentSettings(resource: string): Thenable<IntelliSkriptSettings> {
-	if (!hasConfigurationCapability) {
-		return Promise.resolve(globalSettings);
-	}
-	let result = documentSettings.get(resource);
-	if (!result) {
-		result = connection.workspace.getConfiguration({
-			scopeUri: resource,
-			section: 'intelliSkript'
-		});
-		documentSettings.set(resource, result);
-	}
-	return result;
-}
 
 // Only keep settings for open documents
 documents.onDidClose(e => {
 	documentSettings.delete(e.document.uri);
-	const ws = getSkriptWorkSpaceByFileUri(e.document.uri);
-	if (ws) {
-		const fileIndex = ws.getSkriptFileIndexByUri(e.document.uri);
-		if (fileIndex != undefined) {
-			ws.files.splice(fileIndex, 1);
-		}
+	//todo: handle closing of files properly
+	const looseFileIndex = currentWorkSpace.looseFiles.findIndex(file => file.document.uri == e.document.uri);
+	if (looseFileIndex != -1) {
+		currentWorkSpace.looseFiles[looseFileIndex].invalidate();
+		currentWorkSpace.looseFiles.splice(looseFileIndex, 1);
 	}
+	//const ws = getSkriptWorkSpaceByFileUri(e.document.uri);
+	//if (ws) {
+	//	const fileIndex = ws.getSkriptFileIndexByUri(e.document.uri);
+	//	if (fileIndex != undefined) {
+	//		ws.files.splice(fileIndex, 1);
+	//	}
+	//}
 });
-
+// Handle custom notification for active text editor change
+connection.onNotification('custom/onDidChangeActiveTextEditor', (params) => {
+	//validate this file when switching to it
+	//this boosts performance; this way, when you are editing a file, for each word you write, we can update the file.
+	//their dependencies will only be updated when you switch to them.
+	const document = documents.get(params.uri);
+	if (document) {
+		validateTextDocument(document, false);
+	}
+	//if (document) {
+	//    validateDocument(document);
+	//    validateDependencies(document);
+	//}
+});
 
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
@@ -421,38 +374,47 @@ documents.onDidChangeContent(change => {
 	validateTextDocument(change.document);
 });
 
-async function validateTextDocument(textDocument: TextDocument): Promise<void> {
+async function validateTextDocument(textDocument: TextDocument, couldBeChanged: boolean = true): Promise<void> {
 	// In this simple example we get the settings for every validate run.
 	//const settings = await getDocumentSettings(textDocument.uri); //will pause execution of this and mess up coloring of documents
 	//const settings = getDocumentSettings(textDocument.uri);
 
-	const context = new SkriptContext(textDocument);
 
-	const ws = getSkriptWorkSpaceByFileUri(textDocument.uri);
-
-	if (ws) {
-		ws.validateTextDocument(textDocument, context);
+	if (couldBeChanged) {
+		const file = currentWorkSpace.getSkriptFileByUri(textDocument.uri);
+		file?.updateContent(textDocument);
 	}
+	currentWorkSpace.validateTextDocument(textDocument);
 
-	const diagnostics: Diagnostic[] = context.diagnostics;
+	const validatedDocument = currentWorkSpace.getSkriptFileByUri(textDocument.uri);
+	if (validatedDocument) {
+		const diagnostics: Diagnostic[] = validatedDocument.diagnostics;
 
 
-	// Send the computed diagnostics to VSCode.
-	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+		// Send the computed diagnostics to VSCode.
+		connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+	}
 }
 
-//examples:
-//https://github.com/microsoft/vscode-languageserver-node/blob/main/testbed/server/src/server.ts
+export interface wordInfo {
+	wordRange?: Range;
+	//result: wordLookupResult;
+	variable?: SkriptVariable;
+	pattern?: PatternData;
+}
 
-connection.onDefinition((params): DefinitionLink[] => {
+function getWordInfo(params: TextDocumentPositionParams): wordInfo {
+
 	//check the line
-	const f = getSkriptFileByUri(params.textDocument.uri);
+	const f = currentWorkSpace.getSkriptFileByUri(params.textDocument.uri);
 	if (f) {
 		const lines = f.document.getText().split('\n');
 		const clickedLineText = lines[params.position.line];
 		const indentationEndIndex = SkriptFile.getIndentationEndIndex(clickedLineText);
 		if (params.position.character < indentationEndIndex) {
-			return [];//clicked on indentation
+			return {
+				variable: undefined
+			};//clicked on indentation
 		}
 
 		const variableRegex = /\{(.*?)\}/g;
@@ -465,25 +427,13 @@ connection.onDefinition((params): DefinitionLink[] => {
 
 
 				if (variable != undefined) {
-
-					//return all reference locations
-					const targetLineIndex = variable.firstReferenceLocation.range.start.line;
-					const targetLine = f.document.getText().split('\n')[targetLineIndex];
-
-
-					const targetLineRange = {
-						start: { line: targetLineIndex, character: SkriptFile.getIndentationEndIndex(targetLine) },
-						end: { line: targetLineIndex, character: targetLine.length }
-					};
-					return [{
-						targetUri: variable.firstReferenceLocation.uri,
-						targetRange: targetLineRange,
-						targetSelectionRange: variable.firstReferenceLocation.range,
-						originSelectionRange: {
+					return {
+						variable: variable,
+						wordRange: {
 							start: { line: params.position.line, character: match.index },
 							end: { line: params.position.line, character: match.index + match[0].length }
 						}
-					}];
+					};
 				}
 			}
 		}
@@ -493,27 +443,154 @@ connection.onDefinition((params): DefinitionLink[] => {
 		if (patternReference) {
 			if (patternReference.matchedPattern) {
 				const pattern = patternReference.matchedPattern;
-				//const definitionLocation = pattern.definitionLocation;
-
-				//const targetLineRange = {
-				//	start: { line: definitionLocation.range.start.line, character: SkriptFile.getIndentationEndIndex(targetLine) },
-				//	end: { line:  definitionLocation.range.end.line, character: targetLine.length }
-				//};
-
-				const start = f.document.positionAt(patternReference.start);
-
-				return [{
-					targetUri: pattern.definitionLocation.uri,
-					targetRange: pattern.definitionLocation.range,
-					targetSelectionRange: pattern.definitionLocation.range,
-					originSelectionRange: {
+				return {
+					pattern: pattern,
+					wordRange: {
 						start: f.document.positionAt(patternReference.start),
 						end: f.document.positionAt(patternReference.end)
 					}
-				}];
+				};
 			}
 		}
 	}
+	//const currentDocumentText = params.textDocument.getText();
+	return {
+		variable: undefined
+	};
+}
+
+connection.onHover((params: TextDocumentPositionParams): Hover | undefined => {
+	const info = getWordInfo(params);
+	let hoverContent: MarkupContent | undefined;
+	if (info.variable) {
+		const parameterStr = info.variable.isParameter ? '(parameter) ' : '';
+		hoverContent = {
+			kind: MarkupKind.Markdown,
+			value: `${parameterStr}{**${info.variable.namePattern}**}\n\na variable named \`${info.variable.namePattern}\``
+		};
+	}
+	else if (info.pattern) {
+		const patternStr = info.pattern.skriptPatternString
+			.replace(/\[/g, '\\[')
+			.replace(/\]/g, '\\]')
+			;
+		hoverContent = {
+			kind: MarkupKind.Markdown,
+			value: `**${patternStr}**`
+		};
+	}
+	if (hoverContent) {
+		return {
+			contents: hoverContent
+		};
+	}
+	return undefined;
+});
+
+//examples:
+//https://github.com/microsoft/vscode-languageserver-node/blob/main/testbed/server/src/server.ts
+
+connection.onDefinition((params): DefinitionLink[] => {
+	const f = currentWorkSpace.getSkriptFileByUri(params.textDocument.uri);
+	if (f) {
+		const info = getWordInfo(params);
+		if (info.variable) {
+
+			//return all reference locations
+			const targetLineIndex = info.variable.firstReferenceLocation.range.start.line;
+			const targetLine = f.document.getText().split('\n')[targetLineIndex];
+
+
+			const targetLineRange = {
+				start: { line: targetLineIndex, character: SkriptFile.getIndentationEndIndex(targetLine) },
+				end: { line: targetLineIndex, character: targetLine.length }
+			};
+			return [{
+				targetUri: info.variable.firstReferenceLocation.uri,
+				targetRange: targetLineRange,
+				targetSelectionRange: info.variable.firstReferenceLocation.range,
+				originSelectionRange: info.wordRange
+			}];
+		}
+		else if (info.pattern) {
+
+			return [{
+				targetUri: info.pattern.definitionLocation.uri,
+				targetRange: info.pattern.definitionLocation.range,
+				targetSelectionRange: info.pattern.definitionLocation.range,
+				originSelectionRange: info.wordRange
+			}];
+		}
+	}
+	//check the line
+	//const f = currentWorkSpace.getSkriptFileByUri(params.textDocument.uri);
+	//if (f) {
+	//	const lines = f.document.getText().split('\n');
+	//	const clickedLineText = lines[params.position.line];
+	//	const indentationEndIndex = SkriptFile.getIndentationEndIndex(clickedLineText);
+	//	if (params.position.character < indentationEndIndex) {
+	//		return [];//clicked on indentation
+	//	}
+	//
+	//	const variableRegex = /\{(.*?)\}/g;
+	//	let match;
+	//	const exactSection = f.getExactSectionAtLine(params.position.line);
+	//	while ((match = variableRegex.exec(clickedLineText))) {
+	//		if (params.position.character >= match.index && params.position.character < match.index + match[0].length) {
+	//			//clicked on a variable
+	//			const variable = exactSection.getVariableByName(match[1]);
+	//
+	//
+	//			if (variable != undefined) {
+	//
+	//				//return all reference locations
+	//				const targetLineIndex = variable.firstReferenceLocation.range.start.line;
+	//				const targetLine = f.document.getText().split('\n')[targetLineIndex];
+	//
+	//
+	//				const targetLineRange = {
+	//					start: { line: targetLineIndex, character: SkriptFile.getIndentationEndIndex(targetLine) },
+	//					end: { line: targetLineIndex, character: targetLine.length }
+	//				};
+	//				return [{
+	//					targetUri: variable.firstReferenceLocation.uri,
+	//					targetRange: targetLineRange,
+	//					targetSelectionRange: variable.firstReferenceLocation.range,
+	//					originSelectionRange: {
+	//						start: { line: params.position.line, character: match.index },
+	//						end: { line: params.position.line, character: match.index + match[0].length }
+	//					}
+	//				}];
+	//			}
+	//		}
+	//	}
+	//
+	//	//check for patterns
+	//	const patternReference = f.matches.getDeepestChildNodeAt(f.document.offsetAt(params.position));
+	//	if (patternReference) {
+	//		if (patternReference.matchedPattern) {
+	//			const pattern = patternReference.matchedPattern;
+	//			//const definitionLocation = pattern.definitionLocation;
+	//
+	//			//const targetLineRange = {
+	//			//	start: { line: definitionLocation.range.start.line, character: SkriptFile.getIndentationEndIndex(targetLine) },
+	//			//	end: { line:  definitionLocation.range.end.line, character: targetLine.length }
+	//			//};
+	//
+	//			const start = f.document.positionAt(patternReference.start);
+	//
+	//			return [{
+	//				targetUri: pattern.definitionLocation.uri,
+	//				targetRange: pattern.definitionLocation.range,
+	//				targetSelectionRange: pattern.definitionLocation.range,
+	//				originSelectionRange: {
+	//					start: f.document.positionAt(patternReference.start),
+	//					end: f.document.positionAt(patternReference.end)
+	//				}
+	//			}];
+	//		}
+	//	}
+	//}
 	//const currentDocumentText = params.textDocument.getText();
 	return [];
 });
@@ -538,31 +615,10 @@ connection.onDocumentSymbol((identifier) => {
 	];
 });
 
-//function buildTokens(builder: SemanticTokensBuilder, document: TextDocument) {
-//	const text = document.getText();
-//	const regexp = /\w+/g;
-//	let match: RegExpMatchArray | null;
-//	let tokenCounter = 0;
-//	let modifierCounter = 0;
-//	while ((match = regexp.exec(text)) !== null && match.index !== undefined) {
-//		const word = match[0];
-//		const position = document.positionAt(match.index);
-//		const tokenType = tokenCounter % TokenTypes.length;
-//		const tokenModifier = 1 << modifierCounter % TokenModifiers.length;
-//		builder.push(position.line, position.character, word.length, tokenType, tokenModifier);
-//		//builder.push(
-//		//	new Range(new Position(1, 1), new Position(1, 5)),
-//		//	'class',
-//		//	['declaration']);
-//		//return;//TODO: remove again
-//		tokenCounter++;
-//		modifierCounter++;
-//	}
-//}
-
+//this file will build its tokens for the first time
 connection.languages.semanticTokens.on((params) => {
 	//const settings = getDocumentSettings(params.textDocument.uri);
-	const file = getSkriptFileByUri(params.textDocument.uri);
+	const file = currentWorkSpace.getSkriptFileByUri(params.textDocument.uri);
 	if (file == undefined) {
 		return { data: [] };
 	}
@@ -575,16 +631,11 @@ connection.languages.semanticTokens.on((params) => {
 		return result;
 	}
 
-	//const document = documents.get(params.textDocument.uri);
-	//if (document === undefined) {
-	//}
-	//const builder = getTokenBuilder(document);
-	//buildTokens(builder, document);
-	//return builder.build();
 });
 
+//this file was modified while the tokens were already built
 connection.languages.semanticTokens.onDelta((params) => {
-	const file = getSkriptFileByUri(params.textDocument.uri);
+	const file = currentWorkSpace.getSkriptFileByUri(params.textDocument.uri);
 	if (file == undefined) {
 		return { data: [] };
 	}
@@ -609,7 +660,7 @@ connection.languages.semanticTokens.onDelta((params) => {
 	// return builder.buildEdits();
 });
 
-connection.languages.semanticTokens.onRange((params) => {
+connection.languages.semanticTokens.onRange(() => {
 	return { data: [] };
 });
 

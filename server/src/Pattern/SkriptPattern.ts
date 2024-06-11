@@ -1,6 +1,6 @@
 import { SkriptTypeState } from "../Skript/SkriptTypeState";
 import { PatternType } from './PatternType';
-import { PatternData } from './PatternData';
+import { PatternData } from './Data/PatternData';
 //examples:
 //  "set %objects% to %objects%"
 //  |
@@ -20,10 +20,11 @@ import { PatternData } from './PatternData';
 //  }
 export class SkriptPatternCall {
     expressionArguments: SkriptTypeState[];
+    /**the pattern in lower case!*/
     pattern: string;
     type = PatternType.effect;
     constructor(pattern: string, type: PatternType, expressionArguments: SkriptTypeState[] = []) {
-        this.pattern = pattern;
+        this.pattern = pattern.toLowerCase();
         this.type = type;
         this.expressionArguments = expressionArguments;
     }

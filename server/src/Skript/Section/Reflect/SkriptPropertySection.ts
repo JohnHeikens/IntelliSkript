@@ -1,4 +1,4 @@
-import { PatternData } from '../../../Pattern/PatternData';
+import { PatternData, TypeData } from '../../../Pattern/Data/PatternData';
 import { PatternTree } from '../../../Pattern/PatternTree';
 import { PatternType } from '../../../Pattern/PatternType';
 import { SkriptContext } from '../../SkriptContext';
@@ -7,8 +7,8 @@ import { SkriptExpressionSection } from './SkriptExpressionSection';
 import { SkriptTypeState } from '../../SkriptTypeState';
 import assert = require('assert');
 export class SkriptPropertySection extends SkriptExpressionSection {
-	propertyParentType: PatternData;
-	constructor(context: SkriptContext, propertyParentType: PatternData, parent?: SkriptSection) {
+	propertyParentType: TypeData;
+	constructor(context: SkriptContext, propertyParentType: TypeData, parent?: SkriptSection) {
 		super(context, parent);
 		this.propertyParentType = propertyParentType;
 	}

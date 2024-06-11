@@ -1,5 +1,5 @@
 import assert = require('assert');
-import { PatternData } from "../../Pattern/PatternData";
+import { PatternData } from "../../Pattern/Data/PatternData";
 import { PatternResultProcessor } from "../../Pattern/patternResultProcessor";
 import { PatternType } from "../../Pattern/PatternType";
 import { SkriptPatternCall } from '../../Pattern/SkriptPattern';

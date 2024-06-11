@@ -84,22 +84,20 @@ export class SemanticTokenLine {
 export class UnOrderedSemanticTokensBuilder {
 	private _builder: SemanticTokensBuilder = new SemanticTokensBuilder();
 
-	linkedDocument: TextDocument;
-
 	lines: SemanticTokenLine[] = [];
-	startNextBuild() {
-		this.lines = new Array<SemanticTokenLine>(this.linkedDocument.getText().split("\n").length);
+	//this way, you are required to provide the most recent document
+	startNextBuild(document : TextDocument) {
+		this.lines = new Array<SemanticTokenLine>(document.getText().split("\n").length);
 	}
 
 	constructor(linkedDocument: TextDocument) {
-		this.linkedDocument = linkedDocument;
-		this.startNextBuild();
+		this.startNextBuild(linkedDocument);
 	}
 
 
 	push(token: SemanticToken): void {
 		if (token.position.line >= this.lines.length) {
-			throw new Error(token.position.line + " is out of bounds of the file " + this.linkedDocument.uri + " (has " + this.lines.length + " lines )");
+			throw new Error(token.position.line + " is out of bounds of the file (has " + this.lines.length + " lines )");
 		}
 		if (this.lines[token.position.line] == undefined) {
 			this.lines[token.position.line] = new SemanticTokenLine();
@@ -124,7 +122,7 @@ export class UnOrderedSemanticTokensBuilder {
 			}
 		}
 
-		this.lines = [];
+		//this.lines = [];
 	}
 	buildEdits(): SemanticTokens | SemanticTokensDelta {
 		this.pushSorted();

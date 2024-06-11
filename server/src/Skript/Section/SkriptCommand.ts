@@ -1,4 +1,4 @@
-import { PatternData } from "../../Pattern/PatternData";
+import { PatternData } from "../../Pattern/Data/PatternData";
 import { PatternResultProcessor } from "../../Pattern/patternResultProcessor";
 import { TokenTypes } from '../../TokenTypes';
 import { PatternType } from "../../Pattern/PatternType";

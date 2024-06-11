@@ -95,8 +95,9 @@ export class AddonParser {
 			return str;
 		}
 
-		let str = "#AUTOMATIC GENERATED SKRIPT FILE\n";
+		let str = "#AUTOMATICALLY GENERATED SKRIPT FILE\n";
 		str += "#COPYRIGHT JOHN HEIKENS\n";
+		str += "#https://github.com/JohnHeikens/IntelliSkript"
 		//define types at first as they are used in effects and other patterns
 		file.types?.forEach(type => {
 			str += generalData(type);

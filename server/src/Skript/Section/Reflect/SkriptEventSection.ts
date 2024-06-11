@@ -1,4 +1,4 @@
-import { PatternData } from "../../../Pattern/PatternData";
+import { PatternData } from "../../../Pattern/Data/PatternData";
 import { PatternType } from "../../../Pattern/PatternType";
 import { SkriptContext } from '../../SkriptContext';
 import { SkriptSection } from '../SkriptSection/SkriptSection';

@@ -1,18 +1,20 @@
-import { DiagnosticSeverity } from 'vscode-languageserver';
+import { DiagnosticSeverity, integer } from 'vscode-languageserver';
 import { Location } from 'vscode-languageserver/node';
 import { SkriptNestHierarchy } from '../Nesting/SkriptNestHierarchy';
 import type { SkriptPatternContainerSection } from '../Skript/Section/Reflect/SkriptPatternContainerSection';
 import { SkriptContext } from '../Skript/SkriptContext';
 import { SkriptTypeState } from "../Skript/SkriptTypeState";
-import { PatternData } from './PatternData';
-import { PatternTreeElement } from './PatternTreeElement';
+import { PatternData } from './Data/PatternData';
+import { PatternTreeNode } from './PatternTreeNode/PatternTreeNode';
 import { RegExpTreeError } from './RegExpTreeError';
 import { PatternResultProcessor } from './patternResultProcessor';
 import { PatternMatcher } from './PatternMatcher';
 import { SkriptPatternCall } from './SkriptPattern';
 import { TokenTypes } from '../TokenTypes';
 import { PatternType } from './PatternType';
+import { removeDuplicates } from "./removeDuplicates";
 import assert = require('assert');
+import { TypeNode } from './PatternTreeNode/TypeNode';
 
 //flags: U -> ungreedy, g -> global
 const argumentRegExp = /%(.*?)%/g;
@@ -56,6 +58,10 @@ function convertSkriptPatternToRegExp(pattern: string, hierarchy: SkriptNestHier
 	if (currentPosition < hierarchy.end) {
 		fixedString += convertString(pattern.substring(currentPosition, hierarchy.end));
 	}
+	fixedString = fixedString.replace(/ ?\.\+ ?/g,  (match, offset, wholeString) => {
+		return `(${match})?`;
+	});
+	
 	return fixedString;
 	//let fixedString = pattern.substring(hierarchy.start, hierarchy.children[
 }
@@ -124,7 +130,7 @@ function createRegExpHierarchy(regExString: string): SkriptNestHierarchy {
 }
 
 export class PatternTree implements PatternMatcher {
-	root: PatternTreeElement | undefined;
+	root: PatternTreeNode | undefined;
 	incompatiblePatterns: PatternData[] = [];
 	compatiblePatterns: PatternData[] = [];
 
@@ -133,16 +139,112 @@ export class PatternTree implements PatternMatcher {
 		this.compatiblePatterns.push(...other.compatiblePatterns);
 	}
 
+	//returns endnodes of the pattern parts
+	//for example, this pattern has two endnodes:
+	//send [the | % to the] player
+	addPatternPart(data: PatternData, currentNodes: PatternTreeNode[], Hierarchy: SkriptNestHierarchy): PatternTreeNode[] {
+		const pattern = data.regexPatternString;
+		if (Hierarchy.children.length && Hierarchy.children[0].character == '|') {
+			//divide in [ | ]
+			let allOptionEnds: PatternTreeNode[] = [];
+			for (const child of Hierarchy.children) {
+				const optionEnds = this.addPatternPart(data, currentNodes, child);
+				allOptionEnds = allOptionEnds.concat(optionEnds);
+			}
+			return allOptionEnds;
+		}
+		//loop over all charachters in this member of the hierarchy
+		//for example, when we are processing the [] of "send [the | % to the] player", we would loop over "the | % to the".
+		for (let i = Hierarchy.start; i < Hierarchy.end; i++) {
+			let newNodes: PatternTreeNode[] | undefined;
+			const char = pattern[i];
+			if (char == '(') {
+				//required segment, needed for pipes. for example, a(b|c) != ab|c
+				const node = Hierarchy.getChildNodeStartAt(i + 1);
+				if (node != undefined) {
+					const optionEnds = this.addPatternPart(data, currentNodes, node);
+					if (pattern[node.end + 1] == '?') {
+						//optional segment
+						newNodes = currentNodes.concat(optionEnds);
+						i = node.end + 1; //+1 but the +1 gets added in the loop already
+					}
+					else {
+						newNodes = optionEnds;
+						i = node.end; //+1 but the +1 gets added in the loop already
+					}
+				}
+			}
+			else {
+				newNodes = [];
+				let treeElem = undefined;
+				//for each possibility of this pattern, loop over the letters
+				for (let splitNodeIndex = 0; splitNodeIndex < currentNodes.length; splitNodeIndex++) {
+					const currentSplitNode = currentNodes[splitNodeIndex];
+					if ((char == ' ') && ((currentSplitNode.patternKey == ' '))) {
+						//no double spaces
+						newNodes.push(currentSplitNode);
+					}
+					else if (char == '%') {
+						//check which type this is
+
+						let index = -1;
+						let argumentIndex = 0;
+						//find the argument index. this is also safe for if we want to access elements earlier
+						//like when we first process the second %, then the first one
+						while ((index = pattern.indexOf('%', index + 1)) != i) {
+							argumentIndex++;
+						}
+						let node = new TypeNode(data.expressionArguments[argumentIndex]);
+						let typeNodeIndex = 0;
+						const otherNodes = currentSplitNode.otherNodes;
+						for (; typeNodeIndex < otherNodes.length; typeNodeIndex++) {
+							//what are we comparing here?
+							if (otherNodes[typeNodeIndex] instanceof TypeNode) {
+								if (node.compare(otherNodes[typeNodeIndex] as TypeNode))
+									break;
+							}
+						}
+						if (typeNodeIndex == otherNodes.length) {
+							otherNodes.push(node);
+						}
+						else {
+							node = otherNodes[typeNodeIndex] as TypeNode;
+						}
+						newNodes.push(node);
+					}
+					else {
+						const currentTreeElem = currentSplitNode.stringOrderedChildren.get(char);
+						if (currentTreeElem == undefined) {
+							if (treeElem == undefined) {
+								treeElem = new PatternTreeNode(char);
+								newNodes.push(treeElem);
+							}
+							currentSplitNode.stringOrderedChildren.set(char, treeElem);
+						}
+						else {
+							newNodes.push(currentTreeElem);
+						}
+					}
+				}
+			}
+			if (newNodes) {
+				currentNodes = removeDuplicates(newNodes);
+			}
+		}
+		return currentNodes;
+	}
+
+	//add a pattern to the tree
 	private addToTree(data: PatternData): void {
 		const regExpHierarchy = createRegExpHierarchy(data.regexPatternString);
 		assert(this.root != undefined);
-		const endNodes = this.root.addPatternPart(data.regexPatternString, [this.root], regExpHierarchy);
+		const endNodes = this.addPatternPart(data, [this.root], regExpHierarchy);
 		for (const node of endNodes) {
 			node.endNode = data;
 		}
 	}
 	compile(): void {
-		this.root = new PatternTreeElement();
+		this.root = new PatternTreeNode();
 		for (const p of this.compatiblePatterns) {
 			this.addToTree(p);
 		}
@@ -345,6 +447,44 @@ export class PatternTree implements PatternMatcher {
 		}
 	}
 
+	getMatchingPatternPart(testPattern: SkriptPatternCall): PatternData | undefined {
+		const pattern = testPattern.pattern;
+		if (!this.root) return undefined;
+		let currentNode = this.root;
+		let typeIndex = 0;
+		patternLoop: for (let index = 0; index <= pattern.length; index++) {
+			if (currentNode.endNode) { // && (index == (pattern.length))) {
+				//we can also stop the match earlier
+				if (index == pattern.length || (pattern[index] == ' ')) {
+					return currentNode.endNode;
+				}
+			}
+			const currentChar = pattern[index];
+			const charChild = currentNode.stringOrderedChildren.get(currentChar);
+			if (charChild) {
+				currentNode = charChild;
+				continue;
+			}
+			else {
+				for (const otherChild of currentNode.otherNodes) {
+					if (otherChild instanceof TypeNode && typeIndex < testPattern.expressionArguments.length) {
+						if (testPattern.expressionArguments[typeIndex].canBeInstanceOf((otherChild as TypeNode).type)) {
+							//for now, just match the first occurence. we could also do a lookup for multiple types
+							//for example: match "a %number% b" against "a %object% b" and "a %number%". in this case the first occurrence would be better
+							currentNode = otherChild;
+							typeIndex++;
+							continue patternLoop;
+						}
+					}
+				}
+			}
+			return undefined;
+		}
+		//if (currentNode.endNode) {
+		//	return currentNode.endNode;
+		//}
+	}
+
 	//the tree should be compiled before this method is called
 	getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
 		if (!this.root) {
@@ -356,13 +496,14 @@ export class PatternTree implements PatternMatcher {
 				return undefined;
 			}
 		}
-		const data = this.root.getMatchingPatternPart(testPattern.pattern, 0);
+		const data = this.getMatchingPatternPart(testPattern);
 		if (data) {
-			if (testPattern.compareArgumentTypes(data)) {
-				if (!shouldContinue(data)) {
-					return data;
-				}
+			//we don't need to compare argument types, they are compared already
+			//if (testPattern.compareArgumentTypes(data)) {
+			if (!shouldContinue(data)) {
+				return data;
 			}
+			//}
 		}
 		for (const pattern of this.incompatiblePatterns) {
 			if (testPattern.compare(pattern) && (!shouldContinue(pattern))) {

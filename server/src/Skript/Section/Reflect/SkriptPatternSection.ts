@@ -19,16 +19,7 @@ export class SkriptPatternSection extends SkriptSection {
 
 	override processLine(context: SkriptContext): void {
 		assert(this.parent instanceof SkriptPatternContainerSection);
-		//context.createHierarchy(false);
-		//this.highLightHierarchically(context, context.hierarchy);
 		this.parent.addPattern(context);
-		//if(this.parent instanceof SkriptEventSection){
-		//	context.currentSkriptFile?.workSpace.eventPatterns.addPattern(context, this.parent);
-		//}
-		//else{
-		//	context.currentSkriptFile?.workSpace.effectPatterns.addPattern(context, this.parent);
-		//}
-		//context.currentSkriptFile?.workSpace.effectPatterns.addPattern(context, this.parent);
 	}
 }
 //import { SkriptEventSection } from './SkriptEventSection';import { Hierarchy } from '../../../Hierarchy';

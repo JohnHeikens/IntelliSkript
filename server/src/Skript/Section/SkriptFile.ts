@@ -3,8 +3,8 @@ import { SkriptSection } from "./SkriptSection/SkriptSection";
 import { SkriptFunction } from './SkriptFunctionSection';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { DiagnosticSeverity } from 'vscode-languageserver/node';
-import { stopAtFirstResultProcessor } from '../../Pattern/patternResultProcessor';
+import { Diagnostic, DiagnosticSeverity } from 'vscode-languageserver/node';
+import { PatternResultProcessor, stopAtFirstResultProcessor } from '../../Pattern/patternResultProcessor';
 import { TokenTypes } from '../../TokenTypes';
 import { PatternTreeContainer } from '../PatternTreeContainer';
 import { PatternType } from "../../Pattern/PatternType";
@@ -21,12 +21,12 @@ import { SkriptPropertySection } from './Reflect/SkriptPropertySection';
 import { SkriptCommandSection as SkriptCommandSection } from './SkriptCommand';
 import { SkriptEventListenerSection } from './SkriptEventListenerSection';
 import { SkriptOptionsSection } from './SkriptOptionsSection';
-import { SkriptWorkSpace } from './SkriptWorkSpace';
+import { SkriptWorkSpace } from '../WorkSpace/SkriptWorkSpace';
 import { UnOrderedSemanticTokensBuilder } from './UnOrderedSemanticTokensBuilder';
 import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
-import { PatternData } from '../../Pattern/PatternData';
-import assert = require('assert');
+import { PatternData } from '../../Pattern/Data/PatternData';
 import { SkriptPatternMatchHierarchy } from '../SkriptPatternMatchHierarchy';
+import { SkriptFolder } from '../WorkSpace/SkriptFolder';
 
 function removeRemainder(toDivide: number, toDivideBy: number): number {
 	return Math.floor(toDivide / toDivideBy) * toDivideBy;
@@ -34,18 +34,79 @@ function removeRemainder(toDivide: number, toDivideBy: number): number {
 
 export class SkriptFile extends SkriptSection {
 	document: TextDocument;
-	workSpace: SkriptWorkSpace;
+	text: string = "";
+	//workSpace: SkriptWorkSpace;
+	override parent: SkriptFolder | SkriptWorkSpace;
 	builder: UnOrderedSemanticTokensBuilder;
 
 	options: SkriptOption[] = [];
 
 	patterns: PatternTreeContainer = new PatternTreeContainer();
 	matches: SkriptPatternMatchHierarchy = new SkriptPatternMatchHierarchy();
+	dependents: SkriptFile[] = new Array<SkriptFile>();
+	dependencies: SkriptFile[] = new Array<SkriptFile>();
+	validated = false;
+	diagnostics : Diagnostic[] = [];
+	/**
+	 * invalidate this file, and invalidate its dependents recursively
+	 */
+	invalidate() {
+		//first see what dependencies and dependents this file had.
+		for (const dependency of this.dependencies) {
+			//remove the old file from the dependencies' dependents
+			dependency.dependents.splice(dependency.dependents.indexOf(this, 0), 1);
+		}
+		this.dependencies = new Array<SkriptFile>();
+
+		if (this.validated) {
+			//first set outdated to true, to avoid an infinite loop caused by circular dependencies
+			this.validated = false;
+			//all the dependents of this file, their dependents, and so on need to be updated recursively
+			for (const dependent of this.dependents) {
+				dependent.invalidate();
+			}
+			this.dependents = new Array<SkriptFile>();
+		}
+	}
+	updateContent(newDocument : TextDocument){
+		const newText = newDocument.getText();
+		if(newText != this.text){
+			this.document = newDocument;
+			this.text = newText;
+			this.invalidate();
+		}
+	}
+
+	override getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
+		//the file doesn't store patterns, patterns are stored in the workspace, so it will look in the workspace for patterns.
+		//when a pattern is found outside of the current file, it'll add a dependency.
+
+		const result = this.parent?.getPatternData(testPattern, shouldContinue);
+		if (result) {
+			if (result.definitionLocation.uri != this.document.uri) {
+				let f : SkriptSection | undefined = result.section;
+				while (f && !(f instanceof SkriptFile) && f.parent instanceof SkriptSection){
+					f = f.parent;
+				}
+				if (f && f instanceof SkriptFile) {//for the debugger
+					if (f.dependents.find(value => value.document.uri == this.document.uri) == undefined) {
+						f.dependents.push(this);
+					}
+					if (this.dependencies.find(value => value.document.uri == (f as SkriptFile).document.uri) == undefined) {
+						this.dependencies.push(f);
+					}
+
+				}
+			}
+		}
+		return result;
+	}
 
 
 	addPattern(pattern: PatternData): void {
 		this.patterns.addPattern(pattern);
-		this.workSpace.patterns.addPattern(pattern);
+		if (this.parent instanceof SkriptFolder)
+			this.parent.patterns.addPattern(pattern);
 	}
 
 	createSection(context: SkriptContext): SkriptSection {
@@ -105,10 +166,7 @@ export class SkriptFile extends SkriptSection {
 					//}
 				}
 				else {
-					const pattern = this.workSpace.getPatternData(new SkriptPatternCall(context.currentString, PatternType.event),
-						() => {
-							return false;
-						});
+					const pattern = this.getPatternData(new SkriptPatternCall(context.currentString, PatternType.event), stopAtFirstResultProcessor);
 					if (pattern) {
 						//event
 						s = new SkriptEventListenerSection(context, pattern);
@@ -134,19 +192,18 @@ export class SkriptFile extends SkriptSection {
 	static getIndentationEndIndex(line: string): number {
 		return line.search(/(?!( |\t))/);
 	}
-
-	constructor(workSpace: SkriptWorkSpace, context: SkriptContext) {
-		super(context, workSpace);
-		context.currentSkriptFile = this;
-		this.builder = context.currentBuilder;
-		context.currentBuilder.startNextBuild();
-		this.workSpace = workSpace;
-		this.document = context.currentDocument;
+	validate() {
+		//clear old data
+		this.patterns = new PatternTreeContainer();
+		this.matches = new SkriptPatternMatchHierarchy();
+		this.options = [];
+		this.diagnostics = [];
+		//dependencies are handled by the workspace
+		const context = new SkriptContext(this);
 		context.currentSection = this;
+		this.builder.startNextBuild(this.document);
 
-		const text = context.currentDocument.getText();
-
-		const lines = text.split("\n");
+		const lines = this.text.split("\n");
 
 		const currentSections: SkriptSection[] = [];
 		currentSections[0] = this;
@@ -197,8 +254,8 @@ export class SkriptFile extends SkriptSection {
 
 			const trimmedLine = lineWithoutComments.trim();
 
-			//cont:
 			if (trimmedLine.length > 0) {
+				//process indentation
 				const indentationEndIndex = SkriptFile.getIndentationEndIndex(currentLine);
 				//context.currentPosition = currentLineStartPosition + indentationEndIndex;
 				const indentationString = currentLine.substring(0, indentationEndIndex);
@@ -258,12 +315,11 @@ export class SkriptFile extends SkriptSection {
 						}
 					}
 				}
+				//removed indentation and comments
 				const trimmedContext = currentLineContext.push(indentationEndIndex, trimmedLine.length);
-				//trimmedContext.createHierarchy(true);
-				//assert(trimmedContext.hierarchy != undefined);
 
 				if (trimmedLine.endsWith(":")) {
-
+					//indent
 					const contextWithoutColon = trimmedContext.push(0, trimmedContext.currentString.length - 1);
 					//context.currentString = trimmedLine.substring(0, trimmedLine.length - 1);
 					//contextWithoutColon.createHierarchy(true);
@@ -294,6 +350,16 @@ export class SkriptFile extends SkriptSection {
 
 			currentLineIndex++;
 		}
+		//the file is updated! set outdated to false
+		this.validated = true;
+	}
+
+	constructor(parent: SkriptFolder | SkriptWorkSpace, document : TextDocument) {
+		super(undefined, parent);
+		this.document = document;
+		this.text = document.getText();
+		this.builder = new UnOrderedSemanticTokensBuilder(this.document);
+		this.parent = parent;
 	}
 	toString(): string {
 		const uri = this.document.uri;

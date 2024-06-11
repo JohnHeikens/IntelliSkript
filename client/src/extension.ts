@@ -20,6 +20,7 @@ import {
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
+    //console.log('Extension "yourExtension" is now active!');
 	//vscode.window.showInformationMessage('IntelliSkript has been activated');
 	// The server is implemented in node
 	const serverModule = context.asAbsolutePath(
@@ -74,6 +75,13 @@ export function activate(context: ExtensionContext) {
 
 	// Start the client. This will also launch the server
 	client.start();
+	
+	 // Listen for active text editor changes
+	 vscode.window.onDidChangeActiveTextEditor(editor => {
+        if (editor && editor.document) {
+            client.sendNotification('custom/onDidChangeActiveTextEditor', { uri: editor.document.uri.toString() });
+        }
+    });
 }
 
 export function deactivate(): Thenable<void> | undefined {

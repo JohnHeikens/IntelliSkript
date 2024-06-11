@@ -13,7 +13,7 @@ import { SkriptFile } from './Section/SkriptFile';
 import { SkriptPatternCall } from '../Pattern/SkriptPattern';
 import assert = require('assert');
 import { SkriptPatternMatchHierarchy } from './SkriptPatternMatchHierarchy';
-import { PatternData } from '../Pattern/PatternData';
+import { PatternData } from '../Pattern/Data/PatternData';
 
 //TOODO: make context able to 'push' and 'pop' (make a function able to modify the context or create an instance while keeping reference to the same diagnostics list
 export class SkriptContext {
@@ -30,34 +30,31 @@ export class SkriptContext {
 	hasErrors = false;
 
 	//reference variables
-	currentSkriptFile: SkriptFile | undefined;
+	currentSkriptFile: SkriptFile;
 	currentDocument: TextDocument;
-	currentBuilder: UnOrderedSemanticTokensBuilder;
-	diagnostics: Diagnostic[] = [];
 
 	//variables which can change in push()
 	parent: SkriptContext | undefined = undefined;
 	currentString = "";
 	currentPosition = 0;
 	currentLine = 0;
+
 	hierarchy: SkriptNestHierarchy | undefined = undefined;
-	constructor(currentDocument: TextDocument, currentString: string | undefined = undefined, currentBuilder: UnOrderedSemanticTokensBuilder = new UnOrderedSemanticTokensBuilder(currentDocument)) {
-		this.currentString = currentString == undefined ? currentDocument.getText() : currentString;
-		this.currentDocument = currentDocument;
-		this.currentBuilder = currentBuilder;
+	constructor(currentSkriptFile: SkriptFile, currentString: string | undefined = undefined) {
+		this.currentSkriptFile = currentSkriptFile;
+		this.currentDocument = currentSkriptFile.document;
+		this.currentString = currentString ?? this.currentDocument.getText();
 	}
 
 	//no popping as the popping will be done automatically (the garbage collector will clean it up
 	push(newPosition: number, newSize: number = this.currentString.length - newPosition): SkriptContext {
 		const subContext = new SkriptContext(
-			this.currentDocument,
-			this.currentString.substring(newPosition, newPosition + newSize),
-			this.currentBuilder);
+			this.currentSkriptFile,
+			this.currentString.substring(newPosition, newPosition + newSize));
 
 		subContext.currentSkriptFile = this.currentSkriptFile;
 		subContext.referenceFields = this.referenceFields;
 		subContext.currentPosition = this.currentPosition + newPosition;
-		subContext.diagnostics = this.diagnostics;
 		subContext.currentLine = this.currentLine;
 
 		//subContext.hierarchy = this.hierarchy;//the more data, the better so we're keeping the hierarchical data from the higher levels for now
@@ -67,7 +64,7 @@ export class SkriptContext {
 	//CAUTION! HIGHLIGHTING SHOULD BE DONE IN ORDER
 	addToken(type: TokenTypes, relativePosition = 0, length = this.currentString.length, zIndex = 0, modifier: TokenModifiers = TokenModifiers.abstract): void {
 		const absolutePosition = this.currentDocument.positionAt(this.currentPosition + relativePosition);
-		this.currentBuilder.push(new SemanticToken(absolutePosition, length, type, modifier, zIndex));
+		this.currentSkriptFile.builder.push(new SemanticToken(absolutePosition, length, type, modifier, zIndex));
 	}
 
 
@@ -101,7 +98,7 @@ export class SkriptContext {
 			code: code ? code : "IntelliSkript->Undocumented",
 			codeDescription: { href: 'https://pex.li/intelliskript/' }//https://github.com/JohnHeikens/IntelliSkript/wiki
 		};
-		this.diagnostics.push(diagnostic);
+		this.currentSkriptFile.diagnostics.push(diagnostic);
 	}
 
 	highLightRecursively(currentHierarchyNode: SkriptNestHierarchy): void {
