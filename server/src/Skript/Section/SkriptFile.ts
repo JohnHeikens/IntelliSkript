@@ -1,15 +1,18 @@
 import { SkriptSection } from "./SkriptSection/SkriptSection";
-
 import { SkriptFunction } from './SkriptFunctionSection';
-
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Diagnostic, DiagnosticSeverity } from 'vscode-languageserver/node';
+import { PatternData } from '../../Pattern/Data/PatternData';
 import { PatternResultProcessor, stopAtFirstResultProcessor } from '../../Pattern/patternResultProcessor';
+import { PatternType } from "../../Pattern/PatternType";
+import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
 import { TokenTypes } from '../../TokenTypes';
 import { PatternTreeContainer } from '../PatternTreeContainer';
-import { PatternType } from "../../Pattern/PatternType";
 import { SkriptContext } from '../SkriptContext';
 import { SkriptOption } from '../SkriptOption';
+import { SkriptPatternMatchHierarchy } from '../SkriptPatternMatchHierarchy';
+import { SkriptFolder } from '../WorkSpace/SkriptFolder';
+import { SkriptWorkSpace } from '../WorkSpace/SkriptWorkSpace';
 import { SkriptTypeSection } from './IntelliSkript/SkriptTypeSection';
 import { SkriptConditionProcessorSection } from './Reflect/SkriptConditionProcessorSection';
 import { SkriptEffect as SkriptEffectSection } from './Reflect/SkriptEffectSection';
@@ -18,15 +21,10 @@ import { SkriptExpressionSection } from './Reflect/SkriptExpressionSection';
 import { SkriptImportSection } from './Reflect/SkriptImportSection';
 import { SkriptPatternContainerSection } from './Reflect/SkriptPatternContainerSection';
 import { SkriptPropertySection } from './Reflect/SkriptPropertySection';
-import { SkriptCommandSection as SkriptCommandSection } from './SkriptCommand';
+import { SkriptCommandSection } from './SkriptCommand';
 import { SkriptEventListenerSection } from './SkriptEventListenerSection';
 import { SkriptOptionsSection } from './SkriptOptionsSection';
-import { SkriptWorkSpace } from '../WorkSpace/SkriptWorkSpace';
 import { UnOrderedSemanticTokensBuilder } from './UnOrderedSemanticTokensBuilder';
-import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
-import { PatternData } from '../../Pattern/Data/PatternData';
-import { SkriptPatternMatchHierarchy } from '../SkriptPatternMatchHierarchy';
-import { SkriptFolder } from '../WorkSpace/SkriptFolder';
 
 function removeRemainder(toDivide: number, toDivideBy: number): number {
 	return Math.floor(toDivide / toDivideBy) * toDivideBy;

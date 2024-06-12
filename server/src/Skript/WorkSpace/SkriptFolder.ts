@@ -1,13 +1,10 @@
 import path = require('path');
-import { PatternTreeContainer } from '../PatternTreeContainer';
-import { SkriptFile } from '../Section/SkriptFile';
-import { SkriptSection } from '../Section/SkriptSection/SkriptSection';
-import { SkriptSectionGroup } from '../Section/SkriptSectionGroup';
-import { SkriptFolderContainer } from './SkriptFolderContainer';
+import { PatternData } from '../../Pattern/Data/PatternData';
 import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
 import { PatternResultProcessor } from '../../Pattern/patternResultProcessor';
-import { PatternData } from '../../Pattern/Data/PatternData';
-import { SkriptContext } from '../SkriptContext';
+import { PatternTreeContainer } from '../PatternTreeContainer';
+import { SkriptFile } from '../Section/SkriptFile';
+import { SkriptFolderContainer } from './SkriptFolderContainer';
 
 export class SkriptFolder extends SkriptFolderContainer {
 	uri = "";
@@ -25,17 +22,13 @@ export class SkriptFolder extends SkriptFolderContainer {
 		const index = this.getSkriptFileIndexByUri(uri);
 		return index == undefined ? undefined : this.files[index];
 	}
-	validate(){
+	validate() {
 		this.patterns = new PatternTreeContainer();
-		for (const file of this.files) {
+		for (const file of this.files)
 			//this way, a file won't know what is previous to it
-			if (!file.validated) {
+			file.validated ?
+				this.patterns.merge(file.patterns) :
 				file.validate();
-			}
-			else {
-				this.patterns.merge(file.patterns);
-			}
-		}
 	}
 
 	constructor(parent: SkriptFolderContainer, uri: string) {

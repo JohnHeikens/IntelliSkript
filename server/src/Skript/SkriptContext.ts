@@ -96,7 +96,7 @@ export class SkriptContext {
 			source: 'IntelliSkript (click on the error code) -> ',
 			data: data,
 			code: code ? code : "IntelliSkript->Undocumented",
-			codeDescription: { href: 'https://pex.li/intelliskript/' }//https://github.com/JohnHeikens/IntelliSkript/wiki
+			codeDescription: { href: 'https://github.com/JohnHeikens/IntelliSkript/wiki' }//https://github.com/JohnHeikens/IntelliSkript/wiki
 		};
 		this.currentSkriptFile.diagnostics.push(diagnostic);
 	}
