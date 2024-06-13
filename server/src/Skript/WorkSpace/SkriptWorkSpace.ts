@@ -32,12 +32,23 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 
 		files.forEach(file => {
 			const completePath = path.join(folderPath, file);
+			const extName = path.extname(completePath);
 			//convert path back to URI
 			const fileUri = URI.file(completePath).toString();
-			const document = TextDocument.create(fileUri, "sk", 0, fs.readFileSync(completePath, "utf8"));
-			const skriptFile = new SkriptFile(folder, document);
-			skriptFile.validate();
-			folder.files.push(skriptFile);
+			if (extName == '') {
+				const child = new SkriptFolder(folder, fileUri);
+				//folder
+				folder.children.push(child);
+				//add folders recursively
+				this.addFolder(child);
+			}
+			else if (extName == 'sk') {
+				const document = TextDocument.create(fileUri, "sk", 0, fs.readFileSync(completePath, "utf8"));
+				const skriptFile = new SkriptFile(folder, document);
+				skriptFile.validate();
+				folder.files.push(skriptFile);
+			}
+			//else, it's another file
 		});
 		//});
 	}
