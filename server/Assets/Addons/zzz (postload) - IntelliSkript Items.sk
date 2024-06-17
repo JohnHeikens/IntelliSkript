@@ -1,0 +1,1241 @@
+expression:
+    return type: item
+    patterns:
+        acacia boat
+        acacia button
+        acacia chest boat
+        acacia door
+        acacia fence
+        acacia fence gate
+        acacia hanging sign
+        acacia leaves
+        acacia log
+        acacia planks
+        acacia pressure plate
+        acacia sapling
+        acacia sign
+        acacia slab
+        acacia stairs
+        acacia trapdoor
+        acacia wood
+        activator rail
+        air
+        allium
+        amethyst block
+        amethyst cluster
+        amethyst shard
+        ancient debris
+        andesite
+        andesite slab
+        andesite stairs
+        andesite wall
+        angler pottery sherd
+        anvil
+        apple
+        archer pottery sherd
+        armor stand
+        arms up pottery sherd
+        arrow
+        axolotl bucket
+        axolotl spawn egg
+        azalea
+        azalea leaves
+        azure bluet
+        baked potato
+        bamboo
+        bamboo block
+        bamboo button
+        bamboo door
+        bamboo chest raft
+        bamboo fence
+        bamboo fence gate
+        bamboo hanging sign
+        bamboo mosaic
+        bamboo mosaic slab
+        bamboo mosaic stairs
+        bamboo planks
+        bamboo pressure plate
+        bamboo raft
+        bamboo sign
+        bamboo slab
+        bamboo stairs
+        bamboo trapdoor
+        barrel
+        barrier
+        basalt
+        bat spawn egg
+        beacon
+        bedrock
+        bee nest
+        bee spawn egg
+        beef
+        beehive
+        beetroot
+        beetroot seeds
+        beetroot soup
+        bell
+        big dripleaf
+        birch boat
+        birch button
+        birch chest boat
+        birch door
+        birch fence
+        birch fence gate
+        birch hanging sign
+        birch leaves
+        birch log
+        birch planks
+        birch pressure plate
+        birch sapling
+        birch sign
+        birch slab
+        birch stairs
+        birch trapdoor
+        birch wood
+        black banner
+        black bed
+        black candle
+        black carpet
+        black concrete
+        black concrete powder
+        black dye
+        black glazed terracotta
+        black shulker box
+        black stained glass
+        black stained glass pane
+        black terracotta
+        black wool
+        blackstone
+        blackstone slab
+        blackstone stairs
+        blackstone wall
+        blade pottery sherd
+        blast furnace
+        blaze powder
+        blaze rod
+        blaze spawn egg
+        blue banner
+        blue bed
+        blue candle
+        blue carpet
+        blue concrete
+        blue concrete powder
+        blue dye
+        blue glazed terracotta
+        blue ice
+        blue orchid
+        blue shulker box
+        blue stained glass
+        blue stained glass pane
+        blue terracotta
+        blue wool
+        bone
+        bone block
+        bone meal
+        book
+        bookshelf
+        bow
+        bowl
+        brain coral
+        brain coral block
+        brain coral fan
+        bread
+        brewer pottery sherd
+        brewing stand
+        brick
+        brick slab
+        brick stairs
+        brick wall
+        bricks
+        brown banner
+        brown bed
+        brown candle
+        brown carpet
+        brown concrete
+        brown concrete powder
+        brown dye
+        brown glazed terracotta
+        brown mushroom
+        brown mushroom block
+        brown shulker box
+        brown stained glass
+        brown stained glass pane
+        brown terracotta
+        brown wool
+        brush
+        bubble coral
+        bubble coral block
+        bubble coral fan
+        bucket
+        budding amethyst
+        bundle
+        burn pottery sherd
+        cactus
+        cake
+        calcite
+        calibrated sculk sensor
+        campfire
+        candle
+        carrot
+        carrot on a stick
+        cartography table
+        carved pumpkin
+        cat spawn egg
+        cauldron
+        cave spider spawn egg
+        chain
+        chain command block
+        chainmail boots
+        chainmail chestplate
+        chainmail helmet
+        chainmail leggings
+        charcoal
+        cherry boat
+        cherry button
+        cherry chest boat
+        cherry door
+        cherry fence
+        cherry fence gate
+        cherry hanging sign
+        cherry leaves
+        cherry log
+        cherry planks
+        cherry pressure plate
+        cherry sapling
+        cherry sign
+        cherry slab
+        cherry stairs
+        cherry trapdoor
+        cherry wood
+        chest
+        chest minecart
+        chicken
+        chicken spawn egg
+        chipped anvil
+        chiseled bookshelf
+        chiseled deepslate
+        chiseled nether bricks
+        chiseled polished blackstone
+        chiseled quartz block
+        chiseled red sandstone
+        chiseled sandstone
+        chiseled stone bricks
+        chorus flower
+        chorus fruit
+        chorus plant
+        clay
+        clay ball
+        clock
+        coal
+        coal block
+        coal ore
+        coarse dirt
+        coast armor trim smithing template
+        cobbled deepslate
+        cobbled deepslate slab
+        cobbled deepslate stairs
+        cobbled deepslate wall
+        cobblestone
+        cobblestone slab
+        cobblestone stairs
+        cobblestone wall
+        cobweb
+        cocoa beans
+        cod
+        cod bucket
+        cod spawn egg
+        command block
+        command block minecart
+        comparator
+        compass
+        composter
+        conduit
+        cooked beef
+        cooked chicken
+        cooked cod
+        cooked mutton
+        cooked porkchop
+        cooked rabbit
+        cooked salmon
+        cookie
+        copper block
+        copper ingot
+        copper ore
+        cornflower
+        cow spawn egg
+        cracked deepslate bricks
+        cracked deepslate tiles
+        cracked nether bricks
+        cracked polished blackstone bricks
+        cracked stone bricks
+        crafting table
+        creeper banner pattern
+        creeper head
+        creeper spawn egg
+        crimson button
+        crimson door
+        crimson fence
+        crimson fence gate
+        crimson fungus
+        crimson hanging sign
+        crimson hyphae
+        crimson nylium
+        crimson planks
+        crimson pressure plate
+        crimson roots
+        crimson sign
+        crimson slab
+        crimson stairs
+        crimson stem
+        crimson trapdoor
+        crossbow
+        crying obsidian
+        cut copper
+        cut copper slab
+        cut copper stairs
+        cut red sandstone
+        cut red sandstone slab
+        cut sandstone
+        cut sandstone slab
+        cyan banner
+        cyan bed
+        cyan candle
+        cyan carpet
+        cyan concrete
+        cyan concrete powder
+        cyan dye
+        cyan glazed terracotta
+        cyan shulker box
+        cyan stained glass
+        cyan stained glass pane
+        cyan terracotta
+        cyan wool
+        damaged anvil
+        dandelion
+        danger pottery sherd
+        dark oak boat
+        dark oak button
+        dark oak chest boat
+        dark oak door
+        dark oak fence
+        dark oak fence gate
+        dark oak hanging sign
+        dark oak leaves
+        dark oak log
+        dark oak planks
+        dark oak pressure plate
+        dark oak sapling
+        dark oak sign
+        dark oak slab
+        dark oak stairs
+        dark oak trapdoor
+        dark oak wood
+        dark prismarine
+        dark prismarine slab
+        dark prismarine stairs
+        daylight detector
+        dead brain coral
+        dead brain coral block
+        dead brain coral fan
+        dead bubble coral
+        dead bubble coral block
+        dead bubble coral fan
+        dead bush
+        dead fire coral
+        dead fire coral block
+        dead fire coral fan
+        dead horn coral
+        dead horn coral block
+        dead horn coral fan
+        dead tube coral
+        dead tube coral block
+        dead tube coral fan
+        debug stick
+        decorated pot
+        deepslate
+        deepslate brick slab
+        deepslate brick stairs
+        deepslate brick wall
+        deepslate bricks
+        deepslate coal ore
+        deepslate copper ore
+        deepslate diamond ore
+        deepslate emerald ore
+        deepslate gold ore
+        deepslate iron ore
+        deepslate lapis ore
+        deepslate redstone ore
+        deepslate tile slab
+        deepslate tile stairs
+        deepslate tile wall
+        deepslate tiles
+        detector rail
+        diamond
+        diamond axe
+        diamond block
+        diamond boots
+        diamond chestplate
+        diamond helmet
+        diamond hoe
+        diamond horse armor
+        diamond leggings
+        diamond ore
+        diamond pickaxe
+        diamond shovel
+        diamond sword
+        diorite
+        diorite slab
+        diorite stairs
+        diorite wall
+        dirt
+        dirt path
+        dispenser
+        dolphin spawn egg
+        donkey spawn egg
+        dragon breath
+        dragon egg
+        dragon head
+        dried kelp
+        dried kelp block
+        dripstone block
+        dropper
+        drowned spawn egg
+        dune armor trim smithing template
+        echo shard
+        egg
+        elder guardian spawn egg
+        elytra
+        emerald
+        emerald block
+        emerald ore
+        enchanted book
+        enchanted golden apple
+        enchanting table
+        end crystal
+        end portal frame
+        end rod
+        end stone
+        end stone brick slab
+        end stone brick stairs
+        end stone brick wall
+        end stone bricks
+        ender chest
+        ender eye
+        ender pearl
+        enderman spawn egg
+        endermite spawn egg
+        evoker spawn egg
+        experience bottle
+        explorer pottery sherd
+        exposed copper
+        exposed cut copper
+        exposed cut copper slab
+        exposed cut copper stairs
+        eye armor trim smithing template
+        farmland
+        feather
+        fermented spider eye
+        fern
+        filled map
+        fire charge
+        fire coral
+        fire coral block
+        fire coral fan
+        firework rocket
+        firework star
+        fishing rod
+        fletching table
+        flint
+        flint and steel
+        flower banner pattern
+        flower pot
+        flowering azalea
+        flowering azalea leaves
+        friend pottery sherd
+        fox spawn egg
+        frogspawn
+        frog spawn egg
+        furnace
+        furnace minecart
+        ghast spawn egg
+        ghast tear
+        gilded blackstone
+        glass
+        glass bottle
+        glass pane
+        glistering melon slice
+        globe banner pattern
+        glow berries
+        glow ink sac
+        glow item frame
+        glow lichen
+        glow squid spawn egg
+        glowstone
+        glowstone dust
+        goat horn
+        goat spawn egg
+        gold block
+        gold ingot
+        gold nugget
+        gold ore
+        golden apple
+        golden axe
+        golden boots
+        golden carrot
+        golden chestplate
+        golden helmet
+        golden hoe
+        golden horse armor
+        golden leggings
+        golden pickaxe
+        golden shovel
+        golden sword
+        granite
+        granite slab
+        granite stairs
+        granite wall
+        short grass
+        grass block
+        gravel
+        gray banner
+        gray bed
+        gray candle
+        gray carpet
+        gray concrete
+        gray concrete powder
+        gray dye
+        gray glazed terracotta
+        gray shulker box
+        gray stained glass
+        gray stained glass pane
+        gray terracotta
+        gray wool
+        green banner
+        green bed
+        green candle
+        green carpet
+        green concrete
+        green concrete powder
+        green dye
+        green glazed terracotta
+        green shulker box
+        green stained glass
+        green stained glass pane
+        green terracotta
+        green wool
+        grindstone
+        guardian spawn egg
+        gunpowder
+        hanging roots
+        hay block
+        heart of the sea
+        heart pottery sherd
+        heartbreak pottery sherd
+        heavy weighted pressure plate
+        hoglin spawn egg
+        honey block
+        honey bottle
+        honeycomb
+        honeycomb block
+        hopper
+        hopper minecart
+        horn coral
+        horn coral block
+        horn coral fan
+        horse spawn egg
+        host armor trim smithing template
+        howl pottery sherd
+        husk spawn egg
+        ice
+        infested chiseled stone bricks
+        infested cobblestone
+        infested cracked stone bricks
+        infested deepslate
+        infested mossy stone bricks
+        infested stone
+        infested stone bricks
+        ink sac
+        iron axe
+        iron bars
+        iron block
+        iron boots
+        iron chestplate
+        iron door
+        iron helmet
+        iron hoe
+        iron horse armor
+        iron ingot
+        iron leggings
+        iron nugget
+        iron ore
+        iron pickaxe
+        iron shovel
+        iron sword
+        iron trapdoor
+        item frame
+        jack o lantern
+        jigsaw
+        jukebox
+        jungle boat
+        jungle button
+        jungle chest boat
+        jungle door
+        jungle fence
+        jungle fence gate
+        jungle hanging sign
+        jungle leaves
+        jungle log
+        jungle planks
+        jungle pressure plate
+        jungle sapling
+        jungle sign
+        jungle slab
+        jungle stairs
+        jungle trapdoor
+        jungle wood
+        kelp
+        knowledge book
+        ladder
+        lantern
+        lapis block
+        lapis lazuli
+        lapis ore
+        large amethyst bud
+        large fern
+        lava bucket
+        lead
+        leather
+        leather boots
+        leather chestplate
+        leather helmet
+        leather horse armor
+        leather leggings
+        lectern
+        lever
+        light
+        light blue banner
+        light blue bed
+        light blue candle
+        light blue carpet
+        light blue concrete
+        light blue concrete powder
+        light blue dye
+        light blue glazed terracotta
+        light blue shulker box
+        light blue stained glass
+        light blue stained glass pane
+        light blue terracotta
+        light blue wool
+        light gray banner
+        light gray bed
+        light gray candle
+        light gray carpet
+        light gray concrete
+        light gray concrete powder
+        light gray dye
+        light gray glazed terracotta
+        light gray shulker box
+        light gray stained glass
+        light gray stained glass pane
+        light gray terracotta
+        light gray wool
+        light weighted pressure plate
+        lightning rod
+        lilac
+        lily of the valley
+        lily pad
+        lime banner
+        lime bed
+        lime candle
+        lime carpet
+        lime concrete
+        lime concrete powder
+        lime dye
+        lime glazed terracotta
+        lime shulker box
+        lime stained glass
+        lime stained glass pane
+        lime terracotta
+        lime wool
+        lingering potion
+        llama spawn egg
+        lodestone
+        loom
+        magenta banner
+        magenta bed
+        magenta candle
+        magenta carpet
+        magenta concrete
+        magenta concrete powder
+        magenta dye
+        magenta glazed terracotta
+        magenta shulker box
+        magenta stained glass
+        magenta stained glass pane
+        magenta terracotta
+        magenta wool
+        magma block
+        magma cream
+        magma cube spawn egg
+        mangrove boat
+        mangrove button
+        mangrove chest boat
+        mangrove door
+        mangrove fence
+        mangrove fence gate
+        mangrove hanging sign
+        mangrove leaves
+        mangrove log
+        mangrove planks
+        mangrove pressure plate
+        mangrove propagule
+        mangrove roots
+        mangrove sign
+        mangrove slab
+        mangrove stairs
+        mangrove trapdoor
+        mangrove wood
+        map
+        medium amethyst bud
+        melon
+        melon seeds
+        melon slice
+        milk bucket
+        minecart
+        miner pottery sherd
+        mojang banner pattern
+        mooshroom spawn egg
+        moss block
+        moss carpet
+        mossy cobblestone
+        mossy cobblestone slab
+        mossy cobblestone stairs
+        mossy cobblestone wall
+        mossy stone brick slab
+        mossy stone brick stairs
+        mossy stone brick wall
+        mossy stone bricks
+        mourner pottery sherd
+        mud
+        muddy mangrove roots
+        mule spawn egg
+        mushroom stem
+        mushroom stew
+        music disc 5
+        music disc 11
+        music disc 13
+        music disc blocks
+        music disc cat
+        music disc chirp
+        music disc far
+        music disc mall
+        music disc mellohi
+        music disc pigstep
+        music disc relic
+        music disc stal
+        music disc strad
+        music disc wait
+        music disc ward
+        mutton
+        mycelium
+        name tag
+        nautilus shell
+        nether brick
+        nether brick fence
+        nether brick slab
+        nether brick stairs
+        nether brick wall
+        nether bricks
+        nether gold ore
+        nether quartz ore
+        nether sprouts
+        nether star
+        nether wart
+        nether wart block
+        netherite axe
+        netherite block
+        netherite boots
+        netherite chestplate
+        netherite helmet
+        netherite hoe
+        netherite ingot
+        netherite leggings
+        netherite pickaxe
+        netherite scrap
+        netherite shovel
+        netherite sword
+        netherite upgrade smithing template
+        netherrack
+        note block
+        oak boat
+        oak button
+        oak chest boat
+        oak door
+        oak fence
+        oak fence gate
+        oak hanging sign
+        oak leaves
+        oak log
+        oak planks
+        oak pressure plate
+        oak sapling
+        oak sign
+        oak slab
+        oak stairs
+        oak trapdoor
+        oak wood
+        observer
+        obsidian
+        ocelot spawn egg
+        ochre froglight
+        orange banner
+        orange bed
+        orange candle
+        orange carpet
+        orange concrete
+        orange concrete powder
+        orange dye
+        orange glazed terracotta
+        orange shulker box
+        orange stained glass
+        orange stained glass pane
+        orange terracotta
+        orange tulip
+        orange wool
+        oxeye daisy
+        oxidized copper
+        oxidized cut copper
+        oxidized cut copper slab
+        oxidized cut copper stairs
+        packed ice
+        painting
+        panda spawn egg
+        paper
+        parrot spawn egg
+        pearlescent froglight
+        peony
+        petrified oak slab
+        phantom membrane
+        phantom spawn egg
+        pig spawn egg
+        piglin banner pattern
+        piglin brute spawn egg
+        piglin spawn egg
+        pillager spawn egg
+        pink banner
+        pink bed
+        pink candle
+        pink carpet
+        pink concrete
+        pink concrete powder
+        pink dye
+        pink glazed terracotta
+        pink petals
+        pink shulker box
+        pink stained glass
+        pink stained glass pane
+        pink terracotta
+        pink tulip
+        pink wool
+        piston
+        pitcher plant
+        pitcher pod
+        player head
+        plenty pottery sherd
+        podzol
+        pointed dripstone
+        poisonous potato
+        polar bear spawn egg
+        polished andesite
+        polished andesite slab
+        polished andesite stairs
+        polished basalt
+        polished blackstone
+        polished blackstone brick slab
+        polished blackstone brick stairs
+        polished blackstone brick wall
+        polished blackstone bricks
+        polished blackstone button
+        polished blackstone pressure plate
+        polished blackstone slab
+        polished blackstone stairs
+        polished blackstone wall
+        polished deepslate
+        polished deepslate slab
+        polished deepslate stairs
+        polished deepslate wall
+        polished diorite
+        polished diorite slab
+        polished diorite stairs
+        polished granite
+        polished granite slab
+        polished granite stairs
+        popped chorus fruit
+        poppy
+        porkchop
+        potato
+        potion
+        powder snow bucket
+        powered rail
+        prismarine
+        prismarine brick slab
+        prismarine brick stairs
+        prismarine bricks
+        prismarine crystals
+        prismarine shard
+        prismarine slab
+        prismarine stairs
+        prismarine wall
+        prize pottery sherd
+        pufferfish
+        pufferfish bucket
+        pufferfish spawn egg
+        pumpkin
+        pumpkin pie
+        pumpkin seeds
+        purple banner
+        purple bed
+        purple candle
+        purple carpet
+        purple concrete
+        purple concrete powder
+        purple dye
+        purple glazed terracotta
+        purple shulker box
+        purple stained glass
+        purple stained glass pane
+        purple terracotta
+        purple wool
+        purpur block
+        purpur pillar
+        purpur slab
+        purpur stairs
+        quartz
+        quartz block
+        quartz bricks
+        quartz pillar
+        quartz slab
+        quartz stairs
+        rabbit
+        rabbit foot
+        rabbit hide
+        rabbit spawn egg
+        rabbit stew
+        rail
+        raiser armor trim smithing template
+        ravager spawn egg
+        raw copper
+        raw copper block
+        raw gold
+        raw gold block
+        raw iron
+        raw iron block
+        recovery compass
+        red banner
+        red bed
+        red candle
+        red carpet
+        red concrete
+        red concrete powder
+        red dye
+        red glazed terracotta
+        red mushroom
+        red mushroom block
+        red nether brick slab
+        red nether brick stairs
+        red nether brick wall
+        red nether bricks
+        red sand
+        red sandstone
+        red sandstone slab
+        red sandstone stairs
+        red sandstone wall
+        red shulker box
+        red stained glass
+        red stained glass pane
+        red terracotta
+        red tulip
+        red wool
+        redstone
+        redstone block
+        redstone lamp
+        redstone ore
+        redstone torch
+        repeater
+        repeating command block
+        respawn anchor
+        rib armor trim smithing template
+        rooted dirt
+        rose bush
+        rotten flesh
+        saddle
+        salmon
+        salmon bucket
+        salmon spawn egg
+        sand
+        sandstone
+        sandstone slab
+        sandstone stairs
+        sandstone wall
+        scaffolding
+        sculk
+        sculk catalyst
+        sculk vein
+        sculk sensor
+        sculk shrieker
+        scute
+        sea lantern
+        sea pickle
+        seagrass
+        sentry armor trim smithing template
+        shaper armor trim smithing template
+        shears
+        sheep spawn egg
+        shield
+        shroomlight
+        sheaf pottery sherd
+        shelter pottery sherd
+        shulker box
+        shulker shell
+        shulker spawn egg
+        silence armor trim smithing template
+        silverfish spawn egg
+        skeleton horse spawn egg
+        skeleton skull
+        skeleton spawn egg
+        skull banner pattern
+        skull pottery sherd
+        slime ball
+        slime block
+        slime spawn egg
+        small amethyst bud
+        small dripleaf
+        smithing table
+        smoker
+        smooth basalt
+        smooth quartz
+        smooth quartz slab
+        smooth quartz stairs
+        smooth red sandstone
+        smooth red sandstone slab
+        smooth red sandstone stairs
+        smooth sandstone
+        smooth sandstone slab
+        smooth sandstone stairs
+        smooth stone
+        smooth stone slab
+        sniffer egg
+        sniffer spawn egg
+        snort pottery sherd
+        snout armor trim smithing template
+        snow
+        snow block
+        snowball
+        soul campfire
+        soul lantern
+        soul sand
+        soul soil
+        soul torch
+        spawner
+        spectral arrow
+        spider eye
+        spider spawn egg
+        spire armor trim smithing template
+        splash potion
+        sponge
+        spore blossom
+        spruce boat
+        spruce button
+        spruce chest boat
+        spruce door
+        spruce fence
+        spruce fence gate
+        spruce hanging sign
+        spruce leaves
+        spruce log
+        spruce planks
+        spruce pressure plate
+        spruce sapling
+        spruce sign
+        spruce slab
+        spruce stairs
+        spruce trapdoor
+        spruce wood
+        spyglass
+        squid spawn egg
+        stick
+        sticky piston
+        stone
+        stone axe
+        stone brick slab
+        stone brick stairs
+        stone brick wall
+        stone bricks
+        stone button
+        stone hoe
+        stone pickaxe
+        stone pressure plate
+        stone shovel
+        stone slab
+        stone stairs
+        stone sword
+        stonecutter
+        stray spawn egg
+        strider spawn egg
+        string
+        stripped acacia log
+        stripped acacia wood
+        stripped bamboo block
+        stripped birch log
+        stripped birch wood
+        stripped cherry log
+        stripped cherry wood
+        stripped crimson hyphae
+        stripped crimson stem
+        stripped dark oak log
+        stripped dark oak wood
+        stripped jungle log
+        stripped jungle wood
+        stripped mangrove log
+        stripped mangrove wood
+        stripped oak log
+        stripped oak wood
+        stripped spruce log
+        stripped spruce wood
+        stripped warped hyphae
+        stripped warped stem
+        structure block
+        structure void
+        sugar
+        sugar cane
+        sunflower
+        suspicious gravel
+        suspicious sand
+        suspicious stew
+        sweet berries
+        tadpole bucket
+        tall grass
+        target
+        terracotta
+        tide armor trim smithing template
+        tinted glass
+        tipped arrow
+        tnt
+        tnt minecart
+        torch
+        torchflower
+        torchflower seeds
+        totem of undying
+        trader llama spawn egg
+        trapped chest
+        trident
+        tripwire hook
+        tropical fish
+        tropical fish bucket
+        tropical fish spawn egg
+        tube coral
+        tube coral block
+        tube coral fan
+        tuff
+        turtle egg
+        turtle helmet
+        turtle spawn egg
+        twisting vines
+        verdant froglight
+        vex armor trim smithing template
+        vex spawn egg
+        villager spawn egg
+        vindicator spawn egg
+        vine
+        wandering trader spawn egg
+        ward armor trim smithing template
+        warped button
+        warped door
+        warped fence
+        warped fence gate
+        warped fungus
+        warped fungus on a stick
+        warped hanging sign
+        warped hyphae
+        warped nylium
+        warped planks
+        warped pressure plate
+        warped roots
+        warped sign
+        warped slab
+        warped stairs
+        warped stem
+        warped trapdoor
+        warped wart block
+        water bucket
+        waxed copper block
+        waxed cut copper
+        waxed cut copper slab
+        waxed cut copper stairs
+        waxed exposed copper
+        waxed exposed cut copper
+        waxed exposed cut copper slab
+        waxed exposed cut copper stairs
+        waxed oxidized copper
+        waxed oxidized cut copper
+        waxed oxidized cut copper slab
+        waxed oxidized cut copper stairs
+        waxed weathered copper
+        waxed weathered cut copper
+        waxed weathered cut copper slab
+        waxed weathered cut copper stairs
+        wayfinder armor trim smithing template
+        weathered copper
+        weathered cut copper
+        weathered cut copper slab
+        weathered cut copper stairs
+        weeping vines
+        wet sponge
+        wheat
+        wheat seeds
+        white banner
+        white bed
+        white candle
+        white carpet
+        white concrete
+        white concrete powder
+        white dye
+        white glazed terracotta
+        white shulker box
+        white stained glass
+        white stained glass pane
+        white terracotta
+        white tulip
+        white wool
+        wild armor trim smithing template
+        witch spawn egg
+        wither rose
+        wither skeleton skull
+        wither skeleton spawn egg
+        wolf spawn egg
+        wooden axe
+        wooden hoe
+        wooden pickaxe
+        wooden shovel
+        wooden sword
+        writable book
+        written book
+        yellow banner
+        yellow bed
+        yellow candle
+        yellow carpet
+        yellow concrete
+        yellow concrete powder
+        yellow dye
+        yellow glazed terracotta
+        yellow shulker box
+        yellow stained glass
+        yellow stained glass pane
+        yellow terracotta
+        yellow wool
+        zoglin spawn egg
+        zombie head
+        zombie horse spawn egg
+        zombie spawn egg
+        zombie villager spawn egg
+        zombified piglin spawn egg

@@ -11,3 +11,9 @@ expression <((?<=( |^))-{0,1})(\d+)(\.\d+)?(?!\.)\b>:
 
 expression console:
     return type: commandsender
+
+expression block at %location%:
+    set:
+#		(internal code)
+    delete:
+#		(internal code)

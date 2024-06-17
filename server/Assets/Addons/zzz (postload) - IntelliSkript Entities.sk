@@ -1,0 +1,86 @@
+expression:
+    return type: entity
+    patterns:
+        allay
+        armadillo
+        armor stand
+        axolotl
+        bat
+        bee
+        blaze
+        bogged
+        breeze
+        cat
+        cave spider
+        chicken
+        cod
+        cow
+        creeper
+        dolphin
+        donkey
+        drowned
+        elder guardian
+        ender dragon
+        enderman
+        endermite
+        evoker
+        fox
+        frog
+        ghast
+        giant
+        glow squid
+        goat
+        guardian
+        hoglin
+        horse
+        husk
+        illusioner
+        iron golem
+        llama
+        magma cube
+        mooshroom
+        mule
+        ocelot
+        panda
+        parrot
+        phantom
+        pig
+        piglin
+        piglin brute
+        pillager
+        player
+        polar bear
+        pufferfish
+        rabbit
+        ravager
+        salmon
+        sheep
+        shulker
+        silverfish
+        skeleton
+        skeleton horse
+        slime
+        sniffer
+        snow golem
+        spider
+        strider
+        squid
+        stray
+        tadpole
+        llama
+        tropical fish
+        turtle
+        vex
+        villager
+        vindicator
+        wandering trader
+        warden
+        witch
+        wither
+        wither skeleton
+        wolf
+        zoglin
+        zombie
+        zombie horse
+        zombie villager
+        zombified piglin
