@@ -11,28 +11,22 @@ export class SkriptEventSection extends SkriptPatternContainerSection {
 
 
 	createSection(context: SkriptContext): SkriptSection {
-		const regex = /^(pattern(|s)|check)$/;
-		const result = regex.exec(context.currentString);
-
-
-		if (result == null) {
-			context.addDiagnostic(0, context.currentString.length, "cannot recognize this section");
-		}
-		if(context.currentString == "check"){
+		if (context.currentString == "check")
 			return new SkriptSection(context, this);
-		}
+
 		return super.createSection(context);
 	}
 	processLine(context: SkriptContext): void {
 		if (context.currentString.startsWith("event-values: ")) {
 			let currentPosition = "event-values: ".length;
 			const valueStrings = context.currentString.substring(currentPosition).split(", ");
-			const unknownType = this.getTypeData("unknown");
+			//const unknownType = this.getTypeData("unknown");
 			for (let i = 0; i < valueStrings.length; i++) {
 				//valueStrings.forEach(element => {
 				//const type = context.currentSection?.parseType(context, currentPosition, currentPosition + valueStrings[i].length);
-				if (unknownType) {
-					this.eventValues.push(new PatternData("[the] [event( |-)]]" + valueStrings[i], "(the )?(event( |-))?" + valueStrings[i], context.getLocation(currentPosition, valueStrings[i].length), [new SkriptTypeState(unknownType)], PatternType.effect, this));
+				const eventValueType = this.getTypeData(valueStrings[i]);
+				if (eventValueType) {
+					this.eventValues.push(new PatternData("[the] [event( |-)]]" + valueStrings[i], "(the )?(event( |-))?" + valueStrings[i], context.getLocation(currentPosition, valueStrings[i].length), PatternType.effect, this, [], [], new SkriptTypeState(eventValueType)));
 				}
 				//this.eventValues.pu;
 				currentPosition += valueStrings[i].length + ", ".length;
@@ -49,10 +43,8 @@ export class SkriptEventSection extends SkriptPatternContainerSection {
 		//}
 	}
 	override addPattern(context: SkriptContext): void {
-		assert(context.currentSkriptFile != undefined);
 		const pattern = PatternTree.parsePattern(context, this, PatternType.event);
-		if (pattern) {
+		if (pattern)
 			context.currentSkriptFile.addPattern(pattern);
-		}
 	}
 }

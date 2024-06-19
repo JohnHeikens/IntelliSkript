@@ -2,6 +2,7 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Position, SemanticTokens, SemanticTokensBuilder, SemanticTokensDelta } from 'vscode-languageserver/node';
 import { TokenModifiers } from '../../TokenModifiers';
 import { TokenTypes } from '../../TokenTypes';
+import * as IntelliSkriptConstants from '../../IntelliSkriptConstants';
 
 export class SemanticToken {
 	position: Position;
@@ -86,7 +87,7 @@ export class UnOrderedSemanticTokensBuilder {
 
 	lines: SemanticTokenLine[] = [];
 	//this way, you are required to provide the most recent document
-	startNextBuild(document : TextDocument) {
+	startNextBuild(document: TextDocument) {
 		this.lines = new Array<SemanticTokenLine>(document.getText().split("\n").length);
 	}
 
@@ -102,7 +103,16 @@ export class UnOrderedSemanticTokensBuilder {
 		if (this.lines[token.position.line] == undefined) {
 			this.lines[token.position.line] = new SemanticTokenLine();
 		}
-		this.lines[token.position.line].tokens.push(token);
+		const lineTokens = this.lines[token.position.line].tokens;
+		if (!IntelliSkriptConstants.IsReleaseMode) {
+			//check if no tokens overlap
+			for (const lineToken of lineTokens) {
+				if ((token.position.character + token.length > lineToken.position.character) &&
+					(lineToken.position.character + lineToken.length > token.position.character))
+					throw "token overlap";
+			}
+		}
+		lineTokens.push(token);
 	}
 	previousResult(id: string): void {
 		this._builder.previousResult(id);

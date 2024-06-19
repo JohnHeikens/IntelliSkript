@@ -1,5 +1,5 @@
-import type { Location } from 'vscode-languageserver/node';
-import type { SkriptTypeState } from "../../Skript/SkriptTypeState";
+import type { integer, Location } from 'vscode-languageserver/node';
+import { SkriptTypeState } from "../../Skript/SkriptTypeState";
 import type { SkriptPatternContainerSection } from '../../Skript/Section/Reflect/SkriptPatternContainerSection';
 
 export class PatternData {
@@ -9,15 +9,30 @@ export class PatternData {
 	regexPatternString: string;
 	patternRegExp: RegExp;
 	expressionArguments: SkriptTypeState[];
-	type: PatternType = PatternType.effect;
-	constructor(skriptPatternString: string, regexPatternString: string, definitionLocation: Location, patternExpressionArguments: SkriptTypeState[], type: PatternType, section?: SkriptPatternContainerSection) {
+	returnType: SkriptTypeState;
+	argumentPositions: Location[] = [];
+	patternType: PatternType = PatternType.effect;
+	/**
+	 * 
+	 * @param skriptPatternString 
+	 * @param regexPatternString 
+	 * @param definitionLocation 
+	 * @param patternType 
+	 * @param section 
+	 * @param expressionArguments 
+	 * @param argumentPositions 
+	 * @param resultType passed by reference!
+	 */
+	constructor(skriptPatternString: string, regexPatternString: string, definitionLocation: Location, patternType: PatternType, section?: SkriptPatternContainerSection, expressionArguments?: SkriptTypeState[], argumentPositions?: Location[], resultType?: SkriptTypeState) {
 		this.skriptPatternString = skriptPatternString;
 		this.regexPatternString = regexPatternString;
 		this.patternRegExp = new RegExp(regexPatternString);
 		this.definitionLocation = definitionLocation;
 		this.section = section;
-		this.expressionArguments = patternExpressionArguments;
-		this.type = type;
+		this.expressionArguments = expressionArguments ?? [];
+		this.argumentPositions = argumentPositions ?? [];
+		this.patternType = patternType;
+		this.returnType = resultType ?? new SkriptTypeState();
 		//check if the pattern is a wildcard
 		//const h = createRegExpHierarchy(this.regexPatternString);
 		//remove optional parts

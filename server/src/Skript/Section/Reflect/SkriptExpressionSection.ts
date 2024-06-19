@@ -18,7 +18,6 @@ export class SkriptExpressionSection extends SkriptPatternContainerSection {
 	hasReset = false;
 	//delete x::*
 	hasRemoveAll = false;
-	returnType = new SkriptTypeState();
 	createSection(context: SkriptContext): SkriptSection {
 		let recognized = true;
 		if (context.currentString == "get") {
@@ -43,34 +42,22 @@ export class SkriptExpressionSection extends SkriptPatternContainerSection {
 			this.hasReset = true;
 		}
 		else {
-			const regex = /^(pattern(|s))$/;
-			const result = regex.exec(context.currentString);
-
-
-			if (result == null) {
-				recognized = false;
-				context.addDiagnostic(0, context.currentString.length, "cannot recognize this section");
-			}
+			recognized = false;
 		}
 		if (recognized) {
 			context.addToken(TokenTypes.keyword);
+			return new SkriptSection(context, this);
 		}
-		return super.createSection(context);
+		else
+			return super.createSection(context);
 	}
 	processLine(context: SkriptContext): void {
 		if (context.currentString.startsWith("return type: ")) {
-			const parsedType = this.parseType(context, "return type: ".length);
+			context.addToken(TokenTypes.keyword, 0, "return type: ".length);
+			let parsedType = this.parseType(context, "return type: ".length) ?? this.getTypeData("object");
 			if (parsedType) {
-				this.returnType = new SkriptTypeState(parsedType);
+				this.returnType.possibleTypes.push(parsedType);
 			}
-			else {
-				const obj = this.getTypeData("object");
-				if (obj) {
-					this.returnType = new SkriptTypeState(obj);
-				}
-			}
-			//this.returnType = new skriptt(context.currentString.substring("return type: ".length).toLowerCase());
 		}
-		//TODO throw error
 	}
 }

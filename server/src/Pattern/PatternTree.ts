@@ -15,6 +15,7 @@ import { PatternType } from './PatternType';
 import { removeDuplicates } from "./removeDuplicates";
 import assert = require('assert');
 import { TypeNode } from './PatternTreeNode/TypeNode';
+import { TokenModifiers } from '../TokenModifiers';
 
 //flags: U -> ungreedy, g -> global
 const argumentRegExp = /%(.*?)%/g;
@@ -58,10 +59,10 @@ function convertSkriptPatternToRegExp(pattern: string, hierarchy: SkriptNestHier
 	if (currentPosition < hierarchy.end) {
 		fixedString += convertString(pattern.substring(currentPosition, hierarchy.end));
 	}
-	fixedString = fixedString.replace(/ ?\.\+ ?/g,  (match, offset, wholeString) => {
+	fixedString = fixedString.replace(/ ?\.\+ ?/g, (match, offset, wholeString) => {
 		return `(${match})?`;
 	});
-	
+
 	return fixedString;
 	//let fixedString = pattern.substring(hierarchy.start, hierarchy.children[
 }
@@ -309,12 +310,12 @@ export class PatternTree implements PatternMatcher {
 				}
 			}
 		}
+		hierarchy.end = context.currentString.length;
 
 		const lastActiveNode = hierarchy.getActiveNode();
 		if (lastActiveNode != hierarchy) {
-			context.addDiagnostic(lastActiveNode.start, 1, "no matching closing character found", DiagnosticSeverity.Error, "IntelliSkript->Nest->No Matching");
+			context.addDiagnostic(lastActiveNode.start, hierarchy.end - lastActiveNode.start, "no matching closing character found", DiagnosticSeverity.Error, "IntelliSkript->Nest->No Matching");
 		}
-		hierarchy.end = context.currentString.length;
 		return hierarchy;
 	}
 
@@ -376,26 +377,31 @@ export class PatternTree implements PatternMatcher {
 			let m: RegExpMatchArray | null;
 			const expressionArguments: SkriptTypeState[] = [];
 			let shouldReturn = false;
+			const argumentPositions: Location[] = [];
+			let previousTokenEndPos = 0;
 			while ((m = argumentRegExp.exec(context.currentString))) {
 				assert(m.index != undefined);
+				const typeStart = m.index + 1;
 				const typeString = m[1];
-
-				const result = context.currentSection.parseTypes(context, m.index + 1, m.index + 1 + m[1].length);
-				context.addToken(TokenTypes.type, m.index + 1, typeString.length);
+				context.addToken(TokenTypes.regexp, previousTokenEndPos, typeStart - previousTokenEndPos);
+				const result = context.currentSection.parseTypes(context, typeStart, typeStart + typeString.length);
 				if (result) {
 					expressionArguments.push(result);
 				}
 				else {
-					context.addDiagnostic(m.index + 1, typeString.length, "this type is not recognized", DiagnosticSeverity.Error, "IntelliSkript->Type->Not Recognized");
+					context.addDiagnostic(typeStart, typeString.length, "this type is not recognized", DiagnosticSeverity.Error, "IntelliSkript->Type->Not Recognized");
 					const obj = context.currentSection.getTypeData('object');
-					if (obj) {
+					if (obj) {//we expect the 'object' type to always be available
 						expressionArguments.push(new SkriptTypeState(obj));
 					}
 					else {
 						shouldReturn = true;
 					}
 				}
+				previousTokenEndPos = typeStart + typeString.length;
+				argumentPositions.push(context.getLocation(typeStart, typeString.length));
 			}
+			context.addToken(TokenTypes.regexp, previousTokenEndPos);
 			if (shouldReturn) return;
 
 			let fixedString = convertSkriptPatternToRegExp(context.currentString, Hierarchy);
@@ -412,10 +418,7 @@ export class PatternTree implements PatternMatcher {
 				fixedString = this.fixRegExpHierarchically(fixedString, regExpHierarchy);
 				regExpHierarchy = createRegExpHierarchy(fixedString);
 
-				const data = new PatternData(context.currentString, fixedString, Location.create(context.currentDocument.uri, {
-					start: context.currentDocument.positionAt(context.currentPosition),
-					end: context.currentDocument.positionAt(context.currentPosition + context.currentString.length)
-				}), expressionArguments, type, patternSection);
+				const data = new PatternData(context.currentString, fixedString, context.getLocation(0, context.currentString.length), type, patternSection, expressionArguments, argumentPositions);
 				return data;
 			}
 			catch (e) {
@@ -447,18 +450,17 @@ export class PatternTree implements PatternMatcher {
 		}
 	}
 
-	getMatchingPatternPart(testPattern: SkriptPatternCall): PatternData | undefined {
+	getMatchingPatternPart(testPattern: SkriptPatternCall, currentNode: PatternTreeNode | undefined = this.root, index: number = 0, typeIndex: number = 0): PatternData | undefined {
 		const pattern = testPattern.pattern;
-		if (!this.root) return undefined;
-		let currentNode = this.root;
-		let typeIndex = 0;
-		patternLoop: for (let index = 0; index <= pattern.length; index++) {
+		if (!currentNode) return undefined;
+		for (; index <= pattern.length; index++) {
 			if (currentNode.endNode) { // && (index == (pattern.length))) {
-				//we can also stop the match earlier
-				if (index == pattern.length || (pattern[index] == ' ')) {
+				// we don't have to stop the match earlier anymore, because we match against all possibilities
+				if (index == pattern.length) {//} || (pattern[index] == ' ')) {
 					return currentNode.endNode;
 				}
 			}
+			else if (index == pattern.length) return undefined;
 			const currentChar = pattern[index];
 			const charChild = currentNode.stringOrderedChildren.get(currentChar);
 			if (charChild) {
@@ -469,11 +471,12 @@ export class PatternTree implements PatternMatcher {
 				for (const otherChild of currentNode.otherNodes) {
 					if (otherChild instanceof TypeNode && typeIndex < testPattern.expressionArguments.length) {
 						if (testPattern.expressionArguments[typeIndex].canBeInstanceOf((otherChild as TypeNode).type)) {
-							//for now, just match the first occurence. we could also do a lookup for multiple types
-							//for example: match "a %number% b" against "a %object% b" and "a %number%". in this case the first occurrence would be better
-							currentNode = otherChild;
-							typeIndex++;
-							continue patternLoop;
+							// we could also do a lookup for multiple types
+							// for example: match "a %number% b" against "a %object% b" and "a %number%". in this case the first occurrence would be better
+							const resultOption = this.getMatchingPatternPart(testPattern, otherChild, index + 1, typeIndex + 1);
+							if (resultOption) {
+								return resultOption;
+							}
 						}
 					}
 				}

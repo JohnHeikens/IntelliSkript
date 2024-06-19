@@ -5,20 +5,19 @@ import {
 	SkriptSection
 } from "../SkriptSection/SkriptSection";
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
-export class SkriptEffect extends SkriptPatternContainerSection{
+export class SkriptEffect extends SkriptPatternContainerSection {
 	createSection(context: SkriptContext): SkriptSection {
-		const regex = /^(parse|trigger|pattern(|s))$/;
+		const regex = /^(parse|trigger)$/;
 		const result = regex.exec(context.currentString);
 
-		if (result == null){
-			context.addDiagnostic(0, context.currentString.length, "cannot recognize this section. make sure to put your code for the effect in triggers");
-		}
-		else{
+		if (result) {
 			context.addToken(TokenTypes.keyword, 0, context.currentString.length);
+			return new SkriptSection(context, this);
 		}
-		return super.createSection(context);
+		else return super.createSection(context);
 	}
 	processLine(context: SkriptContext): void {
 		context.addDiagnostic(0, context.currentString.length, "make sure to put your code for the effect in triggers", DiagnosticSeverity.Error, "IntelliSkript->Section->Wrong");
 	}
+
 }

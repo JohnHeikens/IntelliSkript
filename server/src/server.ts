@@ -47,6 +47,7 @@ import { Sleep } from './Thread';
 import { SkriptFolder } from './Skript/WorkSpace/SkriptFolder';
 import { SkriptVariable } from './Skript/SkriptVariable';
 import { PatternData } from './Pattern/Data/PatternData';
+import { idParser } from './Skript/Addon Parser/idParser';
 
 
 // Create a connection for the server, using Node's IPC as a transport.
@@ -76,16 +77,16 @@ function computeLegend(capability: SemanticTokensClientCapabilities): SemanticTo
 	const clientTokenModifiers = new Set<string>(capability.tokenModifiers);
 
 	const tokenTypes: string[] = [];
+	//compute a token legend.
+	//the client provides a list of token type strings it can understand. for example:
+	//"string", "comment", "function". we need to 'translate' our tokens to these tokens.
 	for (let i = 0; i < TokenTypes.length; i++) {
 		const str = TokenTypes[i];
 		if (clientTokenTypes.has(str)) {
 			tokenTypes.push(str);
 		} else {
-			if (str === 'lambdaFunction') {
-				tokenTypes.push('function');
-			} else {
-				tokenTypes.push('type');
-			}
+			//for now, still add the token as-is
+			tokenTypes.push(str);
 		}
 	}
 
@@ -106,6 +107,7 @@ connection.onInitialize(async (params: InitializeParams) => {
 	if (!IntelliSkriptConstants.IsReleaseMode) {
 		await Sleep(5000);//give the debugger time to start
 		AddonParser.ParseFiles();
+		idParser.ParseFiles();
 	}
 	currentWorkSpace.readAddonFiles();
 
@@ -380,10 +382,10 @@ async function validateTextDocument(textDocument: TextDocument, couldBeChanged: 
 	//const settings = getDocumentSettings(textDocument.uri);
 
 
-	if (couldBeChanged) {
-		const file = currentWorkSpace.getSkriptFileByUri(textDocument.uri);
-		file?.updateContent(textDocument);
-	}
+	//if (couldBeChanged) {
+	//	const file = currentWorkSpace.getSkriptFileByUri(textDocument.uri);
+	//	file?.updateContent(textDocument);
+	//}
 	currentWorkSpace.validateTextDocument(textDocument);
 
 	const validatedDocument = currentWorkSpace.getSkriptFileByUri(textDocument.uri);
@@ -620,6 +622,7 @@ connection.languages.semanticTokens.on((params) => {
 	//const settings = getDocumentSettings(params.textDocument.uri);
 	const file = currentWorkSpace.getSkriptFileByUri(params.textDocument.uri);
 	if (file == undefined) {
+		//this happens in a changes preview. todo: add support for changes preview
 		return { data: [] };
 	}
 	else {

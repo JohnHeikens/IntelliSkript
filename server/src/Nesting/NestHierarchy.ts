@@ -53,4 +53,14 @@ export class NestHierarchy<t extends NestHierarchy<t>> {
 		const child = this.getChildNodeAt(pos);
 		return child ? child.getDeepestChildNodeAt(pos) : this as unknown as t;
 	}
+	addNestedChild(child: t) {
+		let currentParent: NestHierarchy<t> = this;
+		while (true) {
+			const currentChildChild = currentParent.getChildNodeAt(child.start);
+			if (currentChildChild && currentChildChild.start <= child.start && currentChildChild.end >= child.end)
+				currentParent = currentChildChild;
+			else break;
+		}
+		currentParent.children.push(child);
+	}
 }

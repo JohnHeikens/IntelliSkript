@@ -46,7 +46,8 @@ export class SkriptPatternCall {
     }
     compare(testPattern: PatternData): boolean {
         if (this.compareArgumentTypes(testPattern)) {
-            return testPattern.patternRegExp.test(this.pattern);
+            //make sure it matches exactly
+            return new RegExp(`^${testPattern.regexPatternString}$`).test(this.pattern);
         }
         else {
             return false;

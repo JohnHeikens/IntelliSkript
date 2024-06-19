@@ -19,7 +19,7 @@ export class SkriptEventListenerSection extends SkriptSection {
 			const s = this.eventPattern.section as SkriptEventSection;
 			assert(s.eventValues);
 			for (let i = 0; i < s.eventValues.length; i++) {
-				if (s.eventValues[i].patternRegExp.test(testPattern.pattern)) {
+				if (testPattern.compare(s.eventValues[i])) {
 					return s.eventValues[i];
 				}
 			}

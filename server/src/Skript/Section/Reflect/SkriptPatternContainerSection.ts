@@ -5,33 +5,55 @@ import { SkriptSection } from '../SkriptSection/SkriptSection';
 import { SkriptPatternSection } from './SkriptPatternSection';
 import { PatternTree } from '../../../Pattern/PatternTree';
 import assert = require('assert');
+import { DiagnosticSeverity } from 'vscode-languageserver';
+import { PatternData } from '../../../Pattern/Data/PatternData';
+import { SkriptPatternCall } from '../../../Pattern/SkriptPattern';
+import { PatternResultProcessor } from '../../../Pattern/patternResultProcessor';
+import { SkriptTypeState } from '../../SkriptTypeState';
 
-const patternRegEx = /^pattern(|s)$/;
+const patternRegEx = "pattern(|s)";
 export class SkriptPatternContainerSection extends SkriptSection {
+	argumentPatternTree: PatternTree = new PatternTree();
+	returnType: SkriptTypeState = new SkriptTypeState();
 	addPattern(context: SkriptContext): void {
-		assert(context.currentSkriptFile != undefined);
 		const pattern = PatternTree.parsePattern(context, this, PatternType.effect);
 		if (pattern) {
+			pattern.returnType = this.returnType;
 			context.currentSkriptFile.addPattern(pattern);
+			if (this.argumentPatternTree.compatiblePatterns.length == 0) {
+				let counter = 0;
+				for (const argumentType of pattern.expressionArguments) {
+					const argumentPosition = pattern.argumentPositions[counter];
+					//increase before converting to text, so the first argument will be 'expr-1'
+					counter++;
+					this.argumentPatternTree.addPattern(new PatternData("expr-" + counter, "expr-" + counter, argumentPosition, PatternType.effect, this, [], [], argumentType));
+				}
+			}
 		}
 	}
 
 	createSection(context: SkriptContext): SkriptSection {
-		const result = patternRegEx.exec(context.currentString);
-		if (result) {
-			context.addToken(TokenTypes.keyword, 0, context.currentString.length);
+		//match whole string
+		if (new RegExp(`^${patternRegEx}$`).test(context.currentString)) {
+			context.addToken(TokenTypes.keyword);
 			return new SkriptPatternSection(context, this);
 		}
 		else {
-			//context.addDiagnostic(0, context.currentString.length, "unknown section", DiagnosticSeverity.Error, "IntelliSkript->Section->Unknown");
-			return super.createSection(context);
+			//we don't recognise this pattern
+			context.addDiagnostic(0, context.currentString.length, "unknown section", DiagnosticSeverity.Hint, "IntelliSkript->Section->Unknown");
+			return new SkriptSection(context, this);
 		}
 	}
 	processLine(context: SkriptContext): void {
-		if(patternRegEx.test(context.currentString)) {
-			const spaceIndex = context.currentString.indexOf(' ');
-			context.addToken(TokenTypes.keyword, 0, spaceIndex);
-			this.addPattern(context.push(spaceIndex + 1));
+		//match start of string and with : and space
+		const result = new RegExp(`^${patternRegEx}: `).exec(context.currentString)
+		if (result) {
+			context.addToken(TokenTypes.keyword, 0, result[0].length);
+			this.addPattern(context.push(result[0].length));
 		}
+	}
+	override getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
+		return this.argumentPatternTree.getPatternData(testPattern, shouldContinue) ??
+			super.getPatternData(testPattern, shouldContinue);
 	}
 }

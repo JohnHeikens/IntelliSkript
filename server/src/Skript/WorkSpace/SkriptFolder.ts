@@ -5,6 +5,7 @@ import { PatternResultProcessor } from '../../Pattern/patternResultProcessor';
 import { PatternTreeContainer } from '../PatternTreeContainer';
 import { SkriptFile } from '../Section/SkriptFile';
 import { SkriptFolderContainer } from './SkriptFolderContainer';
+import { SkriptWorkSpace } from './SkriptWorkSpace';
 
 export class SkriptFolder extends SkriptFolderContainer {
 	uri = "";
@@ -21,6 +22,15 @@ export class SkriptFolder extends SkriptFolderContainer {
 	getSkriptFileByUri(uri: string): SkriptFile | undefined {
 		const index = this.getSkriptFileIndexByUri(uri);
 		return index == undefined ? undefined : this.files[index];
+	}
+	/**invalidate all files in this folder and child folders */
+	invalidate() {
+		for (const file of this.files)
+			file.invalidate();
+
+		for (const folder of this.children)
+			folder.invalidate();
+
 	}
 	validate() {
 		this.patterns = new PatternTreeContainer();

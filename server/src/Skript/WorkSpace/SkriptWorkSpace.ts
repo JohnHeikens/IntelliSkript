@@ -2,16 +2,15 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import { PatternData } from "../../Pattern/Data/PatternData";
 import { PatternResultProcessor } from "../../Pattern/patternResultProcessor";
 import { PatternTreeContainer } from '../PatternTreeContainer';
-import { SkriptContext } from '../SkriptContext';
 import { SkriptFile } from '../Section/SkriptFile';
 import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
 import path = require('path');
 import { SkriptFolder } from './SkriptFolder';
 import { SkriptFolderContainer } from './SkriptFolderContainer';
-import { intelliSkriptAddonSkFilesDirectory } from '../Addon Parser/AddonParser';
 import * as fs from 'fs';
 import { fileURLToPath } from 'url';
 import { URI } from 'vscode-uri';
+import { AddonSkFilesDirectory } from '../../IntelliSkriptConstants';
 
 export class SkriptWorkSpace extends SkriptFolderContainer {
 	//the 'childsections' variable is not used here. TODO somehow merge the childsections and files variable
@@ -32,21 +31,25 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 
 		files.forEach(file => {
 			const completePath = path.join(folderPath, file);
-			const extName = path.extname(completePath);
 			//convert path back to URI
 			const fileUri = URI.file(completePath).toString();
-			if (extName == '') {
+
+			const stat = fs.lstatSync(completePath);
+			if (stat.isDirectory()) {
 				const child = new SkriptFolder(folder, fileUri);
 				//folder
 				folder.children.push(child);
 				//add folders recursively
 				this.addFolder(child);
 			}
-			else if (extName == 'sk') {
-				const document = TextDocument.create(fileUri, "sk", 0, fs.readFileSync(completePath, "utf8"));
-				const skriptFile = new SkriptFile(folder, document);
-				skriptFile.validate();
-				folder.files.push(skriptFile);
+			else if (stat.isFile()) {
+				const extName = path.extname(completePath);
+				if (extName == '.sk') {
+					const document = TextDocument.create(fileUri, "sk", 0, fs.readFileSync(completePath, "utf8"));
+					const skriptFile = new SkriptFile(folder, document);
+					skriptFile.validate();
+					folder.files.push(skriptFile);
+				}
 			}
 			//else, it's another file
 		});
@@ -59,7 +62,7 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 	//the constructor will be used before the debugger is launched. caution!
 	constructor() {
 		super();
-		this.addonFolder = new SkriptFolder(this, URI.file(intelliSkriptAddonSkFilesDirectory).toString());
+		this.addonFolder = new SkriptFolder(this, URI.file(AddonSkFilesDirectory).toString());
 	}
 
 	getSkriptFileByUri(uri: string): SkriptFile | undefined {
@@ -72,7 +75,7 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 		}
 	}
 
-	validateTextDocument(document: TextDocument): void {
+	validateTextDocument(document: TextDocument, couldBeChanged: boolean = true): void {
 		let file = this.getSkriptFileByUri(document.uri);
 		if (!file) {
 			const folder = this.getFolderByUri(document.uri);
@@ -83,6 +86,33 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 			}
 			else {
 				this.looseFiles.push(file);
+			}
+		}
+		else if (couldBeChanged && file.updateContent(document)) {
+			// the document has changed
+			// all files coming 'after' this file need to be updated. 
+			// not only the previous dependents, because it could be that other files will get a dependency now
+			let found = false;
+			if (file.parent instanceof SkriptFolder) {
+				for (const folderFile of file.parent.files) {
+					if (folderFile == file) {
+						found = true;
+					}
+					if (found) {
+						folderFile.invalidate();
+					}
+				}
+				//invalidate the folder and all subfolders
+				file.parent.invalidate();
+
+				if (file.parent == this.addonFolder) {
+					//this is the addon folder, all files in the workspace depend on this
+					for (const folder of this.children)
+						folder.invalidate();
+					for (const looseFile of this.looseFiles)
+						looseFile.invalidate();
+
+				}
 			}
 		}
 

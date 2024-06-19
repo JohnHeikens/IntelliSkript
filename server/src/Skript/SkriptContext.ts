@@ -1,17 +1,12 @@
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { Diagnostic, DiagnosticSeverity, Location } from 'vscode-languageserver/node';
+import { Diagnostic, DiagnosticSeverity, Location, Range } from 'vscode-languageserver/node';
 import { SkriptNestHierarchy } from '../Nesting/SkriptNestHierarchy';
 import * as IntelliSkriptConstants from '../IntelliSkriptConstants';
-import { stopAtFirstResultProcessor } from '../Pattern/patternResultProcessor';
 import { TokenModifiers } from '../TokenModifiers';
 import { TokenTypes } from '../TokenTypes';
-import { PatternType } from "../Pattern/PatternType";
 import { SkriptSection } from "./Section/SkriptSection/SkriptSection";
-import { SemanticToken, UnOrderedSemanticTokensBuilder } from './Section/UnOrderedSemanticTokensBuilder';
-import { SkriptTypeState } from "./SkriptTypeState";
+import { SemanticToken } from './Section/UnOrderedSemanticTokensBuilder';
 import { SkriptFile } from './Section/SkriptFile';
-import { SkriptPatternCall } from '../Pattern/SkriptPattern';
-import assert = require('assert');
 import { SkriptPatternMatchHierarchy } from './SkriptPatternMatchHierarchy';
 import { PatternData } from '../Pattern/Data/PatternData';
 
@@ -62,7 +57,7 @@ export class SkriptContext {
 	}
 
 	//CAUTION! HIGHLIGHTING SHOULD BE DONE IN ORDER
-	addToken(type: TokenTypes, relativePosition = 0, length = this.currentString.length, zIndex = 0, modifier: TokenModifiers = TokenModifiers.abstract): void {
+	addToken(type: TokenTypes, relativePosition = 0, length = this.currentString.length - relativePosition, zIndex = 0, modifier: TokenModifiers = TokenModifiers.abstract): void {
 		const absolutePosition = this.currentDocument.positionAt(this.currentPosition + relativePosition);
 		this.currentSkriptFile.builder.push(new SemanticToken(absolutePosition, length, type, modifier, zIndex));
 	}
@@ -82,16 +77,13 @@ export class SkriptContext {
 		};
 	}
 
-	addDiagnostic(relativePosition: number, length: number, message: string, severity: DiagnosticSeverity = DiagnosticSeverity.Error, code?: string, data: unknown = undefined): void {
+	addDiagnosticAbsolute(absoluteRange: Range, message: string, severity: DiagnosticSeverity = DiagnosticSeverity.Error, code?: string, data: unknown = undefined) {
 		if (severity == DiagnosticSeverity.Error) {
 			this.hasErrors = true;
 		}
 		const diagnostic: Diagnostic = {
 			severity: severity,
-			range: {
-				start: this.currentDocument.positionAt(this.currentPosition + relativePosition),
-				end: this.currentDocument.positionAt(this.currentPosition + relativePosition + length)
-			},
+			range: absoluteRange,
 			message: message,
 			source: 'IntelliSkript (click on the error code) -> ',
 			data: data,
@@ -101,39 +93,11 @@ export class SkriptContext {
 		this.currentSkriptFile.diagnostics.push(diagnostic);
 	}
 
-	highLightRecursively(currentHierarchyNode: SkriptNestHierarchy): void {
-
-		const HighLightDetails = (start: number, end: number) => {
-			const length = end - start;
-			if (currentHierarchyNode.character == '"') {
-				this.addToken(TokenTypes.string, start, length);
-			}
-			else if (currentHierarchyNode.character == '{') {
-				//token already added by document validator
-			}
-			else {
-				let p: RegExpExecArray | null;
-				let regEx = RegExp(IntelliSkriptConstants.NumberRegExp, "g");
-				const lastIndex = start;
-				while ((p = regEx.exec(this.currentString.substring(start, end)))) {
-					this.addToken(TokenTypes.number, start + p.index, p[0].length);
-				}
-				regEx = RegExp(IntelliSkriptConstants.BooleanRegExp, "g");
-				while ((p = regEx.exec(this.currentString.substring(start, end)))) {
-					this.addToken(TokenTypes.keyword, start + p.index, p[0].length);
-				}
-				//check if any patterns are matched around here
-				//this.addToken(TokenTypes.parameter, start, end, -1);
-			}
-		};
-
-		let lastEnd = currentHierarchyNode.start;
-		for (const child of currentHierarchyNode.children) {
-			HighLightDetails(lastEnd, child.start);
-			this.highLightRecursively(child);
-			lastEnd = child.end;
-		}
-		HighLightDetails(lastEnd, currentHierarchyNode.end);
+	addDiagnostic(relativePosition: number, length: number, message: string, severity: DiagnosticSeverity = DiagnosticSeverity.Error, code?: string, data: unknown = undefined): void {
+		this.addDiagnosticAbsolute({
+			start: this.currentDocument.positionAt(this.currentPosition + relativePosition),
+			end: this.currentDocument.positionAt(this.currentPosition + relativePosition + length)
+		}, message, severity, code, data);
 	}
 
 	createHierarchy(addDiagnostics = false) {
@@ -204,14 +168,14 @@ export class SkriptContext {
 
 		}
 
+		this.hierarchy.end = this.currentString.length;
 		if (addDiagnostics) {
 
 			const lastActiveNode = this.hierarchy.getActiveNode();
 			if (lastActiveNode != this.hierarchy) {
-				this.addDiagnostic(lastActiveNode.start, 1, "no matching closing character found", DiagnosticSeverity.Error, "IntelliSkript->Nest->No Matching");
+				this.addDiagnostic(lastActiveNode.start, this.hierarchy.end - lastActiveNode.start, "no matching closing character found", DiagnosticSeverity.Error, "IntelliSkript->Nest->No Matching");
 			}
 		}
-		this.hierarchy.end = this.currentString.length;
 		return this.hierarchy;
 
 
@@ -259,7 +223,7 @@ export class SkriptContext {
 		return results;
 	}
 	addPatternMatch(data: PatternData, start = 0, end = this.currentString.length) {
-		this.currentSkriptFile?.matches.children.push(new SkriptPatternMatchHierarchy(start + this.currentPosition, end + this.currentPosition, data));
+		this.currentSkriptFile?.matches.addNestedChild(new SkriptPatternMatchHierarchy(start + this.currentPosition, end + this.currentPosition, data));
 	}
 }
 

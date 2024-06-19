@@ -33,7 +33,6 @@ export class SkriptTypeSection extends SkriptPatternContainerSection {
         const pattern = PatternTree.parsePattern(context, this, PatternType.type);
         if (pattern) {
             this.patterns.push(pattern);
-            assert(context.currentSkriptFile != undefined);
             context.currentSkriptFile.addPattern(pattern);
         }
     }

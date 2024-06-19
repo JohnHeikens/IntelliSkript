@@ -19,7 +19,7 @@ export class PatternTreeContainer implements PatternMatcher {
 	}
 
 	addPattern(pattern: PatternData): void {
-		this.trees[pattern.type].addPattern(pattern);
+		this.trees[pattern.patternType].addPattern(pattern);
 	}
 
 	merge(other: PatternTreeContainer): void {

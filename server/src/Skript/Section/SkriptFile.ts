@@ -25,6 +25,7 @@ import { SkriptCommandSection } from './SkriptCommand';
 import { SkriptEventListenerSection } from './SkriptEventListenerSection';
 import { SkriptOptionsSection } from './SkriptOptionsSection';
 import { UnOrderedSemanticTokensBuilder } from './UnOrderedSemanticTokensBuilder';
+import { start } from 'repl';
 
 function removeRemainder(toDivide: number, toDivideBy: number): number {
 	return Math.floor(toDivide / toDivideBy) * toDivideBy;
@@ -44,9 +45,9 @@ export class SkriptFile extends SkriptSection {
 	dependents: SkriptFile[] = new Array<SkriptFile>();
 	dependencies: SkriptFile[] = new Array<SkriptFile>();
 	validated = false;
-	diagnostics : Diagnostic[] = [];
+	diagnostics: Diagnostic[] = [];
 	/**
-	 * invalidate this file, and invalidate its dependents recursively
+	 * invalidate this file, and invalidate it possible dependents
 	 */
 	invalidate() {
 		//first see what dependencies and dependents this file had.
@@ -59,20 +60,22 @@ export class SkriptFile extends SkriptSection {
 		if (this.validated) {
 			//first set outdated to true, to avoid an infinite loop caused by circular dependencies
 			this.validated = false;
-			//all the dependents of this file, their dependents, and so on need to be updated recursively
-			for (const dependent of this.dependents) {
-				dependent.invalidate();
-			}
+
+			//for (const dependent of this.dependents) {
+			//	dependent.invalidate();
+			//}
 			this.dependents = new Array<SkriptFile>();
 		}
 	}
-	updateContent(newDocument : TextDocument){
+	/**returns true if the document has changed */
+	updateContent(newDocument: TextDocument): boolean {
 		const newText = newDocument.getText();
-		if(newText != this.text){
+		if (newText != this.text) {
 			this.document = newDocument;
 			this.text = newText;
-			this.invalidate();
+			return true;
 		}
+		return false;
 	}
 
 	override getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
@@ -82,8 +85,8 @@ export class SkriptFile extends SkriptSection {
 		const result = this.parent?.getPatternData(testPattern, shouldContinue);
 		if (result) {
 			if (result.definitionLocation.uri != this.document.uri) {
-				let f : SkriptSection | undefined = result.section;
-				while (f && !(f instanceof SkriptFile) && f.parent instanceof SkriptSection){
+				let f: SkriptSection | undefined = result.section;
+				while (f && !(f instanceof SkriptFile) && f.parent instanceof SkriptSection) {
 					f = f.parent;
 				}
 				if (f && f instanceof SkriptFile) {//for the debugger
@@ -111,7 +114,7 @@ export class SkriptFile extends SkriptSection {
 		const spaceIndex = context.currentString.indexOf(" ");
 		let patternStartIndex = spaceIndex == -1 ? undefined : spaceIndex + 1;
 		const sectionKeyword = spaceIndex == -1 ? context.currentString : context.currentString.substring(0, spaceIndex);
-		context.addToken(TokenTypes.keyword, 0, sectionKeyword.length);
+		let addKeywordToken = true;
 		let s: SkriptSection | undefined;
 		if (sectionKeyword == "function") {
 			s = new SkriptFunction(context, this);
@@ -150,24 +153,32 @@ export class SkriptFile extends SkriptSection {
 				}
 			}
 			else {
-				const propertyResult = /^(((local )?((plural|non-single) )?)(.+) property) .*/.exec(context.currentString);
+				const propertyResult = /^(?:((?:(?:local) )?(?:(?:plural|non-single) )?)((?:[^\s]| ){1,}) property) .*/.exec(context.currentString);
 				if (propertyResult) {
-					const typeStart = propertyResult[2].length;
-					const typeEnd = typeStart + propertyResult[6].length;
+					const typeStart = propertyResult[1].length;
+					const typeEnd = typeStart + propertyResult[2].length;
 					const data = this.parseType(context, typeStart, typeEnd);
 					if (data) {
 						s = new SkriptPropertySection(context, data, this);
-						patternStartIndex = propertyResult[2].length + " ".length;
+						patternStartIndex = typeEnd + " property ".length;
+						addKeywordToken = false;
+						context.addToken(TokenTypes.keyword, 0, typeStart);
 					}
 					//else {
 					//	context.addDiagnostic(0, context.currentString.length, "property type not recognized");
 					//}
 				}
 				else {
-					const pattern = this.getPatternData(new SkriptPatternCall(context.currentString, PatternType.event), stopAtFirstResultProcessor);
-					if (pattern) {
+					const result = this.detectPatternsRecursively(context, PatternType.event);
+					//const pattern = this.getPatternData(new SkriptPatternCall(context.currentString, PatternType.event), stopAtFirstResultProcessor);
+					if (result.detectedPattern) {
+						addKeywordToken = false;
 						//event
-						s = new SkriptEventListenerSection(context, pattern);
+						s = new SkriptEventListenerSection(context, result.detectedPattern);
+					}
+					else {
+						//can't recognise this of section
+						context.addDiagnostic(0, context.currentString.length, 'can\'t recognise this section. (pattern detection is a work in progress. please report on discord)', DiagnosticSeverity.Hint, "IntelliSkript->Section->Not Recognised");
 					}
 				}
 			}
@@ -180,6 +191,8 @@ export class SkriptFile extends SkriptSection {
 			//	PatternType.effect);
 			//this.addPattern(context.push(patternStartIndex), s, currentPatternType);
 		}
+		if (addKeywordToken)
+			context.addToken(TokenTypes.keyword, 0, sectionKeyword.length);
 		return s ? s : super.createSection(context);
 	}
 
@@ -217,15 +230,12 @@ export class SkriptFile extends SkriptSection {
 		function popStacks(stacksToPop: number) {
 			if (stacksToPop > 0) {
 				if (context.currentSection != undefined) {
-					if (context.currentSection.startLine == (currentLineIndex - 1)) {
-						if (currentLineIndex < lines.length) {
-							context.addDiagnostic(currentLineStartPosition, lines[currentLineIndex].length, "empty configuration section (expected something here)", DiagnosticSeverity.Warning, "IntelliSkript->Indent->Empty", currentIndentationString.repeat(expectedIndentationCount));
-						}
-						else {
-							const lastLine = lines[currentLineIndex - 1];
-							const LastLineStartPosition = currentLineStartPosition - 1 - lastLine.length;
-							context.addDiagnostic(LastLineStartPosition, lines[currentLineIndex - 1].length, "empty configuration section", DiagnosticSeverity.Warning, "IntelliSkript->Indent->Empty");
-						}
+					const startLine = context.currentSection.startLine;
+					if (startLine == (currentLineIndex - 1)) {
+						context.addDiagnosticAbsolute({
+							start: { line: startLine, character: 0 },
+							end: { line: startLine, character: lines[startLine].length }
+						}, "empty configuration section (expected something here)", DiagnosticSeverity.Warning, "IntelliSkript->Indent->Empty", currentIndentationString.repeat(expectedIndentationCount));
 					}
 					for (let i = 0; i < stacksToPop; i++) {
 						context.currentSection.endLine = lastCodeLine;// currentLineIndex;
@@ -352,7 +362,7 @@ export class SkriptFile extends SkriptSection {
 		this.validated = true;
 	}
 
-	constructor(parent: SkriptFolder | SkriptWorkSpace, document : TextDocument) {
+	constructor(parent: SkriptFolder | SkriptWorkSpace, document: TextDocument) {
 		super(undefined, parent);
 		this.document = document;
 		this.text = document.getText();

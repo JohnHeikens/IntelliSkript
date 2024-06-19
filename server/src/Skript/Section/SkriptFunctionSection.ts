@@ -29,13 +29,12 @@ export class SkriptFunction extends SkriptSection {
 					if (variableDefinitionParts.length == 2) {
 						const variableName = "_" + variableDefinitionParts[0].trim();
 						const noSpaceResult = /(?! )/.exec(variableDefinitionParts[1]);
-						if (noSpaceResult)
-						{
+						if (noSpaceResult) {
 							const typeStartPosition = currentArgumentString.index + variableDefinitionParts[0].length + ":".length + noSpaceResult.index;
-							const initialType = this.parseTypes(specializedContext, typeStartPosition, typeStartPosition + variableDefinitionParts[1].length); 
+							const initialType = this.parseTypes(specializedContext, typeStartPosition, typeStartPosition + variableDefinitionParts[1].length);
 							const loc = specializedContext.getLocation(currentArgumentString.index, variableDefinitionParts[0].trim().length);
 							this.definedVariables.push(new SkriptVariable(loc, variableName, true));
-							specializedContext.addToken(TokenTypes.parameter, currentArgumentString.index, variableDefinitionParts[0].trim().length);	
+							specializedContext.addToken(TokenTypes.parameter, currentArgumentString.index, variableDefinitionParts[0].trim().length);
 						}
 					}
 					else {

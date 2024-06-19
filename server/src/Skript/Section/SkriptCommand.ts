@@ -1,24 +1,25 @@
 import { PatternData } from "../../Pattern/Data/PatternData";
 import { PatternResultProcessor } from "../../Pattern/patternResultProcessor";
-import { TokenTypes } from '../../TokenTypes';
 import { PatternType } from "../../Pattern/PatternType";
-import { SkriptContext } from '../SkriptContext';
-import {
-	SkriptSection
-} from "./SkriptSection/SkriptSection";
 import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
+import { TokenTypes } from '../../TokenTypes';
+import { SkriptContext } from '../SkriptContext';
+import { SkriptTypeState } from '../SkriptTypeState';
+import { SkriptSection } from "./SkriptSection/SkriptSection";
 
 const playerRegExpString = "(the )?player";
-const playerRegExp = new RegExp(playerRegExpString);
-export class SkriptCommandSection extends SkriptSection{
+export class SkriptCommandSection extends SkriptSection {
 	playerPatternData: PatternData;
 	//context.currentString should be 'command /test <string> :: string' for example
-	constructor(context: SkriptContext, parent: SkriptSection){
+	constructor(context: SkriptContext, parent: SkriptSection) {
 		super(context, parent);
-		this.playerPatternData = new PatternData("[the] player", playerRegExpString, context.getLocation(0, "command".length), [], PatternType.effect);
+		//get the "player" type, not the entity literal
+		const playerType = super.getTypeData("player");
+		const resultType = playerType ? new SkriptTypeState(playerType) : new SkriptTypeState();
+		this.playerPatternData = new PatternData("[the] player", playerRegExpString, context.getLocation(0, "command".length), PatternType.effect, undefined, [], [], resultType);
 		const regex = /command (\/|)(((?! ).){1,})( ((?! ).){1,}){0,}/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);
-		if (result == null){
+		if (result == null) {
 			context.addDiagnostic(0, context.currentString.length, "cannot recognize this command");
 		}
 	}
@@ -26,10 +27,10 @@ export class SkriptCommandSection extends SkriptSection{
 		const regex = /^(aliases|executable by|prefix|usage|description|permission|cooldown|cooldown (message|bypass|storage)|trigger)$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);
 
-		if (result == null){
+		if (result == null) {
 			context.addDiagnostic(0, context.currentString.length, "cannot recognize this section. make sure to put your code for the command in triggers");
 		}
-		else if (context.currentString != "trigger"){
+		else if (context.currentString != "trigger") {
 			context.addDiagnostic(0, context.currentString.length, "the " + context.currentString + " section has to be in one line. for example " + context.currentString + ": blahblahblah");
 		}
 		context.addToken(TokenTypes.keyword, 0, context.currentString.length);
@@ -38,21 +39,15 @@ export class SkriptCommandSection extends SkriptSection{
 	processLine(context: SkriptContext): void {
 		const regex = /^(aliases|executable by|prefix|usage|description|permission( message|)|cooldown|cooldown (message|bypass|storage)): (.*)/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);
-		if (result == null){
+		if (result == null) {
 			context.addDiagnostic(0, context.currentString.length, "make sure to put your code for the command in triggers");
 		}
 	}
 	override getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
 		if (testPattern.type == PatternType.effect) {
-			if(playerRegExp.test(testPattern.pattern)){
+			if (testPattern.compare(this.playerPatternData)) {
 				return this.playerPatternData;
 			}
-			//const s = this.eventPattern.section as SkriptEventSection;
-			//for (let i = 0; i < s.eventValues.length; i++) {
-			//	if (s.eventValues[i].patternRegExp.test(pattern)) {
-			//		return s.eventValues[i];
-			//	}
-			//}
 		}
 		return super.getPatternData(testPattern, shouldContinue);
 	}

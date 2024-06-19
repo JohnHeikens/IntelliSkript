@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as IntelliSkriptConstants from '../../IntelliSkriptConstants';
 import * as Thread from '../../Thread';
-export const intelliSkriptAddonSkFilesDirectory = path.join(IntelliSkriptConstants.ServerAssetsDirectory, "Addons");
+import { Parser } from './Parser';
 export class GeneralJson {
 	name = "";
 	description?: string[];
@@ -41,7 +41,9 @@ export class fileJson {
 	expressions?: ExpressionJson[];
 	types?: TypeJson[];
 }
-export class AddonParser {
+export class AddonParser extends Parser {
+	
+	static override idDirectory = path.join(IntelliSkriptConstants.ServerSrcDirectory, "Skript", "Addon Parser", "Addon Json");
 	static parseFileJson(file: fileJson): string {
 		function format(str: string): string {
 			//trim() removes \n too
@@ -95,9 +97,7 @@ export class AddonParser {
 			return str;
 		}
 
-		let str = "#AUTOMATICALLY GENERATED SKRIPT FILE\n";
-		str += "#COPYRIGHT JOHN HEIKENS\n";
-		str += "#https://github.com/JohnHeikens/IntelliSkript"
+		let str = IntelliSkriptConstants.skriptFileHeader;
 		//define types at first as they are used in effects and other patterns
 		file.types?.forEach(type => {
 			str += generalData(type);
@@ -165,42 +165,20 @@ export class AddonParser {
 		});
 		return str;
 	}
-	//static parse(): void {
-	//	
-	//}
-	static ParseFiles() {
-		//remove 'out\Skript\Addon Parser\'
-		//const intelliSkriptAssetsDirectory = path.resolve('Addons', "@Assets/");
-
-		//path.resolve(__dirname + 'Addons', "@Assets/");
-		if (!fs.existsSync(intelliSkriptAddonSkFilesDirectory)) {
-			fs.mkdirSync(intelliSkriptAddonSkFilesDirectory, { recursive: true });
+	static override ParseFile(file: string, contents: string): void {
+		const fileData = JSON.parse(contents);
+		const parseResult = AddonParser.parseFileJson(fileData);
+		const inputFileName = file.substring(0, file.indexOf('.'));
+		const outputFileName = inputFileName == "Skript" ? "1 (preload) - Skript" : inputFileName;
+		const targetPath = path.join(IntelliSkriptConstants.AddonSkFilesDirectory, outputFileName) + ".sk";
+		fs.writeFileSync(targetPath, parseResult);
+	}
+	static override ParseFiles(): void {
+		
+		if (!fs.existsSync(IntelliSkriptConstants.AddonSkFilesDirectory)) {
+			fs.mkdirSync(IntelliSkriptConstants.AddonSkFilesDirectory, { recursive: true });
 		}
-		const jsonDirectory = path.join(IntelliSkriptConstants.ServerSrcDirectory, "Skript", "Addon Parser", "Addon Json");
-		console.log("Parsing JSON files in " + jsonDirectory);
-		fs.readdir(jsonDirectory, undefined, function (err: NodeJS.ErrnoException | null, files: string[]) {
-
-			files.forEach(function (file, index) {
-				// Make one pass and make the file complete
-				const completePath = path.join(jsonDirectory, file);
-				//await import * as SkriptJson from "./Addon Json/" + file assert { type: "json" }
-				//import("./Addon Json/" + file);
-				const jsonString = fs.readFileSync(completePath, "utf8");
-				const fileData = JSON.parse(jsonString);
-				//if (fileData instanceof fileJson) {
-				const parseResult = AddonParser.parseFileJson(fileData);
-				const inputFileName = file.substring(0, file.indexOf('.'));
-				const outputFileName = inputFileName == "Skript" ? "1 (preload) - Skript" : inputFileName;
-				const targetPath = path.join(intelliSkriptAddonSkFilesDirectory, outputFileName) + ".sk";
-				fs.writeFileSync(targetPath, parseResult);
-				//}
-				//else{
-				//	console.log("no valid JSON file");
-				//}
-			});
-		});
-
-		//const parseResult = AddonParser.parseFileJson(SkriptJson);
+		super.ParseFiles();
 	}
 }
 //import { readFile } from "fs/promises";
