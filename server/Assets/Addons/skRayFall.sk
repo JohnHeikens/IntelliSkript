@@ -1,6 +1,7 @@
 #AUTOMATICALLY GENERATED SKRIPT FILE
 #COPYRIGHT JOHN HEIKENS
 #https://github.com/JohnHeikens/IntelliSkript
+
 #Bossbar Color
 #A data type to call the colors for the new 1.9 bossbars.
 type:

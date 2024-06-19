@@ -9,11 +9,28 @@ expression (true|false):
 expression <((?<=( |^))-{0,1})(\d+)(\.\d+)?(?!\.)\b>:
     return type: number
 
+expression %object% is %object%:
+    return type: boolean
+
 expression console:
     return type: commandsender
 
+expression at:
+    return type: direction
+
 expression block at %location%:
+    return type: block
     set:
 #		(internal code)
     delete:
 #		(internal code)
+
+expression %number% times:
+    return type: numbers
+
+expression %number% tick[s]:
+    return type: timespan
+
+effect wait %timespan%:
+    trigger:
+#       (internal code)

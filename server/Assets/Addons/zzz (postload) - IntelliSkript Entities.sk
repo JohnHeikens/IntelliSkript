@@ -1,86 +1,89 @@
+#AUTOMATICALLY GENERATED SKRIPT FILE
+#COPYRIGHT JOHN HEIKENS
+#https://github.com/JohnHeikens/IntelliSkript
 expression:
-    return type: entity
-    patterns:
-        allay
-        armadillo
-        armor stand
-        axolotl
-        bat
-        bee
-        blaze
-        bogged
-        breeze
-        cat
-        cave spider
-        chicken
-        cod
-        cow
-        creeper
-        dolphin
-        donkey
-        drowned
-        elder guardian
-        ender dragon
-        enderman
-        endermite
-        evoker
-        fox
-        frog
-        ghast
-        giant
-        glow squid
-        goat
-        guardian
-        hoglin
-        horse
-        husk
-        illusioner
-        iron golem
-        llama
-        magma cube
-        mooshroom
-        mule
-        ocelot
-        panda
-        parrot
-        phantom
-        pig
-        piglin
-        piglin brute
-        pillager
-        player
-        polar bear
-        pufferfish
-        rabbit
-        ravager
-        salmon
-        sheep
-        shulker
-        silverfish
-        skeleton
-        skeleton horse
-        slime
-        sniffer
-        snow golem
-        spider
-        strider
-        squid
-        stray
-        tadpole
-        llama
-        tropical fish
-        turtle
-        vex
-        villager
-        vindicator
-        wandering trader
-        warden
-        witch
-        wither
-        wither skeleton
-        wolf
-        zoglin
-        zombie
-        zombie horse
-        zombie villager
-        zombified piglin
+	return type: entitytype
+	patterns:
+		[an] allay
+		[an] armadillo
+		[an] armor stand
+		[an] axolotl
+		[a] bat
+		[a] bee
+		[a] blaze
+		[a] bogged
+		[a] breeze
+		[a] cat
+		[a] cave spider
+		[a] chicken
+		[a] cod
+		[a] cow
+		[a] creeper
+		[a] dolphin
+		[a] donkey
+		[a] drowned
+		[an] elder guardian
+		[an] ender dragon
+		[an] enderman
+		[an] endermite
+		[an] evoker
+		[a] fox
+		[a] frog
+		[a] ghast
+		[a] giant
+		[a] glow squid
+		[a] goat
+		[a] guardian
+		[a] hoglin
+		[a] horse
+		[a] husk
+		[an] illusioner
+		[an] iron golem
+		[a] llama
+		[a] magma cube
+		[a] mooshroom
+		[a] mule
+		[an] ocelot
+		[a] panda
+		[a] parrot
+		[a] phantom
+		[a] pig
+		[a] piglin
+		[a] piglin brute
+		[a] pillager
+		[a] player
+		[a] polar bear
+		[a] pufferfish
+		[a] rabbit
+		[a] ravager
+		[a] salmon
+		[a] sheep
+		[a] shulker
+		[a] silverfish
+		[a] skeleton
+		[a] skeleton horse
+		[a] slime
+		[a] sniffer
+		[a] snow golem
+		[a] spider
+		[a] strider
+		[a] squid
+		[a] stray
+		[a] tadpole
+		[a] llama
+		[a] tropical fish
+		[a] turtle
+		[a] vex
+		[a] villager
+		[a] vindicator
+		[a] wandering trader
+		[a] warden
+		[a] witch
+		[a] wither
+		[a] wither skeleton
+		[a] wolf
+		[a] zoglin
+		[a] zombie
+		[a] zombie horse
+		[a] zombie villager
+		[a] zombified piglin

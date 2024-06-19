@@ -1,6 +1,7 @@
 #AUTOMATICALLY GENERATED SKRIPT FILE
 #COPYRIGHT JOHN HEIKENS
 #https://github.com/JohnHeikens/IntelliSkript
+
 #Attribute Type
 #Represents the type of an attribute. Note that this type does not contain any numerical values.See attribute types for more info.
 #since 2.5
