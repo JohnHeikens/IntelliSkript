@@ -48,6 +48,7 @@ import { SkriptFolder } from './Skript/WorkSpace/SkriptFolder';
 import { SkriptVariable } from './Skript/SkriptVariable';
 import { PatternData } from './Pattern/Data/PatternData';
 import { idParser } from './Skript/Addon Parser/idParser';
+import { TokenModifiers } from './TokenModifiers';
 
 
 // Create a connection for the server, using Node's IPC as a transport.
@@ -91,11 +92,12 @@ function computeLegend(capability: SemanticTokensClientCapabilities): SemanticTo
 	}
 
 	const tokenModifiers: string[] = [];
-	for (let i = 0; i < tokenModifiers.length; i++) {
-		const str = tokenModifiers[i];
-		if (clientTokenModifiers.has(str)) {
-			tokenModifiers.push(str);
-		}
+	for (let i = 0; i < TokenModifiers.length; i++) {
+		tokenModifiers.push(TokenModifiers[i]);
+		//const str = tokenModifiers[i];
+		//if (clientTokenModifiers.has(str)) {
+		//	tokenModifiers.push(str);
+		//}
 	}
 
 	return { tokenTypes, tokenModifiers };

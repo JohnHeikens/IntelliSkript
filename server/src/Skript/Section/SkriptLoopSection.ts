@@ -6,8 +6,8 @@ import { SkriptTypeSection } from './IntelliSkript/SkriptTypeSection';
 
 export class SkriptLoopSection extends SkriptSection {
 	loopType: SkriptTypeSection | undefined;
-	constructor(context: SkriptContext, parent?: SkriptSectionGroup) {
-		super(context, parent);
+	constructor(parent: SkriptSection, context: SkriptContext) {
+		super(parent, context);
 		//const loopValueContext = context.push("loop ".length);
 		const result = this.detectPatternsRecursively(context);
 		if (result.possibleResultTypes[0]?.section) {

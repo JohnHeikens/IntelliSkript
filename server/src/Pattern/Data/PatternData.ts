@@ -7,6 +7,7 @@ export class PatternData {
 	section?: SkriptPatternContainerSection;
 	skriptPatternString: string;
 	regexPatternString: string;
+	/**this regexp only matches the whole string!*/
 	patternRegExp: RegExp;
 	expressionArguments: SkriptTypeState[];
 	returnType: SkriptTypeState;
@@ -26,7 +27,7 @@ export class PatternData {
 	constructor(skriptPatternString: string, regexPatternString: string, definitionLocation: Location, patternType: PatternType, section?: SkriptPatternContainerSection, expressionArguments?: SkriptTypeState[], argumentPositions?: Location[], resultType?: SkriptTypeState) {
 		this.skriptPatternString = skriptPatternString;
 		this.regexPatternString = regexPatternString;
-		this.patternRegExp = new RegExp(regexPatternString);
+		this.patternRegExp = new RegExp(`^${regexPatternString}$`);
 		this.definitionLocation = definitionLocation;
 		this.section = section;
 		this.expressionArguments = expressionArguments ?? [];

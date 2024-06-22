@@ -14,7 +14,7 @@ export class SkriptConditionProcessorSection extends SkriptPatternContainerSecti
 
 		if (result) {
 			context.addToken(TokenTypes.keyword, 0, context.currentString.length);
-			return new SkriptSection(context, this);
+			return new SkriptSection(this, context);
 		}
 		else return super.createSection(context);
 	}

@@ -8,8 +8,8 @@ import { SkriptTypeState } from '../../SkriptTypeState';
 import assert = require('assert');
 export class SkriptPropertySection extends SkriptExpressionSection {
 	propertyParentType: TypeData;
-	constructor(context: SkriptContext, propertyParentType: TypeData, parent?: SkriptSection) {
-		super(context, parent);
+	constructor(parent: SkriptSection, context: SkriptContext, propertyParentType: TypeData, ) {
+		super(parent, context);
 		this.propertyParentType = propertyParentType;
 	}
 	override addPattern(context: SkriptContext): void {

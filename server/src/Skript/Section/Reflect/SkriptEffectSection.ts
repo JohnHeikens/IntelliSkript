@@ -5,6 +5,7 @@ import {
 	SkriptSection
 } from "../SkriptSection/SkriptSection";
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
+import { TokenModifiers } from '../../../TokenModifiers';
 export class SkriptEffect extends SkriptPatternContainerSection {
 	createSection(context: SkriptContext): SkriptSection {
 		const regex = /^(parse|trigger)$/;
@@ -12,7 +13,7 @@ export class SkriptEffect extends SkriptPatternContainerSection {
 
 		if (result) {
 			context.addToken(TokenTypes.keyword, 0, context.currentString.length);
-			return new SkriptSection(context, this);
+			return new SkriptSection(this, context);
 		}
 		else return super.createSection(context);
 	}

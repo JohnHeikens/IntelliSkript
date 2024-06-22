@@ -11,7 +11,7 @@ export class SkriptEventListenerSection extends SkriptSection {
 
 	eventPattern: PatternData;
 	constructor(context: SkriptContext, eventPattern: PatternData) {
-		super(context, context.currentSkriptFile);
+		super(context.currentSkriptFile, context);
 		this.eventPattern = eventPattern;
 	}
 	override getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {

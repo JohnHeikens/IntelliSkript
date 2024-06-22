@@ -117,34 +117,34 @@ export class SkriptFile extends SkriptSection {
 		let addKeywordToken = true;
 		let s: SkriptSection | undefined;
 		if (sectionKeyword == "function") {
-			s = new SkriptFunction(context, this);
+			s = new SkriptFunction(this, context);
 
 		}
 		else if (sectionKeyword == "command") {
-			s = new SkriptCommandSection(context, this);
+			s = new SkriptCommandSection(this, context);
 		}
 		else if (sectionKeyword == "import") {
-			s = new SkriptImportSection(context, this);
+			s = new SkriptImportSection(this, context);
 		}
 		else if (sectionKeyword == "event") {
-			s = new SkriptEventSection(context, this);
+			s = new SkriptEventSection(this, context);
 		}
 		else if (sectionKeyword == "condition") {
-			s = new SkriptConditionProcessorSection(context, this);
+			s = new SkriptConditionProcessorSection(this, context);
 		}
 		else if (sectionKeyword == "effect") {
-			s = new SkriptEffectSection(context, this);
+			s = new SkriptEffectSection(this, context);
 		}
 		else if (sectionKeyword == "options") {
-			s = new SkriptOptionsSection(context, this);
+			s = new SkriptOptionsSection(this, context);
 		}
 		else if (sectionKeyword == "type") {
-			s = new SkriptTypeSection(context, this);
+			s = new SkriptTypeSection(this, context);
 		}
 		else {
 			const result = /^((local )?((plural|non-single) )?expression)( .*|)/.exec(context.currentString);
 			if (result) {
-				s = new SkriptExpressionSection(context, this);
+				s = new SkriptExpressionSection(this, context);
 				if (result[5]) {
 					patternStartIndex = result[1].length + " ".length;
 				}
@@ -159,10 +159,13 @@ export class SkriptFile extends SkriptSection {
 					const typeEnd = typeStart + propertyResult[2].length;
 					const data = this.parseType(context, typeStart, typeEnd);
 					if (data) {
-						s = new SkriptPropertySection(context, data, this);
+						s = new SkriptPropertySection(this, context, data);
 						patternStartIndex = typeEnd + " property ".length;
 						addKeywordToken = false;
+						//add keyword token for 'local plural'
 						context.addToken(TokenTypes.keyword, 0, typeStart);
+						//add keyword token for 'property'
+						context.addToken(TokenTypes.keyword, typeEnd, " property ".length);
 					}
 					//else {
 					//	context.addDiagnostic(0, context.currentString.length, "property type not recognized");
@@ -193,7 +196,7 @@ export class SkriptFile extends SkriptSection {
 		}
 		if (addKeywordToken)
 			context.addToken(TokenTypes.keyword, 0, sectionKeyword.length);
-		return s ? s : super.createSection(context);
+		return s ?? new SkriptSection(this, context);
 	}
 
 	processLine(context: SkriptContext): void {
@@ -209,6 +212,7 @@ export class SkriptFile extends SkriptSection {
 		this.matches = new SkriptPatternMatchHierarchy();
 		this.options = [];
 		this.diagnostics = [];
+		this.children = [];
 		//dependencies are handled by the workspace
 		const context = new SkriptContext(this);
 		context.currentSection = this;
@@ -363,7 +367,7 @@ export class SkriptFile extends SkriptSection {
 	}
 
 	constructor(parent: SkriptFolder | SkriptWorkSpace, document: TextDocument) {
-		super(undefined, parent);
+		super(parent, undefined);
 		this.document = document;
 		this.text = document.getText();
 		this.builder = new UnOrderedSemanticTokensBuilder(this.document);

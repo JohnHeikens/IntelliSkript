@@ -57,9 +57,9 @@ export class SkriptContext {
 	}
 
 	//CAUTION! HIGHLIGHTING SHOULD BE DONE IN ORDER
-	addToken(type: TokenTypes, relativePosition = 0, length = this.currentString.length - relativePosition, zIndex = 0, modifier: TokenModifiers = TokenModifiers.abstract): void {
+	addToken(type: TokenTypes, relativePosition = 0, length = this.currentString.length - relativePosition, modifiers: TokenModifiers[] = []): void {
 		const absolutePosition = this.currentDocument.positionAt(this.currentPosition + relativePosition);
-		this.currentSkriptFile.builder.push(new SemanticToken(absolutePosition, length, type, modifier, zIndex));
+		this.currentSkriptFile.builder.push(new SemanticToken(absolutePosition, length, type, SemanticToken.modToFlags(modifiers)));
 	}
 
 

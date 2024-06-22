@@ -28,9 +28,35 @@ expression block at %location%:
 expression %number% times:
     return type: numbers
 
-expression %number% tick[s]:
+expression %number% (tick|second|minute|hour|day|month|year)[s]:
     return type: timespan
+
+
+# arithmetic
+effect:
+    patterns:
+        (%object%)[ ]+[ ](%object%)
+        (%object%)[ ]+[ ]%object%
+        %object%[ ]+[ ](%object%)
+        %object%[ ]+[ ]%object%
+        (%object%)[ ]-[ ](%object%)
+        (%object%)[ ]-[ ]%object%
+        %object%[ ]-[ ](%object%)
+        %object%[ ]-[ ]%object%
+        (%object%)[ ]*[ ](%object%)
+        (%object%)[ ]*[ ]%object%
+        %object%[ ]*[ ](%object%)
+        %object%[ ]*[ ]%object%
+        (%object%)[ ]/[ ](%object%)
+        (%object%)[ ]/[ ]%object%
+        %object%[ ]/[ ](%object%)
+        %object%[ ]/[ ]%object%
+        (%object%)[ ]^[ ](%object%)
+        (%object%)[ ]^[ ]%object%
+        %object%[ ]^[ ](%object%)
+        %object%[ ]^[ ]%object%
 
 effect wait %timespan%:
     trigger:
 #       (internal code)
+        {_test} + {_test}

@@ -4,21 +4,27 @@ import { TokenModifiers } from '../../TokenModifiers';
 import { TokenTypes } from '../../TokenTypes';
 import * as IntelliSkriptConstants from '../../IntelliSkriptConstants';
 
+
+
 export class SemanticToken {
+	static modToFlags(modifiers: TokenModifiers[]) {
+		let flag = 0;
+		for (const mod of modifiers)
+			flag |= 1 << mod;
+		return flag;
+	}
 	position: Position;
 	length: number;
 	type: TokenTypes;
-	modifier: TokenModifiers = TokenModifiers.abstract;
-	zIndex = 0;
-	constructor(position: Position, length: number, type: TokenTypes, modifier: TokenModifiers = TokenModifiers.abstract, zIndex = 0) {
+	tokenModifierFlags: number;
+	constructor(position: Position, length: number, type: TokenTypes, tokenModifierFlags: number) {
 		this.position = position;
 		this.length = length;
 		this.type = type;
-		this.modifier = modifier;
-		this.zIndex = zIndex;
+		this.tokenModifierFlags = tokenModifierFlags;
 	}
 	clone(): SemanticToken {
-		return new SemanticToken({ line: this.position.line, character: this.position.character }, this.length, this.type, this.modifier);
+		return new SemanticToken({ line: this.position.line, character: this.position.character }, this.length, this.type, this.tokenModifierFlags);
 	}
 	toString() {
 		return "type: " + this.type + ", start: " + this.position.character + ", length: " + this.length;
@@ -28,58 +34,10 @@ export class SemanticToken {
 export class SemanticTokenLine {
 	tokens: SemanticToken[] = [];
 	fixTokens() {
-		//sort from top to bottom so the top tokens get inserted first and will remain
-		this.tokens = this.tokens.sort(
-			(a, b) => {
-				return b.zIndex - a.zIndex;
-			}
+		//sort tokens
+		this.tokens.sort((a, b) =>
+			a.position.character - b.position.character
 		);
-		const fixedTokenList: SemanticToken[] = [this.tokens[0].clone()];
-		oldTokenLoop:
-		for (let indexL = 1; indexL < this.tokens.length; indexL++) {
-			const tokenLRightPart = this.tokens[indexL].clone();
-			const endL = tokenLRightPart.position.character + tokenLRightPart.length;
-			//check for overlapping tokens and split them
-			for (let indexH = 0; indexH < fixedTokenList.length; indexH++) {
-				const tokenH = fixedTokenList[indexH];
-				const endH = fixedTokenList[indexH].position.character + fixedTokenList[indexH].length;
-				//fill the gaps with this token
-				if (tokenLRightPart.position.character < endH) {
-					if (tokenH.position.character < endL) {//token collision (two tokens overlap)
-
-						const lengthLeft = tokenH.position.character - tokenLRightPart.position.character;
-						if (lengthLeft > 0) {
-							//check for collision at left side
-							if (tokenH.position.character < endL) {
-								//left part of the cut token
-								const leftTokenLPart = tokenLRightPart.clone();
-								leftTokenLPart.length = lengthLeft;
-								fixedTokenList.splice(indexH, 0, leftTokenLPart);
-								indexH++;
-							}
-						}
-						const lengthRight = endL - endH;
-						if (lengthRight > 0) {
-							//check for collision at right side
-							if (tokenLRightPart.position.character < endH) {
-								//resize token
-								tokenLRightPart.position.character += tokenLRightPart.length - lengthRight;
-								tokenLRightPart.length = lengthRight;
-							}
-						}
-						else {
-							continue oldTokenLoop;
-						}
-					}
-					else {
-						fixedTokenList.splice(indexH, 0, tokenLRightPart);
-						continue oldTokenLoop;
-					}
-				}
-			}
-			fixedTokenList.push(tokenLRightPart);
-		}
-		this.tokens = fixedTokenList;
 	}
 }
 export class UnOrderedSemanticTokensBuilder {
@@ -95,7 +53,7 @@ export class UnOrderedSemanticTokensBuilder {
 		this.startNextBuild(linkedDocument);
 	}
 
-
+	/**caution! do not insert overlapping tokens! */
 	push(token: SemanticToken): void {
 		if (token.position.line >= this.lines.length) {
 			throw new Error(token.position.line + " is out of bounds of the file (has " + this.lines.length + " lines )");
@@ -104,7 +62,7 @@ export class UnOrderedSemanticTokensBuilder {
 			this.lines[token.position.line] = new SemanticTokenLine();
 		}
 		const lineTokens = this.lines[token.position.line].tokens;
-		if (!IntelliSkriptConstants.IsReleaseMode) {
+		if (!IntelliSkriptConstants.IsReleaseMode && true) {
 			//check if no tokens overlap
 			for (const lineToken of lineTokens) {
 				if ((token.position.character + token.length > lineToken.position.character) &&
@@ -127,7 +85,7 @@ export class UnOrderedSemanticTokensBuilder {
 				////add the sorted tokens to the token map
 				////may cause problems with overlapping tokens
 				this.lines[i].tokens.forEach(token =>
-					this._builder.push(token.position.line, token.position.character, token.length, token.type, token.modifier)
+					this._builder.push(token.position.line, token.position.character, token.length, token.type, token.tokenModifierFlags)//(1 << TokenModifiers.length) - 1)
 				);
 			}
 		}

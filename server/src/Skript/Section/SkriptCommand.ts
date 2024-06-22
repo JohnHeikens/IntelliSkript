@@ -8,11 +8,12 @@ import { SkriptTypeState } from '../SkriptTypeState';
 import { SkriptSection } from "./SkriptSection/SkriptSection";
 
 const playerRegExpString = "(the )?player";
+const sectionRegExp = /(aliases|executable by|prefix|usage|description|permission(?: message|)|cooldown(?: (?:message|bypass|storage))?)/;
 export class SkriptCommandSection extends SkriptSection {
 	playerPatternData: PatternData;
 	//context.currentString should be 'command /test <string> :: string' for example
-	constructor(context: SkriptContext, parent: SkriptSection) {
-		super(context, parent);
+	constructor(parent: SkriptSection, context: SkriptContext) {
+		super(parent, context);
 		//get the "player" type, not the entity literal
 		const playerType = super.getTypeData("player");
 		const resultType = playerType ? new SkriptTypeState(playerType) : new SkriptTypeState();
@@ -24,24 +25,27 @@ export class SkriptCommandSection extends SkriptSection {
 		}
 	}
 	createSection(context: SkriptContext): SkriptSection {
-		const regex = /^(aliases|executable by|prefix|usage|description|permission|cooldown|cooldown (message|bypass|storage)|trigger)$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
+		const regex = new RegExp(`^${sectionRegExp.source}$`);// /^(aliases|executable by|prefix|usage|description|permission|cooldown|cooldown (message|bypass|storage)|trigger)$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);
 
 		if (result == null) {
-			context.addDiagnostic(0, context.currentString.length, "cannot recognize this section. make sure to put your code for the command in triggers");
+			if (context.currentString == "trigger")
+				context.addToken(TokenTypes.keyword, 0, context.currentString.length);
+			else
+				context.addDiagnostic(0, context.currentString.length, "cannot recognize this section. make sure to put your code for the command in triggers");
 		}
-		else if (context.currentString != "trigger") {
+		else
 			context.addDiagnostic(0, context.currentString.length, "the " + context.currentString + " section has to be in one line. for example " + context.currentString + ": blahblahblah");
-		}
-		context.addToken(TokenTypes.keyword, 0, context.currentString.length);
-		return super.createSection(context);
+
+		return new SkriptSection(this, context);
 	}
 	processLine(context: SkriptContext): void {
-		const regex = /^(aliases|executable by|prefix|usage|description|permission( message|)|cooldown|cooldown (message|bypass|storage)): (.*)/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
+		const regex = new RegExp(`^${sectionRegExp.source}`);// /^(aliases|executable by|prefix|usage|description|permission( message|)|cooldown|cooldown (message|bypass|storage)): (.*)/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);
-		if (result == null) {
+		if (result == null)
 			context.addDiagnostic(0, context.currentString.length, "make sure to put your code for the command in triggers");
-		}
+		else
+			context.addToken(TokenTypes.keyword, 0, result[0].length)
 	}
 	override getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
 		if (testPattern.type == PatternType.effect) {

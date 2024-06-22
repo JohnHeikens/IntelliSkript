@@ -8,8 +8,8 @@ import {
 export class SkriptFunction extends SkriptSection {
 	name: string;
 	//context.currentString should be 'function example(a: string, b: number) :: string' for example
-	constructor(context: SkriptContext, parent: SkriptSection) {
-		super(context, parent);
+	constructor(parent: SkriptSection, context: SkriptContext) {
+		super(parent, context);
 		const regex = /^function ([a-zA-Z0-9_]{1,})\((.*)\)(| (?:::| returns ) (.*?))$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		//(,|and|)){1,}\)
 		const result = regex.exec(context.currentString);

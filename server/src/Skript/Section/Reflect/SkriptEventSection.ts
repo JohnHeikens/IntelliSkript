@@ -12,7 +12,7 @@ export class SkriptEventSection extends SkriptPatternContainerSection {
 
 	createSection(context: SkriptContext): SkriptSection {
 		if (context.currentString == "check")
-			return new SkriptSection(context, this);
+			return new SkriptSection(this, context);
 
 		return super.createSection(context);
 	}

@@ -9,4 +9,10 @@ export class SkriptNestHierarchy extends NestHierarchy<SkriptNestHierarchy> {
 		super(start, end);
 		this.character = character;
 	}
+	cloneWithOffset(offset: number): SkriptNestHierarchy {
+		let clone: SkriptNestHierarchy = new SkriptNestHierarchy(this.start + offset, this.character, this.end + offset);
+		for (const child of this.children)
+			clone.children.push(child.cloneWithOffset(offset));
+		return clone;
+	}
 }

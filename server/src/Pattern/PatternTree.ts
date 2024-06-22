@@ -144,7 +144,7 @@ export class PatternTree implements PatternMatcher {
 	//for example, this pattern has two endnodes:
 	//send [the | % to the] player
 	addPatternPart(data: PatternData, currentNodes: PatternTreeNode[], Hierarchy: SkriptNestHierarchy): PatternTreeNode[] {
-		const pattern = data.regexPatternString;
+		const pattern = data.regexPatternString;//.replace(/\\(.)/g, "$1");
 		if (Hierarchy.children.length && Hierarchy.children[0].character == '|') {
 			//divide in [ | ]
 			let allOptionEnds: PatternTreeNode[] = [];
@@ -158,7 +158,7 @@ export class PatternTree implements PatternMatcher {
 		//for example, when we are processing the [] of "send [the | % to the] player", we would loop over "the | % to the".
 		for (let i = Hierarchy.start; i < Hierarchy.end; i++) {
 			let newNodes: PatternTreeNode[] | undefined;
-			const char = pattern[i];
+			let char = pattern[i];
 			if (char == '(') {
 				//required segment, needed for pipes. for example, a(b|c) != ab|c
 				const node = Hierarchy.getChildNodeStartAt(i + 1);
@@ -176,6 +176,11 @@ export class PatternTree implements PatternMatcher {
 				}
 			}
 			else {
+				//this way, we can escape braces
+				//for example: (\(test\))
+				//todo: escape types
+				if(char == '\\')
+					char = pattern[++i];
 				newNodes = [];
 				let treeElem = undefined;
 				//for each possibility of this pattern, loop over the letters
@@ -383,7 +388,7 @@ export class PatternTree implements PatternMatcher {
 				assert(m.index != undefined);
 				const typeStart = m.index + 1;
 				const typeString = m[1];
-				context.addToken(TokenTypes.regexp, previousTokenEndPos, typeStart - previousTokenEndPos);
+				context.addToken(TokenTypes.regexp, previousTokenEndPos, typeStart - previousTokenEndPos, [TokenModifiers.definition]);
 				const result = context.currentSection.parseTypes(context, typeStart, typeStart + typeString.length);
 				if (result) {
 					expressionArguments.push(result);
@@ -401,7 +406,7 @@ export class PatternTree implements PatternMatcher {
 				previousTokenEndPos = typeStart + typeString.length;
 				argumentPositions.push(context.getLocation(typeStart, typeString.length));
 			}
-			context.addToken(TokenTypes.regexp, previousTokenEndPos);
+			context.addToken(TokenTypes.regexp, previousTokenEndPos, undefined, [TokenModifiers.definition]);
 			if (shouldReturn) return;
 
 			let fixedString = convertSkriptPatternToRegExp(context.currentString, Hierarchy);
@@ -450,7 +455,7 @@ export class PatternTree implements PatternMatcher {
 		}
 	}
 
-	getMatchingPatternPart(testPattern: SkriptPatternCall, currentNode: PatternTreeNode | undefined = this.root, index: number = 0, typeIndex: number = 0): PatternData | undefined {
+	getMatchingPatternPart(testPattern: SkriptPatternCall, currentNode: PatternTreeNode, index: number = 0, typeIndex: number = 0): PatternData | undefined {
 		const pattern = testPattern.pattern;
 		if (!currentNode) return undefined;
 		for (; index <= pattern.length; index++) {
@@ -499,7 +504,7 @@ export class PatternTree implements PatternMatcher {
 				return undefined;
 			}
 		}
-		const data = this.getMatchingPatternPart(testPattern);
+		const data = this.getMatchingPatternPart(testPattern, this.root);
 		if (data) {
 			//we don't need to compare argument types, they are compared already
 			//if (testPattern.compareArgumentTypes(data)) {
@@ -508,10 +513,11 @@ export class PatternTree implements PatternMatcher {
 			}
 			//}
 		}
-		for (const pattern of this.incompatiblePatterns) {
-			if (testPattern.compare(pattern) && (!shouldContinue(pattern))) {
-				return pattern;
-			}
-		}
+		//for now, let's not do anything with incompatible patterns
+		//for (const pattern of this.incompatiblePatterns) {
+		//	if (testPattern.compare(pattern) && (!shouldContinue(pattern))) {
+		//		return pattern;
+		//	}
+		//}
 	}
 }

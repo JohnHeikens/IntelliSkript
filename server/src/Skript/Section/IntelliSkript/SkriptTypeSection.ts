@@ -9,8 +9,8 @@ export class SkriptTypeSection extends SkriptPatternContainerSection {
     baseClasses: PatternData[] = [];
     patterns: PatternData[] = [];
 
-    constructor(context: SkriptContext, parent?: SkriptSectionGroup) {
-        super(context, parent);
+    constructor(parent: SkriptSectionGroup, context: SkriptContext) {
+        super(parent, context);
     }
     override processLine(context: SkriptContext): void {
         if (context.currentString.startsWith('inherits: ')) {

@@ -1,6 +1,14 @@
+//https://code.visualstudio.com/api/language-extensions/semantic-highlight-guide#standard-token-types-and-modifiers
 export enum TokenModifiers {
-	abstract = 0,
-	deprecated = 1,
-	//the length of this enum
-	length = 2
+	declaration,
+	definition,
+	readonly,
+	static,
+	deprecated,
+	abstract,
+	async,
+	modification,
+	documentation,
+	defaultLibrary,
+	length
 }

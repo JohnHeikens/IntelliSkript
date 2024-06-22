@@ -33,12 +33,17 @@ export class SkriptFolder extends SkriptFolderContainer {
 
 	}
 	validate() {
-		this.patterns = new PatternTreeContainer();
-		for (const file of this.files)
-			//this way, a file won't know what is previous to it
-			file.validated ?
-				this.patterns.merge(file.patterns) :
-				file.validate();
+		//if the last file isn't validated, then we need to recalculate the patterns.
+		//when a file invalidates, all files after it invalidate too.
+		if (!this.files[this.files.length - 1].validated) {
+			this.patterns = new PatternTreeContainer();
+			for (const file of this.files)
+				//this way, a file won't know what is previous to it
+				file.validated ?
+					this.patterns.merge(file.patterns) :
+					file.validate();
+		}
+
 	}
 
 	constructor(parent: SkriptFolderContainer, uri: string) {

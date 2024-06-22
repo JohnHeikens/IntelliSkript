@@ -1,3 +1,4 @@
+import { TokenModifiers } from '../../../TokenModifiers';
 import { TokenTypes } from '../../../TokenTypes';
 import { SkriptContext } from '../../SkriptContext';
 import { SkriptTypeState } from "../../SkriptTypeState";
@@ -20,11 +21,14 @@ export class SkriptExpressionSection extends SkriptPatternContainerSection {
 	hasRemoveAll = false;
 	createSection(context: SkriptContext): SkriptSection {
 		let recognized = true;
+		let keywordEnd = context.currentString.length;
 		if (context.currentString == "get") {
 			this.hasGet = true;
 		}
-		else if (context.currentString == "set") {
+		else if (context.currentString.startsWith("set ")) {
+			this.parseType(context, 'set '.length);
 			this.hasSet = true;
+			keywordEnd = 'set '.length;
 		}
 		else if (context.currentString == "add") {
 			this.hasAdd = true;
@@ -45,8 +49,8 @@ export class SkriptExpressionSection extends SkriptPatternContainerSection {
 			recognized = false;
 		}
 		if (recognized) {
-			context.addToken(TokenTypes.keyword);
-			return new SkriptSection(context, this);
+			context.addToken(TokenTypes.keyword, 0, keywordEnd);
+			return new SkriptSection(this, context);
 		}
 		else
 			return super.createSection(context);

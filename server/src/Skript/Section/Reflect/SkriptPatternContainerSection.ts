@@ -11,7 +11,7 @@ import { SkriptPatternCall } from '../../../Pattern/SkriptPattern';
 import { PatternResultProcessor } from '../../../Pattern/patternResultProcessor';
 import { SkriptTypeState } from '../../SkriptTypeState';
 
-const patternRegEx = "pattern(|s)";
+const patternRegEx = /pattern(|s)/;
 export class SkriptPatternContainerSection extends SkriptSection {
 	argumentPatternTree: PatternTree = new PatternTree();
 	returnType: SkriptTypeState = new SkriptTypeState();
@@ -34,19 +34,19 @@ export class SkriptPatternContainerSection extends SkriptSection {
 
 	createSection(context: SkriptContext): SkriptSection {
 		//match whole string
-		if (new RegExp(`^${patternRegEx}$`).test(context.currentString)) {
+		if (new RegExp(`^${patternRegEx.source}$`).test(context.currentString)) {
 			context.addToken(TokenTypes.keyword);
-			return new SkriptPatternSection(context, this);
+			return new SkriptPatternSection(this, context);
 		}
 		else {
 			//we don't recognise this pattern
 			context.addDiagnostic(0, context.currentString.length, "unknown section", DiagnosticSeverity.Hint, "IntelliSkript->Section->Unknown");
-			return new SkriptSection(context, this);
+			return new SkriptSection(this, context);
 		}
 	}
 	processLine(context: SkriptContext): void {
 		//match start of string and with : and space
-		const result = new RegExp(`^${patternRegEx}: `).exec(context.currentString)
+		const result = new RegExp(`^${patternRegEx.source}: `).exec(context.currentString)
 		if (result) {
 			context.addToken(TokenTypes.keyword, 0, result[0].length);
 			this.addPattern(context.push(result[0].length));
