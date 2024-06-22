@@ -42,18 +42,17 @@ export class SkriptTypeSection extends SkriptPatternContainerSection {
         if (otherType.regexPatternString == "object(s)?") {
             return true;//everything inherits from object
         }
-        else if (otherType.section == this)
-        {
+        else if (otherType.section == this) {
             return true;
         }
         else {
             for (const baseClass of this.baseClasses) {
-                if (baseClass.section == otherType.section) return true;//direct inheritance
-                else {
-                    if ((baseClass.section as SkriptTypeSection).instanceOf(otherType)) {
-                        return true;
-                    }
+                //direct inheritance
+
+                if ((baseClass.section as SkriptTypeSection).instanceOf(otherType)) {
+                    return true;
                 }
+
             }
             return false;
         }

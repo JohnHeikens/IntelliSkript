@@ -10,22 +10,33 @@ export class SkriptTypeState {
 	constructor(...possibleTypes: TypeData[]) {
 		this.possibleTypes = possibleTypes;
 	}
-	canBeInstanceOf(other: SkriptTypeState): boolean {
-		for (let i = 0; i < this.possibleTypes.length; i++) {
+	isInstanceOf(other: SkriptTypeState): boolean {
+		for (let i = 0; i < this.possibleTypes.length; i++)
+			for (let j = 0; j < other.possibleTypes.length; j++)
+				if ((this.possibleTypes[i].section as SkriptTypeSection).instanceOf(other.possibleTypes[j]))
+					return true;
+
+
+		return false;
+	}
+	isUnKnown(): boolean {
+		for (let i = 0; i < this.possibleTypes.length; i++)
 			if (this.possibleTypes[i].regexPatternString == "unknown")
 				return true;
-			for (let j = 0; j < other.possibleTypes.length; j++) {
-				if ((this.possibleTypes[i].section as SkriptTypeSection).instanceOf(other.possibleTypes[j])) {
-					return true;
-				}
-			}
-			//if (other.possibleTypes.includes(this.possibleTypes[i]))
-			//	return true;
-		}
+		return false;
+	}
+	canBeInstanceOf(other: SkriptTypeState): boolean {
+
+		//if (other.possibleTypes.includes(this.possibleTypes[i]))
+		//	return true;
+
+		return this.isInstanceOf(other) ||
+			other.isInstanceOf(this) ||
+			this.isUnKnown() ||
+			other.isUnKnown();
 		//for (const otherType of other.possibleTypes)
 		//	if (otherType.skriptPatternString.startsWith('object'))
 		//		return true;
-		return false;
 	}
 	equals(other: SkriptTypeState): boolean {
 		outerLoop: for (let i = 0; i < this.possibleTypes.length; i++) {
