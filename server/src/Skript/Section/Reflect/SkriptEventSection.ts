@@ -1,9 +1,9 @@
-import { PatternData } from "../../../Pattern/Data/PatternData";
-import { PatternType } from "../../../Pattern/PatternType";
+import { PatternData } from "../../../pattern/data/PatternData";
+import { PatternType } from "../../../pattern/PatternType";
 import { SkriptContext } from '../../SkriptContext';
-import { SkriptSection } from '../SkriptSection/SkriptSection';
+import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
-import { PatternTree } from '../../../Pattern/PatternTree';
+import { PatternTree } from '../../../pattern/PatternTree';
 import assert = require('assert');
 import { SkriptTypeState } from '../../SkriptTypeState';
 export class SkriptEventSection extends SkriptPatternContainerSection {

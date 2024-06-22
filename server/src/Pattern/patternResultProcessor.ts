@@ -1,4 +1,4 @@
-import { PatternData } from './Data/PatternData';
+import { PatternData } from './data/PatternData';
 
 
 export type PatternResultProcessor = (patternFound: PatternData) => boolean;

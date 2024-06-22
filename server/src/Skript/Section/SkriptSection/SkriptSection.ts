@@ -1,17 +1,17 @@
 import { DiagnosticSeverity, integer, Location, Position } from 'vscode-languageserver/node';
 import * as IntelliSkriptConstants from '../../../IntelliSkriptConstants';
-import { SkriptNestHierarchy } from '../../../Nesting/SkriptNestHierarchy';
-//import { PatternData } from "../../Pattern/PatternData";
-import { PatternResultProcessor, stopAtFirstResultProcessor } from '../../../Pattern/patternResultProcessor';
+import { SkriptNestHierarchy } from '../../../nesting/SkriptNestHierarchy';
+//import { PatternData } from "../../pattern/PatternData";
+import { PatternResultProcessor, stopAtFirstResultProcessor } from '../../../pattern/patternResultProcessor';
 import { TokenTypes } from '../../../TokenTypes';
-import { PatternType } from "../../../Pattern/PatternType";
+import { PatternType } from "../../../pattern/PatternType";
 import { SkriptContext } from '../../SkriptContext';
 import { SkriptVariable } from '../../SkriptVariable';
 import { SkriptSectionGroup } from '../SkriptSectionGroup';
 //import { SkriptConditionSection } from './SkriptConditionSection';
 import assert = require('assert');
-import { PatternData, TypeData } from '../../../Pattern/Data/PatternData';
-import { SkriptPatternCall } from '../../../Pattern/SkriptPattern';
+import { PatternData, TypeData } from '../../../pattern/data/PatternData';
+import { SkriptPatternCall } from '../../../pattern/SkriptPattern';
 import { SkriptTypeState } from '../../SkriptTypeState';
 import { TokenModifiers } from '../../../TokenModifiers';
 import { PatternKeyFrame, TransformedPattern } from './PatternToLineTransform'
@@ -496,8 +496,8 @@ export class SkriptSection extends SkriptSectionGroup {
 }
 
 import { SkriptLoopSection } from '../SkriptLoopSection';
-import { SkriptPropertySection } from '../Reflect/SkriptPropertySection';
-import { PatternMatch } from '../../../Pattern/Match/PatternMatch';
+import { SkriptPropertySection } from '../reflect/SkriptPropertySection';
+import { PatternMatch } from '../../../pattern/match/PatternMatch';
 
 export class SkriptConditionSection extends SkriptSection {
 	constructor(parent: SkriptSection, context: SkriptContext) {

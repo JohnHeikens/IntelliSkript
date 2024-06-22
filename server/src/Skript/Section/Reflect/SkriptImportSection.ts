@@ -1,5 +1,5 @@
 import { SkriptContext } from '../../SkriptContext';
-import { SkriptSection } from '../SkriptSection/SkriptSection';
+import { SkriptSection } from '../skriptSection/SkriptSection';
 
 //TODO: add support for options
 export class SkriptImportSection extends SkriptSection {

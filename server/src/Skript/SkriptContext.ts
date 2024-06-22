@@ -1,14 +1,14 @@
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Diagnostic, DiagnosticSeverity, Location, Range } from 'vscode-languageserver/node';
-import { SkriptNestHierarchy } from '../Nesting/SkriptNestHierarchy';
+import { SkriptNestHierarchy } from '../nesting/SkriptNestHierarchy';
 import * as IntelliSkriptConstants from '../IntelliSkriptConstants';
 import { TokenModifiers } from '../TokenModifiers';
 import { TokenTypes } from '../TokenTypes';
-import { SkriptSection } from "./Section/SkriptSection/SkriptSection";
-import { SemanticToken } from './Section/UnOrderedSemanticTokensBuilder';
-import { SkriptFile } from './Section/SkriptFile';
+import { SkriptSection } from "./section/skriptsection/SkriptSection";
+import { SemanticToken } from './section/UnOrderedSemanticTokensBuilder';
+import { SkriptFile } from './section/SkriptFile';
 import { SkriptPatternMatchHierarchy } from './SkriptPatternMatchHierarchy';
-import { PatternData } from '../Pattern/Data/PatternData';
+import { PatternData } from '../pattern/data/PatternData';
 
 //TOODO: make context able to 'push' and 'pop' (make a function able to modify the context or create an instance while keeping reference to the same diagnostics list
 export class SkriptContext {
@@ -88,7 +88,7 @@ export class SkriptContext {
 			source: 'IntelliSkript (click on the error code) -> ',
 			data: data,
 			code: code ? code : "IntelliSkript->Undocumented",
-			codeDescription: { href: 'https://github.com/JohnHeikens/IntelliSkript/wiki' }//https://github.com/JohnHeikens/IntelliSkript/wiki
+			codeDescription: { href: 'https://github.com/JohnHeikens/Intelliskript/wiki' }//https://github.com/JohnHeikens/Intelliskript/wiki
 		};
 		this.currentSkriptFile.diagnostics.push(diagnostic);
 	}

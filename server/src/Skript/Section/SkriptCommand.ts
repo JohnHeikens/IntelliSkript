@@ -1,11 +1,11 @@
-import { PatternData } from "../../Pattern/Data/PatternData";
-import { PatternResultProcessor } from "../../Pattern/patternResultProcessor";
-import { PatternType } from "../../Pattern/PatternType";
-import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
+import { PatternData } from "../../pattern/data/PatternData";
+import { PatternResultProcessor } from "../../pattern/patternResultProcessor";
+import { PatternType } from "../../pattern/PatternType";
+import { SkriptPatternCall } from '../../pattern/SkriptPattern';
 import { TokenTypes } from '../../TokenTypes';
 import { SkriptContext } from '../SkriptContext';
 import { SkriptTypeState } from '../SkriptTypeState';
-import { SkriptSection } from "./SkriptSection/SkriptSection";
+import { SkriptSection } from "./skriptSection/SkriptSection";
 
 const playerRegExpString = "(the )?player";
 const sectionRegExp = /(aliases|executable by|prefix|usage|description|permission(?: message|)|cooldown(?: (?:message|bypass|storage))?)/;

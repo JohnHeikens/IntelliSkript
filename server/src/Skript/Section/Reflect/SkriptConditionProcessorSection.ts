@@ -1,6 +1,6 @@
 import { TokenTypes } from '../../../TokenTypes';
 import { SkriptContext } from '../../SkriptContext';
-import { SkriptSection } from '../SkriptSection/SkriptSection';
+import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 
 export class SkriptConditionProcessorSection extends SkriptPatternContainerSection {

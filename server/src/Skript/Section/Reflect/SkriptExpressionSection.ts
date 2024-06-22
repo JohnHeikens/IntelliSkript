@@ -2,7 +2,7 @@ import { TokenModifiers } from '../../../TokenModifiers';
 import { TokenTypes } from '../../../TokenTypes';
 import { SkriptContext } from '../../SkriptContext';
 import { SkriptTypeState } from "../../SkriptTypeState";
-import { SkriptSection } from '../SkriptSection/SkriptSection';
+import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 export class SkriptExpressionSection extends SkriptPatternContainerSection {
 	//set y to x

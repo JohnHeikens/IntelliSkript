@@ -1,11 +1,11 @@
 import assert = require('assert');
-import { PatternData } from "../../Pattern/Data/PatternData";
-import { PatternResultProcessor } from "../../Pattern/patternResultProcessor";
-import { PatternType } from "../../Pattern/PatternType";
-import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
+import { PatternData } from "../../pattern/data/PatternData";
+import { PatternResultProcessor } from "../../pattern/patternResultProcessor";
+import { PatternType } from "../../pattern/PatternType";
+import { SkriptPatternCall } from '../../pattern/SkriptPattern';
 import { SkriptContext } from '../SkriptContext';
-import { SkriptEventSection } from './Reflect/SkriptEventSection';
-import { SkriptSection } from './SkriptSection/SkriptSection';
+import { SkriptEventSection } from './reflect/SkriptEventSection';
+import { SkriptSection } from './skriptSection/SkriptSection';
 
 export class SkriptEventListenerSection extends SkriptSection {
 

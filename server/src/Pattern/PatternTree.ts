@@ -1,11 +1,11 @@
 import { DiagnosticSeverity, integer } from 'vscode-languageserver';
 import { Location } from 'vscode-languageserver/node';
-import { SkriptNestHierarchy } from '../Nesting/SkriptNestHierarchy';
-import type { SkriptPatternContainerSection } from '../Skript/Section/Reflect/SkriptPatternContainerSection';
-import { SkriptContext } from '../Skript/SkriptContext';
-import { SkriptTypeState } from "../Skript/SkriptTypeState";
-import { PatternData } from './Data/PatternData';
-import { PatternTreeNode } from './PatternTreeNode/PatternTreeNode';
+import { SkriptNestHierarchy } from '../nesting/SkriptNestHierarchy';
+import type { SkriptPatternContainerSection } from '../skript/section/reflect/SkriptPatternContainerSection';
+import { SkriptContext } from '../skript/SkriptContext';
+import { SkriptTypeState } from "../skript/SkriptTypeState";
+import { PatternData } from './data/PatternData';
+import { PatternTreeNode } from './patternTreeNode/PatternTreeNode';
 import { RegExpTreeError } from './RegExpTreeError';
 import { PatternResultProcessor } from './patternResultProcessor';
 import { PatternMatcher } from './PatternMatcher';
@@ -14,7 +14,7 @@ import { TokenTypes } from '../TokenTypes';
 import { PatternType } from './PatternType';
 import { removeDuplicates } from "./removeDuplicates";
 import assert = require('assert');
-import { TypeNode } from './PatternTreeNode/TypeNode';
+import { TypeNode } from './patternTreeNode/TypeNode';
 import { TokenModifiers } from '../TokenModifiers';
 
 //flags: U -> ungreedy, g -> global

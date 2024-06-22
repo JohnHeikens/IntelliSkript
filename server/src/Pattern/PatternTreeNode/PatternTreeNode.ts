@@ -1,4 +1,4 @@
-import { PatternData } from "../Data/PatternData";
+import { PatternData } from "../data/PatternData";
 
 
 export class PatternTreeNode {

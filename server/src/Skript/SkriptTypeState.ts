@@ -1,5 +1,5 @@
-import { TypeData } from '../Pattern/Data/PatternData';
-import { SkriptTypeSection } from './Section/IntelliSkript/SkriptTypeSection';
+import { TypeData } from '../pattern/data/PatternData';
+import { SkriptTypeSection } from './section/Intelliskript/SkriptTypeSection';
 
 export class SkriptTypeState {
 	//can be multiple types, like %string/number%

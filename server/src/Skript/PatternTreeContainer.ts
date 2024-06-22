@@ -1,11 +1,11 @@
-import { PatternData } from "../Pattern/Data/PatternData";
-import { PatternTree } from '../Pattern/PatternTree';
-import { PatternResultProcessor } from "../Pattern/patternResultProcessor";
-import { PatternType } from '../Pattern/PatternType';
-import type { SkriptPatternContainerSection } from './Section/Reflect/SkriptPatternContainerSection';
+import { PatternData } from "../pattern/data/PatternData";
+import { PatternTree } from '../pattern/PatternTree';
+import { PatternResultProcessor } from "../pattern/patternResultProcessor";
+import { PatternType } from '../pattern/PatternType';
+import type { SkriptPatternContainerSection } from './section/reflect/SkriptPatternContainerSection';
 import { SkriptContext } from './SkriptContext';
-import { PatternMatcher } from '../Pattern/PatternMatcher';
-import { SkriptPatternCall } from '../Pattern/SkriptPattern';
+import { PatternMatcher } from '../pattern/PatternMatcher';
+import { SkriptPatternCall } from '../pattern/SkriptPattern';
 
 export class PatternTreeContainer implements PatternMatcher {
 	trees = new Array<PatternTree>(PatternType.count);

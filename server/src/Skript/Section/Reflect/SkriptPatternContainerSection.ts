@@ -1,14 +1,14 @@
 import { TokenTypes } from '../../../TokenTypes';
-import { PatternType } from "../../../Pattern/PatternType";
+import { PatternType } from "../../../pattern/PatternType";
 import { SkriptContext } from '../../SkriptContext';
-import { SkriptSection } from '../SkriptSection/SkriptSection';
+import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptPatternSection } from './SkriptPatternSection';
-import { PatternTree } from '../../../Pattern/PatternTree';
+import { PatternTree } from '../../../pattern/PatternTree';
 import assert = require('assert');
 import { DiagnosticSeverity } from 'vscode-languageserver';
-import { PatternData } from '../../../Pattern/Data/PatternData';
-import { SkriptPatternCall } from '../../../Pattern/SkriptPattern';
-import { PatternResultProcessor } from '../../../Pattern/patternResultProcessor';
+import { PatternData } from '../../../pattern/data/PatternData';
+import { SkriptPatternCall } from '../../../pattern/SkriptPattern';
+import { PatternResultProcessor } from '../../../pattern/patternResultProcessor';
 import { SkriptTypeState } from '../../SkriptTypeState';
 
 const patternRegEx = /pattern(|s)/;

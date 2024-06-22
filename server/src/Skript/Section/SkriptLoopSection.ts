@@ -1,8 +1,8 @@
-import { PatternData } from '../../Pattern/Data/PatternData';
+import { PatternData } from '../../pattern/data/PatternData';
 import { SkriptContext } from '../SkriptContext';
-import { SkriptSection } from './SkriptSection/SkriptSection';
+import { SkriptSection } from './skriptSection/SkriptSection';
 import { SkriptSectionGroup } from './SkriptSectionGroup';
-import { SkriptTypeSection } from './IntelliSkript/SkriptTypeSection';
+import { SkriptTypeSection } from './Intelliskript/SkriptTypeSection';
 
 export class SkriptLoopSection extends SkriptSection {
 	loopType: SkriptTypeSection | undefined;

@@ -1,10 +1,10 @@
 import { Hierarchy } from '../../Hierarchy';
-import { PatternData } from "../../Pattern/Data/PatternData";
-import { PatternResultProcessor } from "../../Pattern/patternResultProcessor";
+import { PatternData } from "../../pattern/data/PatternData";
+import { PatternResultProcessor } from "../../pattern/patternResultProcessor";
 import { SkriptVariable } from '../SkriptVariable';
-import { SkriptSection } from './SkriptSection/SkriptSection';
-import { PatternMatcher } from '../../Pattern/PatternMatcher';
-import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
+import { SkriptSection } from './skriptSection/SkriptSection';
+import { PatternMatcher } from '../../pattern/PatternMatcher';
+import { SkriptPatternCall } from '../../pattern/SkriptPattern';
 
 export class SkriptSectionGroup extends Hierarchy<SkriptSectionGroup> implements PatternMatcher {
 	definedVariables: Array<SkriptVariable> = [];

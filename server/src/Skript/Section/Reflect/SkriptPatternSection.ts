@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { SkriptContext } from '../../SkriptContext';
-import { SkriptSection } from '../SkriptSection/SkriptSection';
+import { SkriptSection } from '../skriptSection/SkriptSection';
 
 export class SkriptPatternSection extends SkriptSection {
 
@@ -23,7 +23,7 @@ export class SkriptPatternSection extends SkriptSection {
 	}
 }
 //import { SkriptEventSection } from './SkriptEventSection';import { Hierarchy } from '../../../Hierarchy';
-import { SkriptNestHierarchy } from '../../../Nesting/SkriptNestHierarchy';
+import { SkriptNestHierarchy } from '../../../nesting/SkriptNestHierarchy';
 import { TokenTypes } from '../../../TokenTypes';
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 

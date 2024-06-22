@@ -36,18 +36,18 @@ import {
 
 import {
 	SkriptFile
-} from "./Skript/Section/SkriptFile";
+} from "./skript/section/SkriptFile";
 
 import * as IntelliSkriptConstants from './IntelliSkriptConstants';
-import { AddonParser } from './Skript/Addon Parser/AddonParser';
-import { SkriptWorkSpace } from './Skript/WorkSpace/SkriptWorkSpace';
+import { AddonParser } from './skript/Addon Parser/AddonParser';
+import { SkriptWorkSpace } from './skript/workSpace/SkriptWorkSpace';
 import { TokenTypes } from './TokenTypes';
 import assert = require('assert');
 import { Sleep } from './Thread';
-import { SkriptFolder } from './Skript/WorkSpace/SkriptFolder';
-import { SkriptVariable } from './Skript/SkriptVariable';
-import { PatternData } from './Pattern/Data/PatternData';
-import { idParser } from './Skript/Addon Parser/idParser';
+import { SkriptFolder } from './skript/workSpace/SkriptFolder';
+import { SkriptVariable } from './skript/SkriptVariable';
+import { PatternData } from './pattern/data/PatternData';
+import { idParser } from './skript/Addon Parser/idParser';
 import { TokenModifiers } from './TokenModifiers';
 
 

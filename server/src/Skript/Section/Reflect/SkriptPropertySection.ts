@@ -1,8 +1,8 @@
-import { PatternData, TypeData } from '../../../Pattern/Data/PatternData';
-import { PatternTree } from '../../../Pattern/PatternTree';
-import { PatternType } from '../../../Pattern/PatternType';
+import { PatternData, TypeData } from '../../../pattern/data/PatternData';
+import { PatternTree } from '../../../pattern/PatternTree';
+import { PatternType } from '../../../pattern/PatternType';
 import { SkriptContext } from '../../SkriptContext';
-import { SkriptSection } from '../SkriptSection/SkriptSection';
+import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptExpressionSection } from './SkriptExpressionSection';
 import { SkriptTypeState } from '../../SkriptTypeState';
 import assert = require('assert');

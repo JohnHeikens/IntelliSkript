@@ -1,6 +1,6 @@
 import type { integer, Location } from 'vscode-languageserver/node';
-import { SkriptTypeState } from "../../Skript/SkriptTypeState";
-import type { SkriptPatternContainerSection } from '../../Skript/Section/Reflect/SkriptPatternContainerSection';
+import { SkriptTypeState } from "../../skript/SkriptTypeState";
+import type { SkriptPatternContainerSection } from '../../skript/Section/reflect/SkriptPatternContainerSection';
 
 export class PatternData {
 	definitionLocation: Location;
@@ -51,7 +51,7 @@ export class PatternData {
 		return this.definitionLocation == other.definitionLocation;
 	}
 }
-//import { SkriptPatternContainerSection } from '../Skript/Section/Reflect/SkriptPatternContainerSection';
+//import { SkriptPatternContainerSection } from '../skript/Section/reflect/SkriptPatternContainerSection';
 import { PatternType } from '../PatternType';
 /**
  * caution! typedata is just a patterndata

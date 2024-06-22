@@ -1,4 +1,4 @@
-import { PatternTreeNode } from '../PatternTreeNode/PatternTreeNode';
+import { PatternTreeNode } from '../patternTreeNode/PatternTreeNode';
 
 export class PatternMatch {
     //nodes: PatternTreeNode[] 

@@ -1,6 +1,6 @@
-import { SkriptTypeState } from "../Skript/SkriptTypeState";
+import { SkriptTypeState } from "../skript/SkriptTypeState";
 import { PatternType } from './PatternType';
-import { PatternData } from './Data/PatternData';
+import { PatternData } from './data/PatternData';
 //examples:
 //  "set %objects% to %objects%"
 //  |

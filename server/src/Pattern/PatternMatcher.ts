@@ -1,4 +1,4 @@
-import { PatternData } from './Data/PatternData';
+import { PatternData } from './data/PatternData';
 import { SkriptPatternCall } from './SkriptPattern';
 import { PatternResultProcessor } from './patternResultProcessor';
 import { PatternType } from './PatternType';

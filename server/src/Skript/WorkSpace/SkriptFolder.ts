@@ -1,9 +1,9 @@
 import path = require('path');
-import { PatternData } from '../../Pattern/Data/PatternData';
-import { SkriptPatternCall } from '../../Pattern/SkriptPattern';
-import { PatternResultProcessor } from '../../Pattern/patternResultProcessor';
+import { PatternData } from '../../pattern/data/PatternData';
+import { SkriptPatternCall } from '../../pattern/SkriptPattern';
+import { PatternResultProcessor } from '../../pattern/patternResultProcessor';
 import { PatternTreeContainer } from '../PatternTreeContainer';
-import { SkriptFile } from '../Section/SkriptFile';
+import { SkriptFile } from '../section/SkriptFile';
 import { SkriptFolderContainer } from './SkriptFolderContainer';
 import { SkriptWorkSpace } from './SkriptWorkSpace';
 

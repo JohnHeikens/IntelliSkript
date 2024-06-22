@@ -1,6 +1,6 @@
 import { SkriptContext } from '../SkriptContext';
 import { SkriptOption } from '../SkriptOption';
-import { SkriptSection } from './SkriptSection/SkriptSection';
+import { SkriptSection } from './skriptSection/SkriptSection';
 export class SkriptOptionsSection extends SkriptSection {
 	processLine(context: SkriptContext): void {
 		const colonIndex = context.currentString.indexOf(": ");

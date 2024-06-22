@@ -1,5 +1,5 @@
 import path = require('path');
-import { SkriptSectionGroup } from '../Section/SkriptSectionGroup';
+import { SkriptSectionGroup } from '../section/SkriptSectionGroup';
 import type { SkriptFolder } from './SkriptFolder';
 
 export class SkriptFolderContainer extends SkriptSectionGroup {
