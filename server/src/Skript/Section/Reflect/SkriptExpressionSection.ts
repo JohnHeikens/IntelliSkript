@@ -22,32 +22,23 @@ export class SkriptExpressionSection extends SkriptPatternContainerSection {
 	createSection(context: SkriptContext): SkriptSection {
 		let recognized = true;
 		let keywordEnd = context.currentString.length;
-		if (context.currentString == "get") {
-			this.hasGet = true;
+		switch (context.currentString) {
+			case "get": this.hasGet = true; break;
+			case "set": this.hasSet = true; break;
+			case "add": this.hasAdd = true; break;
+			case "delete": this.hasDelete = true; break;
+			case "reset": this.hasReset = true; break;
+			case "remove": this.hasRemove = true; break;
+			case "remove all": this.hasRemoveAll = true; break;
+			//set %type%
+			default: if (context.currentString.startsWith("set ")) {
+				this.parseType(context, 'set '.length);
+				this.hasSet = true;
+				keywordEnd = 'set '.length;
+			}
+			else recognized = false;
 		}
-		else if (context.currentString.startsWith("set ")) {
-			this.parseType(context, 'set '.length);
-			this.hasSet = true;
-			keywordEnd = 'set '.length;
-		}
-		else if (context.currentString == "add") {
-			this.hasAdd = true;
-		}
-		else if (context.currentString == "remove") {
-			this.hasRemove = true;
-		}
-		else if (context.currentString == "remove all") {
-			this.hasRemoveAll = true;
-		}
-		else if (context.currentString == "delete") {
-			this.hasDelete = true;
-		}
-		else if (context.currentString == "reset") {
-			this.hasReset = true;
-		}
-		else {
-			recognized = false;
-		}
+
 		if (recognized) {
 			context.addToken(TokenTypes.keyword, 0, keywordEnd);
 			return new SkriptSection(this, context);

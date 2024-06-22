@@ -18,13 +18,6 @@ type:
 	patterns:
 		biome[s]
 
-#Block
-#A block in a world. It has a location and a type, and can also have a direction (mostly a facing), an inventory, or other special properties.
-#since 1.0
-type:
-	patterns:
-		block[s]
-
 #Block Data
 #Block data is the detailed information about a block, referred to in Minecraft as BlockStates, allowing for the manipulation of different aspects of the block, including shape, waterlogging, direction the block is facing, and so much more. Information regarding each block's optional data can be found on Minecraft's Wiki. Find the block you're looking for and scroll down to 'Block States'. Different states must be separated by a semicolon (see examples). The 'minecraft:' namespace is optional, as well as are underscores.
 #since 2.5
@@ -173,18 +166,6 @@ type:
 type:
 	patterns:
 		enchant(ing|ment)[ ]type[s]
-
-#Entity
-#An entity is something in a world that's not a block, e.g. a player, a skeleton, or a zombie, but also projectiles like arrows, fireballs or thrown potions, or special entities like dropped items, falling blocks or paintings.
-#since 1.0
-#Examples:
-#entity is a zombie or creeper
-#player is an op
-#projectile is an arrow
-#shoot a fireball from the player
-type:
-	patterns:
-		entit(y|ies)
 
 #Entity Type
 #The type of an entity, e.g. player, wolf, powered creeper, etc.
@@ -338,16 +319,6 @@ type:
 		items
 		materials
 
-#Living Entity
-#A living entity, i.e. a mob or player, not inanimate entities like projectiles or dropped items.
-#since 1.0
-#Examples:
-#spawn 5 powered creepers
-#shoot a zombie from the creeper
-type:
-	patterns:
-		living[ ]entit(y|ies)
-	inherits: entity
 #Location
 #A location in a world. Locations are world-specific and even store a direction, e.g. if you save a location and later teleport to it you will face the exact same direction you did when you saved the location.
 #since 1.0
@@ -376,17 +347,6 @@ type:
 	patterns:
 		money
 
-#Number
-#A number, e.g. 2.5, 3, or -9812454.
-#Please note that many expressions only need integers, i.e. will discard any fractional parts of any numbers without producing an error.
-#since 1.0
-#Examples:
-#set the player's health to 5.5
-#set {_temp} to 2*{_temp} - 2.5
-type:
-	patterns:
-		num[ber][s]
-
 #Object
 #The supertype of all types, meaning that if %object% is used in e.g. a condition it will accept all kinds of expressions.
 #since 1.0
@@ -394,21 +354,6 @@ type:
 	patterns:
 		object[s]
 
-#Offline Player
-#A player that is possibly offline. See player for more information. Please note that while all effects and conditions that require a player can be used with an offline player as well, they will not work if the player is not actually online.
-#since 
-type:
-	patterns:
-		offline[ ]player[s]
-
-#Player
-#A player. Depending on whether a player is online or offline several actions can be performed with them, though you won't get any errors when using effects that only work if the player is online (e.g. changing their inventory) on an offline player.
-#You have two possibilities to use players as command arguments: &lt;player&gt; and &lt;offline player&gt;. The first requires that the player is online and also accepts only part of the name, while the latter doesn't require that the player is online, but the player's name has to be entered exactly.
-#since 1.0
-type:
-	patterns:
-		player[s]
-	inherits: offline player, entity, command sender
 #Potion Effect
 #A potion effect, including the potion effect type, tier and duration.
 #since 2.5.2
@@ -614,6 +559,50 @@ type:
 	patterns:
 		section[s]
 
+#Block
+#A block in a world. It has a location and a type, and can also have a direction (mostly a facing), an inventory, or other special properties.
+#since 1.0
+type:
+	patterns:
+		block[s]
+	inherits: location, metadata holder
+#Entity
+#An entity is something in a world that's not a block, e.g. a player, a skeleton, or a zombie, but also projectiles like arrows, fireballs or thrown potions, or special entities like dropped items, falling blocks or paintings.
+#since 1.0
+#Examples:
+#entity is a zombie or creeper
+#player is an op
+#projectile is an arrow
+#shoot a fireball from the player
+type:
+	patterns:
+		entit(y|ies)
+	inherits: location, metadata holder
+#Living Entity
+#A living entity, i.e. a mob or player, not inanimate entities like projectiles or dropped items.
+#since 1.0
+#Examples:
+#spawn 5 powered creepers
+#shoot a zombie from the creeper
+type:
+	patterns:
+		living[ ]entit(y|ies)
+	inherits: entity
+#Offline Player
+#A player that is possibly offline. See player for more information. Please note that while all effects and conditions that require a player can be used with an offline player as well, they will not work if the player is not actually online.
+#since 
+type:
+	patterns:
+		offline[ ]player[s]
+	inherits: command sender
+#Player
+#A player. Depending on whether a player is online or offline several actions can be performed with them, though you won't get any errors when using effects that only work if the player is online (e.g. changing their inventory) on an offline player.
+#You have two possibilities to use players as command arguments: &lt;player&gt; and &lt;offline player&gt;. The first requires that the player is online and also accepts only part of the name, while the latter doesn't require that the player is online, but the player's name has to be entered exactly.
+#since 1.0
+type:
+	patterns:
+		player[s]
+	inherits: offline player, livingentity
 #Action Bar
 #Sends an action bar message to the given player(s).
 #since 2.3

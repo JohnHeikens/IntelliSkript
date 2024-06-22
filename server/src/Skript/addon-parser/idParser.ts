@@ -5,7 +5,7 @@ import { Parser } from './Parser';
 import * as fs from 'fs';
 
 export class idParser extends Parser {
-    static override idDirectory: string = path.join(IntelliSkriptConstants.ServerSrcDirectory, "Skript", "Addon Parser", "ids");
+    static override idDirectory: string = path.join(this.parserDirectory, "ids");
     static override ParseFile(file: string, contents: string): void {
         const inputFileName = file.substring(0, file.indexOf('.'));
         let outputFileString = IntelliSkriptConstants.skriptFileHeader;

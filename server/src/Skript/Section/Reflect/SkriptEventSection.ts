@@ -6,6 +6,7 @@ import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 import { PatternTree } from '../../../pattern/PatternTree';
 import assert = require('assert');
 import { SkriptTypeState } from '../../SkriptTypeState';
+import { TokenTypes } from '../../../TokenTypes';
 export class SkriptEventSection extends SkriptPatternContainerSection {
 	eventValues: PatternData[] = [];
 
@@ -19,6 +20,7 @@ export class SkriptEventSection extends SkriptPatternContainerSection {
 	processLine(context: SkriptContext): void {
 		if (context.currentString.startsWith("event-values: ")) {
 			let currentPosition = "event-values: ".length;
+			context.addToken(TokenTypes.keyword, 0, "event-values: ".length);
 			const valueStrings = context.currentString.substring(currentPosition).split(", ");
 			//const unknownType = this.getTypeData("unknown");
 			for (let i = 0; i < valueStrings.length; i++) {

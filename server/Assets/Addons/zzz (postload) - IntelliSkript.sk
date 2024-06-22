@@ -6,7 +6,7 @@ expression (true|false):
     return type: boolean
 
 #literal number
-expression <((?<=( |^))-{0,1})(\d+)(\.\d+)?(?!\.)\b>:
+expression <(-){0,1}(\d+)(?:\.(\d+))?(?!\.)>:
     return type: number
 
 expression %object% is %object%:

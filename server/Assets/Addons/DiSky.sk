@@ -99,11 +99,6 @@ type:
 	patterns:
 		guild
 
-#guildchannel
-type:
-	patterns:
-		guildchannel
-
 #interactionhook
 type:
 	patterns:
@@ -255,6 +250,11 @@ type:
 	patterns:
 		voicechannel
 
+#guildchannel
+type:
+	patterns:
+		guildchannel
+	inherits: channel
 #Archive / Unarchive Thread
 #Archive or unarchive a specific thread.
 #since 4.4.0

@@ -4,7 +4,7 @@ import { SkriptNestHierarchy } from '../nesting/SkriptNestHierarchy';
 import * as IntelliSkriptConstants from '../IntelliSkriptConstants';
 import { TokenModifiers } from '../TokenModifiers';
 import { TokenTypes } from '../TokenTypes';
-import { SkriptSection } from "./section/skriptsection/SkriptSection";
+import { SkriptSection } from "./section/skriptSection/SkriptSection";
 import { SemanticToken } from './section/UnOrderedSemanticTokensBuilder';
 import { SkriptFile } from './section/SkriptFile';
 import { SkriptPatternMatchHierarchy } from './SkriptPatternMatchHierarchy';
@@ -88,7 +88,7 @@ export class SkriptContext {
 			source: 'IntelliSkript (click on the error code) -> ',
 			data: data,
 			code: code ? code : "IntelliSkript->Undocumented",
-			codeDescription: { href: 'https://github.com/JohnHeikens/Intelliskript/wiki' }//https://github.com/JohnHeikens/Intelliskript/wiki
+			codeDescription: { href: 'https://github.com/JohnHeikens/intelliSkript/wiki' }//https://github.com/JohnHeikens/intelliSkript/wiki
 		};
 		this.currentSkriptFile.diagnostics.push(diagnostic);
 	}

@@ -42,8 +42,14 @@ export class fileJson {
 	types?: TypeJson[];
 }
 export class AddonParser extends Parser {
-	
-	static override idDirectory = path.join(IntelliSkriptConstants.ServerSrcDirectory, "Skript", "Addon Parser", "Addon Json");
+
+	static override idDirectory = path.join(this.parserDirectory, "json");
+	static inheritanceByID = new Map<string, string>();
+
+
+	static nameToPattern(name: string) {
+		return name.toLowerCase().replace(' ', '');
+	}
 	static parseFileJson(file: fileJson): string {
 		function format(str: string): string {
 			//trim() removes \n too
@@ -97,21 +103,42 @@ export class AddonParser extends Parser {
 			return str;
 		}
 
-		let str = IntelliSkriptConstants.skriptFileHeader;
-		//define types at first as they are used in effects and other patterns
-		file.types?.forEach(type => {
-			str += generalData(type);
+		function defineType(elem: TypeJson, parents?: string): string {
+			let str = "";
+			str += generalData(elem);
 			str += "type:\n";
-			str += patterns(type, true);
-			switch (type.name) {
-				case "Player":
-					str += "\tinherits: offline player, entity, command sender";
-					break;
-				case "Living Entity":
-					str += "\tinherits: entity";
-					break;
+			str += patterns(elem, true);
+			if (parents)
+				str += `\tinherits: ${parents}`;
+			return str;
+		}
+
+		let str = IntelliSkriptConstants.skriptFileHeader;
+		const toDefine = new Map<string, TypeJson>();
+
+		//define types at first as they are used in effects and other patterns
+
+		file.types?.forEach(type => {
+			const name = this.nameToPattern(type.name);
+			if (this.inheritanceByID.has(name)) {
+				toDefine.set(name, type);
+			}
+			else {
+				str += defineType(type);
 			}
 		});
+		//deriving types
+		this.inheritanceByID.forEach((parents: string, name: string) => {
+			if (parents != 'predefined') {
+				//types should be defined in order of dependency. so types that derive from something, will need to be defined after the other type.
+				const type = toDefine.get(name);
+				if (type)
+					str += defineType(type, parents);
+
+				//else
+				//	throw "type not found";
+			}
+		})
 		file.effects?.forEach(effect => {
 			str += generalData(effect);
 			str += "effect:\n";
@@ -174,9 +201,15 @@ export class AddonParser extends Parser {
 		fs.writeFileSync(targetPath, parseResult);
 	}
 	static override ParseFiles(): void {
-		
+
 		if (!fs.existsSync(IntelliSkriptConstants.AddonSkFilesDirectory)) {
 			fs.mkdirSync(IntelliSkriptConstants.AddonSkFilesDirectory, { recursive: true });
+		}
+		const text = fs.readFileSync(path.join(this.parserDirectory, "inheritance.txt"), "utf8").toLocaleLowerCase();
+		for (const line of text.split('\n')) {
+			const parts = line.trim().split('#')[0].split('->');
+			if (parts.length > 1)
+				this.inheritanceByID.set(this.nameToPattern(parts[0]), parts[1]);
 		}
 		super.ParseFiles();
 	}

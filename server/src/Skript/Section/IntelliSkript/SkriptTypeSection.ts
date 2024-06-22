@@ -5,6 +5,7 @@ import { SkriptContext } from '../../SkriptContext';
 import { SkriptPatternContainerSection } from '../reflect/SkriptPatternContainerSection';
 import { PatternData } from '../../../pattern/data/PatternData';
 import { SkriptSectionGroup } from '../SkriptSectionGroup';
+import { TokenTypes } from '../../../TokenTypes';
 export class SkriptTypeSection extends SkriptPatternContainerSection {
     baseClasses: PatternData[] = [];
     patterns: PatternData[] = [];
@@ -15,6 +16,7 @@ export class SkriptTypeSection extends SkriptPatternContainerSection {
     override processLine(context: SkriptContext): void {
         if (context.currentString.startsWith('inherits: ')) {
             let currentPosition = "inherits: ".length;
+            context.addToken(TokenTypes.keyword, 0, currentPosition);
             const baseClassNames = context.currentString.substring(currentPosition).split(", ");
             for (const currentBaseClassName of baseClassNames) {
                 const pattern = this.parseType(context, currentPosition, currentPosition + currentBaseClassName.length);

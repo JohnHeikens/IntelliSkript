@@ -76,6 +76,7 @@ export class UnOrderedSemanticTokensBuilder {
 		this._builder.previousResult(id);
 	}
 	private pushSorted(): void {
+		let modifierCounter: number = 0;
 		for (let i = 0; i < this.lines.length; i++) {
 			if (this.lines[i]) {
 				this.lines[i].fixTokens();
@@ -85,7 +86,7 @@ export class UnOrderedSemanticTokensBuilder {
 				////add the sorted tokens to the token map
 				////may cause problems with overlapping tokens
 				this.lines[i].tokens.forEach(token =>
-					this._builder.push(token.position.line, token.position.character, token.length, token.type, token.tokenModifierFlags)//(1 << TokenModifiers.length) - 1)
+					this._builder.push(token.position.line, token.position.character, token.length, token.type, token.tokenModifierFlags)// 1 << (modifierCounter++ % TokenModifiers.length))//(1 << TokenModifiers.length) - 1)
 				);
 			}
 		}

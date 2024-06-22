@@ -39,7 +39,7 @@ import {
 } from "./skript/section/SkriptFile";
 
 import * as IntelliSkriptConstants from './IntelliSkriptConstants';
-import { AddonParser } from './skript/Addon Parser/AddonParser';
+import { AddonParser } from './skript/addon-parser/AddonParser';
 import { SkriptWorkSpace } from './skript/workSpace/SkriptWorkSpace';
 import { TokenTypes } from './TokenTypes';
 import assert = require('assert');
@@ -47,7 +47,7 @@ import { Sleep } from './Thread';
 import { SkriptFolder } from './skript/workSpace/SkriptFolder';
 import { SkriptVariable } from './skript/SkriptVariable';
 import { PatternData } from './pattern/data/PatternData';
-import { idParser } from './skript/Addon Parser/idParser';
+import { idParser } from './skript/addon-parser/idParser';
 import { TokenModifiers } from './TokenModifiers';
 
 
@@ -474,14 +474,16 @@ connection.onHover((params: TextDocumentPositionParams): Hover | undefined => {
 		};
 	}
 	else if (info.pattern) {
-		const patternStr = info.pattern.skriptPatternString
-			.replace(/\[/g, '\\[')
-			.replace(/\]/g, '\\]')
-			;
+		function convert(toConvert: string): string {
+			return toConvert.replace(/(\[|\]|\*)/g, '\\$1');
+		}
 		hoverContent = {
 			kind: MarkupKind.Markdown,
-			value: `**${patternStr}**`
+			value: `**${convert(info.pattern.skriptPatternString)}**`
 		};
+		if (info.pattern.returnType.possibleTypes.length) {
+			hoverContent.value += '\nreturns: ' + convert(info.pattern.returnType.possibleTypes[0].skriptPatternString);
+		}
 	}
 	if (hoverContent) {
 		return {
@@ -629,10 +631,10 @@ connection.languages.semanticTokens.on((params) => {
 	}
 	else {
 		const result = file.builder.build();
-		if (result.resultId != undefined) {
-			//already tell the builder that next builds will be deltas
-			file.builder.previousResult(result.resultId);
-		}
+		//if (result.resultId != undefined) {
+		//	//already tell the builder that next builds will be deltas
+		//	file.builder.previousResult(result.resultId);
+		//}
 		return result;
 	}
 
@@ -642,16 +644,16 @@ connection.languages.semanticTokens.on((params) => {
 connection.languages.semanticTokens.onDelta((params) => {
 	const file = currentWorkSpace.getSkriptFileByUri(params.textDocument.uri);
 	if (file == undefined) {
-		return { data: [] };
+		return { edits: [] };
 	}
 	else {
 		//const result = file.builder.build();
-
+		file.builder.previousResult(params.previousResultId);
 		const result = file.builder.buildEdits();
-		if (result.resultId != undefined) {
-			//already tell the builder that next builds will be deltas
-			file.builder.previousResult(result.resultId);
-		}
+		//if (result.resultId != undefined) {
+		//	//already tell the builder that next builds will be deltas
+		//	file.builder.previousResult(result.resultId);
+		//}
 		return result;
 	}
 	// const document = documents.get(params.textDocument.uri);

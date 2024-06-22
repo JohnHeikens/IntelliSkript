@@ -179,7 +179,7 @@ export class PatternTree implements PatternMatcher {
 				//this way, we can escape braces
 				//for example: (\(test\))
 				//todo: escape types
-				if(char == '\\')
+				if (char == '\\')
 					char = pattern[++i];
 				newNodes = [];
 				let treeElem = undefined;
@@ -444,10 +444,19 @@ export class PatternTree implements PatternMatcher {
 	}
 
 	addPattern(pattern: PatternData) {
-		if (/\d\+|(?<!\\)(\+|\*|\.)/.exec(pattern.regexPatternString)) {
-			//regex is not compatible with the tree
-			this.incompatiblePatterns.push(pattern);
-		} else {
+		if (/\\d\+|(?<!\\)(\+|\*|\.)/.exec(pattern.regexPatternString)) {
+			//these patterns are not compatible with the tree
+			if (pattern.definitionLocation.uri.includes('IntelliSkript.sk')) {
+				//defined by intelliskript, this pattern should be safe to use
+				this.incompatiblePatterns.push(pattern);
+			}
+		}
+		//if (pattern.skriptPatternString[0] == '<' && pattern.skriptPatternString[pattern.skriptPatternString.length - 1] == '>') {
+		//	//most of these patterns aren't actually used in our code
+		//	//if(pattern.regexPatternString.includes('\\d+'))
+		//	this.incompatiblePatterns.push(pattern);
+		//}
+		else {
 			this.compatiblePatterns.push(pattern);
 			if (this.root) {
 				this.addToTree(pattern);
@@ -513,11 +522,11 @@ export class PatternTree implements PatternMatcher {
 			}
 			//}
 		}
-		//for now, let's not do anything with incompatible patterns
-		//for (const pattern of this.incompatiblePatterns) {
-		//	if (testPattern.compare(pattern) && (!shouldContinue(pattern))) {
-		//		return pattern;
-		//	}
-		//}
+		//check against incompatible patterns. heavy!
+		for (const pattern of this.incompatiblePatterns) {
+			if (testPattern.compare(pattern) && (!shouldContinue(pattern))) {
+				return pattern;
+			}
+		}
 	}
 }
