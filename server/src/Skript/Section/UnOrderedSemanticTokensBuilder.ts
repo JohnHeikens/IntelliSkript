@@ -58,25 +58,27 @@ export class UnOrderedSemanticTokensBuilder {
 		if (token.position.line >= this.lines.length) {
 			throw new Error(token.position.line + " is out of bounds of the file (has " + this.lines.length + " lines )");
 		}
-		if (this.lines[token.position.line] == undefined) {
-			this.lines[token.position.line] = new SemanticTokenLine();
-		}
-		const lineTokens = this.lines[token.position.line].tokens;
-		if (!IntelliSkriptConstants.IsReleaseMode && true) {
-			//check if no tokens overlap
-			for (const lineToken of lineTokens) {
-				if ((token.position.character + token.length > lineToken.position.character) &&
-					(lineToken.position.character + lineToken.length > token.position.character))
-					throw "token overlap";
+		if (token.length > 0) {
+			if (this.lines[token.position.line] == undefined) {
+				this.lines[token.position.line] = new SemanticTokenLine();
 			}
+			const lineTokens = this.lines[token.position.line].tokens;
+			if (!IntelliSkriptConstants.IsReleaseMode && true) {
+				//check if no tokens overlap
+				for (const lineToken of lineTokens) {
+					if ((token.position.character + token.length > lineToken.position.character) &&
+						(lineToken.position.character + lineToken.length > token.position.character))
+						throw "token overlap";
+				}
+			}
+			lineTokens.push(token);
 		}
-		lineTokens.push(token);
 	}
 	previousResult(id: string): void {
 		this._builder.previousResult(id);
 	}
 	private pushSorted(): void {
-		let modifierCounter: number = 0;
+		//let modifierCounter: number = 0;
 		for (let i = 0; i < this.lines.length; i++) {
 			if (this.lines[i]) {
 				this.lines[i].fixTokens();

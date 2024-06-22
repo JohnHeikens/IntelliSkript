@@ -14,7 +14,7 @@ type inventory[ ]holder:
 #this type is used internally (if a variable has an unknown type, like global variables as they can be changed asynchronously)
 type unknown:
 
-type number:
+type number[s]:
 
 type long:
     inherits: number

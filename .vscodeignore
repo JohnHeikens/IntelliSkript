@@ -1,4 +1,7 @@
 .vscode/**
+*.cpuprofile
+server/src
+client/src
 **/*.ts
 **/*.map
 .gitignore

@@ -144,6 +144,7 @@ export class SkriptFile extends SkriptSection {
 		else {
 			const result = /^((local )?((plural|non-single) )?expression)( .*|)/.exec(context.currentString);
 			if (result) {
+				addKeywordToken = false;
 				s = new SkriptExpressionSection(this, context);
 				if (result[5]) {
 					patternStartIndex = result[1].length + " ".length;
@@ -151,6 +152,7 @@ export class SkriptFile extends SkriptSection {
 				else {
 					patternStartIndex = undefined;
 				}
+				context.addToken(TokenTypes.keyword, 0, patternStartIndex);
 			}
 			else {
 				const propertyResult = /^(?:((?:(?:local) )?(?:(?:plural|non-single) )?)((?:[^\s]| ){1,}) property) .*/.exec(context.currentString);
