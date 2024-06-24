@@ -28,6 +28,16 @@
 			"problemMatcher": [
 				"$tsc-watch"
 			]
+		},
+		{
+			"label": "Clean",
+			"type": "shell",
+			"command": "Remove-item",
+			"args": [
+				"${workspaceRoot}/server/out/**",
+				"-recurse"
+			],
+			"group": "build"
 		}
 	]
 }

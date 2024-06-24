@@ -5,7 +5,6 @@ import {
 	SkriptSection
 } from "../skriptSection/SkriptSection";
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
-import { TokenModifiers } from '../../../TokenModifiers';
 export class SkriptEffect extends SkriptPatternContainerSection {
 	createSection(context: SkriptContext): SkriptSection {
 		const regex = /^(parse|trigger)$/;

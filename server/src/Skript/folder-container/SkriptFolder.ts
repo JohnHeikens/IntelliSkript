@@ -2,7 +2,7 @@ import path = require('path');
 import { PatternData } from '../../pattern/data/PatternData';
 import { SkriptPatternCall } from '../../pattern/SkriptPattern';
 import { PatternResultProcessor } from '../../pattern/patternResultProcessor';
-import { PatternTreeContainer } from '../PatternTreeContainer';
+import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
 import { SkriptFile } from '../section/SkriptFile';
 import { SkriptFolderContainer } from './SkriptFolderContainer';
 import { SkriptWorkSpace } from './SkriptWorkSpace';

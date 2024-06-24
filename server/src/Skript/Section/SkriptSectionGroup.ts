@@ -1,7 +1,7 @@
 import { Hierarchy } from '../../Hierarchy';
 import { PatternData } from "../../pattern/data/PatternData";
 import { PatternResultProcessor } from "../../pattern/patternResultProcessor";
-import { SkriptVariable } from '../SkriptVariable';
+import { SkriptVariable } from '../storage/SkriptVariable';
 import { SkriptSection } from './skriptSection/SkriptSection';
 import { PatternMatcher } from '../../pattern/PatternMatcher';
 import { SkriptPatternCall } from '../../pattern/SkriptPattern';

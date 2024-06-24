@@ -4,7 +4,7 @@ import { PatternType } from '../../../pattern/PatternType';
 import { SkriptContext } from '../../SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptExpressionSection } from './SkriptExpressionSection';
-import { SkriptTypeState } from '../../SkriptTypeState';
+import { SkriptTypeState } from '../../storage/SkriptTypeState';
 import assert = require('assert');
 export class SkriptPropertySection extends SkriptExpressionSection {
 	propertyParentType: TypeData;

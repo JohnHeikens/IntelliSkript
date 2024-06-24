@@ -7,7 +7,9 @@
 			"request": "launch",
 			"name": "Launch Client",
 			"runtimeExecutable": "${execPath}",
-			"args": ["--extensionDevelopmentPath=${workspaceRoot}"],
+			"args": [
+				"--extensionDevelopmentPath=${workspaceRoot}"
+			],
 			"preLaunchTask": {
 				"type": "npm",
 				"script": "watch"
@@ -20,7 +22,9 @@
 			"port": 6009,
 			"restart": true,
 			"smartStep": true,
-			"outFiles": ["${workspaceRoot}/server/out/**/*.js"],
+			"outFiles": [
+				"${workspaceRoot}/server/out/**/*.js"
+			],
 			"sourceMaps": true
 		},
 		{

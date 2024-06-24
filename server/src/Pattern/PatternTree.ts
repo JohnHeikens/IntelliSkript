@@ -3,7 +3,7 @@ import { Location } from 'vscode-languageserver/node';
 import { SkriptNestHierarchy } from '../nesting/SkriptNestHierarchy';
 import type { SkriptPatternContainerSection } from '../skript/section/reflect/SkriptPatternContainerSection';
 import { SkriptContext } from '../skript/SkriptContext';
-import { SkriptTypeState } from "../skript/SkriptTypeState";
+import { SkriptTypeState } from "../skript/storage/SkriptTypeState";
 import { PatternData } from './data/PatternData';
 import { PatternTreeNode } from './patternTreeNode/PatternTreeNode';
 import { RegExpTreeError } from './RegExpTreeError';

@@ -1,5 +1,5 @@
 import { SkriptContext } from '../SkriptContext';
-import { SkriptOption } from '../SkriptOption';
+import { SkriptOption } from '../storage/SkriptOption';
 import { SkriptSection } from './skriptSection/SkriptSection';
 export class SkriptOptionsSection extends SkriptSection {
 	processLine(context: SkriptContext): void {

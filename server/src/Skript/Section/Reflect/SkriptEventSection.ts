@@ -5,7 +5,7 @@ import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 import { PatternTree } from '../../../pattern/PatternTree';
 import assert = require('assert');
-import { SkriptTypeState } from '../../SkriptTypeState';
+import { SkriptTypeState } from '../../storage/SkriptTypeState';
 import { TokenTypes } from '../../../TokenTypes';
 export class SkriptEventSection extends SkriptPatternContainerSection {
 	eventValues: PatternData[] = [];

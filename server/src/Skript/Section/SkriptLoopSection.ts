@@ -2,7 +2,7 @@ import { PatternData } from '../../pattern/data/PatternData';
 import { SkriptContext } from '../SkriptContext';
 import { SkriptSection } from './skriptSection/SkriptSection';
 import { SkriptSectionGroup } from './SkriptSectionGroup';
-import { SkriptTypeSection } from './intelliSkript/SkriptTypeSection';
+import { SkriptTypeSection } from './custom/SkriptTypeSection';
 
 export class SkriptLoopSection extends SkriptSection {
 	loopType: SkriptTypeSection | undefined;

@@ -2,8 +2,8 @@ import { PatternData } from "../pattern/data/PatternData";
 import { PatternTree } from '../pattern/PatternTree';
 import { PatternResultProcessor } from "../pattern/patternResultProcessor";
 import { PatternType } from '../pattern/PatternType';
-import type { SkriptPatternContainerSection } from './section/reflect/SkriptPatternContainerSection';
-import { SkriptContext } from './SkriptContext';
+import type { SkriptPatternContainerSection } from '../skript/section/reflect/SkriptPatternContainerSection';
+import { SkriptContext } from '../skript/SkriptContext';
 import { PatternMatcher } from '../pattern/PatternMatcher';
 import { SkriptPatternCall } from '../pattern/SkriptPattern';
 

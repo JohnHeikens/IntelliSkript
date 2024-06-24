@@ -40,12 +40,12 @@ import {
 
 import * as IntelliSkriptConstants from './IntelliSkriptConstants';
 import { AddonParser } from './skript/addon-parser/AddonParser';
-import { SkriptWorkSpace } from './skript/workSpace/SkriptWorkSpace';
+import { SkriptWorkSpace } from './skript/folder-container/SkriptWorkSpace';
 import { TokenTypes } from './TokenTypes';
 import assert = require('assert');
 import { Sleep } from './Thread';
-import { SkriptFolder } from './skript/workSpace/SkriptFolder';
-import { SkriptVariable } from './skript/SkriptVariable';
+import { SkriptFolder } from './skript/folder-container/SkriptFolder';
+import { SkriptVariable } from './skript/storage/SkriptVariable';
 import { PatternData } from './pattern/data/PatternData';
 import { idParser } from './skript/addon-parser/idParser';
 import { TokenModifiers } from './TokenModifiers';

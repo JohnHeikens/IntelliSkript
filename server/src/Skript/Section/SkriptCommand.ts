@@ -4,7 +4,7 @@ import { PatternType } from "../../pattern/PatternType";
 import { SkriptPatternCall } from '../../pattern/SkriptPattern';
 import { TokenTypes } from '../../TokenTypes';
 import { SkriptContext } from '../SkriptContext';
-import { SkriptTypeState } from '../SkriptTypeState';
+import { SkriptTypeState } from '../storage/SkriptTypeState';
 import { SkriptSection } from "./skriptSection/SkriptSection";
 
 const playerRegExpString = "(the )?player";

@@ -1,7 +1,7 @@
 import { DiagnosticSeverity } from 'vscode-languageserver/node';
 import { TokenTypes } from '../../TokenTypes';
 import { SkriptContext } from '../SkriptContext';
-import { SkriptVariable } from '../SkriptVariable';
+import { SkriptVariable } from '../storage/SkriptVariable';
 import {
 	SkriptSection
 } from "./skriptSection/SkriptSection";

@@ -7,7 +7,7 @@ import { TokenTypes } from '../TokenTypes';
 import { SkriptSection } from "./section/skriptSection/SkriptSection";
 import { SemanticToken } from './section/UnOrderedSemanticTokensBuilder';
 import { SkriptFile } from './section/SkriptFile';
-import { SkriptPatternMatchHierarchy } from './SkriptPatternMatchHierarchy';
+import { SkriptPatternMatchHierarchy } from '../pattern/SkriptPatternMatchHierarchy';
 import { PatternData } from '../pattern/data/PatternData';
 
 //TOODO: make context able to 'push' and 'pop' (make a function able to modify the context or create an instance while keeping reference to the same diagnostics list

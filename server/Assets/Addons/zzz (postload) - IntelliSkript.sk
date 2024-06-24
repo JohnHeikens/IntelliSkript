@@ -9,7 +9,7 @@ expression (true|false):
 expression <(-){0,1}(\d+)(?:\.(\d+))?(?!\.)>:
     return type: number
 
-expression %object% is %object%:
+expression %object% (is|=) %object%:
     return type: boolean
 
 expression console:
@@ -33,7 +33,7 @@ expression %number% (tick|second|minute|hour|day|month|year)[s]:
 
 
 # arithmetic
-effect:
+expression:
     patterns:
         (%object%)[ ]+[ ](%object%)
         (%object%)[ ]+[ ]%object%
@@ -55,6 +55,7 @@ effect:
         (%object%)[ ]^[ ]%object%
         %object%[ ]^[ ](%object%)
         %object%[ ]^[ ]%object%
+    return type: object
 
 effect wait %timespan%:
     trigger:

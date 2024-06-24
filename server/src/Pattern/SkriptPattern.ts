@@ -1,4 +1,4 @@
-import { SkriptTypeState } from "../skript/SkriptTypeState";
+import { SkriptTypeState } from "../skript/storage/SkriptTypeState";
 import { PatternType } from './PatternType';
 import { PatternData } from './data/PatternData';
 //examples:

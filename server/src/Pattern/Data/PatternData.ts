@@ -1,5 +1,5 @@
 import type { integer, Location } from 'vscode-languageserver/node';
-import { SkriptTypeState } from "../../skript/SkriptTypeState";
+import { SkriptTypeState } from "../../skript/storage/SkriptTypeState";
 import type { SkriptPatternContainerSection } from '../../skript/section/reflect/SkriptPatternContainerSection';
 
 export class PatternData {

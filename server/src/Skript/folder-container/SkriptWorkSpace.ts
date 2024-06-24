@@ -1,7 +1,7 @@
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { PatternData } from "../../pattern/data/PatternData";
 import { PatternResultProcessor } from "../../pattern/patternResultProcessor";
-import { PatternTreeContainer } from '../PatternTreeContainer';
+import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
 import { SkriptFile } from '../section/SkriptFile';
 import { SkriptPatternCall } from '../../pattern/SkriptPattern';
 import path = require('path');

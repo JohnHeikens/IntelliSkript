@@ -6,13 +6,13 @@ import { PatternResultProcessor, stopAtFirstResultProcessor } from '../../../pat
 import { TokenTypes } from '../../../TokenTypes';
 import { PatternType } from "../../../pattern/PatternType";
 import { SkriptContext } from '../../SkriptContext';
-import { SkriptVariable } from '../../SkriptVariable';
+import { SkriptVariable } from '../../storage/SkriptVariable';
 import { SkriptSectionGroup } from '../SkriptSectionGroup';
 //import { SkriptConditionSection } from './SkriptConditionSection';
 import assert = require('assert');
 import { PatternData, TypeData } from '../../../pattern/data/PatternData';
 import { SkriptPatternCall } from '../../../pattern/SkriptPattern';
-import { SkriptTypeState } from '../../SkriptTypeState';
+import { SkriptTypeState } from '../../storage/SkriptTypeState';
 import { TokenModifiers } from '../../../TokenModifiers';
 import { PatternKeyFrame, TransformedPattern } from './PatternToLineTransform'
 //import { createBasicSection } from './CreateBasicSection';

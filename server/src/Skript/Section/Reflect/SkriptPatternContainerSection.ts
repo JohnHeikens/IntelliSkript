@@ -9,7 +9,7 @@ import { DiagnosticSeverity } from 'vscode-languageserver';
 import { PatternData } from '../../../pattern/data/PatternData';
 import { SkriptPatternCall } from '../../../pattern/SkriptPattern';
 import { PatternResultProcessor } from '../../../pattern/patternResultProcessor';
-import { SkriptTypeState } from '../../SkriptTypeState';
+import { SkriptTypeState } from '../../storage/SkriptTypeState';
 
 const patternRegEx = /pattern(|s)/;
 export class SkriptPatternContainerSection extends SkriptSection {

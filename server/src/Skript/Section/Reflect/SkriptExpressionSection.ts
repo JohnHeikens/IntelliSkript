@@ -1,7 +1,7 @@
 import { TokenModifiers } from '../../../TokenModifiers';
 import { TokenTypes } from '../../../TokenTypes';
 import { SkriptContext } from '../../SkriptContext';
-import { SkriptTypeState } from "../../SkriptTypeState";
+import { SkriptTypeState } from "../../storage/SkriptTypeState";
 import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 export class SkriptExpressionSection extends SkriptPatternContainerSection {

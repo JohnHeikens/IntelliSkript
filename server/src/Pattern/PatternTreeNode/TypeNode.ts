@@ -1,4 +1,4 @@
-import { SkriptTypeState } from '../../skript/SkriptTypeState';
+import { SkriptTypeState } from '../../skript/storage/SkriptTypeState';
 import { PatternTreeNode } from './PatternTreeNode'
 
 export class TypeNode extends PatternTreeNode {
