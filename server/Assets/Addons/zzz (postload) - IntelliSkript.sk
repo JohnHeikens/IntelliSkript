@@ -61,3 +61,9 @@ effect wait %timespan%:
     trigger:
 #       (internal code)
         {_test} + {_test}
+
+# spawn 3 creepers at the targeted block
+# spawn a ghast 5 meters above the player
+effect:
+    patterns:
+        (spawn|summon) [%number% of] %entitytypes% [%directions% %locations%]
