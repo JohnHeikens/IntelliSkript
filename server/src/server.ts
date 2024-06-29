@@ -9,6 +9,7 @@ import {
 	DefinitionLink,
 	Diagnostic,
 	DidChangeConfigurationNotification,
+	DocumentFormattingParams,
 	DocumentSelector,
 	Hover,
 	InitializeParams,
@@ -26,6 +27,7 @@ import {
 	TextDocumentPositionParams,
 	TextDocumentSyncKind,
 	TextDocuments,
+	TextEdit,
 	WorkspaceChange,
 	createConnection,
 } from 'vscode-languageserver/node';
@@ -49,6 +51,7 @@ import { SkriptVariable } from './skript/storage/SkriptVariable';
 import { PatternData } from './pattern/data/PatternData';
 import { idParser } from './skript/addon-parser/idParser';
 import { TokenModifiers } from './TokenModifiers';
+import { IndentData } from './skript/validation/IndentData';
 
 
 // Create a connection for the server, using Node's IPC as a transport.
@@ -184,7 +187,7 @@ connection.onInitialize(async (params: InitializeParams) => {
 				//codeLensProvider: {
 				//	resolveProvider: true
 				//},
-				//documentFormattingProvider: true,
+				documentFormattingProvider: true,
 				//documentRangeFormattingProvider: true,
 				//documentOnTypeFormattingProvider: {
 				//	firstTriggerCharacter: ';',
@@ -290,6 +293,21 @@ let globalSettings: IntelliSkriptSettings = defaultSettings;
 // Cache the settings of all open documents
 const documentSettings: Map<string, Thenable<IntelliSkriptSettings>> = new Map();
 
+connection.onDocumentFormatting((params: DocumentFormattingParams) => {
+	const { textDocument, options } = params;
+	const file = currentWorkSpace.getSkriptFileByUri(textDocument.uri);
+	if (file) {
+		return file.format();
+		
+		//dits.push({
+		//	range:{start: file.document.positionAt(0), end: file.document.positionAt(0)}
+		//)
+		//return edits;
+		//return formatDocument(document, options);
+	}
+	return [];
+});
+
 connection.onDidChangeConfiguration(change => {
 	if (hasConfigurationCapability) {
 		// Reset all cached document settings
@@ -392,8 +410,7 @@ async function validateTextDocument(textDocument: TextDocument, couldBeChanged: 
 
 	const validatedDocument = currentWorkSpace.getSkriptFileByUri(textDocument.uri);
 	if (validatedDocument) {
-		const diagnostics: Diagnostic[] = validatedDocument.diagnostics;
-
+		const diagnostics: Diagnostic[] = validatedDocument.parseResult.diagnostics;
 
 		// Send the computed diagnostics to VSCode.
 		connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
@@ -414,7 +431,7 @@ function getWordInfo(params: TextDocumentPositionParams): wordInfo {
 	if (f) {
 		const lines = f.document.getText().split('\n');
 		const clickedLineText = lines[params.position.line];
-		const indentationEndIndex = SkriptFile.getIndentationEndIndex(clickedLineText);
+		const indentationEndIndex = IndentData.getIndentationEndIndex(clickedLineText);
 		if (params.position.character < indentationEndIndex) {
 			return {
 				variable: undefined
@@ -508,7 +525,7 @@ connection.onDefinition((params): DefinitionLink[] => {
 
 
 			const targetLineRange = {
-				start: { line: targetLineIndex, character: SkriptFile.getIndentationEndIndex(targetLine) },
+				start: { line: targetLineIndex, character: IndentData.getIndentationEndIndex(targetLine) },
 				end: { line: targetLineIndex, character: targetLine.length }
 			};
 			return [{
@@ -698,7 +715,7 @@ connection.onCodeAction((params) => {
 						}, end:
 						{
 							line: params.range.start.line,
-							character: SkriptFile.getIndentationEndIndex(document.getText().split("\n")[params.range.start.line])
+							character: IndentData.getIndentationEndIndex(document.getText().split("\n")[params.range.start.line])
 						}
 					}, indentString, ChangeAnnotation.create('Insert the expected amount of spaces and tabs', true));
 				}

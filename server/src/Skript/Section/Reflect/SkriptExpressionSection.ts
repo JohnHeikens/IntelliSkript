@@ -1,6 +1,6 @@
 import { TokenModifiers } from '../../../TokenModifiers';
 import { TokenTypes } from '../../../TokenTypes';
-import { SkriptContext } from '../../SkriptContext';
+import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptTypeState } from "../../storage/SkriptTypeState";
 import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
@@ -19,7 +19,7 @@ export class SkriptExpressionSection extends SkriptPatternContainerSection {
 	hasReset = false;
 	//delete x::*
 	hasRemoveAll = false;
-	createSection(context: SkriptContext): SkriptSection {
+	createSection(context: SkriptContext): SkriptSection | undefined {
 		let recognized = true;
 		let keywordEnd = context.currentString.length;
 		switch (context.currentString) {

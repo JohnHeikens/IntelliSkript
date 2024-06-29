@@ -1,6 +1,6 @@
 import { PatternData } from "../../../pattern/data/PatternData";
 import { PatternType } from "../../../pattern/PatternType";
-import { SkriptContext } from '../../SkriptContext';
+import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 import { PatternTree } from '../../../pattern/PatternTree';
@@ -11,7 +11,7 @@ export class SkriptEventSection extends SkriptPatternContainerSection {
 	eventValues: PatternData[] = [];
 
 
-	createSection(context: SkriptContext): SkriptSection {
+	createSection(context: SkriptContext): SkriptSection | undefined {
 		if (context.currentString == "check")
 			return new SkriptSection(this, context);
 

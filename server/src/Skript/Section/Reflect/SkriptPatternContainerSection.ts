@@ -1,6 +1,6 @@
 import { TokenTypes } from '../../../TokenTypes';
 import { PatternType } from "../../../pattern/PatternType";
-import { SkriptContext } from '../../SkriptContext';
+import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptPatternSection } from './SkriptPatternSection';
 import { PatternTree } from '../../../pattern/PatternTree';
@@ -32,7 +32,7 @@ export class SkriptPatternContainerSection extends SkriptSection {
 		}
 	}
 
-	createSection(context: SkriptContext): SkriptSection {
+	createSection(context: SkriptContext): SkriptSection | undefined {
 		//match whole string
 		if (new RegExp(`^${patternRegEx.source}$`).test(context.currentString)) {
 			context.addToken(TokenTypes.keyword);
@@ -40,8 +40,8 @@ export class SkriptPatternContainerSection extends SkriptSection {
 		}
 		else {
 			//we don't recognise this pattern
-			context.addDiagnostic(0, context.currentString.length, "unknown section", DiagnosticSeverity.Hint, "IntelliSkript->Section->Unknown");
-			return new SkriptSection(this, context);
+			//context.addDiagnostic(0, context.currentString.length, "unknown section", DiagnosticSeverity.Hint, "IntelliSkript->Section->Unknown");
+			return undefined;
 		}
 	}
 	processLine(context: SkriptContext): void {

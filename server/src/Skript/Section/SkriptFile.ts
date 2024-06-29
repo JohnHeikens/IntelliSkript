@@ -1,14 +1,14 @@
 import { SkriptSection } from "./skriptSection/SkriptSection";
 import { SkriptFunction } from './SkriptFunctionSection';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { Diagnostic, DiagnosticSeverity } from 'vscode-languageserver/node';
+import { Diagnostic, DiagnosticSeverity, Range, TextEdit } from 'vscode-languageserver/node';
 import { PatternData } from '../../pattern/data/PatternData';
 import { PatternResultProcessor, stopAtFirstResultProcessor } from '../../pattern/patternResultProcessor';
 import { PatternType } from "../../pattern/PatternType";
 import { SkriptPatternCall } from '../../pattern/SkriptPattern';
 import { TokenTypes } from '../../TokenTypes';
 import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
-import { SkriptContext } from '../SkriptContext';
+import { SkriptContext } from '../validation/SkriptContext';
 import { SkriptOption } from '../storage/SkriptOption';
 import { SkriptPatternMatchHierarchy } from '../../pattern/SkriptPatternMatchHierarchy';
 import { SkriptFolder } from '../folder-container/SkriptFolder';
@@ -24,12 +24,13 @@ import { SkriptPropertySection } from './reflect/SkriptPropertySection';
 import { SkriptCommandSection } from './SkriptCommand';
 import { SkriptEventListenerSection } from './SkriptEventListenerSection';
 import { SkriptOptionsSection } from './SkriptOptionsSection';
-import { UnOrderedSemanticTokensBuilder } from './UnOrderedSemanticTokensBuilder';
+import { SemanticTokenLine, UnOrderedSemanticTokensBuilder } from './UnOrderedSemanticTokensBuilder';
 import { start } from 'repl';
+import { ParseResult } from '../validation/ParseResult';
+import { IndentData } from '../validation/IndentData';
+import assert = require('assert');
 
-function removeRemainder(toDivide: number, toDivideBy: number): number {
-	return Math.floor(toDivide / toDivideBy) * toDivideBy;
-}
+
 
 export class SkriptFile extends SkriptSection {
 	document: TextDocument;
@@ -39,13 +40,14 @@ export class SkriptFile extends SkriptSection {
 	builder: UnOrderedSemanticTokensBuilder;
 
 	options: SkriptOption[] = [];
+	parseResult: ParseResult = new ParseResult();
 
 	patterns: PatternTreeContainer = new PatternTreeContainer();
 	matches: SkriptPatternMatchHierarchy = new SkriptPatternMatchHierarchy();
 	dependents: SkriptFile[] = new Array<SkriptFile>();
 	dependencies: SkriptFile[] = new Array<SkriptFile>();
 	validated = false;
-	diagnostics: Diagnostic[] = [];
+	suggestedIndentation: number[] = [];
 	/**
 	 * invalidate this file, and invalidate it possible dependents
 	 */
@@ -110,7 +112,7 @@ export class SkriptFile extends SkriptSection {
 			this.parent.patterns.addPattern(pattern);
 	}
 
-	createSection(context: SkriptContext): SkriptSection {
+	createSection(context: SkriptContext): SkriptSection | undefined {
 		const spaceIndex = context.currentString.indexOf(" ");
 		let patternStartIndex = spaceIndex == -1 ? undefined : spaceIndex + 1;
 		const sectionKeyword = spaceIndex == -1 ? context.currentString : context.currentString.substring(0, spaceIndex);
@@ -160,10 +162,10 @@ export class SkriptFile extends SkriptSection {
 					const typeStart = propertyResult[1].length;
 					const typeEnd = typeStart + propertyResult[2].length;
 					const data = this.parseType(context, typeStart, typeEnd);
+					addKeywordToken = false;
 					if (data) {
 						s = new SkriptPropertySection(this, context, data);
 						patternStartIndex = typeEnd + " property ".length;
-						addKeywordToken = false;
 						//add keyword token for 'local plural'
 						context.addToken(TokenTypes.keyword, 0, typeStart);
 						//add keyword token for 'property'
@@ -174,10 +176,10 @@ export class SkriptFile extends SkriptSection {
 					//}
 				}
 				else {
+					addKeywordToken = false;
 					const result = this.detectPatternsRecursively(context, PatternType.event);
 					//const pattern = this.getPatternData(new SkriptPatternCall(context.currentString, PatternType.event), stopAtFirstResultProcessor);
 					if (result.detectedPattern) {
-						addKeywordToken = false;
 						//event
 						s = new SkriptEventListenerSection(context, result.detectedPattern);
 					}
@@ -198,22 +200,27 @@ export class SkriptFile extends SkriptSection {
 		}
 		if (addKeywordToken)
 			context.addToken(TokenTypes.keyword, 0, sectionKeyword.length);
-		return s ?? new SkriptSection(this, context);
+		return s;
 	}
 
 	processLine(context: SkriptContext): void {
 		context.addDiagnostic(0, context.currentString.length, "can't understand this line (colon or indentation missing?");
 	}
 
-	static getIndentationEndIndex(line: string): number {
-		return line.search(/(?!( |\t))/);
+
+	static trimLineWithoutComments(line: string): { trimmedLine: string, commentIndex: number } {
+		//remove comments and space from the right
+		const commentIndex = line.search(/(?<!#)#(?!#)/);
+		const lineWithoutComments = commentIndex == -1 ? line : line.substring(0, commentIndex);
+		return { trimmedLine: lineWithoutComments.trim(), commentIndex: commentIndex };
 	}
 	validate() {
 		//clear old data
 		this.patterns = new PatternTreeContainer();
 		this.matches = new SkriptPatternMatchHierarchy();
+		//create reference to builder
+		this.parseResult = new ParseResult(this.builder);
 		this.options = [];
-		this.diagnostics = [];
 		this.children = [];
 		//dependencies are handled by the workspace
 		const context = new SkriptContext(this);
@@ -222,143 +229,160 @@ export class SkriptFile extends SkriptSection {
 
 		const lines = this.text.split("\n");
 
+		this.suggestedIndentation = new Array<number>(lines.length);
+
 		const currentSections: SkriptSection[] = [];
 		currentSections[0] = this;
+
 
 		let currentLineIndex = 0;
 		let currentLineStartPosition = 0;
 
-		let expectedIndentationCount = 0;
-		let currentIndentationString = "";
+		/**the index of the last line which contained code, so no lines with comments */
+		let lastCodeLine = 0;
 
-		let lastCodeLine = 0;//the index of the last line which contained code, so no lines with comments
+		const indentData = new IndentData();
 
 		function popStacks(stacksToPop: number) {
 			if (stacksToPop > 0) {
-				if (context.currentSection != undefined) {
-					const startLine = context.currentSection.startLine;
-					if (startLine == (currentLineIndex - 1)) {
-						context.addDiagnosticAbsolute({
-							start: { line: startLine, character: 0 },
-							end: { line: startLine, character: lines[startLine].length }
-						}, "empty configuration section (expected something here)", DiagnosticSeverity.Warning, "IntelliSkript->Indent->Empty", currentIndentationString.repeat(expectedIndentationCount));
-					}
-					for (let i = 0; i < stacksToPop; i++) {
+				const startLine = context.currentSection.startLine;
+				if (startLine == (currentLineIndex - 1)) {
+					context.addDiagnosticAbsolute({
+						start: { line: startLine, character: 0 },
+						end: { line: startLine, character: lines[startLine].length }
+					}, "empty configuration section (expected something here)", DiagnosticSeverity.Warning, "IntelliSkript->Indent->Empty");
+				}
+				for (let i = 0; i < stacksToPop; i++) {
+					const parent = context.currentSection.getParentSection();
+					if (parent) {
 						context.currentSection.endLine = lastCodeLine;// currentLineIndex;
-						context.currentSection = context.currentSection?.parent instanceof SkriptSection ? context.currentSection?.parent as SkriptSection : undefined;
-						if (!context.currentSection) {
-							break;
-						}
+						context.currentSection = parent;
 					}
+					else break;
 				}
 			}
 		}
 
 		while (currentLineIndex < lines.length) {
 			const currentLine = lines[currentLineIndex];
-			//const currentLineContext = context.push(currentLineStartPosition, currentLine.length);
-
-			//remove comments and space from the right
-			const commentIndex = currentLine.search(/(?<!#)#(?!#)/);
-			const lineWithoutComments = commentIndex == -1 ? currentLine : currentLine.substring(0, commentIndex);
 
 			const currentLineContext = context.push(currentLineStartPosition, currentLine.length);
 			currentLineContext.currentLine = currentLineIndex;
 
+			const trimInfo = SkriptFile.trimLineWithoutComments(currentLine);
 
-			const trimmedLine = lineWithoutComments.trim();
+			const trimmedLine = trimInfo.trimmedLine;
 
 			if (trimmedLine.length > 0) {
+				indentData.nextLine(currentLineContext);
+				indentData.hasColon = trimmedLine.endsWith(":");
 				//process indentation
-				const indentationEndIndex = SkriptFile.getIndentationEndIndex(currentLine);
 				//context.currentPosition = currentLineStartPosition + indentationEndIndex;
-				const indentationString = currentLine.substring(0, indentationEndIndex);
-				const inverseCurrentIndentationCharacter = (indentationString[0] == " ") ? "\t" : " ";
-				const currentExpectedIndentationcharacterCount = expectedIndentationCount * currentIndentationString.length;
-				if (indentationString.includes(inverseCurrentIndentationCharacter)) {
-					context.addDiagnostic(
-						currentLineStartPosition,
-						currentLineStartPosition + indentationEndIndex,
-						`indentation error: do not mix tabs and spaces` + indentationEndIndex,
-						DiagnosticSeverity.Error,
-						"IntelliSkript->Indent->Mix",
-						currentIndentationString.repeat(expectedIndentationCount)
-					);
-				}
-				else {
+				//removed indentation and comments
+				const trimmedContext = currentLineContext.push(indentData.endIndex, trimmedLine.length);
 
-					if (currentIndentationString == "") {
-						currentIndentationString = indentationString;
-						if (indentationString == "") {
-							popStacks(expectedIndentationCount);
-							expectedIndentationCount = 0;
-						}
+				let newSection: SkriptSection | undefined;
+				let mostValidContext: SkriptContext | undefined;
+
+				const checkSection = (section: SkriptSection): boolean => {
+					const sectionContext = trimmedContext.push(0,
+						indentData.hasColon ? trimmedContext.currentString.length - 1 : undefined);
+					sectionContext.currentSection = section;
+					sectionContext.parseResult = new ParseResult();
+					//first we check the expected section, so the most validcontext will be undefined at this point
+					if (!mostValidContext) mostValidContext = sectionContext;
+
+					if (indentData.hasColon) {
+						//indent
+						newSection = sectionContext.currentSection.createSection?.(sectionContext);
+						if (!newSection) return false;
 					}
 					else {
-						const inverseExpectedIndentationCharacter = currentIndentationString[0] == " " ? "\t" : " ";
-						if (indentationString[0] == inverseExpectedIndentationCharacter) {
-							context.addDiagnostic(
-								currentLineStartPosition,
-								indentationEndIndex,
-								`indentation error: expected ` + currentExpectedIndentationcharacterCount + (currentIndentationString[0] == " " ? " space" : " tab") + (currentExpectedIndentationcharacterCount == 1 ? "" : "s") + ` but found ` + indentationEndIndex + (indentationString[0] == " " ? " space" : " tab") + ((indentationString.length == 1) ? "" : "s"),
-								DiagnosticSeverity.Error,
-								"IntelliSkript->Indent->Charachter",
-								currentIndentationString.repeat(expectedIndentationCount)
-							);
-						}
-						else {
-							if ((indentationEndIndex > currentExpectedIndentationcharacterCount) || (indentationEndIndex % currentIndentationString.length) != 0) {
-								const difference = indentationEndIndex - removeRemainder(indentationEndIndex, currentIndentationString.length);
-								context.addDiagnostic(
-									currentLineStartPosition + removeRemainder(indentationEndIndex, currentIndentationString.length),
-									difference,
-									`indentation error: expected ` + currentExpectedIndentationcharacterCount + (currentIndentationString[0] == " " ? " space" : " tab") + (currentExpectedIndentationcharacterCount == 1 ? "" : "s") + ` but found ` + indentationEndIndex,
-									DiagnosticSeverity.Error,
-									"IntelliSkript->Indent->Amount",
-									currentIndentationString.repeat(expectedIndentationCount)
-								);
-								//process the line like normally. this way the next lines will not all generate errors messages.
-								//break cont;
-							}
-							else {
-								const currentIndentationCount = indentationEndIndex / currentIndentationString.length;
-								const StacksToPop = expectedIndentationCount - currentIndentationCount;
-								popStacks(StacksToPop);
-								expectedIndentationCount = currentIndentationCount;
-							}
-						}
+						//context.currentString = trimmedLine;
+						sectionContext.currentSection?.processLine?.(trimmedContext);
+						//trimmedContext.currentSection.endLine = context.currentLine;
 					}
+					mostValidContext = sectionContext;
+					return true;
 				}
-				//removed indentation and comments
-				const trimmedContext = currentLineContext.push(indentationEndIndex, trimmedLine.length);
 
-				if (trimmedLine.endsWith(":")) {
-					//indent
-					const contextWithoutColon = trimmedContext.push(0, trimmedContext.currentString.length - 1);
-					//context.currentString = trimmedLine.substring(0, trimmedLine.length - 1);
-					//contextWithoutColon.createHierarchy(true);
-					const newSection: SkriptSection | undefined = context.currentSection?.createSection?.(contextWithoutColon);
-					if (newSection != undefined) context.currentSection?.children.push(newSection);
-					context.currentSection = newSection;
-					if (indentationEndIndex == 0) {
-						currentIndentationString = "";
+				let expectedSection = trimmedContext.currentSection;
+
+				const expectedStacksToPop = indentData.expected - indentData.mostValid;
+
+
+				//check different indentation offsets
+				//first check the expected indentation, then go back from top to bottom,
+				//skipping the expected indentation offset and duplicate types. (duplicate types todo)
+				for (let i = 0; i < expectedStacksToPop; i++) {
+					const parent = expectedSection.getParentSection();
+					if (parent)
+						expectedSection = parent;
+					else {
+						//popping too much stacks
+
+						break;
 					}
-					expectedIndentationCount++;
 				}
-				else {
-					//context.currentString = trimmedLine;
-					trimmedContext.currentSection?.processLine?.(trimmedContext);
-					//trimmedContext.currentSection.endLine = context.currentLine;
+
+
+				if (!checkSection(expectedSection)) {
+					/**use this set to make sure we don't check the same type of section two times (in most cases, it's just a huge performance drain) */
+					const passedTypes = new Set<string>([expectedSection.constructor.name]);
+					expectedSection = trimmedContext.currentSection;
+					let newMostValid = indentData.expected;
+					//loop over other possibilities, starting by the max indent possible at the moment and decrementing to the minimum
+					while (true) {
+						const constructorName = expectedSection.constructor.name;
+						if (!passedTypes.has(constructorName)) {
+							if (checkSection(expectedSection)) {
+								indentData.mostValid = newMostValid;
+								break;
+							}
+							passedTypes.add(constructorName);
+						}
+
+						const parent = expectedSection.getParentSection();
+						if (parent) {
+							newMostValid--;
+							expectedSection = parent;
+						}
+						else
+							break;
+					}
 				}
+
+				const stacksToPop = indentData.expected - indentData.mostValid;
+
+				popStacks(stacksToPop);
+				assert(mostValidContext);
+
+				//merge parse result
+				this.builder.addLine(mostValidContext.parseResult.tokens as SemanticTokenLine)
+				this.parseResult.diagnostics.push(...mostValidContext.parseResult.diagnostics);
+
+
+				//expectedIndentationCount = currentinden
+				if (indentData.hasColon) {
+					//when the no section was able to be created, create a new skriptsection
+					newSection ||= new SkriptSection(mostValidContext.currentSection, mostValidContext);
+					context.currentSection?.children.push(newSection);
+					context.currentSection = newSection;
+				}
+
 				lastCodeLine = currentLineIndex;
+				indentData.finishLine();
 			}
-			if (commentIndex != -1) {
-				currentLineContext.addToken(TokenTypes.comment, commentIndex, currentLine.length - commentIndex);
+
+			//empty lines and comments should indentate like the lines above them
+			this.suggestedIndentation[currentLineIndex] = indentData.correct;
+
+			if (trimInfo.commentIndex != -1) {
+				currentLineContext.addToken(TokenTypes.comment, trimInfo.commentIndex, currentLine.length - trimInfo.commentIndex);
 			}
 			currentLineIndex++;
 			currentLineStartPosition += currentLine.length + 1;
 		}
-		popStacks(expectedIndentationCount);
 
 		while (currentLineIndex < lines.length) {
 
@@ -379,5 +403,28 @@ export class SkriptFile extends SkriptSection {
 		const uri = this.document.uri;
 		//uri will always have the same \ method, no matter what platform the coder is on
 		return uri.substring(uri.lastIndexOf("/"));
+	}
+	format(): TextEdit[] {
+		const edits: TextEdit[] = [];
+		//loop over all lines and see what makes sense to do.
+		//replace all spaces with tabs for now
+		//when we find something which is probably the start of a new block like 'expression' or 'property', we set the recommended index to 0.
+		//inside of functions, we don't modify indentation as long as it's safe (you may indentate 2 tabs backward, but not forward for example)
+		const lines = this.text.split('\n');
+		let recommendedIndentationLength = 0;
+		for (const [index, line] of lines.entries()) {
+			const currentIndentationLength = IndentData.getIndentationEndIndex(line);
+			const trimInfo = SkriptFile.trimLineWithoutComments(line);
+			const currentIndentation = line.substring(0, currentIndentationLength);
+			const recommendedIndentation = '\t'.repeat(this.suggestedIndentation[index]);
+			if (currentIndentation != recommendedIndentation) {
+				edits.push(TextEdit.replace(Range.create({ line: index, character: 0 }, { line: index, character: currentIndentation.length }), recommendedIndentation));
+			}
+			if (trimInfo.trimmedLine.endsWith(':')) {
+				recommendedIndentationLength++;
+			}
+
+		}
+		return edits;
 	}
 }

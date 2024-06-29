@@ -1,10 +1,10 @@
 import { TokenTypes } from '../../../TokenTypes';
-import { SkriptContext } from '../../SkriptContext';
+import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 
 export class SkriptConditionProcessorSection extends SkriptPatternContainerSection {
-	createSection(context: SkriptContext): SkriptSection {
+	createSection(context: SkriptContext): SkriptSection | undefined {
 		const regex = /^(check)$/;
 		const result = regex.exec(context.currentString);
 		const bool = this.getTypeData("boolean");

@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { SkriptContext } from '../../SkriptContext';
+import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
 
 export class SkriptPatternSection extends SkriptSection {

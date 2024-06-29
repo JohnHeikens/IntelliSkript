@@ -1,4 +1,4 @@
-import { SkriptContext } from '../../SkriptContext';
+import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
 
 //TODO: add support for options
@@ -11,7 +11,7 @@ export class SkriptImportSection extends SkriptSection {
 		}
 	}
 	
-	override createSection(context: SkriptContext): SkriptSection {
+	override createSection(context: SkriptContext): SkriptSection | undefined {
 		context.addDiagnostic(0, context.currentString.length, "this is an import section");
 		return super.createSection(context);
 	}

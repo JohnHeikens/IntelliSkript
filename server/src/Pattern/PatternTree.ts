@@ -2,7 +2,7 @@ import { DiagnosticSeverity, integer } from 'vscode-languageserver';
 import { Location } from 'vscode-languageserver/node';
 import { SkriptNestHierarchy } from '../nesting/SkriptNestHierarchy';
 import type { SkriptPatternContainerSection } from '../skript/section/reflect/SkriptPatternContainerSection';
-import { SkriptContext } from '../skript/SkriptContext';
+import { SkriptContext } from '../skript/validation/SkriptContext';
 import { SkriptTypeState } from "../skript/storage/SkriptTypeState";
 import { PatternData } from './data/PatternData';
 import { PatternTreeNode } from './patternTreeNode/PatternTreeNode';

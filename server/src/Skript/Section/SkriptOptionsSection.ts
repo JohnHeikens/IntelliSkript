@@ -1,4 +1,4 @@
-import { SkriptContext } from '../SkriptContext';
+import { SkriptContext } from '../validation/SkriptContext';
 import { SkriptOption } from '../storage/SkriptOption';
 import { SkriptSection } from './skriptSection/SkriptSection';
 export class SkriptOptionsSection extends SkriptSection {

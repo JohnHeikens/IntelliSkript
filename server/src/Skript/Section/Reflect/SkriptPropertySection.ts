@@ -1,7 +1,7 @@
 import { PatternData, TypeData } from '../../../pattern/data/PatternData';
 import { PatternTree } from '../../../pattern/PatternTree';
 import { PatternType } from '../../../pattern/PatternType';
-import { SkriptContext } from '../../SkriptContext';
+import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptExpressionSection } from './SkriptExpressionSection';
 import { SkriptTypeState } from '../../storage/SkriptTypeState';

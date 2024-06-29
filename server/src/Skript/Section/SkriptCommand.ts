@@ -3,7 +3,7 @@ import { PatternResultProcessor } from "../../pattern/patternResultProcessor";
 import { PatternType } from "../../pattern/PatternType";
 import { SkriptPatternCall } from '../../pattern/SkriptPattern';
 import { TokenTypes } from '../../TokenTypes';
-import { SkriptContext } from '../SkriptContext';
+import { SkriptContext } from '../validation/SkriptContext';
 import { SkriptTypeState } from '../storage/SkriptTypeState';
 import { SkriptSection } from "./skriptSection/SkriptSection";
 
@@ -24,15 +24,17 @@ export class SkriptCommandSection extends SkriptSection {
 			context.addDiagnostic(0, context.currentString.length, "cannot recognize this command");
 		}
 	}
-	createSection(context: SkriptContext): SkriptSection {
+	createSection(context: SkriptContext): SkriptSection | undefined {
 		const regex = new RegExp(`^${sectionRegExp.source}$`);// /^(aliases|executable by|prefix|usage|description|permission|cooldown|cooldown (message|bypass|storage)|trigger)$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);
 
 		if (result == null) {
 			if (context.currentString == "trigger")
 				context.addToken(TokenTypes.keyword, 0, context.currentString.length);
-			else
+			else {
 				context.addDiagnostic(0, context.currentString.length, "cannot recognize this section. make sure to put your code for the command in triggers");
+				return undefined;
+			}
 		}
 		else
 			context.addDiagnostic(0, context.currentString.length, "the " + context.currentString + " section has to be in one line. for example " + context.currentString + ": blahblahblah");

@@ -5,7 +5,7 @@ import { SkriptNestHierarchy } from '../../../nesting/SkriptNestHierarchy';
 import { PatternResultProcessor, stopAtFirstResultProcessor } from '../../../pattern/patternResultProcessor';
 import { TokenTypes } from '../../../TokenTypes';
 import { PatternType } from "../../../pattern/PatternType";
-import { SkriptContext } from '../../SkriptContext';
+import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptVariable } from '../../storage/SkriptVariable';
 import { SkriptSectionGroup } from '../SkriptSectionGroup';
 //import { SkriptConditionSection } from './SkriptConditionSection';
@@ -62,6 +62,11 @@ export class SkriptSection extends SkriptSectionGroup {
 
 	getTypeData(typeName: string): TypeData | undefined {
 		return this.getPatternData(new SkriptPatternCall(typeName, PatternType.type), stopAtFirstResultProcessor);
+	}
+	getParentSection(): SkriptSection | undefined {
+		return this.parent && this.parent instanceof SkriptSection ?
+			this.parent :
+			undefined;
 	}
 
 	parseType(context: SkriptContext, start = 0, end = context.currentString.length): TypeData | undefined {
@@ -287,7 +292,7 @@ export class SkriptSection extends SkriptSectionGroup {
 
 	//detect patterns like a [b | c]
 	//return value: a type. basically, it will convert each subpattern into a result type (a %)
-	detectPatternsRecursively(context: SkriptContext, mainPatternType: PatternType = PatternType.effect, isTopNode = true, currentNode: SkriptNestHierarchy = context.createHierarchy(true)): { detectedPattern: PatternData | undefined, possibleResultTypes: TypeData[] } {
+	detectPatternsRecursively(context: SkriptContext, mainPatternType: PatternType = PatternType.effect, isTopNode = true, currentNode: SkriptNestHierarchy = context.createHierarchy(true)): { detectedPattern: PatternData | undefined } {
 		let foundPattern: PatternData | undefined;
 		const mergedPatternArguments: Map<number, SkriptTypeState> = new Map<number, SkriptTypeState>();
 		//const currentNode = isTopNode ? context.createHierarchy(isTopNode) : context.hierarchy;
@@ -331,8 +336,8 @@ export class SkriptSection extends SkriptSectionGroup {
 		//loop over sentence and try to replace as much as possible
 		//add the change value to {_test} -> add the change value to % -> add % to %
 
-		const results: TypeData[] = [];
-		const childResultList: TypeData[][] = new Array(currentNode.children.length);
+		//const results: TypeData[] = [];
+		const childResultList: PatternData[] = new Array(currentNode.children.length);
 
 		//first: process all child nodes
 		for (let i = 0; i < currentNode.children.length; i++) {
@@ -342,7 +347,9 @@ export class SkriptSection extends SkriptSectionGroup {
 			const offsetNode = nodeToClone.cloneWithOffset(-nodeToClone.start);
 
 			const childResults = this.detectPatternsRecursively(context.push(nodeToClone.start, nodeToClone.end - nodeToClone.start), PatternType.effect, false, offsetNode);
-			childResultList[i] = childResults.possibleResultTypes;
+			if (childResults.detectedPattern)
+				childResultList[i] = childResults.detectedPattern;
+
 		}
 		//then process main node
 		//will also return true if currentNode.character is ''
@@ -357,7 +364,8 @@ export class SkriptSection extends SkriptSectionGroup {
 				const child = currentNode.children[i];
 				if ('"{('.includes(child.character)) {//string or variable
 					if (child.character == '(') {
-						if (childResultList[i].length == 0) continue;
+						if (!childResultList[i]) continue;
+						mergedPatternArguments.set(child.start, childResultList[i].returnType);
 					}
 					else if (child.character == '{') {
 						//variable
@@ -418,7 +426,7 @@ export class SkriptSection extends SkriptSectionGroup {
 			}
 			context.addToken(tokenType, currentPosition, currentNode.end + borderSize - currentPosition);
 		}
-		return { possibleResultTypes: results, detectedPattern: foundPattern };
+		return { detectedPattern: foundPattern };
 	}
 
 	processLine(context: SkriptContext): void {
@@ -441,7 +449,7 @@ export class SkriptSection extends SkriptSectionGroup {
 
 
 	}
-	createSection(context: SkriptContext): SkriptSection {
+	createSection(context: SkriptContext): SkriptSection | undefined {
 		const checkPattern = /check \[(?!\()/g;
 		let p: RegExpExecArray | null;
 		let isIfStatement = false;
@@ -475,7 +483,8 @@ export class SkriptSection extends SkriptSectionGroup {
 			context.addToken(TokenTypes.keyword, 0, 'else'.length);
 		}
 		else {
-			section.detectPatternsRecursively(context);
+			const result = section.detectPatternsRecursively(context);
+			if (!result.detectedPattern) return undefined;
 		}
 		//try to find a (condition) pattern
 		return section;

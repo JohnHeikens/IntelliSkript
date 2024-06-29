@@ -1,12 +1,17 @@
-import { DiagnosticSeverity } from 'vscode-languageserver/node';
+import { DiagnosticSeverity, Location } from 'vscode-languageserver/node';
 import { TokenTypes } from '../../TokenTypes';
-import { SkriptContext } from '../SkriptContext';
+import { SkriptContext } from '../validation/SkriptContext';
 import { SkriptVariable } from '../storage/SkriptVariable';
 import {
 	SkriptSection
 } from "./skriptSection/SkriptSection";
+import { SkriptFile } from './SkriptFile';
+import { PatternData } from '../../pattern/data/PatternData';
+import { PatternType } from '../../pattern/PatternType';
+import { SkriptTypeState } from '../storage/SkriptTypeState';
 export class SkriptFunction extends SkriptSection {
 	name: string;
+	pattern: PatternData | undefined;
 	//context.currentString should be 'function example(a: string, b: number) :: string' for example
 	constructor(parent: SkriptSection, context: SkriptContext) {
 		super(parent, context);
@@ -18,6 +23,8 @@ export class SkriptFunction extends SkriptSection {
 			this.name = "";
 		}
 		else {
+			const argumentTypes: SkriptTypeState[] = [];
+			const argumentPositions: Location[] = [];
 			this.name = result[1];
 			if (result[2].trim().length > 0) {
 				const argumentIndex = "function ".length + result[1].length + "(".length;
@@ -32,7 +39,12 @@ export class SkriptFunction extends SkriptSection {
 						if (noSpaceResult) {
 							const typeStartPosition = currentArgumentString.index + variableDefinitionParts[0].length + ":".length + noSpaceResult.index;
 							const initialType = this.parseTypes(specializedContext, typeStartPosition, typeStartPosition + variableDefinitionParts[1].length);
+							/**where the arguments are located */
 							const loc = specializedContext.getLocation(currentArgumentString.index, variableDefinitionParts[0].trim().length);
+							if (initialType) {
+								argumentTypes.push(initialType);
+								argumentPositions.push(loc);
+							}
 							this.definedVariables.push(new SkriptVariable(loc, variableName, true));
 							specializedContext.addToken(TokenTypes.parameter, currentArgumentString.index, variableDefinitionParts[0].trim().length);
 						}
@@ -42,6 +54,12 @@ export class SkriptFunction extends SkriptSection {
 					}
 				}
 			}
+			let argumentPatternString = argumentTypes.length ? '%' + ',[ ]%'.repeat(argumentTypes.length - 1) : '';
+			this.pattern = new PatternData(
+				this.name + '[(]' + argumentPatternString + '[)]',
+				this.name + '(\()?' + argumentPatternString + '(\))?', context.getLocation(), PatternType.effect, undefined, argumentTypes, argumentPositions);
+
+			(parent as SkriptFile).addPattern(this.pattern)
 		}
 	}
 }

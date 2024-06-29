@@ -1,7 +1,7 @@
 import assert = require('assert');
 import { PatternTree } from '../../../pattern/PatternTree';
 import { PatternType } from "../../../pattern/PatternType";
-import { SkriptContext } from '../../SkriptContext';
+import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptPatternContainerSection } from '../reflect/SkriptPatternContainerSection';
 import { PatternData } from '../../../pattern/data/PatternData';
 import { SkriptSectionGroup } from '../SkriptSectionGroup';

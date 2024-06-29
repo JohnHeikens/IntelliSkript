@@ -1,25 +1,24 @@
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Diagnostic, DiagnosticSeverity, Location, Range } from 'vscode-languageserver/node';
-import { SkriptNestHierarchy } from '../nesting/SkriptNestHierarchy';
-import * as IntelliSkriptConstants from '../IntelliSkriptConstants';
-import { TokenModifiers } from '../TokenModifiers';
-import { TokenTypes } from '../TokenTypes';
-import { SkriptSection } from "./section/skriptSection/SkriptSection";
-import { SemanticToken } from './section/UnOrderedSemanticTokensBuilder';
-import { SkriptFile } from './section/SkriptFile';
-import { SkriptPatternMatchHierarchy } from '../pattern/SkriptPatternMatchHierarchy';
-import { PatternData } from '../pattern/data/PatternData';
+import { SkriptNestHierarchy } from '../../nesting/SkriptNestHierarchy';
+import { TokenModifiers } from '../../TokenModifiers';
+import { TokenTypes } from '../../TokenTypes';
+import { SkriptSection } from "../section/skriptSection/SkriptSection";
+import { SemanticToken } from '../section/UnOrderedSemanticTokensBuilder';
+import { SkriptFile } from '../section/SkriptFile';
+import { SkriptPatternMatchHierarchy } from '../../pattern/SkriptPatternMatchHierarchy';
+import { PatternData } from '../../pattern/data/PatternData';
+import { ParseResult } from './ParseResult';
 
 //TOODO: make context able to 'push' and 'pop' (make a function able to modify the context or create an instance while keeping reference to the same diagnostics list
 export class SkriptContext {
 
-	private referenceFields: {
-		currentSection: SkriptSection | undefined;
-
-	} = { currentSection: undefined };
-
-	public get currentSection(): SkriptSection | undefined { return this.referenceFields.currentSection; }
-	public set currentSection(newValue: SkriptSection | undefined) { this.referenceFields.currentSection = newValue; }
+	//private referenceFields: {
+	//	currentSection: SkriptSection | undefined;
+	//} = { currentSection: undefined };
+	//public get currentSection(): SkriptSection | undefined { return this.referenceFields.currentSection; }
+	//public set currentSection(newValue: SkriptSection | undefined) { this.referenceFields.currentSection = newValue; }
+	currentSection: SkriptSection;
 
 	//determine if the current context has any errors
 	hasErrors = false;
@@ -28,6 +27,7 @@ export class SkriptContext {
 	currentSkriptFile: SkriptFile;
 	currentDocument: TextDocument;
 
+
 	//variables which can change in push()
 	parent: SkriptContext | undefined = undefined;
 	currentString = "";
@@ -35,10 +35,15 @@ export class SkriptContext {
 	currentLine = 0;
 
 	hierarchy: SkriptNestHierarchy | undefined = undefined;
+
+	parseResult: ParseResult;
+
 	constructor(currentSkriptFile: SkriptFile, currentString: string | undefined = undefined) {
 		this.currentSkriptFile = currentSkriptFile;
 		this.currentDocument = currentSkriptFile.document;
 		this.currentString = currentString ?? this.currentDocument.getText();
+		this.parseResult = currentSkriptFile.parseResult;
+		this.currentSection = currentSkriptFile;
 	}
 
 	//no popping as the popping will be done automatically (the garbage collector will clean it up
@@ -48,9 +53,10 @@ export class SkriptContext {
 			this.currentString.substring(newPosition, newPosition + newSize));
 
 		subContext.currentSkriptFile = this.currentSkriptFile;
-		subContext.referenceFields = this.referenceFields;
+		subContext.currentSection = this.currentSection;
 		subContext.currentPosition = this.currentPosition + newPosition;
 		subContext.currentLine = this.currentLine;
+		subContext.parseResult = this.parseResult;
 
 		//subContext.hierarchy = this.hierarchy;//the more data, the better so we're keeping the hierarchical data from the higher levels for now
 		return subContext;
@@ -59,11 +65,11 @@ export class SkriptContext {
 	//CAUTION! HIGHLIGHTING SHOULD BE DONE IN ORDER
 	addToken(type: TokenTypes, relativePosition = 0, length = this.currentString.length - relativePosition, modifiers: TokenModifiers[] = []): void {
 		const absolutePosition = this.currentDocument.positionAt(this.currentPosition + relativePosition);
-		this.currentSkriptFile.builder.push(new SemanticToken(absolutePosition, length, type, SemanticToken.modToFlags(modifiers)));
+		this.parseResult.tokens.push(new SemanticToken(absolutePosition, length, type, SemanticToken.modToFlags(modifiers)));
 	}
 
 
-	getLocation(start: number, length: number): Location {
+	getLocation(start: number = 0, length: number = this.currentString.length): Location {
 		const StartPosition = this.currentDocument.positionAt(this.currentPosition + start);
 		return {
 			uri: this.currentDocument.uri,
@@ -90,7 +96,7 @@ export class SkriptContext {
 			code: code ? code : "IntelliSkript->Undocumented",
 			codeDescription: { href: 'https://github.com/JohnHeikens/intelliSkript/wiki' }//https://github.com/JohnHeikens/intelliSkript/wiki
 		};
-		this.currentSkriptFile.diagnostics.push(diagnostic);
+		this.parseResult.diagnostics.push(diagnostic);
 	}
 
 	addDiagnostic(relativePosition: number, length: number, message: string, severity: DiagnosticSeverity = DiagnosticSeverity.Error, code?: string, data: unknown = undefined): void {

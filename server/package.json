@@ -14,7 +14,9 @@
 	},
 	"categories": [
 		"Programming Languages",
-		"Linters"
+		"Linters",
+		"Formatters",
+		"Themes"
 	],
 	"dependencies": {
 		"vscode-languageserver": "^9.0.1",

@@ -31,6 +31,13 @@ export class SemanticToken {
 	}
 }
 
+export class semanticTokenContainer {
+	/**caution! do not insert overlapping tokens! */
+	push(token: SemanticToken): void {
+
+	}
+}
+
 export class SemanticTokenLine {
 	tokens: SemanticToken[] = [];
 	fixTokens() {
@@ -38,6 +45,18 @@ export class SemanticTokenLine {
 		this.tokens.sort((a, b) =>
 			a.position.character - b.position.character
 		);
+	}
+	push(token: SemanticToken): void {
+		const lineTokens = this.tokens;
+		if (!IntelliSkriptConstants.IsReleaseMode && true) {
+			//check if no tokens overlap
+			for (const lineToken of lineTokens) {
+				if ((token.position.character + token.length > lineToken.position.character) &&
+					(lineToken.position.character + lineToken.length > token.position.character))
+					throw "token overlap";
+			}
+		}
+		this.tokens.push(token);
 	}
 }
 export class UnOrderedSemanticTokensBuilder {
@@ -53,7 +72,6 @@ export class UnOrderedSemanticTokensBuilder {
 		this.startNextBuild(linkedDocument);
 	}
 
-	/**caution! do not insert overlapping tokens! */
 	push(token: SemanticToken): void {
 		if (token.position.line >= this.lines.length) {
 			throw new Error(token.position.line + " is out of bounds of the file (has " + this.lines.length + " lines )");
@@ -62,16 +80,19 @@ export class UnOrderedSemanticTokensBuilder {
 			if (this.lines[token.position.line] == undefined) {
 				this.lines[token.position.line] = new SemanticTokenLine();
 			}
-			const lineTokens = this.lines[token.position.line].tokens;
-			if (!IntelliSkriptConstants.IsReleaseMode && true) {
-				//check if no tokens overlap
-				for (const lineToken of lineTokens) {
-					if ((token.position.character + token.length > lineToken.position.character) &&
-						(lineToken.position.character + lineToken.length > token.position.character))
-						throw "token overlap";
-				}
-			}
-			lineTokens.push(token);
+
+			this.lines[token.position.line].push(token);
+		}
+	}
+	addLine(line: SemanticTokenLine): void {
+		if (line.tokens.length) {
+			const existingLine = this.lines[line.tokens[0].position.line];
+			if (!existingLine)
+				this.lines[line.tokens[0].position.line] = line;
+
+			else for (const token of line.tokens)
+				existingLine.push(token);
+
 		}
 	}
 	previousResult(id: string): void {

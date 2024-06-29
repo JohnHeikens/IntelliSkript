@@ -3,7 +3,7 @@ import { PatternData } from "../../pattern/data/PatternData";
 import { PatternResultProcessor } from "../../pattern/patternResultProcessor";
 import { PatternType } from "../../pattern/PatternType";
 import { SkriptPatternCall } from '../../pattern/SkriptPattern';
-import { SkriptContext } from '../SkriptContext';
+import { SkriptContext } from '../validation/SkriptContext';
 import { SkriptEventSection } from './reflect/SkriptEventSection';
 import { SkriptSection } from './skriptSection/SkriptSection';
 
