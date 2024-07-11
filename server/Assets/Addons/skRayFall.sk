@@ -8,11 +8,27 @@ type:
 	patterns:
 		bossbarcolor
 
+expression:
+	return type: bossbarcolor
+	patterns:
+		blue
+		green
+		pink
+		purple
+		red
+		white or yellow
+
 #Bossbar Flag
 #Bar Flags to support the new 1.9 bossbars.
 type:
 	patterns:
 		bossbarflag
+
+expression:
+	return type: bossbarflag
+	patterns:
+		create fog
+		darken sky or play boss music
 
 #Bossbar Style
 #Bossbar styles to support the new 1.9 BossBar.

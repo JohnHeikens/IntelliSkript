@@ -1,0 +1,59 @@
+#AUTOMATICALLY GENERATED SKRIPT FILE
+#COPYRIGHT JOHN HEIKENS
+#https://github.com/JohnHeikens/IntelliSkript
+expression:
+	return type: inventory-actiontype
+	patterns:
+		[a] drop stack from slot
+		[a] swap items with hotbar
+		[a] swap cursor stack
+		[a] pickup single item
+		[a] pickup some
+		[a] drop all from cursor
+		[a] move to other inventory
+		[a] drop cursor stack
+		[a] pickup all
+		[a] swap with hotbar
+		[a] nothing
+		[a] drop all from slot
+		[a] swap cursor
+		[a] drop cursor
+		[a] pickup all items
+		[a] drop slot item
+		[a] place all
+		[a] drop cursor item
+		[a] drop slot stack
+		[a] drop single item from slot
+		[a] swap with cursor
+		[a] place some
+		[a] pickup one item
+		[a] drop single item from cursor
+		[a] collect items to cursor
+		[an] unknown
+		[a] clone stack
+		[a] drop stack from cursor
+		[a] drop one item from slot
+		[a] drop one item from cursor
+		[an] unsupported
+		[a] do nothing
+		[a] drop one from cursor
+		[a] pickup half
+		[a] drop items from slot
+		[a] swap stack with cursor
+		[a] place all items
+		[a] collect to cursor
+		[a] pickup some items
+		[a] drop slot
+		[a] drop items from cursor
+		[a] hotbar move and readd
+		[a] shift move
+		[a] custom
+		[a] pickup single
+		[a] place one item
+		[a] hotbar swap items
+		[a] drop one from slot
+		[a] place some items
+		[a] place one
+		[a] pickup half stack
+		[an] instant move
+		[a] hotbar swap

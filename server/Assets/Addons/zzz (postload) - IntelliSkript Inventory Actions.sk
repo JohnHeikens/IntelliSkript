@@ -1,0 +1,58 @@
+#SKRIPT FILE WITH INVENTORY ACTIONS
+#COPYRIGHT JOHN HEIKENS
+expression:
+	return type: inventory action
+	patterns:
+		drop stack from slot
+		swap items with hotbar
+		swap cursor stack
+		pickup single item
+		pickup some
+		drop all from cursor
+		move to other inventory
+		drop cursor stack
+		pickup all
+		swap with hotbar
+		nothing
+		drop all from slot
+		swap cursor
+		drop cursor
+		pickup all items
+		drop slot item
+		place all
+		drop cursor item
+		drop slot stack
+		drop single item from slot
+		swap with cursor
+		place some
+		pickup one item
+		drop single item from cursor
+		collect items to cursor
+		unknown
+		clone stack
+		drop stack from cursor
+		drop one item from slot
+		drop one item from cursor
+		unsupported
+		do nothing
+		drop one from cursor
+		pickup half
+		drop items from slot
+		swap stack with cursor
+		place all items
+		collect to cursor
+		pickup some items
+		drop slot
+		drop items from cursor
+		hotbar move and readd
+		shift move
+		custom
+		pickup single
+		place one item
+		hotbar swap items
+		drop one from slot
+		place some items
+		place one
+		pickup half stack
+		instant move
+		hotbar swap

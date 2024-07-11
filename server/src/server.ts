@@ -146,17 +146,6 @@ connection.onInitialize(async (params: InitializeParams) => {
 	semanticTokensLegend = computeLegend(params.capabilities.textDocument!.semanticTokens!);
 	//return result;
 	return new Promise((resolve) => {
-		//const result: InitializeResult = {
-		//	capabilities: {
-		//		textDocumentSync: TextDocumentSyncKind.Incremental,
-		//		// Tell the client that this server supports code completion.
-		//		//completionProvider: {
-		//		//	resolveProvider: true
-		//		//},
-		//		definitionProvider: true,
-		//		codeActionProvider: true
-		//	}
-		//};
 		const result: InitializeResult = {
 			capabilities: {
 				textDocumentSync: TextDocumentSyncKind.Incremental,
@@ -296,15 +285,9 @@ const documentSettings: Map<string, Thenable<IntelliSkriptSettings>> = new Map()
 connection.onDocumentFormatting((params: DocumentFormattingParams) => {
 	const { textDocument, options } = params;
 	const file = currentWorkSpace.getSkriptFileByUri(textDocument.uri);
-	if (file) {
+	if (file)
 		return file.format();
-		
-		//dits.push({
-		//	range:{start: file.document.positionAt(0), end: file.document.positionAt(0)}
-		//)
-		//return edits;
-		//return formatDocument(document, options);
-	}
+
 	return [];
 });
 
@@ -367,13 +350,6 @@ documents.onDidClose(e => {
 		currentWorkSpace.looseFiles[looseFileIndex].invalidate();
 		currentWorkSpace.looseFiles.splice(looseFileIndex, 1);
 	}
-	//const ws = getSkriptWorkSpaceByFileUri(e.document.uri);
-	//if (ws) {
-	//	const fileIndex = ws.getSkriptFileIndexByUri(e.document.uri);
-	//	if (fileIndex != undefined) {
-	//		ws.files.splice(fileIndex, 1);
-	//	}
-	//}
 });
 // Handle custom notification for active text editor change
 connection.onNotification('custom/onDidChangeActiveTextEditor', (params) => {
@@ -384,10 +360,6 @@ connection.onNotification('custom/onDidChangeActiveTextEditor', (params) => {
 	if (document) {
 		validateTextDocument(document, false);
 	}
-	//if (document) {
-	//    validateDocument(document);
-	//    validateDependencies(document);
-	//}
 });
 
 // The content of a text document has changed. This event is emitted
@@ -397,15 +369,6 @@ documents.onDidChangeContent(change => {
 });
 
 async function validateTextDocument(textDocument: TextDocument, couldBeChanged: boolean = true): Promise<void> {
-	// In this simple example we get the settings for every validate run.
-	//const settings = await getDocumentSettings(textDocument.uri); //will pause execution of this and mess up coloring of documents
-	//const settings = getDocumentSettings(textDocument.uri);
-
-
-	//if (couldBeChanged) {
-	//	const file = currentWorkSpace.getSkriptFileByUri(textDocument.uri);
-	//	file?.updateContent(textDocument);
-	//}
 	currentWorkSpace.validateTextDocument(textDocument);
 
 	const validatedDocument = currentWorkSpace.getSkriptFileByUri(textDocument.uri);
@@ -545,76 +508,6 @@ connection.onDefinition((params): DefinitionLink[] => {
 			}];
 		}
 	}
-	//check the line
-	//const f = currentWorkSpace.getSkriptFileByUri(params.textDocument.uri);
-	//if (f) {
-	//	const lines = f.document.getText().split('\n');
-	//	const clickedLineText = lines[params.position.line];
-	//	const indentationEndIndex = SkriptFile.getIndentationEndIndex(clickedLineText);
-	//	if (params.position.character < indentationEndIndex) {
-	//		return [];//clicked on indentation
-	//	}
-	//
-	//	const variableRegex = /\{(.*?)\}/g;
-	//	let match;
-	//	const exactSection = f.getExactSectionAtLine(params.position.line);
-	//	while ((match = variableRegex.exec(clickedLineText))) {
-	//		if (params.position.character >= match.index && params.position.character < match.index + match[0].length) {
-	//			//clicked on a variable
-	//			const variable = exactSection.getVariableByName(match[1]);
-	//
-	//
-	//			if (variable != undefined) {
-	//
-	//				//return all reference locations
-	//				const targetLineIndex = variable.firstReferenceLocation.range.start.line;
-	//				const targetLine = f.document.getText().split('\n')[targetLineIndex];
-	//
-	//
-	//				const targetLineRange = {
-	//					start: { line: targetLineIndex, character: SkriptFile.getIndentationEndIndex(targetLine) },
-	//					end: { line: targetLineIndex, character: targetLine.length }
-	//				};
-	//				return [{
-	//					targetUri: variable.firstReferenceLocation.uri,
-	//					targetRange: targetLineRange,
-	//					targetSelectionRange: variable.firstReferenceLocation.range,
-	//					originSelectionRange: {
-	//						start: { line: params.position.line, character: match.index },
-	//						end: { line: params.position.line, character: match.index + match[0].length }
-	//					}
-	//				}];
-	//			}
-	//		}
-	//	}
-	//
-	//	//check for patterns
-	//	const patternReference = f.matches.getDeepestChildNodeAt(f.document.offsetAt(params.position));
-	//	if (patternReference) {
-	//		if (patternReference.matchedPattern) {
-	//			const pattern = patternReference.matchedPattern;
-	//			//const definitionLocation = pattern.definitionLocation;
-	//
-	//			//const targetLineRange = {
-	//			//	start: { line: definitionLocation.range.start.line, character: SkriptFile.getIndentationEndIndex(targetLine) },
-	//			//	end: { line:  definitionLocation.range.end.line, character: targetLine.length }
-	//			//};
-	//
-	//			const start = f.document.positionAt(patternReference.start);
-	//
-	//			return [{
-	//				targetUri: pattern.definitionLocation.uri,
-	//				targetRange: pattern.definitionLocation.range,
-	//				targetSelectionRange: pattern.definitionLocation.range,
-	//				originSelectionRange: {
-	//					start: f.document.positionAt(patternReference.start),
-	//					end: f.document.positionAt(patternReference.end)
-	//				}
-	//			}];
-	//		}
-	//	}
-	//}
-	//const currentDocumentText = params.textDocument.getText();
 	return [];
 });
 
@@ -719,8 +612,6 @@ connection.onCodeAction((params) => {
 						}
 					}, indentString, ChangeAnnotation.create('Insert the expected amount of spaces and tabs', true));
 				}
-				//const b = change.getTextEditChange({ uri: `${folder}/newFile.bat`, version: null });
-				//b.insert({ line: 0, character: 0 }, 'The initial content', ChangeAnnotation.create('Add additional content', true));
 
 				codeAction.title = "Fix Indentation";
 				codeAction.edit = change.edit;

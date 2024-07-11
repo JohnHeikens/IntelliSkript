@@ -18,6 +18,14 @@ type:
 	patterns:
 		environment[s]
 
+expression:
+	return type: environment
+	patterns:
+		custom
+		nether
+		normal
+		the end
+
 #Game Event
 #Represents a Minecraft 'GameEvent', mainly used by Skulk Sensors. Requires MC 1.17+.
 #See McWiki for more details -> https://minecraft.fandom.com/wiki/Sculk_SensorVibration_amplitudes
@@ -25,6 +33,55 @@ type:
 type:
 	patterns:
 		game[ ]event[s]
+
+expression:
+	return type: gameevent
+	patterns:
+		block_attach
+		block_change
+		block_close
+		block_destroy
+		block_detach
+		block_open
+		block_place
+		block_press
+		block_switch
+		block_unpress
+		block_unswitch
+		container_close
+		container_open
+		dispense_fail
+		drinking_finish
+		eat
+		elytra_free_fall
+		entity_damaged
+		entity_killed
+		entity_place
+		equip
+		explode
+		fishing_rod_cast
+		fishing_rod_reel_in
+		flap
+		fluid_pickup
+		fluid_place
+		hit_ground
+		lightning_strike
+		minecart_moving
+		mob_interact
+		piston_contract
+		piston_extend
+		prime_fuse
+		projectile_land
+		projectile_shoot
+		ravager_roar
+		ring_bell
+		shear
+		shulker_close
+		shulker_open
+		splash
+		step
+		swim
+		wolf_shaking
 
 #Material Choice
 #Represents a set of materials/minecraft tags which can be used in some recipes. 
@@ -37,6 +94,11 @@ type:
 type:
 	patterns:
 		material[ ]choice[s]
+
+expression:
+	return type: materialchoice
+	patterns:
+		see material choice expression
 
 #Minecraft Tag
 #Represents a tag provided by Minecraft. Requires Minecraft 1.13+
@@ -51,6 +113,11 @@ type:
 type:
 	patterns:
 		[minecraft[ ]]tag[s]
+
+expression:
+	return type: minecrafttag
+	patterns:
+		see minecraft tag expression
 
 #NBT - Compound
 #Represents the NBT compound of an entity/block/item.
@@ -70,6 +137,26 @@ type:
 type:
 	patterns:
 		nbt[ ]type[s]
+
+expression:
+	return type: nbt- tag type
+	patterns:
+		byte array tag
+		byte tag
+		compound list tag
+		compound tag
+		double list tag
+		double tag
+		float list tag
+		float tag
+		int array tag
+		int list tag
+		int tag
+		long list tag
+		long tag
+		short tag
+		string list tag
+		string tag
 
 #Particle
 #Represents a particle which can be used in the 'Particle Spawn' effect.
@@ -104,6 +191,13 @@ type:
 	patterns:
 		mirror[s]
 
+expression:
+	return type: structure- mirror
+	patterns:
+		front back
+		left right
+		none
+
 #Structure - Rotation
 #Represents the different states of rotation for a structure. Requires MC 1.17.1+
 #since 1.12.0
@@ -119,11 +213,26 @@ type:
 	patterns:
 		team[ ]option[s]
 
+expression:
+	return type: team- option
+	patterns:
+		collision rule
+		death message visibility
+		name tag visibility
+
 #Team - Option Status
 #Represents an option status for a team option
 type:
 	patterns:
 		team[ ]option[ ]status
+
+expression:
+	return type: team- option status
+	patterns:
+		always
+		for other teams
+		for own team
+		never
 
 #Text Component - Base Component
 #Text components used for hover/click events. Due to the complexity of these, 
@@ -146,6 +255,14 @@ type:
 type:
 	patterns:
 		world[ ]type[s]
+
+expression:
+	return type: worldtype
+	patterns:
+		amplified
+		flat
+		large biomes
+		normal
 
 #Board - Clear
 #Clear the scoreboard of a player.

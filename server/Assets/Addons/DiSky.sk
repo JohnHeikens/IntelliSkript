@@ -255,6 +255,7 @@ type:
 	patterns:
 		guildchannel
 	inherits: channel
+
 #Archive / Unarchive Thread
 #Archive or unarchive a specific thread.
 #since 4.4.0

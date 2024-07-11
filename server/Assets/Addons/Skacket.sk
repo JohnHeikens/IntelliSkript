@@ -7,10 +7,24 @@ type:
 	patterns:
 		advancementframe[s]
 
+expression:
+	return type: advancementframe
+	patterns:
+		advancementframe.task
+		advancementframe.goal
+		advancementframe.challenge
+
 #Anvil Click Type
 type:
 	patterns:
 		anvil[ ]click[[ ]type]
+
+expression:
+	return type: anvilclick type
+	patterns:
+		anvilclick.left
+		anvilclick.right
+		anvilclick.complete
 
 #Client World Border
 type:
@@ -22,11 +36,32 @@ type:
 	patterns:
 		itemslot[s]
 
+expression:
+	return type: itemslots armour
+	patterns:
+		itemslot.mainhand
+		itemslot.offhand
+		itemslot.feet
+		itemslot.legs
+		itemslot.chest
+		itemslot.head
+
 #Player Block Dig Type
 #The different types that trigger a player block dig event.
 type:
 	patterns:
 		[block][ ]dig[ ]type[s]
+
+expression:
+	return type: playerblock dig type
+	patterns:
+		playerdigtype.start_destroy_block
+		playerdigtype.abort_destroy_block
+		playerdigtype.stop_destroy_block
+		playerdigtype.drop_all_items
+		playerdigtype.drop_item
+		playerdigtype.release_use_item
+		playerdigtype.swap_held_items
 
 #Sound
 type:
@@ -38,6 +73,16 @@ type:
 type:
 	patterns:
 		movement[s]
+
+expression:
+	return type: steermovements
+	patterns:
+		movement.left
+		movement.right
+		movement.forwards
+		movement.backwards
+		movement.jump
+		movement.unmount
 
 #Armour Change Client Side
 #Change what a player is wearing for another player, client side.

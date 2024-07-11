@@ -32,7 +32,7 @@ export class ExpressionJson extends PatternJson {
 }
 
 export class TypeJson extends PatternJson {
-
+	usage?: string;
 }
 export class fileJson {
 	effects?: EffectJson[];
@@ -109,7 +109,24 @@ export class AddonParser extends Parser {
 			str += "type:\n";
 			str += patterns(elem, true);
 			if (parents)
-				str += `\tinherits: ${parents}`;
+				str += `\tinherits: ${parents}\n`;
+			if (elem.usage) {
+				const patterns = elem.usage.toLowerCase().split(",");
+				if (patterns) {
+					let expressionString = "\n";
+					expressionString += 'expression:\n';
+					expressionString += "\treturn type: " + AddonParser.nameToPattern(elem.name) + "\n";
+					expressionString += "\tpatterns:\n";
+					for (const pattern of patterns) {
+						const invalidPatternRegex = /([^a-z \._])/g;
+						if (invalidPatternRegex.test(pattern)) 
+							//this was not meant as pattern list
+							return str;
+							expressionString += "\t\t" + pattern.trim() + "\n";
+					}
+					str += expressionString;
+				}
+			}
 			return str;
 		}
 
