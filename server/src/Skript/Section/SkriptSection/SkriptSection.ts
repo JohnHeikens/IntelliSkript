@@ -24,6 +24,7 @@ import { PatternKeyFrame, TransformedPattern } from './PatternToLineTransform'
 //}
 //declare function createBasicSection(context: SkriptContext, parentSection: SkriptSection): SkriptSection;
 export class SkriptSection extends SkriptSectionGroup {
+	static readonly patternType: PatternType = PatternType.condition;
 	startLine: number;
 	endLine: number;
 	override children: SkriptSection[] = [];
@@ -61,7 +62,7 @@ export class SkriptSection extends SkriptSectionGroup {
 	}
 
 	getTypeData(typeName: string): TypeData | undefined {
-		return this.getPatternData(new SkriptPatternCall(typeName, PatternType.type), stopAtFirstResultProcessor);
+		return this.getPatternData(new SkriptPatternCall(typeName, PatternType.type)).getFullMatch();
 	}
 	getParentSection(): SkriptSection | undefined {
 		return this.parent && this.parent instanceof SkriptSection ?
@@ -107,13 +108,13 @@ export class SkriptSection extends SkriptSectionGroup {
 			let typePattern: TypeData | undefined;
 			if (parts[i].endsWith('s')) {
 				const singleType = parts[i].substring(0, parts[i].length - 1);
-				typePattern = this.getPatternData(new SkriptPatternCall(singleType, PatternType.type), stopAtFirstResultProcessor);
+				typePattern = this.getTypeData(singleType);
 				if (typePattern) {
 					result.isArray = true;
 				}
 			}
 			if (!typePattern)
-				typePattern = this.getPatternData(new SkriptPatternCall(parts[i], PatternType.type), stopAtFirstResultProcessor);
+				typePattern = this.getTypeData(parts[i]);
 			//error 'type not recognized' has been added by the getPatternData function already
 
 			if (typePattern) {
@@ -131,45 +132,78 @@ export class SkriptSection extends SkriptSectionGroup {
 		return result;
 	}
 
-
-	private tokenizeMatch(context: SkriptContext, pattern: TransformedPattern, match: PatternData, subPatternStart: integer = 0, subPatternEnd: integer = pattern.pattern.length) {
+	/**
+	 * 
+	 * @param context 
+	 * @param pattern 
+	 * @param match 
+	 * @param matchPatternStart the start of the match, relative to the pattern
+	 * @param matchPatternEnd the end of the match, relative to the pattern
+	 */
+	private tokenizeMatch(context: SkriptContext, pattern: TransformedPattern, match: PatternData, matchPatternStart: integer = 0, matchPatternEnd: integer = pattern.pattern.length) {
 		const tokenType = //match.section instanceof SkriptPropertySection ?
 			match.patternType == PatternType.event ? TokenTypes.event :
 				match.returnType.possibleTypes.length ?
 					TokenTypes.property :
 					TokenTypes.method;
 
-		let lastKeyPoint: PatternKeyFrame = { linePos: pattern.getLinePos(subPatternStart), patternPos: subPatternStart };
-		// send % to % parsed as % <-- match for '% parsed as %'
-		// tokenize ' parsed as '
-		// start = 10
-		for (let keyPoint of pattern.keypoints) {
-			const patternPartEnd = (keyPoint.patternPos - 1);
-			if (patternPartEnd > subPatternEnd) {
-				break;
-			}
-			const distanceInPattern = patternPartEnd - lastKeyPoint.patternPos;
-			if (distanceInPattern >= 0) {
-				if (distanceInPattern > 0) {
-					context.addToken(tokenType, lastKeyPoint.linePos, distanceInPattern);
+		/**the point in the pattern to start tokenizing from. will move to the end of submatches if there are any*/
+		let tokenizeFrom = matchPatternStart;
+		/**the last found position of a '%' */
+		let subMatchPatternPos = -1;
+
+		while (true) {
+			// send % to % parsed as % <-- match for '% parsed as %'
+			// add tokens for each part of the pattern that wasn't replaced already (aka passed as '%')
+			// tokenize ' parsed as '
+			// start = 10
+
+			//we can't just use the keypoints, because we'll never know if we will replace something else using keypoints, or if a submatch was of length 1.
+			//so instead, let's tokenize everything which isn't a '%'
+			subMatchPatternPos = pattern.pattern.indexOf('%', subMatchPatternPos + 1);
+			if (subMatchPatternPos == -1 || subMatchPatternPos > matchPatternEnd) break;
+			const tokenLength = subMatchPatternPos - tokenizeFrom;
+			if (tokenLength >= 0) {
+				const subMatchLinePos = pattern.getLinePos(subMatchPatternPos);
+				if (context.currentString[subMatchLinePos] != '%') {
+					//this is not a real, but a replaced '%'
+					if (tokenLength > 0) {
+						//tokenize the submatch
+						context.addToken(tokenType, pattern.getLinePos(tokenizeFrom), tokenLength);
+					}
+					tokenizeFrom = subMatchPatternPos + 1;
 				}
-				lastKeyPoint = keyPoint;
 			}
 		}
-		context.addToken(tokenType, lastKeyPoint.linePos, subPatternEnd - lastKeyPoint.patternPos);
+		//finally, tokenize the part of the match that wasn't tokenized yet
+		context.addToken(tokenType, pattern.getLinePos(tokenizeFrom), matchPatternEnd - tokenizeFrom);
 	}
 
-	segmentatePattern(context: SkriptContext, mainPatternType: PatternType, fullPattern: TransformedPattern, patternArguments: SkriptTypeState[]): PatternData | undefined {
-		let foundPattern: PatternData | undefined;
-		const patternProcessor: PatternResultProcessor = (pattern: PatternData) => {
-			//this pattern includes a wildcard
-			if (/(\(.*\)\?)?\.\+/.test(pattern.regexPatternString)) {
-				return true;
+	segmentatePattern(context: SkriptContext, mainPatternType: PatternType, fullPattern: TransformedPattern, patternArguments: SkriptTypeState[], data: SegmentationData = new SegmentationData()): PatternData | undefined {
+		if (!data.segmentateFrom) data.segmentateFrom = fullPattern.pattern.length;
+		//first check against the full pattern
+		const fullPatternCall = new SkriptPatternCall(fullPattern.pattern, mainPatternType, patternArguments);
+		const fullMatches = this.getPatternData(fullPatternCall);
+		if (fullMatches.hasFullMatch) {
+			//this is the deepest nested segmentatePattern call;
+			//it has replaced everything matchable with % and will return succesfully.
+			// for example:
+			// send % to % parsed as player <-- match for 'player'
+			// send % to % parsed as % <-- match for '% parsed as %'
+			// send % to % <-- match for 'send % to %' <--here
+
+			// full pattern should color 'send ' and ' to '
+			// layer above should color ' parsed as '
+			// layer above should color 'player'
+			const fullMatch = fullMatches.getFullMatch();
+			if (fullMatch) {
+				this.tokenizeMatch(context, fullPattern, fullMatch)
+				context.addPatternMatch(fullMatch);
+				return fullMatch;
 			}
-			else {
-				return false;//found
-			}
-		};
+		}
+
+		//figure out where the separators are, to split properly
 		const separatorIndexes: integer[] = [];
 		let matchResult;
 		//this regex will be modified, as it stores how far it searched.
@@ -178,110 +212,86 @@ export class SkriptSection extends SkriptSectionGroup {
 			separatorIndexes.push(matchResult.index);
 		}
 		// loop over the pattern and try different ways of ordering the same pattern
-		const fullPatternSegmentcount = separatorIndexes.length + 1;
+		//const fullPatternSegmentcount = separatorIndexes.length + 1;
 
+		// first try to find big patterns, then smaller and smaller
+		// for example:
+		// set % to location of event-block
+		// segment count: 6 -> 5 -> 4 -> ...
 
-		for (let patternSegmentCount = fullPatternSegmentcount; patternSegmentCount > 0; patternSegmentCount--) {
-			// first try to find big patterns, then smaller and smaller
+		for (let startSegmentIndex = separatorIndexes.length; startSegmentIndex >= 0; startSegmentIndex--) {
+			const subPatternStart = startSegmentIndex == 0 ? 0 : separatorIndexes[startSegmentIndex - 1] + 1;
+			if (subPatternStart >= data.segmentateFrom) continue;
+			// the loop adds to the back.
 			// for example:
-			// set % to location of event-block
-			// segment count: 6 -> 5 -> 4 -> ...
+			// segment count: 3
+			// event-block
+			// of event-block
+			// location of event-block
+			const startArguments: SkriptTypeState[] = [];
+			const cutArguments: SkriptTypeState[] = [];
 
-			const lastStartSegment = fullPatternSegmentcount - patternSegmentCount;
-			for (let startSegmentIndex = lastStartSegment; startSegmentIndex >= 0; startSegmentIndex--) {
-				const subPatternStart = startSegmentIndex == 0 ? 0 : separatorIndexes[startSegmentIndex - 1] + 1;
-				const endSeparatorIndex = (startSegmentIndex - 1) + patternSegmentCount;
-				const subPatternEnd = endSeparatorIndex == separatorIndexes.length ? fullPattern.pattern.length : separatorIndexes[endSeparatorIndex];
-				// the inner loop removes from the front and adds to the back
-				// for example:
-				// segment count: 4
-				// location of event-block
-				// % to location of
-				// set % to location
-				const startArguments: SkriptTypeState[] = [];
-				const cutArguments: SkriptTypeState[] = [];
+			//'cut' arguments out. for example get the last two %'s in 'send % to % parsed as %' when splitting at 'parsed as %'
+			let argumentPos = 0;
+			let argumentIndex = 0;
+			while (true) {
+				argumentPos = fullPattern.pattern.indexOf('%', argumentPos);
+				//we also have to check if argumentIndex >= currentPatternArguments.length, because in some exceptions %'es don't always mean types
+				if (argumentPos == -1 || argumentIndex >= patternArguments.length) break;
+				if (argumentPos < subPatternStart)
+					startArguments.push(patternArguments[argumentIndex++]);
+				else
+					cutArguments.push(patternArguments[argumentIndex++]);
 
-				//'cut' arguments out. for example get the last two %'s in 'send % to % parsed as %' when splitting at 'parsed as %'
-				let argumentPos = 0;
-				let argumentIndex = 0;
-				while (true) {
-					argumentPos = fullPattern.pattern.indexOf('%', argumentPos);
-					//we also have to check if argumentIndex >= currentPatternArguments.length, because in some exceptions %'es don't always mean types
-					if (argumentPos == -1 || argumentIndex >= patternArguments.length) break;
-					if (argumentPos < subPatternStart)
-						startArguments.push(patternArguments[argumentIndex++]);
+				//increase with 1, so the second time we'll be starting the search at argumentpos + 1
+				argumentPos++;
+			}
 
-					else if (argumentPos < subPatternEnd)
-						cutArguments.push(patternArguments[argumentIndex++]);
+			//TODO: when matching a full pattern and not for an effect pattern, we should also add a check for effect patterns.
 
-					else break;
-					//increase with 1, so the second time we'll be starting the search at argumentpos + 1
-					argumentPos++;
-				}
-				const endArguments: SkriptTypeState[] = patternArguments.slice(argumentIndex);
+			const subPatternCall = new SkriptPatternCall(fullPattern.pattern.substring(subPatternStart), PatternType.effect, cutArguments);
+			//the pattern can't be just '%', because that would cause an infinite loop
+			if (subPatternCall.pattern != '%') {
+				const subPatternLineStart = fullPattern.getLinePos(subPatternStart);
+				const newElem = { call: subPatternCall, offset: subPatternLineStart };
+				if (!data.addCall(newElem))
+					continue;
+				log(`recursion: ${data.recursion}, checking pattern: ${subPatternCall.pattern}`);
+				const possibleMatches = this.getPatternData(subPatternCall);
+				possibleMatches.sortMatches();
+				//loop from biggest to smallest matches
+				for (const match of possibleMatches.matches) {
+					//submatches have to return a value, to use as argument
+					if (!match.matchedPattern.returnType) continue;
+					const replacedPattern = fullPattern.clone();
+					const subPatternEnd = subPatternStart + match.endIndex;
+					replacedPattern.replaceInPattern(subPatternStart, subPatternEnd);
+					//if(fullPattern.pattern == replacedPattern.pattern)
+					//	throw "this is gonna be a stack overflow exeption"
 
-				const isFullPattern = subPatternStart == 0 && subPatternEnd == fullPattern.pattern.length;
+					//structuredClone() { ...fullPattern };// fullPattern.pattern.substring(0, start) + '%' + fullPattern.pattern.substring(end);
+					//replacedPattern.
 
-				const subPatternCall = new SkriptPatternCall(fullPattern.pattern.substring(subPatternStart, subPatternEnd), isFullPattern ? mainPatternType : PatternType.effect, cutArguments);
-				//the pattern can't be just '%', because that would cause an infinite loop
-				if (subPatternCall.pattern != '%') {
-					foundPattern = this.getPatternData(subPatternCall, patternProcessor);
-					if (foundPattern) {
-						const registerMatch = () => {
-							if (foundPattern)//for debugger
-								context.addPatternMatch(foundPattern, fullPattern.getLinePos(subPatternStart), fullPattern.getLinePos(subPatternEnd));
-						}
-						if (isFullPattern) {
-							//this is the deepest nested segmentatePattern call;
-							//it has replaced everything matchable with % and will return succesfully.
-							// for example:
-							// send % to % parsed as player <-- match for 'player'
-							// send % to % parsed as % <-- match for '% parsed as %'
-							// send % to % <-- match for 'send % to %' isFullPattern = true
+					//the amount of charachters that pattern parts on the right will shift to the left
+					//const shiftToLeft = (end - start) - '%'.length;
 
-							// full pattern should color 'send ' and ' to '
-							// layer above should color ' parsed as '
-							// layer above should color 'player'
-							this.tokenizeMatch(context, fullPattern, foundPattern)
-							registerMatch();
-							return foundPattern;
-						}
+					//cut the right off the pattern arguments
+					//copy by value, just for safety
+					const newPatternArguments: SkriptTypeState[] = [...startArguments];
 
-						const replacedPattern = fullPattern.clone();
-						replacedPattern.replaceInPattern(subPatternStart, subPatternEnd);
-						//structuredClone() { ...fullPattern };// fullPattern.pattern.substring(0, start) + '%' + fullPattern.pattern.substring(end);
-						//replacedPattern.
+					newPatternArguments.push(match.matchedPattern.returnType);
+					newPatternArguments.push(...patternArguments.slice(subPatternEnd));
 
-						//the amount of charachters that pattern parts on the right will shift to the left
-						//const shiftToLeft = (end - start) - '%'.length;
-
-						//cut the right off the pattern arguments
-						//copy by value, just for safety
-						const newPatternArguments: SkriptTypeState[] = [...startArguments];
-
-						if (foundPattern.returnType) {
-							newPatternArguments.push(foundPattern.returnType);
-						}
-						else {
-							const unknownData = this.getTypeData("unknown");
-							if (unknownData) {
-								newPatternArguments.push(new SkriptTypeState(unknownData));
-							}
-						}
-						newPatternArguments.push(...endArguments);
-
-
-						// it's a possibility that this partial match is not the match we're looking for.
-						// for example, "player's tool" will match "tool [of %livingentitities%] first, and convert it to "player's %".
-						// THEN "player" is matched, which makes the whole pattern "%'s %".
-						// to prevent this, let's check both possibilities, with the first possibility being the replaced pattern.
-						const replacedMatch = this.segmentatePattern(context, mainPatternType, replacedPattern, newPatternArguments);
-						if (replacedMatch) {
-							//color the submatch (see explanation below isFullPattern condition)
-							this.tokenizeMatch(context, fullPattern, foundPattern, subPatternStart, subPatternEnd);
-							registerMatch();
-							return replacedMatch;
-						}
+					// it's a possibility that this partial match is not the match we're looking for.
+					// for example, "player's tool" will match "tool [of %livingentitities%] first, and convert it to "player's %".
+					// THEN "player" is matched, which makes the whole pattern "%'s %".
+					// to prevent this, let's check both possibilities, with the first possibility being the replaced pattern.
+					const replacedMatch = this.segmentatePattern(context, mainPatternType, replacedPattern, newPatternArguments, new SegmentationData(data.recursion + 1, subPatternEnd, data.calls));
+					if (replacedMatch) {
+						//color the submatch (see explanation at the hasfullmatch condition)
+						this.tokenizeMatch(context, fullPattern, match.matchedPattern, subPatternStart, subPatternEnd);
+						context.addPatternMatch(match.matchedPattern, subPatternLineStart, fullPattern.getLinePos(subPatternStart + match.endIndex));
+						return replacedMatch;
 					}
 				}
 			}
@@ -363,24 +373,50 @@ export class SkriptSection extends SkriptSectionGroup {
 			for (let i = 0; i < currentNode.children.length; i++) {
 				const child = currentNode.children[i];
 				if ('"{('.includes(child.character)) {//string or variable
+					let typeToReplace: SkriptTypeState | undefined;
 					if (child.character == '(') {
-						if (!childResultList[i]) continue;
-						mergedPatternArguments.set(child.start, childResultList[i].returnType);
+						if (childResultList[i])
+							mergedPatternArguments.set(child.start, childResultList[i].returnType);
+						else {
+							//check if this is a function
+							//search to the left (to where the name would end)
+							const functionNameRegex = /(?:([a-zA-Z_]{1,})\.)?([a-zA-Z_][a-zA-Z0-9_]{1,})$/g;
+							const functionNameEnd = child.start - 1;
+							let match;
+							if (match = functionNameRegex.exec(context.currentString.substring(0, functionNameEnd))) {
+								//TODO: search for functions
+								if (match[1])
+									context.addToken(TokenTypes.namespace, match.index, match[1].length);
+								context.addToken(TokenTypes.function, functionNameEnd - match[2].length, match[2].length);
+								pattern.replace(match.index, child.end + 1);
+								const objectData = this.getTypeData("unknown");
+								if (objectData) {
+									mergedPatternArguments.set(child.start, new SkriptTypeState(objectData));
+								}
+							}
+							continue;
+						}
 					}
 					else if (child.character == '{') {
 						//variable
 						this.addVariableReference(context.getLocation(child.start, child.end - child.start), context.currentString.substring(child.start, child.end));
 						//context.addToken(variable.isParameter ? TokenTypes.parameter : TokenTypes.variable, child.start, child.end - child.start);
-						const objectData = this.getTypeData("unknown");
-						if (objectData) {
-							mergedPatternArguments.set(child.start - 1, new SkriptTypeState(objectData));
-						}
+
 					}
 					else if (child.character == '"') {
 						const stringData = this.getTypeData("string");
 						if (stringData)
 							mergedPatternArguments.set(child.start, new SkriptTypeState(stringData));
 					}
+					if (!typeToReplace) {
+						const objectData = this.getTypeData("unknown");
+						if (objectData) {
+							typeToReplace = new SkriptTypeState(objectData);
+						}
+					}
+					if (typeToReplace)
+						mergedPatternArguments.set(child.start, typeToReplace);
+
 					//convertLiteralsToSymbols(currentPosition, child.start);
 					pattern.replace(child.start - 1, child.end + 1);
 					//currentPosition = child.end + 1;
@@ -475,7 +511,7 @@ export class SkriptSection extends SkriptSectionGroup {
 		for (const pattern of ifStatementStartPatterns) {
 			if (context.currentString.startsWith(pattern)) {
 				context.addToken(TokenTypes.keyword, 0, pattern.length);
-				section.detectPatternsRecursively(context.push(pattern.length));
+				section.detectPatternsRecursively(context.push(pattern.length), PatternType.condition);
 				return section;
 			}
 		}
@@ -483,7 +519,7 @@ export class SkriptSection extends SkriptSectionGroup {
 			context.addToken(TokenTypes.keyword, 0, 'else'.length);
 		}
 		else {
-			const result = section.detectPatternsRecursively(context);
+			const result = section.detectPatternsRecursively(context, PatternType.condition);
 			if (!result.detectedPattern) return undefined;
 		}
 		//try to find a (condition) pattern
@@ -507,6 +543,9 @@ export class SkriptSection extends SkriptSectionGroup {
 import { SkriptLoopSection } from '../SkriptLoopSection';
 import { SkriptPropertySection } from '../reflect/SkriptPropertySection';
 import { PatternMatch } from '../../../pattern/match/PatternMatch';
+import { reverse } from 'dns';
+import { SegmentationData } from '../../validation/SegmentationData';
+import { log } from 'console';
 
 export class SkriptConditionSection extends SkriptSection {
 	constructor(parent: SkriptSection, context: SkriptContext) {

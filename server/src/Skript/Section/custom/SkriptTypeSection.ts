@@ -7,7 +7,7 @@ import { PatternData } from '../../../pattern/data/PatternData';
 import { SkriptSectionGroup } from '../SkriptSectionGroup';
 import { TokenTypes } from '../../../TokenTypes';
 export class SkriptTypeSection extends SkriptPatternContainerSection {
-    baseClasses: PatternData[] = [];
+    baseClasses: SkriptTypeSection[] = [];
     patterns: PatternData[] = [];
 
     constructor(parent: SkriptSectionGroup, context: SkriptContext) {
@@ -21,7 +21,7 @@ export class SkriptTypeSection extends SkriptPatternContainerSection {
             for (const currentBaseClassName of baseClassNames) {
                 const pattern = this.parseType(context, currentPosition, currentPosition + currentBaseClassName.length);
                 if (pattern) {
-                    this.baseClasses.push(pattern);
+                    this.baseClasses.push(pattern.section as SkriptTypeSection);
                 }
 
                 currentPosition += currentBaseClassName.length + ", ".length;
@@ -49,7 +49,7 @@ export class SkriptTypeSection extends SkriptPatternContainerSection {
             for (const baseClass of this.baseClasses) {
                 //direct inheritance
 
-                if ((baseClass.section as SkriptTypeSection).instanceOf(otherType)) {
+                if (baseClass.instanceOf(otherType)) {
                     return true;
                 }
 

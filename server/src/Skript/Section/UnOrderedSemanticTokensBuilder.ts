@@ -47,16 +47,23 @@ export class SemanticTokenLine {
 		);
 	}
 	push(token: SemanticToken): void {
-		const lineTokens = this.tokens;
-		if (!IntelliSkriptConstants.IsReleaseMode && true) {
-			//check if no tokens overlap
-			for (const lineToken of lineTokens) {
-				if ((token.position.character + token.length > lineToken.position.character) &&
-					(lineToken.position.character + lineToken.length > token.position.character))
-					throw "token overlap";
+		const checkTokens = !IntelliSkriptConstants.IsReleaseMode && true;
+		if (token.length > 0) {
+			const lineTokens = this.tokens;
+			if (checkTokens) {
+				//check if no tokens overlap
+				for (const lineToken of lineTokens) {
+					if ((token.position.character + token.length > lineToken.position.character) &&
+						(lineToken.position.character + lineToken.length > token.position.character))
+						throw "token overlap";
+				}
 			}
+			this.tokens.push(token);
 		}
-		this.tokens.push(token);
+		else if(checkTokens && token.length < 0)
+		{
+			throw "token with negative length";
+		}
 	}
 }
 export class UnOrderedSemanticTokensBuilder {

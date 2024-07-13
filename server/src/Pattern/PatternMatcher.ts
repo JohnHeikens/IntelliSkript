@@ -1,8 +1,5 @@
-import { PatternData } from './data/PatternData';
 import { SkriptPatternCall } from './SkriptPattern';
-import { PatternResultProcessor } from './patternResultProcessor';
-import { PatternType } from './PatternType';
+import { MatchArray } from './match/matchArray';
 export interface PatternMatcher {
-    getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined;
-    
+    getPatternData(testPattern: SkriptPatternCall): MatchArray;
 }

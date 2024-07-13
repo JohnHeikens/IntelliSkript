@@ -16,6 +16,9 @@ import { removeDuplicates } from "./removeDuplicates";
 import assert = require('assert');
 import { TypeNode } from './patternTreeNode/TypeNode';
 import { TokenModifiers } from '../TokenModifiers';
+import { SkriptTypeSection } from '../skript/section/custom/SkriptTypeSection';
+import { MatchArray } from './match/matchArray';
+import { PatternMatch } from './match/PatternMatch';
 
 //flags: U -> ungreedy, g -> global
 const argumentRegExp = /%(.*?)%/g;
@@ -176,11 +179,6 @@ export class PatternTree implements PatternMatcher {
 				}
 			}
 			else {
-				//this way, we can escape braces
-				//for example: (\(test\))
-				//todo: escape types
-				if (char == '\\')
-					char = pattern[++i];
 				newNodes = [];
 				let treeElem = undefined;
 				//for each possibility of this pattern, loop over the letters
@@ -198,27 +196,26 @@ export class PatternTree implements PatternMatcher {
 						//find the argument index. this is also safe for if we want to access elements earlier
 						//like when we first process the second %, then the first one
 						while ((index = pattern.indexOf('%', index + 1)) != i) {
-							argumentIndex++;
+							if (index ? pattern[index - 1] != '\\' : true)
+								argumentIndex++;
 						}
-						let node = new TypeNode(data.expressionArguments[argumentIndex]);
-						let typeNodeIndex = 0;
-						const otherNodes = currentSplitNode.otherNodes;
-						for (; typeNodeIndex < otherNodes.length; typeNodeIndex++) {
-							//what are we comparing here?
-							if (otherNodes[typeNodeIndex] instanceof TypeNode) {
-								if (node.compare(otherNodes[typeNodeIndex] as TypeNode))
-									break;
+						if (argumentIndex < data.expressionArguments.length) {
+							//let node = new TypeNode(data.expressionArguments[argumentIndex]);
+							const typeState = data.expressionArguments[argumentIndex];
+							for (const possibleType of typeState.possibleTypes) {
+								//for debugger
+								if (possibleType.section) {
+									let node = currentSplitNode.typeOrderedChildren.get(possibleType.skriptPatternString);
+									if (!node) {
+										currentSplitNode.typeOrderedChildren.set(possibleType.skriptPatternString, node = new TypeNode(possibleType.section as SkriptTypeSection));
+									}
+									newNodes.push(node);
+								}
 							}
 						}
-						if (typeNodeIndex == otherNodes.length) {
-							otherNodes.push(node);
-						}
-						else {
-							node = otherNodes[typeNodeIndex] as TypeNode;
-						}
-						newNodes.push(node);
 					}
 					else {
+						if (char == '\\') char = pattern[i + 1];
 						const currentTreeElem = currentSplitNode.stringOrderedChildren.get(char);
 						if (currentTreeElem == undefined) {
 							if (treeElem == undefined) {
@@ -232,6 +229,8 @@ export class PatternTree implements PatternMatcher {
 						}
 					}
 				}
+				if (char == '\\') i++;
+
 			}
 			if (newNodes) {
 				currentNodes = removeDuplicates(newNodes);
@@ -417,7 +416,7 @@ export class PatternTree implements PatternMatcher {
 				let regExpHierarchy: SkriptNestHierarchy;
 
 
-				fixedString = fixedString.replace(argumentRegExp, '%');
+				fixedString = fixedString.replace(argumentRegExp, '%').toLowerCase();
 
 				regExpHierarchy = createRegExpHierarchy(fixedString);
 				fixedString = this.fixRegExpHierarchically(fixedString, regExpHierarchy);
@@ -464,69 +463,118 @@ export class PatternTree implements PatternMatcher {
 		}
 	}
 
-	getMatchingPatternPart(testPattern: SkriptPatternCall, currentNode: PatternTreeNode, index: number = 0, typeIndex: number = 0): PatternData | undefined {
+	getMatchingPatternPart(testPattern: SkriptPatternCall, currentNode: PatternTreeNode, index: number = 0, typeIndex: number = 0): MatchArray {
 		const pattern = testPattern.pattern;
-		if (!currentNode) return undefined;
+		const matchedPatterns = new MatchArray(testPattern);
+		if (!currentNode) return matchedPatterns;
 		for (; index <= pattern.length; index++) {
-			if (currentNode.endNode) { // && (index == (pattern.length))) {
+			if (currentNode.endNode) {
+				//" |'": the separator regex
+				if (index == pattern.length || / |'/.test(pattern[index]))
+					//infinite recursion happens when a possible pattern is '%' and the result of '%' can be an instance of the argument
+					//for example: [all] %*entitydatas% -> entity
+					//but entity inherits from entitydata
+					//&&index > 1 || 
+
+					matchedPatterns.addMatch(new PatternMatch(currentNode.endNode, index));
 				// we don't have to stop the match earlier anymore, because we match against all possibilities
 				if (index == pattern.length) {//} || (pattern[index] == ' ')) {
-					return currentNode.endNode;
+					return matchedPatterns;
+					//return currentNode.endNode;
 				}
 			}
-			else if (index == pattern.length) return undefined;
+			else if (index == pattern.length) return matchedPatterns;
 			const currentChar = pattern[index];
 			const charChild = currentNode.stringOrderedChildren.get(currentChar);
 			if (charChild) {
 				currentNode = charChild;
 				continue;
 			}
-			else {
-				for (const otherChild of currentNode.otherNodes) {
-					if (otherChild instanceof TypeNode && typeIndex < testPattern.expressionArguments.length) {
-						if (testPattern.expressionArguments[typeIndex].canBeInstanceOf((otherChild as TypeNode).type)) {
-							// we could also do a lookup for multiple types
-							// for example: match "a %number% b" against "a %object% b" and "a %number%". in this case the first occurrence would be better
-							const resultOption = this.getMatchingPatternPart(testPattern, otherChild, index + 1, typeIndex + 1);
-							if (resultOption) {
-								return resultOption;
-							}
+			else if (currentChar == '%' &&
+				typeIndex < testPattern.expressionArguments.length &&
+				currentNode.typeOrderedChildren.size) {
+				//test all base classes recursively
+				let testResult: MatchArray | undefined;
+				const testedTypes = new Set<string>();
+				const testBaseClasses = (testType: SkriptTypeSection) => {
+					if (!testedTypes.has(testType.patterns[0]?.skriptPatternString)) {
+						const typeChild = currentNode.getTypeChild(testType);
+						if (typeChild &&
+							(testResult = this.getMatchingPatternPart(testPattern, typeChild, index + 1, typeIndex + 1)))
+							return;
+						testedTypes.add(testType.patterns[0]?.skriptPatternString);
+
+						for (const baseClass of testType.baseClasses) {
+							testBaseClasses(baseClass);
+							if (testResult) return;
+						}
+					}
+				}
+				const checkTestResult = (): boolean => {
+					if (testResult && testResult.matches.length) {
+						matchedPatterns.addMatches(testResult);
+						return true;
+					}
+					return false;
+				}
+				let testAllTypes = false;
+				for (const type of testPattern.expressionArguments[typeIndex].possibleTypes) {
+					if (type.regexPatternString == "unknown") {
+						//test all types
+						testAllTypes = true;
+					}
+					else if (type.section) {
+						testBaseClasses(type.section as SkriptTypeSection);
+
+						if (checkTestResult())
+							return matchedPatterns;
+
+					}
+				}
+				//when there is a possibility that the type is unknown, test all the possible types
+				if (testAllTypes) {
+					for (const [key, val] of currentNode.typeOrderedChildren) {
+						if (!testedTypes.has(key)) {
+							testResult = this.getMatchingPatternPart(testPattern, val, index + 1, typeIndex + 1);
+							if (checkTestResult())
+								return matchedPatterns;
 						}
 					}
 				}
 			}
-			return undefined;
+			return matchedPatterns;
 		}
-		//if (currentNode.endNode) {
-		//	return currentNode.endNode;
-		//}
+		return matchedPatterns;
 	}
 
 	//the tree should be compiled before this method is called
-	getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
+	getPatternData(testPattern: SkriptPatternCall): MatchArray {
 		if (!this.root) {
 			if (this.compatiblePatterns.length) {
 				this.compile();
 				assert(this.root != undefined);
 			}
 			else {
-				return undefined;
+				return new MatchArray(testPattern);
 			}
 		}
-		const data = this.getMatchingPatternPart(testPattern, this.root);
-		if (data) {
+		let data = this.getMatchingPatternPart(testPattern, this.root);
+		if (data.matches.length)
 			//we don't need to compare argument types, they are compared already
 			//if (testPattern.compareArgumentTypes(data)) {
-			if (!shouldContinue(data)) {
-				return data;
-			}
-			//}
-		}
+			return data;
+		//}
+
 		//check against incompatible patterns. heavy!
 		for (const pattern of this.incompatiblePatterns) {
-			if (testPattern.compare(pattern) && (!shouldContinue(pattern))) {
-				return pattern;
+			let array = testPattern.compare(pattern);
+			if (array.matches.length) {
+				data.matches.push(...array.matches);
+				if (array.matches[array.matches.length - 1].endIndex == testPattern.pattern.length)
+					//if not, we'll have to keep matching until the patterns full length is matched
+					return data;
 			}
 		}
+		return data;
 	}
 }

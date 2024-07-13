@@ -19,7 +19,7 @@ export class TransformedPattern {
     transformPosition(inPos: integer, keyFrameToInPos: (kf: PatternKeyFrame) => number, keyFrameToOutPos: (kf: PatternKeyFrame) => number) {
         if (this.keypoints.length == 0 || inPos < keyFrameToInPos(this.keypoints[0]))
             return inPos;
-        for(let keyFrameIndex = this.keypoints.length; --keyFrameIndex >= 0; ){
+        for (let keyFrameIndex = this.keypoints.length; --keyFrameIndex >= 0;) {
             const keyFrame = this.keypoints[keyFrameIndex];
             const difference = inPos - keyFrameToInPos(keyFrame);
             if (difference >= 0) {
@@ -38,31 +38,33 @@ export class TransformedPattern {
     replaceInPattern(patternStartPos: integer, patternEndPos: integer, lineEndPos: integer = this.getLinePos(patternEndPos)) {
         this.pattern = this.pattern.substring(0, patternStartPos) + '%' + this.pattern.substring(patternEndPos);
         const shift = patternEndPos - (patternStartPos + 1);
-        let added = false;
-        const newKeyFrame = { patternPos: patternEndPos - shift, linePos: lineEndPos };
-        for (let keyframeIndex = 0; keyframeIndex < this.keypoints.length;) {
-            const keyFrame = this.keypoints[keyframeIndex];
-            if (keyFrame.patternPos > patternStartPos) {
-                if (keyFrame.patternPos >= patternEndPos) {
-                    if (!added) {
-                        added = true;
-                        //insert the new keyframe behind this keyframe
-                        this.keypoints.splice(keyframeIndex, 0, newKeyFrame);
-                        keyframeIndex++;
+        if (shift) {
+            let added = false;
+            const newKeyFrame = { patternPos: patternEndPos - shift, linePos: lineEndPos };
+            for (let keyframeIndex = 0; keyframeIndex < this.keypoints.length;) {
+                const keyFrame = this.keypoints[keyframeIndex];
+                if (keyFrame.patternPos > patternStartPos) {
+                    if (keyFrame.patternPos >= patternEndPos) {
+                        if (!added) {
+                            added = true;
+                            //insert the new keyframe behind this keyframe
+                            this.keypoints.splice(keyframeIndex, 0, newKeyFrame);
+                            keyframeIndex++;
+                        }
+                        //shift all keyframes on the right to the left
+                        keyFrame.patternPos -= shift;
                     }
-                    //shift all keyframes on the right to the left
-                    keyFrame.patternPos -= shift;
+                    else {
+                        //remove keyframe, it got replaced by a '%'
+                        this.keypoints.splice(keyframeIndex, 1);
+                        continue;
+                    }
                 }
-                else {
-                    //remove keyframe, it got replaced by a '%'
-                    this.keypoints.splice(keyframeIndex, 1);
-                    continue;
-                }
+                keyframeIndex++;
             }
-            keyframeIndex++;
-        }
-        if (!added) {
-            this.keypoints.push(newKeyFrame);
+            if (!added) {
+                this.keypoints.push(newKeyFrame);
+            }
         }
     }
     replace(lineStartPos: integer, lineEndPos: integer) {

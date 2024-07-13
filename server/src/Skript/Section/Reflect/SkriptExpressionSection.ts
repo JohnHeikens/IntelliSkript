@@ -54,5 +54,7 @@ export class SkriptExpressionSection extends SkriptPatternContainerSection {
 				this.returnType.possibleTypes.push(parsedType);
 			}
 		}
+		else super.processLine(context);
+
 	}
 }

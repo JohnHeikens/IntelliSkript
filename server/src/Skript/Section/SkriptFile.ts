@@ -29,6 +29,7 @@ import { start } from 'repl';
 import { ParseResult } from '../validation/ParseResult';
 import { IndentData } from '../validation/IndentData';
 import assert = require('assert');
+import { MatchArray } from '../../pattern/match/matchArray';
 
 
 
@@ -44,30 +45,31 @@ export class SkriptFile extends SkriptSection {
 
 	patterns: PatternTreeContainer = new PatternTreeContainer();
 	matches: SkriptPatternMatchHierarchy = new SkriptPatternMatchHierarchy();
-	dependents: SkriptFile[] = new Array<SkriptFile>();
-	dependencies: SkriptFile[] = new Array<SkriptFile>();
+	//dependents: SkriptFile[] = new Array<SkriptFile>();
+	//dependencies: SkriptFile[] = new Array<SkriptFile>();
 	validated = false;
 	suggestedIndentation: number[] = [];
 	/**
 	 * invalidate this file, and invalidate it possible dependents
 	 */
 	invalidate() {
+		this.validated = false;
 		//first see what dependencies and dependents this file had.
-		for (const dependency of this.dependencies) {
-			//remove the old file from the dependencies' dependents
-			dependency.dependents.splice(dependency.dependents.indexOf(this, 0), 1);
-		}
-		this.dependencies = new Array<SkriptFile>();
-
-		if (this.validated) {
-			//first set outdated to true, to avoid an infinite loop caused by circular dependencies
-			this.validated = false;
-
-			//for (const dependent of this.dependents) {
-			//	dependent.invalidate();
-			//}
-			this.dependents = new Array<SkriptFile>();
-		}
+		//for (const dependency of this.dependencies) {
+		//	//remove the old file from the dependencies' dependents
+		//	dependency.dependents.splice(dependency.dependents.indexOf(this, 0), 1);
+		//}
+		//this.dependencies = new Array<SkriptFile>();
+//
+		//if (this.validated) {
+		//	//first set outdated to true, to avoid an infinite loop caused by circular dependencies
+		//	this.validated = false;
+//
+		//	//for (const dependent of this.dependents) {
+		//	//	dependent.invalidate();
+		//	//}
+		//	this.dependents = new Array<SkriptFile>();
+		//}
 	}
 	/**returns true if the document has changed */
 	updateContent(newDocument: TextDocument): boolean {
@@ -80,28 +82,28 @@ export class SkriptFile extends SkriptSection {
 		return false;
 	}
 
-	override getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
+	override getPatternData(testPattern: SkriptPatternCall): MatchArray {
 		//the file doesn't store patterns, patterns are stored in the workspace, so it will look in the workspace for patterns.
 		//when a pattern is found outside of the current file, it'll add a dependency.
 
-		const result = this.parent?.getPatternData(testPattern, shouldContinue);
-		if (result) {
-			if (result.definitionLocation.uri != this.document.uri) {
-				let f: SkriptSection | undefined = result.section;
-				while (f && !(f instanceof SkriptFile) && f.parent instanceof SkriptSection) {
-					f = f.parent;
-				}
-				if (f && f instanceof SkriptFile) {//for the debugger
-					if (f.dependents.find(value => value.document.uri == this.document.uri) == undefined) {
-						f.dependents.push(this);
-					}
-					if (this.dependencies.find(value => value.document.uri == (f as SkriptFile).document.uri) == undefined) {
-						this.dependencies.push(f);
-					}
-
-				}
-			}
-		}
+		const result = this.parent?.getPatternData(testPattern);
+		//if (result) {
+		//	if (result.definitionLocation.uri != this.document.uri) {
+		//		let f: SkriptSection | undefined = result.section;
+		//		while (f && !(f instanceof SkriptFile) && f.parent instanceof SkriptSection) {
+		//			f = f.parent;
+		//		}
+		//		if (f && f instanceof SkriptFile) {//for the debugger
+		//			if (f.dependents.find(value => value.document.uri == this.document.uri) == undefined) {
+		//				f.dependents.push(this);
+		//			}
+		//			if (this.dependencies.find(value => value.document.uri == (f as SkriptFile).document.uri) == undefined) {
+		//				this.dependencies.push(f);
+		//			}
+//
+		//		}
+		//	}
+		//}
 		return result;
 	}
 
@@ -299,7 +301,9 @@ export class SkriptFile extends SkriptSection {
 					}
 					else {
 						//context.currentString = trimmedLine;
-						sectionContext.currentSection?.processLine?.(trimmedContext);
+						sectionContext.currentSection?.processLine?.(sectionContext);
+						if(sectionContext.parseResult.diagnostics.length)
+							return false;
 						//trimmedContext.currentSection.endLine = context.currentLine;
 					}
 					mostValidContext = sectionContext;

@@ -10,13 +10,15 @@ import { PatternData } from '../../../pattern/data/PatternData';
 import { SkriptPatternCall } from '../../../pattern/SkriptPattern';
 import { PatternResultProcessor } from '../../../pattern/patternResultProcessor';
 import { SkriptTypeState } from '../../storage/SkriptTypeState';
+import { MatchArray } from '../../../pattern/match/matchArray';
 
 const patternRegEx = /pattern(|s)/;
 export class SkriptPatternContainerSection extends SkriptSection {
+	static patternType = PatternType.effect;
 	argumentPatternTree: PatternTree = new PatternTree();
 	returnType: SkriptTypeState = new SkriptTypeState();
 	addPattern(context: SkriptContext): void {
-		const pattern = PatternTree.parsePattern(context, this, PatternType.effect);
+		const pattern = PatternTree.parsePattern(context, this, (<typeof SkriptPatternContainerSection>this.constructor).patternType);
 		if (pattern) {
 			pattern.returnType = this.returnType;
 			context.currentSkriptFile.addPattern(pattern);
@@ -51,9 +53,12 @@ export class SkriptPatternContainerSection extends SkriptSection {
 			context.addToken(TokenTypes.keyword, 0, result[0].length);
 			this.addPattern(context.push(result[0].length));
 		}
+		else {
+			context.addDiagnostic(0, context.currentString.length, 'expected patterns here', DiagnosticSeverity.Error);
+		}
 	}
-	override getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
-		return this.argumentPatternTree.getPatternData(testPattern, shouldContinue) ??
-			super.getPatternData(testPattern, shouldContinue);
+	override getPatternData(testPattern: SkriptPatternCall): MatchArray {
+		const result = this.argumentPatternTree.getPatternData(testPattern);
+		return result.addMatches(super.getPatternData(testPattern));
 	}
 }

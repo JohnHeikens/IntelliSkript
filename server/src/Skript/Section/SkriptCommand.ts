@@ -6,6 +6,7 @@ import { TokenTypes } from '../../TokenTypes';
 import { SkriptContext } from '../validation/SkriptContext';
 import { SkriptTypeState } from '../storage/SkriptTypeState';
 import { SkriptSection } from "./skriptSection/SkriptSection";
+import { MatchArray } from '../../pattern/match/matchArray';
 
 const playerRegExpString = "(the )?player";
 const sectionRegExp = /(aliases|executable by|prefix|usage|description|permission(?: message|)|cooldown(?: (?:message|bypass|storage))?)/;
@@ -44,17 +45,19 @@ export class SkriptCommandSection extends SkriptSection {
 	processLine(context: SkriptContext): void {
 		const regex = new RegExp(`^${sectionRegExp.source}`);// /^(aliases|executable by|prefix|usage|description|permission( message|)|cooldown|cooldown (message|bypass|storage)): (.*)/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);
-		if (result == null)
+		if (result == null) {
 			context.addDiagnostic(0, context.currentString.length, "make sure to put your code for the command in triggers");
+		}
 		else
 			context.addToken(TokenTypes.keyword, 0, result[0].length)
 	}
-	override getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
+	override getPatternData(testPattern: SkriptPatternCall): MatchArray {
+		let result = new MatchArray(testPattern);
 		if (testPattern.type == PatternType.effect) {
-			if (testPattern.compare(this.playerPatternData)) {
-				return this.playerPatternData;
+			if ((result = testPattern.compare(this.playerPatternData)).hasFullMatch) {
+				return result;
 			}
 		}
-		return super.getPatternData(testPattern, shouldContinue);
+		return result.addMatches(super.getPatternData(testPattern));
 	}
 }

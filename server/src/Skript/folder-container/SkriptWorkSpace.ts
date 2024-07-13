@@ -11,6 +11,7 @@ import * as fs from 'fs';
 import { fileURLToPath } from 'url';
 import { URI } from 'vscode-uri';
 import { AddonSkFilesDirectory } from '../../IntelliSkriptConstants';
+import { MatchArray } from '../../pattern/match/matchArray';
 
 export class SkriptWorkSpace extends SkriptFolderContainer {
 	//the 'childsections' variable is not used here. TODO somehow merge the childsections and files variable
@@ -114,6 +115,8 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 
 				}
 			}
+			else
+				file.invalidate();
 		}
 
 
@@ -166,13 +169,13 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 		//	//this.files.push(new SkriptFile(this, context));
 		//}
 	}
-	override getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
+	override getPatternData(testPattern: SkriptPatternCall): MatchArray {
 		//get patterndata from the skript extension folder
 		//don't call the getPatternData from the folder, because that will call this workspace again
 		//todo: 
 		//we're checking twice for the addon folder patterns when compiling the addon folder
 		//it isn't that bad, because all files in the addon folder should be able to find their patterns
-		return this.addonFolder.patterns.getPatternData(testPattern, shouldContinue);
+		return this.addonFolder.patterns.getPatternData(testPattern);
 	}
 
 	//override getVariableByName(name: string): SkriptVariable | undefined {

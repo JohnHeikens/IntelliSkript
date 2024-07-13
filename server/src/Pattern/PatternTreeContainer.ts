@@ -6,6 +6,7 @@ import type { SkriptPatternContainerSection } from '../skript/section/reflect/Sk
 import { SkriptContext } from '../skript/validation/SkriptContext';
 import { PatternMatcher } from '../pattern/PatternMatcher';
 import { SkriptPatternCall } from '../pattern/SkriptPattern';
+import { MatchArray } from './match/matchArray';
 
 export class PatternTreeContainer implements PatternMatcher {
 	trees = new Array<PatternTree>(PatternType.count);
@@ -14,8 +15,8 @@ export class PatternTreeContainer implements PatternMatcher {
 			this.trees[i] = new PatternTree();
 		}
 	}
-	getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
-		return this.trees[testPattern.type].getPatternData(testPattern, shouldContinue);
+	getPatternData(testPattern: SkriptPatternCall): MatchArray {
+		return this.trees[testPattern.type].getPatternData(testPattern);
 	}
 
 	addPattern(pattern: PatternData): void {

@@ -6,6 +6,7 @@ import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
 import { SkriptFile } from '../section/SkriptFile';
 import { SkriptFolderContainer } from './SkriptFolderContainer';
 import { SkriptWorkSpace } from './SkriptWorkSpace';
+import { MatchArray } from '../../pattern/match/matchArray';
 
 export class SkriptFolder extends SkriptFolderContainer {
 	uri = "";
@@ -51,9 +52,10 @@ export class SkriptFolder extends SkriptFolderContainer {
 		this.parent = parent;
 		this.uri = uri;
 	}
-	override getPatternData(testPattern: SkriptPatternCall, shouldContinue: PatternResultProcessor): PatternData | undefined {
+	override getPatternData(testPattern: SkriptPatternCall): MatchArray {
 		//get patterndata from the skript extension folder
-		return this.patterns.getPatternData(testPattern, shouldContinue) ??
-			this.parent.getPatternData(testPattern, shouldContinue);
+		const matches = this.patterns.getPatternData(testPattern);
+		if (!matches.hasFullMatch) matches.addMatches(this.parent.getPatternData(testPattern));
+			return matches;
 	}
 }

@@ -152,6 +152,19 @@ export class SkriptContext {
 				//	this.addDiagnostic(i, 1, "can't use placeholder (%) characters here", DiagnosticSeverity.Error, "IntelliSkript->placeholder->wrongplace");
 				//}
 			}
+			else if (this.currentString[i] == ',') {
+				const node = this.hierarchy.getActiveNode();
+				if (node.character == '(')
+					//first child
+					node.children.push(new SkriptNestHierarchy(i + 1, ','));
+
+				else if (node.character == ',') {
+					//pop last ',' child
+					node.end = i;
+					//add new ',' node to parent node
+					this.hierarchy.getActiveNode().children.push(new SkriptNestHierarchy(i + 1, ','));
+				}
+			}
 			else if (openBraces.includes(this.currentString[i])) {
 				const node = this.hierarchy.getActiveNode();
 				if (node.character != '"') {//braces don't count in a string
@@ -162,7 +175,13 @@ export class SkriptContext {
 				const node = this.hierarchy.getActiveNode();
 
 				if (node.character != '"') {//braces don't count in a string
-					if (node.character.length && (closingBraces.indexOf(this.currentString[i]) == openBraces.indexOf(node.character))) {
+					if (node.character == ',' && this.currentString[i] == ')') {
+						//pop ',' node
+						node.end = i;
+						//pop '(' node. we know for sure that a ',' node is always nested in a '(' node
+						this.hierarchy.getActiveNode().end = i;
+					}
+					else if (node.character.length && (closingBraces.indexOf(this.currentString[i]) == openBraces.indexOf(node.character))) {
 						node.end = i;//pop
 					}
 					else if (addDiagnostics) {
@@ -171,7 +190,6 @@ export class SkriptContext {
 					}
 				}
 			}
-
 		}
 
 		this.hierarchy.end = this.currentString.length;

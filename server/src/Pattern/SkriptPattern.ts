@@ -1,6 +1,8 @@
 import { SkriptTypeState } from "../skript/storage/SkriptTypeState";
 import { PatternType } from './PatternType';
 import { PatternData } from './data/PatternData';
+import { PatternMatch } from './match/PatternMatch';
+import { MatchArray } from './match/matchArray';
 //examples:
 //  "set %objects% to %objects%"
 //  |
@@ -44,13 +46,30 @@ export class SkriptPatternCall {
             return true;
         }
     }
-    compare(testPattern: PatternData): boolean {
+    compare(testPattern: PatternData): MatchArray {
+        const results = new MatchArray(this);
         if (this.compareArgumentTypes(testPattern)) {
             //make sure it matches exactly
-            return testPattern.patternRegExp.test(this.pattern);// new RegExp(`^${testPattern.regexPatternString}$`).test(this.pattern);
+            const result = testPattern.patternRegExp.exec(this.pattern);// new RegExp(`^${testPattern.regexPatternString}$`).test(this.pattern);
+            if (result) {
+                results.addMatch(new PatternMatch(testPattern, result[0].length));
+            }
+        }
+        return results;
+    }
+    compareCalls(other: SkriptPatternCall): boolean {
+        if (this.type == other.type &&
+            this.expressionArguments.length == other.expressionArguments.length &&
+            this.pattern == other.pattern) {
+            for (let index = 0; index < this.expressionArguments.length; index++) {
+                if (this.expressionArguments[index] != other.expressionArguments[index])
+                    return false;
+
+            }
         }
         else {
             return false;
         }
+        return true;
     }
 }
