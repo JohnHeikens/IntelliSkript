@@ -18,9 +18,7 @@ export class SkriptSectionGroup extends Hierarchy<SkriptSectionGroup> implements
 		//throw new Error("skriptsectiongroup without derivation");
 		return undefined;
 	}
-	getPatternData(testPattern: SkriptPatternCall): MatchArray {
-		return this.parent ?
-			this.parent.getPatternData(testPattern) :
-			new MatchArray(testPattern);
+	getPatternData(testPattern: SkriptPatternCall): PatternData | undefined {
+		return this.parent?.getPatternData(testPattern);
 	}
 }

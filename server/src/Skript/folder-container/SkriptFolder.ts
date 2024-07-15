@@ -52,10 +52,7 @@ export class SkriptFolder extends SkriptFolderContainer {
 		this.parent = parent;
 		this.uri = uri;
 	}
-	override getPatternData(testPattern: SkriptPatternCall): MatchArray {
-		//get patterndata from the skript extension folder
-		const matches = this.patterns.getPatternData(testPattern);
-		if (!matches.hasFullMatch) matches.addMatches(this.parent.getPatternData(testPattern));
-			return matches;
+	override getPatternData(testPattern: SkriptPatternCall): PatternData | undefined {
+		return this.patterns.getPatternData(testPattern) ?? this.parent.getPatternData(testPattern);
 	}
 }

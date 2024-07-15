@@ -12,7 +12,7 @@ import { SkriptSectionGroup } from '../SkriptSectionGroup';
 import assert = require('assert');
 import { PatternData, TypeData } from '../../../pattern/data/PatternData';
 import { SkriptPatternCall } from '../../../pattern/SkriptPattern';
-import { SkriptTypeState } from '../../storage/SkriptTypeState';
+import { SkriptTypeState } from '../../storage/type/SkriptTypeState';
 import { TokenModifiers } from '../../../TokenModifiers';
 import { PatternKeyFrame, TransformedPattern } from './PatternToLineTransform'
 //import { createBasicSection } from './CreateBasicSection';
@@ -33,6 +33,13 @@ export class SkriptSection extends SkriptSectionGroup {
 		super(parent);
 		this.startLine = context?.currentLine ?? 0;
 		this.endLine = this.startLine;
+	}
+
+	/**
+	 * this function will be called when the full section is parsed. it's used to add the patterns of pattern container sections, for example
+	 */
+	finish(context: SkriptContext) {
+
 	}
 
 	//go up first, then iterate downwards
@@ -62,7 +69,7 @@ export class SkriptSection extends SkriptSectionGroup {
 	}
 
 	getTypeData(typeName: string): TypeData | undefined {
-		return this.getPatternData(new SkriptPatternCall(typeName, PatternType.type)).getFullMatch();
+		return this.getPatternData(new SkriptPatternCall(typeName, PatternType.type));
 	}
 	getParentSection(): SkriptSection | undefined {
 		return this.parent && this.parent instanceof SkriptSection ?
@@ -179,127 +186,6 @@ export class SkriptSection extends SkriptSectionGroup {
 		context.addToken(tokenType, pattern.getLinePos(tokenizeFrom), matchPatternEnd - tokenizeFrom);
 	}
 
-	segmentatePattern(context: SkriptContext, mainPatternType: PatternType, fullPattern: TransformedPattern, patternArguments: SkriptTypeState[], data: SegmentationData = new SegmentationData()): PatternData | undefined {
-		if (!data.segmentateFrom) data.segmentateFrom = fullPattern.pattern.length;
-		//first check against the full pattern
-		const fullPatternCall = new SkriptPatternCall(fullPattern.pattern, mainPatternType, patternArguments);
-		const fullMatches = this.getPatternData(fullPatternCall);
-		if (fullMatches.hasFullMatch) {
-			//this is the deepest nested segmentatePattern call;
-			//it has replaced everything matchable with % and will return succesfully.
-			// for example:
-			// send % to % parsed as player <-- match for 'player'
-			// send % to % parsed as % <-- match for '% parsed as %'
-			// send % to % <-- match for 'send % to %' <--here
-
-			// full pattern should color 'send ' and ' to '
-			// layer above should color ' parsed as '
-			// layer above should color 'player'
-			const fullMatch = fullMatches.getFullMatch();
-			if (fullMatch) {
-				this.tokenizeMatch(context, fullPattern, fullMatch)
-				context.addPatternMatch(fullMatch);
-				return fullMatch;
-			}
-		}
-
-		//figure out where the separators are, to split properly
-		const separatorIndexes: integer[] = [];
-		let matchResult;
-		//this regex will be modified, as it stores how far it searched.
-		const separatorRegex = / |'/g;
-		while ((matchResult = separatorRegex.exec(fullPattern.pattern)) !== null) {
-			separatorIndexes.push(matchResult.index);
-		}
-		// loop over the pattern and try different ways of ordering the same pattern
-		//const fullPatternSegmentcount = separatorIndexes.length + 1;
-
-		// first try to find big patterns, then smaller and smaller
-		// for example:
-		// set % to location of event-block
-		// segment count: 6 -> 5 -> 4 -> ...
-
-		for (let startSegmentIndex = separatorIndexes.length; startSegmentIndex >= 0; startSegmentIndex--) {
-			const subPatternStart = startSegmentIndex == 0 ? 0 : separatorIndexes[startSegmentIndex - 1] + 1;
-			if (subPatternStart >= data.segmentateFrom) continue;
-			// the loop adds to the back.
-			// for example:
-			// segment count: 3
-			// event-block
-			// of event-block
-			// location of event-block
-			const startArguments: SkriptTypeState[] = [];
-			const cutArguments: SkriptTypeState[] = [];
-
-			//'cut' arguments out. for example get the last two %'s in 'send % to % parsed as %' when splitting at 'parsed as %'
-			let argumentPos = 0;
-			let argumentIndex = 0;
-			while (true) {
-				argumentPos = fullPattern.pattern.indexOf('%', argumentPos);
-				//we also have to check if argumentIndex >= currentPatternArguments.length, because in some exceptions %'es don't always mean types
-				if (argumentPos == -1 || argumentIndex >= patternArguments.length) break;
-				if (argumentPos < subPatternStart)
-					startArguments.push(patternArguments[argumentIndex++]);
-				else
-					cutArguments.push(patternArguments[argumentIndex++]);
-
-				//increase with 1, so the second time we'll be starting the search at argumentpos + 1
-				argumentPos++;
-			}
-
-			//TODO: when matching a full pattern and not for an effect pattern, we should also add a check for effect patterns.
-
-			const subPatternCall = new SkriptPatternCall(fullPattern.pattern.substring(subPatternStart), PatternType.effect, cutArguments);
-			//the pattern can't be just '%', because that would cause an infinite loop
-			if (subPatternCall.pattern != '%') {
-				const subPatternLineStart = fullPattern.getLinePos(subPatternStart);
-				const newElem = { call: subPatternCall, offset: subPatternLineStart };
-				if (!data.addCall(newElem))
-					continue;
-				log(`recursion: ${data.recursion}, checking pattern: ${subPatternCall.pattern}`);
-				const possibleMatches = this.getPatternData(subPatternCall);
-				possibleMatches.sortMatches();
-				//loop from biggest to smallest matches
-				for (const match of possibleMatches.matches) {
-					//submatches have to return a value, to use as argument
-					if (!match.matchedPattern.returnType) continue;
-					const replacedPattern = fullPattern.clone();
-					const subPatternEnd = subPatternStart + match.endIndex;
-					replacedPattern.replaceInPattern(subPatternStart, subPatternEnd);
-					//if(fullPattern.pattern == replacedPattern.pattern)
-					//	throw "this is gonna be a stack overflow exeption"
-
-					//structuredClone() { ...fullPattern };// fullPattern.pattern.substring(0, start) + '%' + fullPattern.pattern.substring(end);
-					//replacedPattern.
-
-					//the amount of charachters that pattern parts on the right will shift to the left
-					//const shiftToLeft = (end - start) - '%'.length;
-
-					//cut the right off the pattern arguments
-					//copy by value, just for safety
-					const newPatternArguments: SkriptTypeState[] = [...startArguments];
-
-					newPatternArguments.push(match.matchedPattern.returnType);
-					newPatternArguments.push(...patternArguments.slice(subPatternEnd));
-
-					// it's a possibility that this partial match is not the match we're looking for.
-					// for example, "player's tool" will match "tool [of %livingentitities%] first, and convert it to "player's %".
-					// THEN "player" is matched, which makes the whole pattern "%'s %".
-					// to prevent this, let's check both possibilities, with the first possibility being the replaced pattern.
-					const replacedMatch = this.segmentatePattern(context, mainPatternType, replacedPattern, newPatternArguments, new SegmentationData(data.recursion + 1, subPatternEnd, data.calls));
-					if (replacedMatch) {
-						//color the submatch (see explanation at the hasfullmatch condition)
-						this.tokenizeMatch(context, fullPattern, match.matchedPattern, subPatternStart, subPatternEnd);
-						context.addPatternMatch(match.matchedPattern, subPatternLineStart, fullPattern.getLinePos(subPatternStart + match.endIndex));
-						return replacedMatch;
-					}
-				}
-			}
-		}
-		//no pattern found at all, all possibilities checked
-		return undefined;
-	}
-
 	//detect patterns like a [b | c]
 	//return value: a type. basically, it will convert each subpattern into a result type (a %)
 	detectPatternsRecursively(context: SkriptContext, mainPatternType: PatternType = PatternType.effect, isTopNode = true, currentNode: SkriptNestHierarchy = context.createHierarchy(true)): { detectedPattern: PatternData | undefined } {
@@ -356,7 +242,7 @@ export class SkriptSection extends SkriptSectionGroup {
 			//make the hierarchy relative to the node
 			const offsetNode = nodeToClone.cloneWithOffset(-nodeToClone.start);
 
-			const childResults = this.detectPatternsRecursively(context.push(nodeToClone.start, nodeToClone.end - nodeToClone.start), PatternType.effect, false, offsetNode);
+			const childResults = this.detectPatternsRecursively(context.push(nodeToClone.start, nodeToClone.end - nodeToClone.start), PatternType.expression, false, offsetNode);
 			if (childResults.detectedPattern)
 				childResultList[i] = childResults.detectedPattern;
 
@@ -436,12 +322,17 @@ export class SkriptSection extends SkriptSectionGroup {
 				sort(([keyA], [keyB]) => keyA - keyB).//sort
 				map(([, value]) => value);//erase keys
 
-			//pass pattern by reference
-			foundPattern = this.segmentatePattern(context, mainPatternType, pattern, currentPatternArguments);
+			if (!isTopNode && currentPatternArguments.length == 1 && pattern.pattern.length == 1) {
+				//this pattern is just '%'. we should pass it to the pattern detector above
+			}
+			else {
 
+				//pass pattern by reference
+				foundPattern = this.getPatternData(new SkriptPatternCall(pattern.pattern, mainPatternType, currentPatternArguments));// context, mainPatternType, pattern, currentPatternArguments);
 
-			if (isTopNode && !foundPattern) {
-				context.addDiagnostic(currentNode.start, currentNode.end - currentNode.start, "can't understand this line (pattern detection is a work in progress. please report on discord)", DiagnosticSeverity.Hint, "IntelliSkript->Pattern");
+				if (isTopNode && !foundPattern) {
+					context.addDiagnostic(currentNode.start, currentNode.end - currentNode.start, "can't understand this line (pattern detection is a work in progress. please report on discord)", DiagnosticSeverity.Hint, "IntelliSkript->Pattern");
+				}
 			}
 		}
 		//won't pass for '' because it's being handled above

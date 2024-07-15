@@ -169,7 +169,7 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 		//	//this.files.push(new SkriptFile(this, context));
 		//}
 	}
-	override getPatternData(testPattern: SkriptPatternCall): MatchArray {
+	override getPatternData(testPattern: SkriptPatternCall): PatternData | undefined {
 		//get patterndata from the skript extension folder
 		//don't call the getPatternData from the folder, because that will call this workspace again
 		//todo: 

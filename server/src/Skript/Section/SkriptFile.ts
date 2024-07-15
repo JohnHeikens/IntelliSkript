@@ -82,7 +82,7 @@ export class SkriptFile extends SkriptSection {
 		return false;
 	}
 
-	override getPatternData(testPattern: SkriptPatternCall): MatchArray {
+	override getPatternData(testPattern: SkriptPatternCall): PatternData | undefined {
 		//the file doesn't store patterns, patterns are stored in the workspace, so it will look in the workspace for patterns.
 		//when a pattern is found outside of the current file, it'll add a dependency.
 
@@ -258,6 +258,7 @@ export class SkriptFile extends SkriptSection {
 					const parent = context.currentSection.getParentSection();
 					if (parent) {
 						context.currentSection.endLine = lastCodeLine;// currentLineIndex;
+						context.currentSection.finish(context);
 						context.currentSection = parent;
 					}
 					else break;

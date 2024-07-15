@@ -5,7 +5,10 @@ import {
 	SkriptSection
 } from "../skriptSection/SkriptSection";
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
+import { PatternType } from '../../../pattern/PatternType';
+
 export class SkriptEffect extends SkriptPatternContainerSection {
+	static patternType = PatternType.effect;
 	createSection(context: SkriptContext): SkriptSection | undefined {
 		const regex = /^(parse|trigger)$/;
 		const result = regex.exec(context.currentString);

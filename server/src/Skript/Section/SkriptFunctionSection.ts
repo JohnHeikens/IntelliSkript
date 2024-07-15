@@ -8,10 +8,9 @@ import {
 import { SkriptFile } from './SkriptFile';
 import { PatternData } from '../../pattern/data/PatternData';
 import { PatternType } from '../../pattern/PatternType';
-import { SkriptTypeState } from '../storage/SkriptTypeState';
+import { SkriptTypeState } from '../storage/type/SkriptTypeState';
 export class SkriptFunction extends SkriptSection {
 	name: string;
-	pattern: PatternData | undefined;
 	//context.currentString should be 'function example(a: string, b: number) :: string' for example
 	constructor(parent: SkriptSection, context: SkriptContext) {
 		super(parent, context);
@@ -54,12 +53,6 @@ export class SkriptFunction extends SkriptSection {
 					}
 				}
 			}
-			let argumentPatternString = argumentTypes.length ? '%' + ',[ ]%'.repeat(argumentTypes.length - 1) : '';
-			this.pattern = new PatternData(
-				this.name + '[(]' + argumentPatternString + '[)]',
-				this.name + '(\()?' + argumentPatternString + '(\))?', context.getLocation(), PatternType.effect, undefined, argumentTypes, argumentPositions);
-
-			(parent as SkriptFile).addPattern(this.pattern)
 		}
 	}
 }

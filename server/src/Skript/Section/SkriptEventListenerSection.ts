@@ -15,17 +15,17 @@ export class SkriptEventListenerSection extends SkriptSection {
 		super(context.currentSkriptFile, context);
 		this.eventPattern = eventPattern;
 	}
-	override getPatternData(testPattern: SkriptPatternCall): MatchArray {
-		if (testPattern.type == PatternType.effect) {
-			const s = this.eventPattern.section as SkriptEventSection;
-			assert(s.eventValues);
-			for (let i = 0; i < s.eventValues.length; i++) {
-				let result;
-				if ((result = testPattern.compare(s.eventValues[i])).matches.length) {
-					return result;
-				}
-			}
-		}
+	override getPatternData(testPattern: SkriptPatternCall): PatternData | undefined {
+		//if (testPattern.type == PatternType.effect) {
+		//	const s = this.eventPattern.section as SkriptEventSection;
+		//	assert(s.eventValues);
+		//	for (let i = 0; i < s.eventValues.length; i++) {
+		//		let result;
+		//		if ((result = testPattern.compare(s.eventValues[i])).matches.length) {
+		//			return result;
+		//		}
+		//	}
+		//}
 		return super.getPatternData(testPattern);
 	}
 }

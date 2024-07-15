@@ -9,26 +9,27 @@ import { DiagnosticSeverity } from 'vscode-languageserver';
 import { PatternData } from '../../../pattern/data/PatternData';
 import { SkriptPatternCall } from '../../../pattern/SkriptPattern';
 import { PatternResultProcessor } from '../../../pattern/patternResultProcessor';
-import { SkriptTypeState } from '../../storage/SkriptTypeState';
+import { SkriptTypeState } from '../../storage/type/SkriptTypeState';
 import { MatchArray } from '../../../pattern/match/matchArray';
 
 const patternRegEx = /pattern(|s)/;
 export class SkriptPatternContainerSection extends SkriptSection {
-	static patternType = PatternType.effect;
+	static patternType = PatternType.expression;
 	argumentPatternTree: PatternTree = new PatternTree();
 	returnType: SkriptTypeState = new SkriptTypeState();
+	patterns: PatternData[] = [];
 	addPattern(context: SkriptContext): void {
 		const pattern = PatternTree.parsePattern(context, this, (<typeof SkriptPatternContainerSection>this.constructor).patternType);
 		if (pattern) {
+			this.patterns.push(pattern);
 			pattern.returnType = this.returnType;
-			context.currentSkriptFile.addPattern(pattern);
 			if (this.argumentPatternTree.compatiblePatterns.length == 0) {
 				let counter = 0;
 				for (const argumentType of pattern.expressionArguments) {
 					const argumentPosition = pattern.argumentPositions[counter];
 					//increase before converting to text, so the first argument will be 'expr-1'
 					counter++;
-					this.argumentPatternTree.addPattern(new PatternData("expr-" + counter, "expr-" + counter, argumentPosition, PatternType.effect, this, [], [], argumentType));
+					this.argumentPatternTree.addPattern(new PatternData("expr-" + counter, "expr-" + counter, argumentPosition, PatternType.expression, this, [], [], argumentType));
 				}
 			}
 		}
@@ -57,8 +58,15 @@ export class SkriptPatternContainerSection extends SkriptSection {
 			context.addDiagnostic(0, context.currentString.length, 'expected patterns here', DiagnosticSeverity.Error);
 		}
 	}
-	override getPatternData(testPattern: SkriptPatternCall): MatchArray {
-		const result = this.argumentPatternTree.getPatternData(testPattern);
-		return result.addMatches(super.getPatternData(testPattern));
+	override getPatternData(testPattern: SkriptPatternCall): PatternData | undefined {
+		//const result = this.argumentPatternTree.getPatternData(testPattern);
+		//return result ?? 
+		return super.getPatternData(testPattern);
+	}
+	override finish(context: SkriptContext) {
+		for (const pattern of this.patterns)
+			context.currentSkriptFile.addPattern(pattern);
+
+		super.finish(context);
 	}
 }

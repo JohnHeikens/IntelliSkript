@@ -5,7 +5,7 @@ import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 import { PatternTree } from '../../../pattern/PatternTree';
 import assert = require('assert');
-import { SkriptTypeState } from '../../storage/SkriptTypeState';
+import { SkriptTypeState } from '../../storage/type/SkriptTypeState';
 import { TokenTypes } from '../../../TokenTypes';
 export class SkriptEventSection extends SkriptPatternContainerSection {
 	eventValues: PatternData[] = [];
@@ -28,7 +28,7 @@ export class SkriptEventSection extends SkriptPatternContainerSection {
 				//const type = context.currentSection?.parseType(context, currentPosition, currentPosition + valueStrings[i].length);
 				const eventValueType = this.getTypeData(valueStrings[i]);
 				if (eventValueType) {
-					this.eventValues.push(new PatternData("[the] [event( |-)]]" + valueStrings[i], "(the )?(event( |-))?" + valueStrings[i], context.getLocation(currentPosition, valueStrings[i].length), PatternType.effect, this, [], [], new SkriptTypeState(eventValueType)));
+					this.eventValues.push(new PatternData("[the] [event( |-)]]" + valueStrings[i], "(the )?(event( |-))?" + valueStrings[i], context.getLocation(currentPosition, valueStrings[i].length), PatternType.expression, this, [], [], new SkriptTypeState(eventValueType)));
 				}
 				//this.eventValues.pu;
 				currentPosition += valueStrings[i].length + ", ".length;

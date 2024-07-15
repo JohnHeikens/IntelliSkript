@@ -3,7 +3,7 @@ import { Location } from 'vscode-languageserver/node';
 import { SkriptNestHierarchy } from '../nesting/SkriptNestHierarchy';
 import type { SkriptPatternContainerSection } from '../skript/section/reflect/SkriptPatternContainerSection';
 import { SkriptContext } from '../skript/validation/SkriptContext';
-import { SkriptTypeState } from "../skript/storage/SkriptTypeState";
+import { SkriptTypeState } from "../skript/storage/type/SkriptTypeState";
 import { PatternData } from './data/PatternData';
 import { PatternTreeNode } from './patternTreeNode/PatternTreeNode';
 import { RegExpTreeError } from './RegExpTreeError';
@@ -19,6 +19,7 @@ import { TokenModifiers } from '../TokenModifiers';
 import { SkriptTypeSection } from '../skript/section/custom/SkriptTypeSection';
 import { MatchArray } from './match/matchArray';
 import { PatternMatch } from './match/PatternMatch';
+import { MatchProgress } from './match/MatchProgress';
 
 //flags: U -> ungreedy, g -> global
 const argumentRegExp = /%(.*?)%/g;
@@ -133,7 +134,7 @@ function createRegExpHierarchy(regExString: string): SkriptNestHierarchy {
 	return hierarchy;
 }
 
-export class PatternTree implements PatternMatcher {
+export class PatternTree {
 	root: PatternTreeNode | undefined;
 	incompatiblePatterns: PatternData[] = [];
 	compatiblePatterns: PatternData[] = [];
@@ -248,11 +249,14 @@ export class PatternTree implements PatternMatcher {
 			node.endNode = data;
 		}
 	}
-	compile(): void {
-		this.root = new PatternTreeNode();
-		for (const p of this.compatiblePatterns) {
-			this.addToTree(p);
+	compileAndGetRoot(): PatternTreeNode {
+		if (!this.root) {
+			this.root = new PatternTreeNode();
+			for (const p of this.compatiblePatterns) {
+				this.addToTree(p);
+			}
 		}
+		return this.root;
 	}
 
 	static createHierarchy(context: SkriptContext): SkriptNestHierarchy {
@@ -461,120 +465,5 @@ export class PatternTree implements PatternMatcher {
 				this.addToTree(pattern);
 			}
 		}
-	}
-
-	getMatchingPatternPart(testPattern: SkriptPatternCall, currentNode: PatternTreeNode, index: number = 0, typeIndex: number = 0): MatchArray {
-		const pattern = testPattern.pattern;
-		const matchedPatterns = new MatchArray(testPattern);
-		if (!currentNode) return matchedPatterns;
-		for (; index <= pattern.length; index++) {
-			if (currentNode.endNode) {
-				//" |'": the separator regex
-				if (index == pattern.length || / |'/.test(pattern[index]))
-					//infinite recursion happens when a possible pattern is '%' and the result of '%' can be an instance of the argument
-					//for example: [all] %*entitydatas% -> entity
-					//but entity inherits from entitydata
-					//&&index > 1 || 
-
-					matchedPatterns.addMatch(new PatternMatch(currentNode.endNode, index));
-				// we don't have to stop the match earlier anymore, because we match against all possibilities
-				if (index == pattern.length) {//} || (pattern[index] == ' ')) {
-					return matchedPatterns;
-					//return currentNode.endNode;
-				}
-			}
-			else if (index == pattern.length) return matchedPatterns;
-			const currentChar = pattern[index];
-			const charChild = currentNode.stringOrderedChildren.get(currentChar);
-			if (charChild) {
-				currentNode = charChild;
-				continue;
-			}
-			else if (currentChar == '%' &&
-				typeIndex < testPattern.expressionArguments.length &&
-				currentNode.typeOrderedChildren.size) {
-				//test all base classes recursively
-				let testResult: MatchArray | undefined;
-				const testedTypes = new Set<string>();
-				const testBaseClasses = (testType: SkriptTypeSection) => {
-					if (!testedTypes.has(testType.patterns[0]?.skriptPatternString)) {
-						const typeChild = currentNode.getTypeChild(testType);
-						if (typeChild &&
-							(testResult = this.getMatchingPatternPart(testPattern, typeChild, index + 1, typeIndex + 1)))
-							return;
-						testedTypes.add(testType.patterns[0]?.skriptPatternString);
-
-						for (const baseClass of testType.baseClasses) {
-							testBaseClasses(baseClass);
-							if (testResult) return;
-						}
-					}
-				}
-				const checkTestResult = (): boolean => {
-					if (testResult && testResult.matches.length) {
-						matchedPatterns.addMatches(testResult);
-						return true;
-					}
-					return false;
-				}
-				let testAllTypes = false;
-				for (const type of testPattern.expressionArguments[typeIndex].possibleTypes) {
-					if (type.regexPatternString == "unknown") {
-						//test all types
-						testAllTypes = true;
-					}
-					else if (type.section) {
-						testBaseClasses(type.section as SkriptTypeSection);
-
-						if (checkTestResult())
-							return matchedPatterns;
-
-					}
-				}
-				//when there is a possibility that the type is unknown, test all the possible types
-				if (testAllTypes) {
-					for (const [key, val] of currentNode.typeOrderedChildren) {
-						if (!testedTypes.has(key)) {
-							testResult = this.getMatchingPatternPart(testPattern, val, index + 1, typeIndex + 1);
-							if (checkTestResult())
-								return matchedPatterns;
-						}
-					}
-				}
-			}
-			return matchedPatterns;
-		}
-		return matchedPatterns;
-	}
-
-	//the tree should be compiled before this method is called
-	getPatternData(testPattern: SkriptPatternCall): MatchArray {
-		if (!this.root) {
-			if (this.compatiblePatterns.length) {
-				this.compile();
-				assert(this.root != undefined);
-			}
-			else {
-				return new MatchArray(testPattern);
-			}
-		}
-		let data = this.getMatchingPatternPart(testPattern, this.root);
-		if (data.matches.length)
-			//we don't need to compare argument types, they are compared already
-			//if (testPattern.compareArgumentTypes(data)) {
-			return data;
-		//}
-
-		//check against incompatible patterns. heavy!
-		for (const pattern of this.incompatiblePatterns) {
-			let array = testPattern.compare(pattern);
-			if (array.matches.length) {
-				data.matches.push(...array.matches);
-				if (array.matches[array.matches.length - 1].endIndex == testPattern.pattern.length)
-					//if not, we'll have to keep matching until the patterns full length is matched
-					return data;
-			}
-		}
-		return data;
 	}
 }

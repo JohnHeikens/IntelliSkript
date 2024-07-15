@@ -4,7 +4,7 @@ import { PatternType } from "../../pattern/PatternType";
 import { SkriptPatternCall } from '../../pattern/SkriptPattern';
 import { TokenTypes } from '../../TokenTypes';
 import { SkriptContext } from '../validation/SkriptContext';
-import { SkriptTypeState } from '../storage/SkriptTypeState';
+import { SkriptTypeState } from '../storage/type/SkriptTypeState';
 import { SkriptSection } from "./skriptSection/SkriptSection";
 import { MatchArray } from '../../pattern/match/matchArray';
 
@@ -18,7 +18,7 @@ export class SkriptCommandSection extends SkriptSection {
 		//get the "player" type, not the entity literal
 		const playerType = super.getTypeData("player");
 		const resultType = playerType ? new SkriptTypeState(playerType) : new SkriptTypeState();
-		this.playerPatternData = new PatternData("[the] player", playerRegExpString, context.getLocation(0, "command".length), PatternType.effect, undefined, [], [], resultType);
+		this.playerPatternData = new PatternData("[the] player", playerRegExpString, context.getLocation(0, "command".length), PatternType.expression, undefined, [], [], resultType);
 		const regex = /command (\/|)(((?! ).){1,})( ((?! ).){1,}){0,}/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);
 		if (result == null) {
@@ -51,13 +51,13 @@ export class SkriptCommandSection extends SkriptSection {
 		else
 			context.addToken(TokenTypes.keyword, 0, result[0].length)
 	}
-	override getPatternData(testPattern: SkriptPatternCall): MatchArray {
-		let result = new MatchArray(testPattern);
-		if (testPattern.type == PatternType.effect) {
-			if ((result = testPattern.compare(this.playerPatternData)).hasFullMatch) {
-				return result;
-			}
-		}
-		return result.addMatches(super.getPatternData(testPattern));
+	override getPatternData(testPattern: SkriptPatternCall): PatternData | undefined {
+		//let result = new MatchArray(testPattern);
+		//if (testPattern.type == PatternType.effect) {
+		//	if ((result = testPattern.compare(this.playerPatternData)).hasFullMatch) {
+		//		return result;
+		//	}
+		//}
+		return super.getPatternData(testPattern);
 	}
 }

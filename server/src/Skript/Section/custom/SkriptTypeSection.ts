@@ -57,4 +57,15 @@ export class SkriptTypeSection extends SkriptPatternContainerSection {
             return false;
         }
     }
+    testBaseClasses(testFunction: (testType: SkriptTypeSection) => boolean, testedTypes: Set<string>  = new Set<string>()): boolean {
+        if (!testedTypes.has(this.patterns[0]?.skriptPatternString)) {
+            if (testFunction(this)) return true;
+            testedTypes.add(this.patterns[0]?.skriptPatternString);
+
+            for (const baseClass of this.baseClasses) {
+                if (baseClass.testBaseClasses(testFunction, testedTypes)) return true;
+            }
+        }
+        return false;
+    }
 }

@@ -1,4 +1,4 @@
-import { SkriptTypeState } from "../skript/storage/SkriptTypeState";
+import { SkriptTypeState } from "../skript/storage/type/SkriptTypeState";
 import { PatternType } from './PatternType';
 import { PatternData } from './data/PatternData';
 import { PatternMatch } from './match/PatternMatch';
@@ -24,11 +24,15 @@ export class SkriptPatternCall {
     expressionArguments: SkriptTypeState[];
     /**the pattern in lower case!*/
     pattern: string;
-    type = PatternType.effect;
-    constructor(pattern: string, type: PatternType, expressionArguments: SkriptTypeState[] = []) {
+    /**the sort of pattern */
+    patternType = PatternType.effect;
+    /**the type the pattern is expected to return */
+    returnType: SkriptTypeState;
+    constructor(pattern: string, type: PatternType, expressionArguments: SkriptTypeState[] = [], returnType: SkriptTypeState = new SkriptTypeState()) {
         this.pattern = pattern.toLowerCase();
-        this.type = type;
+        this.patternType = type;
         this.expressionArguments = expressionArguments;
+        this.returnType = returnType;
     }
 
     //test this on expressionPattern
@@ -52,13 +56,13 @@ export class SkriptPatternCall {
             //make sure it matches exactly
             const result = testPattern.patternRegExp.exec(this.pattern);// new RegExp(`^${testPattern.regexPatternString}$`).test(this.pattern);
             if (result) {
-                results.addMatch(new PatternMatch(testPattern, result[0].length));
+                results.addMatch(new PatternMatch(testPattern, 0, result[0].length));
             }
         }
         return results;
     }
     compareCalls(other: SkriptPatternCall): boolean {
-        if (this.type == other.type &&
+        if (this.patternType == other.patternType &&
             this.expressionArguments.length == other.expressionArguments.length &&
             this.pattern == other.pattern) {
             for (let index = 0; index < this.expressionArguments.length; index++) {
