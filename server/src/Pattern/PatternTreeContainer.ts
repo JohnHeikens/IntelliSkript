@@ -70,8 +70,8 @@ export class PatternTreeContainer implements PatternMatcher {
 						assert(progress.parent);
 						const typeChild = progress.parent.currentNode.getTypeChild(testType);
 						if (typeChild) {
-							const typeProgress = new MatchProgress(progress.parent.root, progress.parent.parent, typeChild);
-							fullMatch = this.getMatchingPatternPart(testPattern, typeProgress, index, argumentIndex);
+							const testProgress: MatchProgress = { root: progress.parent.root, parent: progress.parent.parent, currentNode: typeChild };
+							fullMatch = this.getMatchingPatternPart(testPattern, testProgress, index, argumentIndex);
 							if (fullMatch) return true;
 						}
 						return false;
@@ -92,7 +92,6 @@ export class PatternTreeContainer implements PatternMatcher {
 						//this endnode doesn't 'fit' our pattern, it ends too early. continue matching
 					}
 				}
-
 			}
 			if (index == pattern.length)
 				//no match stopped at this position
@@ -115,7 +114,7 @@ export class PatternTreeContainer implements PatternMatcher {
 				if (hasAlternatives) {
 					//check the normal path (just traversing the tree based on charachters we encounter) first. the only way to do that without queueing the alternatives is calling a function.
 
-					const testProgress = new MatchProgress(progress.root, progress.parent, charChild);
+					const testProgress: MatchProgress = { root: progress.root, parent: progress.parent, currentNode: charChild };
 					const testResult = this.getMatchingPatternPart(testPattern, testProgress, index + 1, argumentIndex, recursion + 1);
 					if (testResult)
 						return testResult;
@@ -135,7 +134,7 @@ export class PatternTreeContainer implements PatternMatcher {
 				const testClass = (testType: SkriptTypeSection): boolean => {
 					const typeChild = progress.currentNode.getTypeChild(testType);
 					if (typeChild) {//some patterns accept this type
-						const testProgress = new MatchProgress(typeChild, progress.parent);
+						const testProgress: MatchProgress = { root: progress.root, parent: progress.parent, currentNode: typeChild };
 						if (typeChild &&
 							(testResult = this.getMatchingPatternPart(testPattern, testProgress, index + 1, argumentIndex + 1)))
 							return true;
@@ -150,7 +149,7 @@ export class PatternTreeContainer implements PatternMatcher {
 				if (testAllTypes) {
 					for (const [key, val] of progress.currentNode.typeOrderedChildren) {
 						if (!testedTypes.has(key)) {
-							testResult = this.getMatchingPatternPart(testPattern, new MatchProgress(val, progress.parent), index + 1, argumentIndex + 1, recursion + 1);
+							testResult = this.getMatchingPatternPart(testPattern, { root: progress.root, parent: progress.parent, currentNode: val }, index + 1, argumentIndex + 1, recursion + 1);
 							if (testResult)
 								return testResult;
 						}
@@ -161,9 +160,12 @@ export class PatternTreeContainer implements PatternMatcher {
 				//all possibilities have been tested, but there haven't been any children who fit this pattern. we need to submatch.
 				//we will try finding a pattern from the tree which returns an instance of the expected type.
 				let testResult: PatternData | undefined;
-				const nextProgress = new MatchProgress(progress.root, progress.parent, progress.currentNode);
+				//clone
+				const nextProgress: MatchProgress = Object.assign({}, progress);
 
-				testResult = this.getMatchingPatternPart(testPattern, new MatchProgress(expressionTree.compileAndGetRoot(), nextProgress), index, argumentIndex, recursion + 1);
+				const expressionRoot = expressionTree.compileAndGetRoot();
+
+				testResult = this.getMatchingPatternPart(testPattern, { root: expressionRoot, parent: nextProgress, currentNode: expressionRoot }, index, argumentIndex, recursion + 1);
 				if (testResult) return testResult;
 			}
 
@@ -186,7 +188,8 @@ export class PatternTreeContainer implements PatternMatcher {
 		//		return undefined;
 		//
 		//}
-		let data = this.getMatchingPatternPart(testPattern, new MatchProgress(tree.compileAndGetRoot()));
+		const root = tree.compileAndGetRoot();
+		let data = this.getMatchingPatternPart(testPattern, { root: root, currentNode: root });
 		if (data) return data;
 		//if (data.matches.length)
 		//	//we don't need to compare argument types, they are compared already
