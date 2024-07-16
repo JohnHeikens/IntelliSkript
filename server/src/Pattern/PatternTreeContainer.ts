@@ -14,12 +14,6 @@ import { TypeNode } from './patternTreeNode/TypeNode';
 
 export class PatternTreeContainer implements PatternMatcher {
 	trees = new Array<PatternTree>(PatternType.count);
-	/**
-	 * ordered by type, to optimize the amount of patterns to check.
-	 * for example, when we have a pattern like send %string% to %offline player%, we only have to check for 'string' and 'object'. (and things which can convert to string)
-	 * patterns which return something else, don't have to be checked!
-	 */
-	expressionTrees = new Map<string, PatternTree>();
 	constructor() {
 		for (let i = 0; i < PatternType.count; i++) {
 			this.trees[i] = new PatternTree();
@@ -77,7 +71,7 @@ export class PatternTreeContainer implements PatternMatcher {
 						const typeChild = progress.parent.currentNode.getTypeChild(testType);
 						if (typeChild) {
 							const typeProgress = new MatchProgress(progress.parent.root, progress.parent.parent, typeChild);
-							fullMatch = this.getMatchingPatternPart(testPattern, typeProgress, index, argumentIndex + 1);
+							fullMatch = this.getMatchingPatternPart(testPattern, typeProgress, index, argumentIndex);
 							if (fullMatch) return true;
 						}
 						return false;
@@ -105,9 +99,15 @@ export class PatternTreeContainer implements PatternMatcher {
 				//the pattern call is shorter than the patterns
 				return undefined;
 
+			const expressionTree = this.trees[PatternType.expression];
+
 			//maybe this part of the pattern belongs to a submatch?
-			const hasAlternatives = (progress.currentNode.typeOrderedChildren.size > 0) &&
-				(index == 0 || isSeparator(index - 1));
+			const hasAlternatives =
+				(progress.currentNode.typeOrderedChildren.size > 0) &&
+				(index == 0 || isSeparator(index - 1)) &&
+				//when currentNode == expressionTree.root, this would cause infinite recursion.
+				//for example % + % <- match begin
+				(progress.currentNode !== expressionTree.root);
 
 			const currentChar = pattern[index];
 			const charChild = progress.currentNode.stringOrderedChildren.get(currentChar);
@@ -160,44 +160,11 @@ export class PatternTreeContainer implements PatternMatcher {
 			if (hasAlternatives) {
 				//all possibilities have been tested, but there haven't been any children who fit this pattern. we need to submatch.
 				//we will try finding a pattern from the tree which returns an instance of the expected type.
-				const testedTypes = new Set<string>();
 				let testResult: PatternData | undefined;
+				const nextProgress = new MatchProgress(progress.root, progress.parent, progress.currentNode);
 
-				for (const [key, typeNode] of progress.currentNode.typeOrderedChildren) {
-					//todo: reduce the amount of checking
-					//for example, when there are two patterns:
-					//a %boolean% b
-					//a %object% c
-					//and we matched for %object% in 'a %boolean% b', we should check for both b and c. we shouldn't have to check for %object% again when parsing 'a %object% c'
-					const testClass = (testType: SkriptTypeSection): boolean => {
-						//clone
-						const nextProgress = new MatchProgress(progress.root, progress.parent, progress.currentNode);
-
-						const typeTree = this.expressionTrees.get(testType.patterns[0]?.skriptPatternString);
-						if (typeTree) {
-							let checkProgress = progress;
-							//loop over parents
-							while (true) {
-								//when currentNode == typeTree.root, this would cause infinite recursion.
-								//for example % + % <- match begin
-								//nothing found? match begin again
-								if (checkProgress.currentNode === typeTree.root)
-									return false;
-								if (checkProgress.parent) {
-									checkProgress = checkProgress.parent;
-								}
-								else break;
-							}
-
-							//nextProgress.currentNode = typeNode;
-							testResult = this.getMatchingPatternPart(testPattern, new MatchProgress(typeTree.compileAndGetRoot(), nextProgress), index, argumentIndex, recursion + 1);
-							if (testResult) return true;
-						}
-						return false;
-					}
-					(typeNode as TypeNode).type.testBaseClasses(testClass);
-					return testResult;
-				}
+				testResult = this.getMatchingPatternPart(testPattern, new MatchProgress(expressionTree.compileAndGetRoot(), nextProgress), index, argumentIndex, recursion + 1);
+				if (testResult) return testResult;
 			}
 
 			//this node was not found
@@ -241,21 +208,7 @@ export class PatternTreeContainer implements PatternMatcher {
 	}
 
 	addPattern(pattern: PatternData): void {
-		if (pattern.patternType == PatternType.expression) {
-			for (const type of pattern.returnType.possibleTypes) {
-				//we may assume that each pattern only has one return value, so no optimization needed
-				if (type.section) {
-					let tree = this.expressionTrees.get(type.skriptPatternString);
-					if (!tree) {
-						tree = new PatternTree()
-						this.expressionTrees.set(type.skriptPatternString, tree);
-					}
-					tree.addPattern(pattern);
-				}
-			}
-		}
-		else
-			this.trees[pattern.patternType].addPattern(pattern);
+		this.trees[pattern.patternType].addPattern(pattern);
 	}
 
 	merge(other: PatternTreeContainer): void {

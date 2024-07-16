@@ -388,11 +388,8 @@ export class SkriptFile extends SkriptSection {
 			currentLineIndex++;
 			currentLineStartPosition += currentLine.length + 1;
 		}
+		popStacks(indentData.correct);
 
-		while (currentLineIndex < lines.length) {
-
-			currentLineIndex++;
-		}
 		//the file is updated! set outdated to false
 		this.validated = true;
 	}
