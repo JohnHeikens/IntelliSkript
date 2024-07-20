@@ -17,7 +17,12 @@ export class SkriptPatternContainerSection extends SkriptSection {
 	patternContainer: PatternTreeContainer;
 	returnType: SkriptTypeState = new SkriptTypeState();
 	patterns: PatternData[] = [];
-	addPattern(context: SkriptContext): void {
+	/**
+	 * used by expression and property section to parse the pattern and extract arguments
+	 * @param context 
+	 * @returns the parsed pattern. it's not added yet!
+	 */
+	parsePattern(context: SkriptContext): PatternData | undefined {
 		const pattern = PatternTree.parsePattern(context, this, (<typeof SkriptPatternContainerSection>this.constructor).patternType);
 		if (pattern) {
 			pattern.returnType = this.returnType;
@@ -30,8 +35,13 @@ export class SkriptPatternContainerSection extends SkriptSection {
 					this.patternContainer.addPattern(new PatternData("expr-" + counter, "expr-" + counter, argumentPosition, PatternType.expression, this, [], [], argumentType));
 				}
 			}
-			this.patterns.push(pattern);
 		}
+		return pattern;
+	}
+	addPattern(context: SkriptContext): void {
+		const pattern = this.parsePattern(context);
+		if (pattern)
+			this.patterns.push(pattern);
 	}
 
 	createSection(context: SkriptContext): SkriptSection | undefined {
@@ -63,6 +73,12 @@ export class SkriptPatternContainerSection extends SkriptSection {
 	override finish(context: SkriptContext) {
 		for (const pattern of this.patterns)
 			context.currentSkriptFile.addPattern(pattern);
+
+		if (this.returnType.possibleTypes.length == 0) {
+			const unknownData = this.getTypeData("unknown");
+			if (unknownData)
+				this.returnType.possibleTypes.push(unknownData);
+		}
 
 		super.finish(context);
 	}

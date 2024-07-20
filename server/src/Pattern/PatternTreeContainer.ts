@@ -1,7 +1,7 @@
 import { PatternData } from "../pattern/data/PatternData";
 import { PatternMatcher } from '../pattern/PatternMatcher';
 import { PatternTree } from '../pattern/PatternTree';
-import { PatternType } from '../pattern/PatternType';
+import { canBeSubPattern, PatternType } from '../pattern/PatternType';
 import { SkriptPatternCall } from '../pattern/SkriptPattern';
 import { SkriptTypeSection } from '../skript/section/custom/SkriptTypeSection';
 import { MatchProgress } from './match/MatchProgress';
@@ -109,7 +109,7 @@ export class PatternTreeContainer implements PatternMatcher {
 					const result = new MatchResult(testPattern, new PatternMatch(endNodeData, progress.start, index));
 					return result;
 				}
-				else if (index == pattern.length || isSeparator()) {
+				else if (index == pattern.length || isSeparator() && canBeSubPattern(progress.patternType)) {
 					//this part, a substitute, was parsed correctly. but now, we should continue the parent node.
 					//we will iterate over all parent type nodes which accept an instance of the return value.
 					//basically, we replaced the subpattern for a '%'
@@ -120,7 +120,7 @@ export class PatternTreeContainer implements PatternMatcher {
 					const testedTypes = new Set<string>();
 					const testNode = (parentProgress: MatchProgress): boolean => {
 						const testTypeChild = (testChild: PatternTreeNode): boolean => {
-							const testProgress: MatchProgress = { start: parentProgress.start, root: parentProgress.root, parent: parentProgress.parent, currentNode: testChild };
+							const testProgress: MatchProgress = { start: parentProgress.start, parent: parentProgress.parent, currentNode: testChild, patternType: parentProgress.patternType };
 							fullMatch = this.getMatchingPatternPart(testPattern, testProgress, index, argumentIndex, recursion + 1);
 							return fullMatch != undefined;
 						}
@@ -145,7 +145,12 @@ export class PatternTreeContainer implements PatternMatcher {
 					for (const container of this.containersToTraverse) {
 						const root = container.trees[PatternType.expression].compileAndGetRoot();
 						//create a new parent node, which replaces the current node. the current node becomes a child.
-						if (testNode({ start: progress.start, root: root, parent: progress.parent, currentNode: root })) return fullMatch;
+						if (testNode({
+							start: progress.start,
+							parent: progress.parent,
+							currentNode: root,
+							patternType: PatternType.expression
+						})) return fullMatch;
 					}
 
 
@@ -156,8 +161,6 @@ export class PatternTreeContainer implements PatternMatcher {
 				//no match stopped at this position
 				//the pattern call is shorter than the patterns
 				return undefined;
-
-			const expressionTree = this.trees[PatternType.expression];
 
 			//maybe this part of the pattern belongs to a submatch?
 			const hasValidTypeNodes =
@@ -172,7 +175,7 @@ export class PatternTreeContainer implements PatternMatcher {
 				if (hasValidTypeNodes) {
 					//check the normal path (just traversing the tree based on charachters we encounter) first. the only way to do that without queueing the alternatives is calling a function.
 
-					const testProgress: MatchProgress = { start: progress.start, root: progress.root, parent: progress.parent, currentNode: charChild };
+					const testProgress: MatchProgress = { start: progress.start, parent: progress.parent, currentNode: charChild, patternType: progress.patternType };
 					const testResult = this.getMatchingPatternPart(testPattern, testProgress, index + 1, argumentIndex, recursion + 1);
 					if (testResult)
 						return testResult;
@@ -189,7 +192,7 @@ export class PatternTreeContainer implements PatternMatcher {
 				let testResult: MatchResult | undefined;
 
 				const testClass = (typeChild: PatternTreeNode): boolean => {
-					const testProgress: MatchProgress = { start: progress.start, root: progress.root, parent: progress.parent, currentNode: typeChild };
+					const testProgress: MatchProgress = { start: progress.start, parent: progress.parent, currentNode: typeChild, patternType: progress.patternType };
 					if (typeChild &&
 						(testResult = this.getMatchingPatternPart(testPattern, testProgress, index + 1, argumentIndex + 1)))
 						return true;
@@ -220,7 +223,7 @@ export class PatternTreeContainer implements PatternMatcher {
 
 						const root = container.trees[PatternType.expression].compileAndGetRoot();
 
-						testResult = this.getMatchingPatternPart(testPattern, { start: index, root: root, parent: nextProgress, currentNode: root }, index, argumentIndex, recursion + 1);
+						testResult = this.getMatchingPatternPart(testPattern, { start: index, parent: nextProgress, currentNode: root, patternType: PatternType.expression }, index, argumentIndex, recursion + 1);
 						if (testResult) return testResult;
 					}
 				}
@@ -248,7 +251,7 @@ export class PatternTreeContainer implements PatternMatcher {
 			//
 			//}
 			const root = tree.compileAndGetRoot();
-			const data = this.getMatchingPatternPart(testPattern, { start: 0, root: root, currentNode: root });
+			const data = this.getMatchingPatternPart(testPattern, { start: 0, currentNode: root, patternType: testPattern.patternType });
 			if (data) return data;
 			//return data?.foundPattern;
 			//if (data.matches.length)

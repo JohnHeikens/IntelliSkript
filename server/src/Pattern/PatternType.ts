@@ -7,3 +7,6 @@ export enum PatternType {
 	type,
 	count
 }
+
+export const canHaveSubPattern = (patternType:PatternType) => patternType != PatternType.type;
+export const canBeSubPattern = (patternType:PatternType) => patternType == PatternType.expression;

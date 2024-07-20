@@ -1,10 +1,11 @@
 import { PatternData } from '../data/PatternData';
 import { PatternTreeNode } from '../patternTreeNode/PatternTreeNode';
+import { PatternType } from '../PatternType';
 
 //this class stores how far the match is, recursively
 export interface MatchProgress {
     currentNode: PatternTreeNode;
-    root: PatternTreeNode;
+    patternType: PatternType;
     parent?: MatchProgress;
     foundPattern?: PatternData;
     start: number
