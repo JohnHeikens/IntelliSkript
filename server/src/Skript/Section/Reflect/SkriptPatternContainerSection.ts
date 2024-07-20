@@ -1,37 +1,36 @@
-import { TokenTypes } from '../../../TokenTypes';
-import { PatternType } from "../../../pattern/PatternType";
-import { SkriptContext } from '../../validation/SkriptContext';
-import { SkriptSection } from '../skriptSection/SkriptSection';
-import { SkriptPatternSection } from './SkriptPatternSection';
-import { PatternTree } from '../../../pattern/PatternTree';
-import assert = require('assert');
 import { DiagnosticSeverity } from 'vscode-languageserver';
 import { PatternData } from '../../../pattern/data/PatternData';
-import { SkriptPatternCall } from '../../../pattern/SkriptPattern';
-import { PatternResultProcessor } from '../../../pattern/patternResultProcessor';
+import { PatternTree } from '../../../pattern/PatternTree';
+import { PatternTreeContainer } from '../../../pattern/PatternTreeContainer';
+import { PatternType } from "../../../pattern/PatternType";
+import { TokenTypes } from '../../../TokenTypes';
 import { SkriptTypeState } from '../../storage/type/SkriptTypeState';
-import { MatchArray } from '../../../pattern/match/matchArray';
+import { SkriptContext } from '../../validation/SkriptContext';
+import { SkriptSection } from '../skriptSection/SkriptSection';
+import { SkriptSectionGroup } from '../SkriptSectionGroup';
+import { SkriptPatternSection } from './SkriptPatternSection';
+import assert = require('assert');
 
 const patternRegEx = /pattern(|s)/;
 export class SkriptPatternContainerSection extends SkriptSection {
 	static patternType = PatternType.expression;
-	argumentPatternTree: PatternTree = new PatternTree();
+	patternContainer: PatternTreeContainer;
 	returnType: SkriptTypeState = new SkriptTypeState();
 	patterns: PatternData[] = [];
 	addPattern(context: SkriptContext): void {
 		const pattern = PatternTree.parsePattern(context, this, (<typeof SkriptPatternContainerSection>this.constructor).patternType);
 		if (pattern) {
-			this.patterns.push(pattern);
 			pattern.returnType = this.returnType;
-			if (this.argumentPatternTree.compatiblePatterns.length == 0) {
+			if (this.patterns.length == 0) {
 				let counter = 0;
 				for (const argumentType of pattern.expressionArguments) {
 					const argumentPosition = pattern.argumentPositions[counter];
 					//increase before converting to text, so the first argument will be 'expr-1'
 					counter++;
-					this.argumentPatternTree.addPattern(new PatternData("expr-" + counter, "expr-" + counter, argumentPosition, PatternType.expression, this, [], [], argumentType));
+					this.patternContainer.addPattern(new PatternData("expr-" + counter, "expr-" + counter, argumentPosition, PatternType.expression, this, [], [], argumentType));
 				}
 			}
+			this.patterns.push(pattern);
 		}
 	}
 
@@ -58,15 +57,17 @@ export class SkriptPatternContainerSection extends SkriptSection {
 			context.addDiagnostic(0, context.currentString.length, 'expected patterns here', DiagnosticSeverity.Error);
 		}
 	}
-	override getPatternData(testPattern: SkriptPatternCall): PatternData | undefined {
-		//const result = this.argumentPatternTree.getPatternData(testPattern);
-		//return result ?? 
-		return super.getPatternData(testPattern);
+	override getPatternTree(): PatternTreeContainer | undefined {
+		return this.patternContainer;
 	}
 	override finish(context: SkriptContext) {
 		for (const pattern of this.patterns)
 			context.currentSkriptFile.addPattern(pattern);
 
 		super.finish(context);
+	}
+	constructor(parent: SkriptSectionGroup, context?: SkriptContext) {
+		super(parent, context);
+		this.patternContainer = new PatternTreeContainer(parent.getPatternTree());
 	}
 }

@@ -1,6 +1,16 @@
 #SKRIPT FILE WITH MISSING SKRIPT PATTERNS
 #COPYRIGHT JOHN HEIKENS
 
+#Object
+#The supertype of all types, meaning that if %object% is used in e.g. a condition it will accept all kinds of expressions.
+#since 1.0
+type:
+	patterns:
+		object[s]
+		
+#this type is used internally (if a variable has an unknown type, like global variables as they can be changed asynchronously)
+type unknown:
+
 type entity[ ]data:
 
 type structure[ ]type:
@@ -11,22 +21,21 @@ type class[ ]info:
 
 type inventory[ ]holder:
 
-#this type is used internally (if a variable has an unknown type, like global variables as they can be changed asynchronously)
-type unknown:
 
 type number[s]:
 
 type long:
-    inherits: number
-
+	inherits: number
+	
 type float:
-    inherits: number
-
+	inherits: number
+	
 type double:
-    inherits: number
-
+	inherits: number
+	
 type byte:
-    inherits: number
-
+	inherits: number
+	
 type integer:
-    inherits: number
+	inherits: number
+	

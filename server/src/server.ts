@@ -462,7 +462,7 @@ connection.onHover((params: TextDocumentPositionParams): Hover | undefined => {
 			value: `**${convert(info.pattern.skriptPatternString)}**`
 		};
 		if (info.pattern.returnType.possibleTypes.length) {
-			hoverContent.value += '\nreturns: ' + convert(info.pattern.returnType.possibleTypes[0].skriptPatternString);
+			hoverContent.value += '\n\nreturns: ' + convert(info.pattern.returnType.possibleTypes[0].skriptPatternString);
 		}
 	}
 	if (hoverContent) {

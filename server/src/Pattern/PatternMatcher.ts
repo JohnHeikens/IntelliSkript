@@ -1,6 +1,6 @@
+import { PatternTreeContainer } from './PatternTreeContainer';
 import { SkriptPatternCall } from './SkriptPattern';
-import { PatternData } from './data/PatternData';
-import { MatchArray } from './match/matchArray';
+import { MatchResult } from './match/matchResult';
 export interface PatternMatcher {
-    getPatternData(testPattern: SkriptPatternCall): PatternData | undefined;
+    getPatternData(testPattern: SkriptPatternCall): MatchResult | undefined;
 }

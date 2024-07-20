@@ -1,20 +1,18 @@
-import { DiagnosticSeverity, integer, Location, Position } from 'vscode-languageserver/node';
-import * as IntelliSkriptConstants from '../../../IntelliSkriptConstants';
+import { DiagnosticSeverity, integer, Location } from 'vscode-languageserver/node';
 import { SkriptNestHierarchy } from '../../../nesting/SkriptNestHierarchy';
 //import { PatternData } from "../../pattern/PatternData";
-import { PatternResultProcessor, stopAtFirstResultProcessor } from '../../../pattern/patternResultProcessor';
-import { TokenTypes } from '../../../TokenTypes';
+import { PatternData, TypeData } from '../../../pattern/data/PatternData';
 import { PatternType } from "../../../pattern/PatternType";
-import { SkriptContext } from '../../validation/SkriptContext';
+import { SkriptPatternCall } from '../../../pattern/SkriptPattern';
+import { TokenModifiers } from '../../../TokenModifiers';
+import { TokenTypes } from '../../../TokenTypes';
 import { SkriptVariable } from '../../storage/SkriptVariable';
+import { SkriptTypeState } from '../../storage/type/SkriptTypeState';
+import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSectionGroup } from '../SkriptSectionGroup';
+import { TransformedPattern } from './PatternToLineTransform';
 //import { SkriptConditionSection } from './SkriptConditionSection';
 import assert = require('assert');
-import { PatternData, TypeData } from '../../../pattern/data/PatternData';
-import { SkriptPatternCall } from '../../../pattern/SkriptPattern';
-import { SkriptTypeState } from '../../storage/type/SkriptTypeState';
-import { TokenModifiers } from '../../../TokenModifiers';
-import { PatternKeyFrame, TransformedPattern } from './PatternToLineTransform'
 //import { createBasicSection } from './CreateBasicSection';
 //const variablePattern = /\{(.*)\}/g;
 //IMPORT BELOW TO AVOID CIRCULAR DEPENDENCIES
@@ -69,7 +67,7 @@ export class SkriptSection extends SkriptSectionGroup {
 	}
 
 	getTypeData(typeName: string): TypeData | undefined {
-		return this.getPatternData(new SkriptPatternCall(typeName, PatternType.type));
+		return this.getPatternData(new SkriptPatternCall(typeName, PatternType.type))?.fullMatch.matchedPattern;
 	}
 	getParentSection(): SkriptSection | undefined {
 		return this.parent && this.parent instanceof SkriptSection ?
@@ -168,6 +166,7 @@ export class SkriptSection extends SkriptSectionGroup {
 			//we can't just use the keypoints, because we'll never know if we will replace something else using keypoints, or if a submatch was of length 1.
 			//so instead, let's tokenize everything which isn't a '%'
 			subMatchPatternPos = pattern.pattern.indexOf('%', subMatchPatternPos + 1);
+			//there is no new submatch within our reach
 			if (subMatchPatternPos == -1 || subMatchPatternPos > matchPatternEnd) break;
 			const tokenLength = subMatchPatternPos - tokenizeFrom;
 			if (tokenLength >= 0) {
@@ -182,8 +181,29 @@ export class SkriptSection extends SkriptSectionGroup {
 				}
 			}
 		}
-		//finally, tokenize the part of the match that wasn't tokenized yet
-		context.addToken(tokenType, pattern.getLinePos(tokenizeFrom), matchPatternEnd - tokenizeFrom);
+		if (matchPatternEnd > tokenizeFrom)
+			//finally, tokenize the part of the match that wasn't tokenized yet
+			context.addToken(tokenType, pattern.getLinePos(tokenizeFrom), matchPatternEnd - tokenizeFrom);
+	}
+
+	/**visualizes matches recursively */
+	private visualizeMatch(context: SkriptContext, pattern: TransformedPattern, currentMatch: PatternMatch) {
+		let currentPatternPos = currentMatch.start;
+		const separatorWidth = 1;
+		for (const subMatch of currentMatch.children) {
+			const segmentEnd = subMatch.start - separatorWidth;
+			const distance = segmentEnd - currentPatternPos;
+			if (distance > 0) {
+				this.tokenizeMatch(context, pattern, currentMatch.matchedPattern, currentPatternPos, segmentEnd);
+			}
+			this.visualizeMatch(context, pattern, subMatch);
+			currentPatternPos = subMatch.end + separatorWidth;
+		}
+		const distance = currentMatch.end - currentPatternPos;
+		if (distance > 0) {
+			this.tokenizeMatch(context, pattern, currentMatch.matchedPattern, currentPatternPos, currentMatch.end);
+		}
+		context.addPatternMatch(currentMatch.matchedPattern, pattern.getLinePos(currentMatch.start), pattern.getLinePos(currentMatch.end));
 	}
 
 	//detect patterns like a [b | c]
@@ -328,9 +348,13 @@ export class SkriptSection extends SkriptSectionGroup {
 			else {
 
 				//pass pattern by reference
-				foundPattern = this.getPatternData(new SkriptPatternCall(pattern.pattern, mainPatternType, currentPatternArguments));// context, mainPatternType, pattern, currentPatternArguments);
+				const matchResult = this.getPatternData(new SkriptPatternCall(pattern.pattern, mainPatternType, currentPatternArguments));// context, mainPatternType, pattern, currentPatternArguments);
 
-				if (isTopNode && !foundPattern) {
+				if (matchResult) {
+					foundPattern = matchResult.fullMatch.matchedPattern;
+					this.visualizeMatch(context, pattern, matchResult.fullMatch);
+				}
+				else if (isTopNode) {
 					context.addDiagnostic(currentNode.start, currentNode.end - currentNode.start, "can't understand this line (pattern detection is a work in progress. please report on discord)", DiagnosticSeverity.Hint, "IntelliSkript->Pattern");
 				}
 			}
@@ -431,12 +455,8 @@ export class SkriptSection extends SkriptSectionGroup {
 	}
 }
 
-import { SkriptLoopSection } from '../SkriptLoopSection';
-import { SkriptPropertySection } from '../reflect/SkriptPropertySection';
 import { PatternMatch } from '../../../pattern/match/PatternMatch';
-import { reverse } from 'dns';
-import { SegmentationData } from '../../validation/SegmentationData';
-import { log } from 'console';
+import { SkriptLoopSection } from '../SkriptLoopSection';
 
 export class SkriptConditionSection extends SkriptSection {
 	constructor(parent: SkriptSection, context: SkriptContext) {

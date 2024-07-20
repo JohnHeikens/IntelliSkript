@@ -12,6 +12,11 @@ export class SkriptTypeSection extends SkriptPatternContainerSection {
 
     constructor(parent: SkriptSectionGroup, context: SkriptContext) {
         super(parent, context);
+        //if (this.patterns[0]?.skriptPatternString != 'object[s]') {
+        //    const objectType = this.getTypeData('object')?.section;
+        //    if (objectType)
+        //        this.baseClasses.push(objectType as SkriptTypeSection);
+        //}
     }
     override processLine(context: SkriptContext): void {
         if (context.currentString.startsWith('inherits: ')) {
@@ -38,6 +43,9 @@ export class SkriptTypeSection extends SkriptPatternContainerSection {
             context.currentSkriptFile.addPattern(pattern);
         }
     }
+    getKey(): string {
+        return this.patterns[0]?.skriptPatternString ?? "";
+    }
     instanceOf(otherType: PatternData): boolean {
         if (otherType.regexPatternString == "object(s)?") {
             return true;//everything inherits from object
@@ -57,9 +65,9 @@ export class SkriptTypeSection extends SkriptPatternContainerSection {
             return false;
         }
     }
-    testBaseClasses(testFunction: (testType: SkriptTypeSection) => boolean, testedTypes: Set<string>  = new Set<string>()): boolean {
+    testBaseClasses(testFunction: (testKey: string) => boolean, testedTypes: Set<string> = new Set<string>()): boolean {
         if (!testedTypes.has(this.patterns[0]?.skriptPatternString)) {
-            if (testFunction(this)) return true;
+            if (testFunction(this.getKey())) return true;
             testedTypes.add(this.patterns[0]?.skriptPatternString);
 
             for (const baseClass of this.baseClasses) {

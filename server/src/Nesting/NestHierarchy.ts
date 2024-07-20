@@ -1,7 +1,10 @@
+import { sortedIndex } from '../SortedArray';
+
 export class NestHierarchy<t extends NestHierarchy<t>> {
 	start = 0;
 	end = 0;
 
+	/**a list of child hierarchy nodes */
 	children: t[] = [];
 	//positions:number[] = [];
 	//characters = "";
@@ -34,6 +37,7 @@ export class NestHierarchy<t extends NestHierarchy<t>> {
 		}
 		return undefined;
 	}
+
 	getMatchingClosingbrace(pos: number): number | undefined {
 		const nodeStart = pos + 1;
 		const childNode = this.getChildNodeAt(nodeStart);
@@ -53,6 +57,15 @@ export class NestHierarchy<t extends NestHierarchy<t>> {
 		const child = this.getChildNodeAt(pos);
 		return child ? child.getDeepestChildNodeAt(pos) : this as unknown as t;
 	}
+
+	addChild(child: t) {
+		//find a place to insert
+		const firstChildIndex = sortedIndex(this.children, child, (a, b): boolean => a.start < b.start);
+		//see how many children will become children of this child:
+		//find the last child to become grandchild
+		const lastChildIndex = sortedIndex(this.children, child, (a, b): boolean => a.end < b.end, firstChildIndex);
+		child.children = this.children.splice(firstChildIndex, lastChildIndex + 1 - firstChildIndex, child);
+	}
 	addNestedChild(child: t) {
 		let currentParent: NestHierarchy<t> = this;
 		while (true) {
@@ -61,6 +74,7 @@ export class NestHierarchy<t extends NestHierarchy<t>> {
 				currentParent = currentChildChild;
 			else break;
 		}
-		currentParent.children.push(child);
+		//insert at the right place
+		currentParent.addChild(child);
 	}
 }

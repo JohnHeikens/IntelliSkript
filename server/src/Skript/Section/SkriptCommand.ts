@@ -6,7 +6,7 @@ import { TokenTypes } from '../../TokenTypes';
 import { SkriptContext } from '../validation/SkriptContext';
 import { SkriptTypeState } from '../storage/type/SkriptTypeState';
 import { SkriptSection } from "./skriptSection/SkriptSection";
-import { MatchArray } from '../../pattern/match/matchArray';
+import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
 
 const playerRegExpString = "(the )?player";
 const sectionRegExp = /(aliases|executable by|prefix|usage|description|permission(?: message|)|cooldown(?: (?:message|bypass|storage))?)/;
@@ -15,6 +15,7 @@ export class SkriptCommandSection extends SkriptSection {
 	//context.currentString should be 'command /test <string> :: string' for example
 	constructor(parent: SkriptSection, context: SkriptContext) {
 		super(parent, context);
+		this.patternContainer = new PatternTreeContainer(parent.getPatternTree());
 		//get the "player" type, not the entity literal
 		const playerType = super.getTypeData("player");
 		const resultType = playerType ? new SkriptTypeState(playerType) : new SkriptTypeState();
@@ -50,14 +51,5 @@ export class SkriptCommandSection extends SkriptSection {
 		}
 		else
 			context.addToken(TokenTypes.keyword, 0, result[0].length)
-	}
-	override getPatternData(testPattern: SkriptPatternCall): PatternData | undefined {
-		//let result = new MatchArray(testPattern);
-		//if (testPattern.type == PatternType.effect) {
-		//	if ((result = testPattern.compare(this.playerPatternData)).hasFullMatch) {
-		//		return result;
-		//	}
-		//}
-		return super.getPatternData(testPattern);
 	}
 }

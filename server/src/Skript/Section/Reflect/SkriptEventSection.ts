@@ -9,7 +9,7 @@ import { SkriptTypeState } from '../../storage/type/SkriptTypeState';
 import { TokenTypes } from '../../../TokenTypes';
 export class SkriptEventSection extends SkriptPatternContainerSection {
 	eventValues: PatternData[] = [];
-
+	static override patternType: PatternType = PatternType.event;
 
 	createSection(context: SkriptContext): SkriptSection | undefined {
 		if (context.currentString == "check")
@@ -44,9 +44,9 @@ export class SkriptEventSection extends SkriptPatternContainerSection {
 		//	context.addDiagnostic(0, context.currentString.length, "can't understand this line");
 		//}
 	}
-	override addPattern(context: SkriptContext): void {
-		const pattern = PatternTree.parsePattern(context, this, PatternType.event);
-		if (pattern)
-			context.currentSkriptFile.addPattern(pattern);
-	}
+	//override addPattern(context: SkriptContext): void {
+	//	const pattern = PatternTree.parsePattern(context, this, PatternType.event);
+	//	if (pattern)
+	//		context.currentSkriptFile.addPattern(pattern);
+	//}
 }

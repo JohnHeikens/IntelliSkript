@@ -5,9 +5,11 @@ import { SkriptVariable } from '../storage/SkriptVariable';
 import { SkriptSection } from './skriptSection/SkriptSection';
 import { PatternMatcher } from '../../pattern/PatternMatcher';
 import { SkriptPatternCall } from '../../pattern/SkriptPattern';
-import { MatchArray } from '../../pattern/match/matchArray';
+import { MatchResult } from '../../pattern/match/matchResult';
+import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
 
 export class SkriptSectionGroup extends Hierarchy<SkriptSectionGroup> implements PatternMatcher {
+	patternContainer?: PatternTreeContainer;
 	definedVariables: Array<SkriptVariable> = [];
 	override children: SkriptSectionGroup[] = [];
 	constructor(parent?: SkriptSectionGroup) {
@@ -18,7 +20,16 @@ export class SkriptSectionGroup extends Hierarchy<SkriptSectionGroup> implements
 		//throw new Error("skriptsectiongroup without derivation");
 		return undefined;
 	}
-	getPatternData(testPattern: SkriptPatternCall): PatternData | undefined {
-		return this.parent?.getPatternData(testPattern);
+
+
+	/**
+	 * returns the pattern tree of this pattern matcher, which should be set as the parent of any pattern tree of children.
+	 */
+	getPatternTree(): PatternTreeContainer | undefined {
+		return this.patternContainer ?? this.parent?.getPatternTree();
 	}
+
+	getPatternData(testPattern: SkriptPatternCall) {
+		return this.getPatternTree()?.getPatternData(testPattern);
+	};
 }

@@ -1,5 +1,5 @@
 #define inheritance here in order! so when player depends on entity, define entity first, then player!
-
+object->predefined
 number->predefined
 block->location, metadata holder
 entity->location, metadata holder

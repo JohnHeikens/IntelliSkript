@@ -1,17 +1,13 @@
-import { TextDocument } from 'vscode-languageserver-textdocument';
-import { PatternData } from "../../pattern/data/PatternData";
-import { PatternResultProcessor } from "../../pattern/patternResultProcessor";
-import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
-import { SkriptFile } from '../section/SkriptFile';
-import { SkriptPatternCall } from '../../pattern/SkriptPattern';
-import path = require('path');
-import { SkriptFolder } from './SkriptFolder';
-import { SkriptFolderContainer } from './SkriptFolderContainer';
 import * as fs from 'fs';
 import { fileURLToPath } from 'url';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
 import { AddonSkFilesDirectory } from '../../IntelliSkriptConstants';
-import { MatchArray } from '../../pattern/match/matchArray';
+import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
+import { SkriptFile } from '../section/SkriptFile';
+import { SkriptFolder } from './SkriptFolder';
+import { SkriptFolderContainer } from './SkriptFolderContainer';
+import path = require('path');
 
 export class SkriptWorkSpace extends SkriptFolderContainer {
 	//the 'childsections' variable is not used here. TODO somehow merge the childsections and files variable
@@ -63,7 +59,8 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 	//the constructor will be used before the debugger is launched. caution!
 	constructor() {
 		super();
-		this.addonFolder = new SkriptFolder(this, URI.file(AddonSkFilesDirectory).toString());
+		//the addon folder will not use itself as parent pattern container, because when it calls getpatterncontainer(), this.addonFolder is still undefined
+		this.children.push(this.addonFolder = new SkriptFolder(this, URI.file(AddonSkFilesDirectory).toString()));
 	}
 
 	getSkriptFileByUri(uri: string): SkriptFile | undefined {
@@ -138,11 +135,11 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 				}
 				//finally, validate the folder itself
 				//regenerate patterns, but without those of the old file to avoid double definitions
-				folder.patterns = new PatternTreeContainer();
+				folder.patternContainer = new PatternTreeContainer(folder.parent.getPatternTree());
 
 				for (const folderFile of folder.files) {
 					if (folderFile.validated) {
-						folder.patterns.merge(folderFile.patterns);
+						folder.patternContainer.merge(folderFile.patternContainer);
 					}
 					else {
 						folderFile.validate();
@@ -169,13 +166,13 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 		//	//this.files.push(new SkriptFile(this, context));
 		//}
 	}
-	override getPatternData(testPattern: SkriptPatternCall): PatternData | undefined {
+	override getPatternTree(): PatternTreeContainer | undefined {
 		//get patterndata from the skript extension folder
 		//don't call the getPatternData from the folder, because that will call this workspace again
 		//todo: 
 		//we're checking twice for the addon folder patterns when compiling the addon folder
 		//it isn't that bad, because all files in the addon folder should be able to find their patterns
-		return this.addonFolder.patterns.getPatternData(testPattern);
+		return this.addonFolder?.patternContainer;
 	}
 
 	//override getVariableByName(name: string): SkriptVariable | undefined {

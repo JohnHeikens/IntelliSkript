@@ -42,24 +42,4 @@ export class SkriptTypeState {
 		}
 		return true;
 	}
-
-	/**
-	 * 
-	 * @param testFunction this function will be called with the current type section we're iterating over
-	 * @param testedTypes this set will be modified! it stores all types we iterated over
-	 * @returns true if all types should be checked
-	 */
-	iterateBaseClasses(testFunction: (testType: SkriptTypeSection) => boolean, testedTypes: Set<string> = new Set<string>()): boolean {
-		let testAllTypes = false;
-		for (const type of this.possibleTypes) {
-			if (type.regexPatternString == "unknown") {
-				//test all types
-				testAllTypes = true;
-			}
-			else if (type.section) {
-				if ((type.section as SkriptTypeSection).testBaseClasses(testFunction, testedTypes)) return true;
-			}
-		}
-		return testAllTypes;
-	}
 }

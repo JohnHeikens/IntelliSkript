@@ -1,19 +1,15 @@
 import path = require('path');
-import { PatternData } from '../../pattern/data/PatternData';
-import { SkriptPatternCall } from '../../pattern/SkriptPattern';
-import { PatternResultProcessor } from '../../pattern/patternResultProcessor';
 import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
 import { SkriptFile } from '../section/SkriptFile';
 import { SkriptFolderContainer } from './SkriptFolderContainer';
 import { SkriptWorkSpace } from './SkriptWorkSpace';
-import { MatchArray } from '../../pattern/match/matchArray';
 
 export class SkriptFolder extends SkriptFolderContainer {
 	uri = "";
 	files: SkriptFile[] = [];
 	override parent: SkriptFolderContainer;
 
-	patterns: PatternTreeContainer = new PatternTreeContainer();
+	patternContainer: PatternTreeContainer;
 	getSkriptFileIndexByUri(uri: string): number | undefined {
 		for (let i = 0; i < this.files.length; i++) {
 			if (this.files[i].document.uri == uri) return i;
@@ -37,11 +33,13 @@ export class SkriptFolder extends SkriptFolderContainer {
 		//if the last file isn't validated, then we need to recalculate the patterns.
 		//when a file invalidates, all files after it invalidate too.
 		if (!this.files[this.files.length - 1].validated) {
-			this.patterns = new PatternTreeContainer();
+			this.patternContainer = new PatternTreeContainer(
+				this.parent instanceof SkriptWorkSpace && this.parent.addonFolder === this ? 
+				undefined : this.parent.getPatternTree());
 			for (const file of this.files)
 				//this way, a file won't know what is previous to it
 				file.validated ?
-					this.patterns.merge(file.patterns) :
+					this.patternContainer.merge(file.patternContainer) :
 					file.validate();
 		}
 
@@ -51,8 +49,7 @@ export class SkriptFolder extends SkriptFolderContainer {
 		super();
 		this.parent = parent;
 		this.uri = uri;
+		this.patternContainer = new PatternTreeContainer(parent.getPatternTree());
 	}
-	override getPatternData(testPattern: SkriptPatternCall): PatternData | undefined {
-		return this.patterns.getPatternData(testPattern) ?? this.parent.getPatternData(testPattern);
-	}
+	override getPatternTree = () => this.patternContainer;
 }

@@ -2,7 +2,7 @@ import { SkriptTypeState } from "../skript/storage/type/SkriptTypeState";
 import { PatternType } from './PatternType';
 import { PatternData } from './data/PatternData';
 import { PatternMatch } from './match/PatternMatch';
-import { MatchArray } from './match/matchArray';
+import { MatchResult } from './match/matchResult';
 //examples:
 //  "set %objects% to %objects%"
 //  |
@@ -50,16 +50,17 @@ export class SkriptPatternCall {
             return true;
         }
     }
-    compare(testPattern: PatternData): MatchArray {
-        const results = new MatchArray(this);
-        if (this.compareArgumentTypes(testPattern)) {
-            //make sure it matches exactly
-            const result = testPattern.patternRegExp.exec(this.pattern);// new RegExp(`^${testPattern.regexPatternString}$`).test(this.pattern);
-            if (result) {
-                results.addMatch(new PatternMatch(testPattern, 0, result[0].length));
-            }
-        }
-        return results;
+    compare(testPattern: PatternData): MatchResult | undefined {
+        //const results = new MatchResult(this);
+        //if (this.compareArgumentTypes(testPattern)) {
+        //    //make sure it matches exactly
+        //    const result = testPattern.patternRegExp.exec(this.pattern);// new RegExp(`^${testPattern.regexPatternString}$`).test(this.pattern);
+        //    if (result) {
+        //        results.addMatch(new PatternMatch(testPattern, 0, result[0].length));
+        //    }
+        //}
+        //return results;
+        return undefined;
     }
     compareCalls(other: SkriptPatternCall): boolean {
         if (this.patternType == other.patternType &&

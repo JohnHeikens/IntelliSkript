@@ -577,13 +577,6 @@ type:
 	patterns:
 		money
 
-#Object
-#The supertype of all types, meaning that if %object% is used in e.g. a condition it will accept all kinds of expressions.
-#since 1.0
-type:
-	patterns:
-		object[s]
-
 #Potion Effect
 #A potion effect, including the potion effect type, tier and duration.
 #since 2.5.2

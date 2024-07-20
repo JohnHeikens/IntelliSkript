@@ -17,7 +17,7 @@ import assert = require('assert');
 import { TypeNode } from './patternTreeNode/TypeNode';
 import { TokenModifiers } from '../TokenModifiers';
 import { SkriptTypeSection } from '../skript/section/custom/SkriptTypeSection';
-import { MatchArray } from './match/matchArray';
+import { MatchResult } from './match/matchResult';
 import { PatternMatch } from './match/PatternMatch';
 import { MatchProgress } from './match/MatchProgress';
 

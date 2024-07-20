@@ -112,7 +112,8 @@ export class SkriptContext {
 		this.hierarchy = new SkriptNestHierarchy(0, '');
 
 		for (let i = 0; i < this.currentString.length; i++) {
-			if (this.currentString[i] == '"') {
+			const currentChar = this.currentString[i];
+			if (currentChar == '"') {
 				const node = this.hierarchy.getActiveNode();
 				if (node.character == '"') {
 					if (this.currentString[i + 1] == '"') {
@@ -122,13 +123,13 @@ export class SkriptContext {
 						node.end = i;//pop
 					}
 				}
-				else {
+				else if('%(,'.includes(node.character)) {
 					node.children.push(new SkriptNestHierarchy(i + 1, '"'));//push
 				}
 				//currentNestLevel++;
 
 			}
-			else if (this.currentString[i] == '%') {
+			else if (currentChar == '%') {
 				const node = this.hierarchy.getActiveNode();
 				if (node.character == '"') {
 					if (this.currentString[i + 1] == '%') {
@@ -152,7 +153,7 @@ export class SkriptContext {
 				//	this.addDiagnostic(i, 1, "can't use placeholder (%) characters here", DiagnosticSeverity.Error, "IntelliSkript->placeholder->wrongplace");
 				//}
 			}
-			else if (this.currentString[i] == ',') {
+			else if (currentChar == ',') {
 				const node = this.hierarchy.getActiveNode();
 				if (node.character == '(')
 					//first child
@@ -165,23 +166,23 @@ export class SkriptContext {
 					this.hierarchy.getActiveNode().children.push(new SkriptNestHierarchy(i + 1, ','));
 				}
 			}
-			else if (openBraces.includes(this.currentString[i])) {
+			else if (openBraces.includes(currentChar)) {
 				const node = this.hierarchy.getActiveNode();
 				if (node.character != '"') {//braces don't count in a string
-					node.children.push(new SkriptNestHierarchy(i + 1, this.currentString[i]));//push
+					node.children.push(new SkriptNestHierarchy(i + 1, currentChar));//push
 				}
 			}
-			else if (closingBraces.includes(this.currentString[i])) {
+			else if (closingBraces.includes(currentChar)) {
 				const node = this.hierarchy.getActiveNode();
 
 				if (node.character != '"') {//braces don't count in a string
-					if (node.character == ',' && this.currentString[i] == ')') {
+					if (node.character == ',' && currentChar == ')') {
 						//pop ',' node
 						node.end = i;
 						//pop '(' node. we know for sure that a ',' node is always nested in a '(' node
 						this.hierarchy.getActiveNode().end = i;
 					}
-					else if (node.character.length && (closingBraces.indexOf(this.currentString[i]) == openBraces.indexOf(node.character))) {
+					else if (node.character.length && (closingBraces.indexOf(currentChar) == openBraces.indexOf(node.character))) {
 						node.end = i;//pop
 					}
 					else if (addDiagnostics) {

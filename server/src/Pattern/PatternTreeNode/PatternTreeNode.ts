@@ -1,7 +1,6 @@
 import { SkriptTypeSection } from '../../skript/section/custom/SkriptTypeSection';
 import { PatternData } from "../data/PatternData";
 
-
 export class PatternTreeNode {
 	//a list of children, mapped from a - z etc.
 	//each child is just a normal node, for example the 'a' in 'say %'
@@ -10,7 +9,7 @@ export class PatternTreeNode {
 	//when the string doesn't continue, we will check the type nodes.
 	typeOrderedChildren: Map<string, PatternTreeNode> = new Map<string, PatternTreeNode>();
     getTypeChild(type: SkriptTypeSection) {
-        return this.typeOrderedChildren.get(type.patterns[0]?.skriptPatternString);
+        return this.typeOrderedChildren.get(type.getKey());
     }
 	//otherNodes: PatternTreeNode[] = new Array<PatternTreeNode>();
 	//when this can be an end node of a certain pattern, the end node is set. sometimes another pattern continues after this
