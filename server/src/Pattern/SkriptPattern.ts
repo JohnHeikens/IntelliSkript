@@ -50,18 +50,18 @@ export class SkriptPatternCall {
             return true;
         }
     }
-    compare(testPattern: PatternData): MatchResult | undefined {
-        //const results = new MatchResult(this);
-        //if (this.compareArgumentTypes(testPattern)) {
-        //    //make sure it matches exactly
-        //    const result = testPattern.patternRegExp.exec(this.pattern);// new RegExp(`^${testPattern.regexPatternString}$`).test(this.pattern);
-        //    if (result) {
-        //        results.addMatch(new PatternMatch(testPattern, 0, result[0].length));
-        //    }
-        //}
-        //return results;
-        return undefined;
-    }
+    //compare(testPattern: PatternData): MatchResult | undefined {
+    //    //const results = new MatchResult(this);
+    //    //if (this.compareArgumentTypes(testPattern)) {
+    //    //    //make sure it matches exactly
+    //    //    const result = testPattern.patternRegExp.exec(this.pattern);// new RegExp(`^${testPattern.regexPatternString}$`).test(this.pattern);
+    //    //    if (result) {
+    //    //        results.addMatch(new PatternMatch(testPattern, 0, result[0].length));
+    //    //    }
+    //    //}
+    //    //return results;
+    //    return undefined;
+    //}
     compareCalls(other: SkriptPatternCall): boolean {
         if (this.patternType == other.patternType &&
             this.expressionArguments.length == other.expressionArguments.length &&

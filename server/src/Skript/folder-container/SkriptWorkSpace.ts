@@ -153,18 +153,6 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 				file.validate();
 			}
 		}
-		//}
-		//else {
-		//	//add document to skript workspace
-		//	let f = new SkriptFile(this, context);
-		//	//figure out where to put the file
-		//	this.files.push(f);
-		//	this.files.sort((a, b) => a.document.uri > b.document.uri ? 1 : -1);
-		//	//const set = new Set(this.files);
-		//	//set.add(f);
-		//	//return Array.from(set).sort((a, b) => a - b);
-		//	//this.files.push(new SkriptFile(this, context));
-		//}
 	}
 	override getPatternTree(): PatternTreeContainer | undefined {
 		//get patterndata from the skript extension folder
@@ -184,7 +172,3 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 	//}
 
 }
-//workspace folders
-//const currentWorkSpaces: SkriptWorkSpace[] = [];
-//files without any workspace
-//let looseWorkSpace: SkriptWorkSpace;//SkriptFile[] = [];

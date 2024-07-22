@@ -908,6 +908,77 @@ type:
 	patterns:
 		section[s]
 
+#Block
+#A block in a world. It has a location and a type, and can also have a direction (mostly a facing), an inventory, or other special properties.
+#since 1.0
+type:
+	patterns:
+		block[s]
+	inherits: location, metadata holder
+
+#Entity
+#An entity is something in a world that's not a block, e.g. a player, a skeleton, or a zombie, but also projectiles like arrows, fireballs or thrown potions, or special entities like dropped items, falling blocks or paintings.
+#since 1.0
+#Examples:
+#entity is a zombie or creeper
+#player is an op
+#projectile is an arrow
+#shoot a fireball from the player
+type:
+	patterns:
+		entit(y|ies)
+	inherits: location, metadata holder
+
+expression:
+	return type: entity
+	patterns:
+		player
+		op
+		wolf
+		tamed ocelot
+		powered creeper
+		zombie
+		unsaddled pig
+		fireball
+		arrow
+		dropped item
+		item frame
+		etc.
+
+#Living Entity
+#A living entity, i.e. a mob or player, not inanimate entities like projectiles or dropped items.
+#since 1.0
+#Examples:
+#spawn 5 powered creepers
+#shoot a zombie from the creeper
+type:
+	patterns:
+		living[ ]entit(y|ies)
+	inherits: entity
+
+expression:
+	return type: livingentity
+	patterns:
+		see entity
+		but ignore inanimate objects
+
+#Offline Player
+#A player that is possibly offline. See player for more information. Please note that while all effects and conditions that require a player can be used with an offline player as well, they will not work if the player is not actually online.
+#since 
+type:
+	patterns:
+		offline[ ]player[s]
+	inherits: command sender
+
+#Player
+#A player. Depending on whether a player is online or offline several actions can be performed with them, though you won't get any errors when using effects that only work if the player is online (e.g. changing their inventory) on an offline player.
+#You have two possibilities to use players as command arguments: &lt;player&gt; and &lt;offline player&gt;. The first requires that the player is online and also accepts only part of the name, while the latter doesn't require that the player is online, but the player's name has to be entered exactly.
+#since 1.0
+type:
+	patterns:
+		player[s]
+	inherits: offline player, livingentity
+
 #Action Bar
 #Sends an action bar message to the given player(s).
 #since 2.3

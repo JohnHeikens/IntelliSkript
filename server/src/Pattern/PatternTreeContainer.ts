@@ -10,6 +10,7 @@ import { PatternMatch } from './match/PatternMatch';
 import assert = require('assert');
 import { PatternTreeNode } from './patternTreeNode/PatternTreeNode';
 import { SkriptTypeState } from '../skript/storage/type/SkriptTypeState';
+import { NumberRegExp } from '../IntelliSkriptConstants';
 
 export class PatternTreeContainer implements PatternMatcher {
 	/** a list of expression trees, this is to save time (to not recursively have to get patterns from parents or something). we will start at the top and end at this container.
@@ -123,8 +124,6 @@ export class PatternTreeContainer implements PatternMatcher {
 					//even when index == pattern.length, we should check base classes, because we didn't determine yet which type node it is
 					let fullMatch: MatchResult | undefined;
 
-
-					const testedTypes = new Set<string>();
 					const testNode = (parentProgress: MatchProgress): boolean => {
 						const testTypeChild = (testChild: PatternTreeNode): boolean => {
 							//clone
@@ -149,7 +148,7 @@ export class PatternTreeContainer implements PatternMatcher {
 						//maybe this is a submatch of a higher level match.
 						if (testNode(progress.parent)) return fullMatch;
 					}
-					if (progress.patternType != PatternType.expression || (progress.currentNode !== progress.startNode)) {
+					if (this.canSubstitute(progress)) {
 						//maybe this is the first submatch of a higher level match.
 						for (const container of this.containersToTraverse) {
 							const root = container.trees[PatternType.expression].compileAndGetRoot();
@@ -196,42 +195,74 @@ export class PatternTreeContainer implements PatternMatcher {
 					continue;
 				}
 			}
-			else if (currentChar == '%' &&
-				argumentIndex < testPattern.expressionArguments.length &&
-				progress.currentNode.typeOrderedChildren.size) {
-				//test all base classes recursively
+			if (progress.currentNode.typeOrderedChildren.size) {
 				let testResult: MatchResult | undefined;
-
+				let newIndex = index;
+				let newArgumentIndex = argumentIndex;
 				const testClass = (typeChild: PatternTreeNode): boolean => {
 					const testProgress: MatchProgress = { ...progress, currentNode: typeChild, startNode: progress.currentNode };
 					//testProgress.currentNode = typeChild;
 					//estProgress.startNode = testProgress.currentNode;
 					if (typeChild &&
-						(testResult = this.getMatchingPatternPart(testPattern, testProgress, index + 1, argumentIndex + 1)))
+						(testResult = this.getMatchingPatternPart(testPattern, testProgress, newIndex, newArgumentIndex)))
 						return true;
 					return false;
 				}
 
-				const currentArgument = testPattern.expressionArguments[argumentIndex];
-				this.testTypeNodes(testClass, progress.currentNode, currentArgument);
-				if (testResult)
-					return testResult;
+				if (currentChar == '%' &&
+					argumentIndex < testPattern.expressionArguments.length) {
+					//test all base classes recursively
+					const currentArgument = testPattern.expressionArguments[argumentIndex];
+					newIndex++;
+					newArgumentIndex++;
+					this.testTypeNodes(testClass, progress.currentNode, currentArgument);
+					if (testResult)
+						return testResult;
+				}
+				else if (/[0-9-]/.test(currentChar)) {
+
+					//this is a number
+					const numberPattern = this.containersToTraverse[0].trees[PatternType.expression].incompatiblePatterns[0];
+					let numberMatch = new RegExp(numberPattern.regexPatternString);
+					let matchArray: RegExpExecArray | null;
+					if (matchArray = numberMatch.exec(pattern.substring(index))) {
+						newIndex += matchArray[0].length;
+					}
+					const currentArgument: SkriptTypeState = numberPattern.returnType;
+					this.testTypeNodes(testClass, progress.currentNode, currentArgument);
+					if (testResult) {
+						//add the submatch to its parent match
+						const childMatch = new PatternMatch(numberPattern, index, newIndex);
+						const parentMatch = testResult.fullMatch.getDeepestChildNodeAt(progress.start);
+						//we know for sure that each match we will add, is further to the start. so we can add matches to the start of the deepest child node.
+						parentMatch.children.unshift(childMatch);
+						return testResult;
+					}
+
+
+					//const numberNode = progress.currentNode.typeOrderedChildren.get('num[ber][s]');
+					//if (numberNode && testClass(numberNode)) return testResult;
+					//const objectNode = progress.currentNode.typeOrderedChildren.get('object[s]');
+					//if (objectNode && testClass(objectNode)) return testResult;
+					//if (testResult)
+					//	return testResult;
+				}
 			}
 			//all possibilities have been tested, but there haven't been any children who fit this pattern. we need to submatch.
 			//we will try finding a pattern from the expression trees which returns an instance of the expected type.
-			if (hasValidTypeNodes &&
-				
+			if (hasValidTypeNodes) {
 				//infinite recursion happens when the currentnode is root
-				progress.patternType != PatternType.expression || (progress.currentNode !== progress.startNode)) {
-				let testResult: MatchResult | undefined;
-				for (const container of this.containersToTraverse) {
-					//clone
-					const nextProgress: MatchProgress = { ...progress };
+				if (this.canSubstitute(progress)) {
+					let testResult: MatchResult | undefined;
+					for (const container of this.containersToTraverse) {
+						//clone
+						const nextProgress: MatchProgress = { ...progress };
 
-					const root = container.trees[PatternType.expression].compileAndGetRoot();
+						const root = container.trees[PatternType.expression].compileAndGetRoot();
 
-					testResult = this.getMatchingPatternPart(testPattern, { start: index, parent: nextProgress, currentNode: root, startNode: root, patternType: PatternType.expression }, index, argumentIndex, recursion + 1);
-					if (testResult) return testResult;
+						testResult = this.getMatchingPatternPart(testPattern, { start: index, parent: nextProgress, currentNode: root, startNode: root, patternType: PatternType.expression }, index, argumentIndex, recursion + 1);
+						if (testResult) return testResult;
+					}
 				}
 			}
 

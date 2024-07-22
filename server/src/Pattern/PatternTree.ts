@@ -320,7 +320,11 @@ export class PatternTree {
 		}
 		hierarchy.end = context.currentString.length;
 
-		const lastActiveNode = hierarchy.getActiveNode();
+		let lastActiveNode = hierarchy.getActiveNode();
+		if (lastActiveNode.character == '|') {
+			lastActiveNode.end = hierarchy.end;//pop
+			lastActiveNode = hierarchy.getActiveNode();
+		}
 		if (lastActiveNode != hierarchy) {
 			context.addDiagnostic(lastActiveNode.start, hierarchy.end - lastActiveNode.start, "no matching closing character found", DiagnosticSeverity.Error, "IntelliSkript->Nest->No Matching");
 		}
@@ -449,6 +453,10 @@ export class PatternTree {
 	addPattern(pattern: PatternData) {
 		if (/\\d\+|(?<!\\)(\+|\*|\.)/.exec(pattern.regexPatternString)) {
 			//these patterns are not compatible with the tree
+			//these patterns are roughly always patterns which we don't need anyways, because they don't provide intelligent support.
+			//for example: expr-1 shouldn't be available in each context
+			//the loop-value shouldn't be available in each context either
+			//etc.
 			if (pattern.definitionLocation.uri.includes('IntelliSkript.sk')) {
 				//defined by intelliskript, this pattern should be safe to use
 				this.incompatiblePatterns.push(pattern);

@@ -53,13 +53,15 @@ export class AddonParser extends Parser {
 		return name.toLowerCase().replace(' ', '');
 	}
 	static PatternToCall(pattern: string): string {
-		while(true) {
+		while (true) {
 			//replace innermost braces
 			const newPattern = pattern.replace(/\[[^\[\]]*\]/g, "");
 			if (pattern == newPattern) break;
 			pattern = newPattern;
 		};
-		return pattern.replace(/\((.+?)\|.+?\)/g, "$1");
+		pattern = pattern.replace(/\((.+?)\|.+?\)/g, "$1");
+		pattern = pattern.split('|')[0];
+		return pattern;
 	}
 	static parseFileJson(file: fileJson): string {
 		function format(str: string): string {
@@ -149,8 +151,9 @@ export class AddonParser extends Parser {
 		file.types?.forEach(type => {
 			this.allTypes.set(type.name, type);
 
-			if (this.inheritanceByID.has(this.normalizeName(type.name))) {
-				toDefine.set(type.name, type);
+			const normalizedName = this.normalizeName(type.name);
+			if (this.inheritanceByID.has(normalizedName)) {
+				toDefine.set(normalizedName, type);
 			}
 			else {
 				str += defineType(type);

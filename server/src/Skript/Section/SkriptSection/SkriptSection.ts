@@ -282,7 +282,7 @@ export class SkriptSection extends SkriptSectionGroup {
 					let typeToReplace: SkriptTypeState | undefined;
 					if (child.character == '(') {
 						if (childResultList[i])
-							mergedPatternArguments.set(child.start, childResultList[i].returnType);
+							typeToReplace = childResultList[i].returnType;
 						else {
 							//check if this is a function
 							//search to the left (to where the name would end)
@@ -312,7 +312,7 @@ export class SkriptSection extends SkriptSectionGroup {
 					else if (child.character == '"') {
 						const stringData = this.getTypeData("string");
 						if (stringData)
-							mergedPatternArguments.set(child.start, new SkriptTypeState(stringData));
+							typeToReplace = new SkriptTypeState(stringData);
 					}
 					if (!typeToReplace) {
 						const objectData = this.getTypeData("unknown");
