@@ -5,6 +5,7 @@ import * as path from 'path';
 import * as IntelliSkriptConstants from '../../IntelliSkriptConstants';
 import * as Thread from '../../Thread';
 import { Parser } from './Parser';
+import { SkriptNestHierarchy } from '../../nesting/SkriptNestHierarchy';
 export class GeneralJson {
 	name = "";
 	description?: string[];
@@ -45,10 +46,20 @@ export class AddonParser extends Parser {
 
 	static override idDirectory = path.join(this.parserDirectory, "json");
 	static inheritanceByID = new Map<string, string>();
+	static allTypes = new Map<string, TypeJson>();
 
-
-	static nameToPattern(name: string) {
+	//this function makes type names match better with the ones defined in the inheritance text file
+	static normalizeName(name: string): string {
 		return name.toLowerCase().replace(' ', '');
+	}
+	static PatternToCall(pattern: string): string {
+		while(true) {
+			//replace innermost braces
+			const newPattern = pattern.replace(/\[[^\[\]]*\]/g, "");
+			if (pattern == newPattern) break;
+			pattern = newPattern;
+		};
+		return pattern.replace(/\((.+?)\|.+?\)/g, "$1");
 	}
 	static parseFileJson(file: fileJson): string {
 		function format(str: string): string {
@@ -115,14 +126,14 @@ export class AddonParser extends Parser {
 				if (patterns) {
 					let expressionString = "\n";
 					expressionString += 'expression:\n';
-					expressionString += "\treturn type: " + AddonParser.nameToPattern(elem.name) + "\n";
+					expressionString += "\treturn type: " + AddonParser.PatternToCall(elem.patterns[0]) + "\n";
 					expressionString += "\tpatterns:\n";
 					for (const pattern of patterns) {
 						const invalidPatternRegex = /([^a-z \._])/g;
-						if (invalidPatternRegex.test(pattern)) 
+						if (invalidPatternRegex.test(pattern))
 							//this was not meant as pattern list
 							return str;
-							expressionString += "\t\t" + pattern.trim() + "\n";
+						expressionString += "\t\t" + pattern.trim() + "\n";
 					}
 					str += expressionString;
 				}
@@ -136,9 +147,10 @@ export class AddonParser extends Parser {
 		//define types at first as they are used in effects and other patterns
 
 		file.types?.forEach(type => {
-			const name = this.nameToPattern(type.name);
-			if (this.inheritanceByID.has(name)) {
-				toDefine.set(name, type);
+			this.allTypes.set(type.name, type);
+
+			if (this.inheritanceByID.has(this.normalizeName(type.name))) {
+				toDefine.set(type.name, type);
 			}
 			else {
 				str += defineType(type);
@@ -204,7 +216,10 @@ export class AddonParser extends Parser {
 						str += "#\t\t(internal code)\n";
 					});
 				}
-				str += "\treturn type: " + expression["return type"].toLowerCase().replace(/(.*) \/ .*/, "$1");
+				const type = this.allTypes.get(expression["return type"]);
+				str += "\treturn type: ";
+				if (type) str += this.PatternToCall(type.patterns[0]);
+				else str += this.normalizeName(expression["return type"]);
 			}
 		});
 		return str;
@@ -213,7 +228,7 @@ export class AddonParser extends Parser {
 		const fileData = JSON.parse(contents);
 		const parseResult = AddonParser.parseFileJson(fileData);
 		const inputFileName = file.substring(0, file.indexOf('.'));
-		const outputFileName = inputFileName == "Skript" ? "1 (preload) - Skript" : inputFileName;
+		const outputFileName = inputFileName;
 		const targetPath = path.join(IntelliSkriptConstants.AddonSkFilesDirectory, outputFileName) + ".sk";
 		fs.writeFileSync(targetPath, parseResult);
 	}
@@ -226,7 +241,7 @@ export class AddonParser extends Parser {
 		for (const line of text.split('\n')) {
 			const parts = line.trim().split('#')[0].split('->');
 			if (parts.length > 1)
-				this.inheritanceByID.set(this.nameToPattern(parts[0]), parts[1]);
+				this.inheritanceByID.set(this.normalizeName(parts[0]), parts[1]);
 		}
 		super.ParseFiles();
 	}

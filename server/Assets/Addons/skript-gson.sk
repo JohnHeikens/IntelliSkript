@@ -225,7 +225,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: json element
+	return type: json
 #Array or List formatted to JSON.
 #It allows you to convert the sheet back to Json!
 #Value changes don't work for nested objects, to change the values of a nested object use Change
@@ -243,7 +243,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: json element
+	return type: json
 #Count of objects/phrases
 #You can get the exact number of identical keys or values from the entire json because `count of` works recursively.
 #since 2.8.0 performance & clean
@@ -309,7 +309,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: json element
+	return type: json
 #Json size of current element
 #since 2.8.0 - performance & clean
 #Examples:
@@ -335,7 +335,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: json element
+	return type: json
 #JsonRequest - request body
 #since 2.8.0 - performance & clean
 #Examples:
@@ -348,7 +348,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: json element
+	return type: json
 #New json
 #It's allow create json from any source also from the file
 #since 2.8.0 - performance & clean
@@ -367,7 +367,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: json element
+	return type: json
 #Pretty json
 #Allows you to better parse json
 #<pre>
@@ -393,4 +393,4 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: json element
+	return type: json

@@ -5,6 +5,9 @@ import { PatternType } from '../PatternType';
 //this class stores how far the match is, recursively
 export interface MatchProgress {
     currentNode: PatternTreeNode;
+    //the node this progress started checking at. is used to check against recursion. if we just started checking, we shouldn't check again.
+    
+    startNode: PatternTreeNode;
     patternType: PatternType;
     parent?: MatchProgress;
     foundPattern?: PatternData;

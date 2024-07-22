@@ -20,7 +20,7 @@ type:
 		anvil[ ]click[[ ]type]
 
 expression:
-	return type: anvilclick type
+	return type: anvilclick
 	patterns:
 		anvilclick.left
 		anvilclick.right
@@ -37,7 +37,7 @@ type:
 		itemslot[s]
 
 expression:
-	return type: itemslots armour
+	return type: itemslot
 	patterns:
 		itemslot.mainhand
 		itemslot.offhand
@@ -53,7 +53,7 @@ type:
 		[block][ ]dig[ ]type[s]
 
 expression:
-	return type: playerblock dig type
+	return type: digtype
 	patterns:
 		playerdigtype.start_destroy_block
 		playerdigtype.abort_destroy_block
@@ -75,7 +75,7 @@ type:
 		movement[s]
 
 expression:
-	return type: steermovements
+	return type: movement
 	patterns:
 		movement.left
 		movement.right
@@ -206,7 +206,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprClientBorderPortalTeleportBoundary
 expression:
 	patterns:
@@ -218,7 +218,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprClientBorderRadius
 expression:
 	patterns:
@@ -230,7 +230,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprClientBorderSpeed
 expression:
 	patterns:
@@ -242,7 +242,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprClientBorderWarningDistance
 expression:
 	patterns:
@@ -258,7 +258,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprClientBorderWarningTime
 expression:
 	patterns:
@@ -279,7 +279,7 @@ expression:
 expression:
 	patterns:
 		[a] new client [side] [world] border (with|for) %worlds%
-	return type: client world border
+	return type: clientworldborder
 #ExprLines
 expression:
 	patterns:
@@ -289,24 +289,24 @@ expression:
 expression:
 	patterns:
 		[the] movements
-	return type: steer movements
+	return type: movement
 #ExprPitch
 expression:
 	patterns:
 		[the] pitch
-	return type: number
+	return type: num
 #ExprRawSlot
 expression:
 	patterns:
 		[the] [clicked] raw slot
-	return type: number
+	return type: num
 #ExprSoundLocation
 expression:
 	patterns:
 		[the] sound location
-	return type: number
+	return type: num
 #ExprVolume
 expression:
 	patterns:
 		[the] volume
-	return type: number
+	return type: num

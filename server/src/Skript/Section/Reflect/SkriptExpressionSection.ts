@@ -64,4 +64,12 @@ export class SkriptExpressionSection extends SkriptPatternContainerSection {
 			//add delete, set, 
 		}
 	}
+	override finish(context: SkriptContext): void {
+		if (this.returnType.possibleTypes.length == 0) {
+			const unknownData = this.getTypeData("unknown");
+			if (unknownData)
+				this.returnType.possibleTypes.push(unknownData);
+		}
+		super.finish(context);
+	}
 }

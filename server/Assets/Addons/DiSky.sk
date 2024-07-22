@@ -1497,7 +1497,7 @@ expression:
 	patterns:
 		[the] [discord] bot ping of %bot%
 		%bot%'[s] [discord] bot ping
-	return type: number
+	return type: num
 #BotPresence
 expression:
 	patterns:
@@ -1537,7 +1537,7 @@ expression:
 		%channel/channelaction%'[s] [channel] bitrate
 	set:
 #		(internal code)
-	return type: number
+	return type: num
 #ChannelChannels
 expression:
 	patterns:
@@ -1551,7 +1551,7 @@ expression:
 		%channel/channelaction%'[s] [channel] max[imum] user[s]
 	set:
 #		(internal code)
-	return type: number
+	return type: num
 #ChannelNSFW
 expression:
 	patterns:
@@ -1583,7 +1583,7 @@ expression:
 		%channel/channelaction%'[s] [channel] position
 	set:
 #		(internal code)
-	return type: number
+	return type: num
 #ChannelRegion
 expression:
 	patterns:
@@ -1597,7 +1597,7 @@ expression:
 		%channel/channelaction%'[s] [channel] slow[( |-)]mode
 	set:
 #		(internal code)
-	return type: number
+	return type: num
 #ChannelTopic
 expression:
 	patterns:
@@ -1614,7 +1614,7 @@ expression:
 expression:
 	patterns:
 		[the] (hex|color) %string%
-	return type: colour
+	return type: color
 #Command Localization
 #Represents the localization of the name or the description of a slash/sub command.
 #You can add **Locale Data** (check for expression) to them.
@@ -1730,7 +1730,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: colour
+	return type: color
 #EmbedAuthor
 expression:
 	patterns:
@@ -2010,7 +2010,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprMinRange
 expression:
 	patterns:
@@ -2020,7 +2020,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprNewInput
 expression:
 	patterns:
@@ -2305,7 +2305,7 @@ expression:
 	patterns:
 		[the] [guild] boost[(ing|er)] (amount|number|size) of %guild%
 		%guild%'[s] [guild] boost[(ing|er)] (amount|number|size)
-	return type: number
+	return type: num
 #Guild Booster Role
 #Represent the booster role of this guild.
 #Any member that got this role is actually a booster of the guild.
@@ -2383,7 +2383,7 @@ expression:
 		%guild%'[s] [discord] afk time[( |-)]out [second[s]]
 	set:
 #		(internal code)
-	return type: number
+	return type: num
 #GuildBanner
 expression:
 	patterns:
@@ -2432,7 +2432,7 @@ expression:
 	patterns:
 		[the] invite max age[s] of %invite%
 		%invite%'[s] invite max age[s]
-	return type: number
+	return type: num
 #Invite Max Uses
 #Represent the max amount of times this invite can be used.
 #Examples:
@@ -2441,7 +2441,7 @@ expression:
 	patterns:
 		[the] invite max use[s] of %invite%
 		%invite%'[s] invite max use[s]
-	return type: number
+	return type: num
 #Invite URL
 #Represent the plain Discord URL that people have to click on in order to join the invite's guild.
 #Examples:
@@ -2459,7 +2459,7 @@ expression:
 	patterns:
 		[the] invite use[s] of %invite%
 		%invite%'[s] invite use[s]
-	return type: number
+	return type: num
 #Last DiSky Exception
 #Return the last occurred DiSky or Discord exception in the current event.
 #This expression is event-based, means you cannot get the last error that happened on another event.
@@ -2938,7 +2938,7 @@ expression:
 	patterns:
 		[the] profile color [accent] of %userprofile%
 		%userprofile%'[s] profile color [accent]
-	return type: colour
+	return type: color
 #PropOptions
 expression:
 	patterns:
@@ -2954,7 +2954,7 @@ expression:
 		%role/roleaction%'[s] role color
 	set:
 #		(internal code)
-	return type: colour
+	return type: color
 #RoleName
 expression:
 	patterns:
@@ -2970,7 +2970,7 @@ expression:
 		%role/roleaction%'[s] [discord] [role] position
 	set:
 #		(internal code)
-	return type: number
+	return type: num
 #Row Builder Components
 #Components of a row builder
 #See also: 'Create (rich) Message'

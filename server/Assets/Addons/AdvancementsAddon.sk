@@ -46,7 +46,7 @@ expression:
 	patterns:
 		advancement [name[ ]spaced] key of %advancement%
 		%advancement%'s advancement [name[ ]spaced] key
-	return type: namespacedkey
+	return type: namespacedkey|key
 #ExprAdvancementProgress
 expression:
 	patterns:

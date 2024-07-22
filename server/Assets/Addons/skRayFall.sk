@@ -740,20 +740,20 @@ event "armorstand_damage":
 expression:
 	patterns:
 		(absolute|complex|abs) number of %itemstack% in %player%['s] (inventory|inv)
-	return type: number
+	return type: num
 #Armor Value
 #Get a players armor value.
 expression:
 	patterns:
 		%player%['s] armo[u]r value
-	return type: number
+	return type: num
 #Citizen ID
 #Get the id number of a citizen from an entity.
 #Citizens
 expression:
 	patterns:
 		citizen id of %entity%
-	return type: number
+	return type: num
 #Citizen Owner
 #Gets the owner of a citizen.
 #Citizens
@@ -806,7 +806,7 @@ expression:
 expression:
 	patterns:
 		last created citizen [id]
-	return type: number
+	return type: num
 #Meta Data
 #Get the meta data value for an entity
 expression:
@@ -842,7 +842,7 @@ expression:
 expression:
 	patterns:
 		number of enchant[ment]s on %itemstack%
-	return type: number
+	return type: num
 #Shiny Item
 #Show Items by:
 #* Glow
@@ -871,7 +871,7 @@ expression:
 expression:
 	patterns:
 		(value|progress) of bossbar %string%
-	return type: number
+	return type: num
 #skRayFall Offhand
 #Manipulate items in the players offhand/secondary hand.
 #Examples:

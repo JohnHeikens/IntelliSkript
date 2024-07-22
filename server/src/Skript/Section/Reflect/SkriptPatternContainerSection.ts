@@ -74,12 +74,6 @@ export class SkriptPatternContainerSection extends SkriptSection {
 		for (const pattern of this.patterns)
 			context.currentSkriptFile.addPattern(pattern);
 
-		if (this.returnType.possibleTypes.length == 0) {
-			const unknownData = this.getTypeData("unknown");
-			if (unknownData)
-				this.returnType.possibleTypes.push(unknownData);
-		}
-
 		super.finish(context);
 	}
 	constructor(parent: SkriptSectionGroup, context?: SkriptContext) {

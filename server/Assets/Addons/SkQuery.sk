@@ -396,7 +396,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprArt
 expression:
 	patterns:
@@ -433,7 +433,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprBlockChunk
 expression:
 	patterns:
@@ -504,7 +504,7 @@ expression:
 		%worldborders%'[s] [world[ ]border[s]] damage [amount]
 	set:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprBorderDamageBuffer
 expression:
 	patterns:
@@ -512,7 +512,7 @@ expression:
 		%worldborders%'[s] [world[ ]border[s]] [damage] buffer
 	set:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprBorderSize
 expression:
 	patterns:
@@ -523,7 +523,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprBorderWarningDistance
 expression:
 	patterns:
@@ -531,7 +531,7 @@ expression:
 		%worldborders%'[s] [world[ ]border[s]] warning distance
 	set:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprBorderWarningTime
 expression:
 	patterns:
@@ -543,7 +543,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprCharacterIndex
 expression:
 	patterns:
@@ -586,7 +586,7 @@ expression:
 		signum %number%
 		(sqrt|square root)[ of] %number%
 		(%number% factorial|%number%!)
-	return type: number
+	return type: num
 #ExprDefaultValue
 expression:
 	patterns:
@@ -658,7 +658,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprHealthScaleMode
 expression:
 	patterns:
@@ -682,7 +682,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprIIf
 expression:
 	patterns:
@@ -755,7 +755,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprKeyString
 expression:
 	patterns:
@@ -792,7 +792,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprMessageFormat
 expression:
 	patterns:
@@ -804,7 +804,7 @@ expression:
 expression:
 	patterns:
 		%number% mod %number%
-	return type: number
+	return type: num
 #ExprMoonPhase
 expression:
 	patterns:
@@ -882,7 +882,7 @@ expression:
 	patterns:
 		[the] arabic num(ber|eral) of %strings%
 		%strings%'[s] arabic num(ber|eral)
-	return type: number
+	return type: num
 #ExprRomanNumeralTo
 expression:
 	patterns:

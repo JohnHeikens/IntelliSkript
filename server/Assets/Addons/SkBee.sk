@@ -96,7 +96,7 @@ type:
 		material[ ]choice[s]
 
 expression:
-	return type: materialchoice
+	return type: material choice
 	patterns:
 		see material choice expression
 
@@ -115,7 +115,7 @@ type:
 		[minecraft[ ]]tag[s]
 
 expression:
-	return type: minecrafttag
+	return type: tag
 	patterns:
 		see minecraft tag expression
 
@@ -139,7 +139,7 @@ type:
 		nbt[ ]type[s]
 
 expression:
-	return type: nbt- tag type
+	return type: nbttype
 	patterns:
 		byte array tag
 		byte tag
@@ -192,7 +192,7 @@ type:
 		mirror[s]
 
 expression:
-	return type: structure- mirror
+	return type: mirror
 	patterns:
 		front back
 		left right
@@ -214,7 +214,7 @@ type:
 		team[ ]option[s]
 
 expression:
-	return type: team- option
+	return type: teamoption
 	patterns:
 		collision rule
 		death message visibility
@@ -227,7 +227,7 @@ type:
 		team[ ]option[ ]status
 
 expression:
-	return type: team- option status
+	return type: teamoptionstatus
 	patterns:
 		always
 		for other teams
@@ -1033,7 +1033,7 @@ expression:
 #		(internal code)
 	remove:
 #		(internal code)
-	return type: number
+	return type: num
 #Armor Change Event - Item
 #Get the old/new item in an armor change event. Defaults to new. When using set, it will set the slot that was changed, old/new will make no difference in this case. Requires Paper 1.12.2+
 #since 1.3.1
@@ -1046,7 +1046,7 @@ expression:
 		[(new|old)] armor item
 	set:
 #		(internal code)
-	return type: item type
+	return type: itemtype
 #Available Materials
 #Get a list of all available materials (will return as an itemtype, but it's a mix of blocks and items),
 #itemtypes, block types (will return as an item type, but only materials which can be placed use as a block) and block datas.
@@ -1123,7 +1123,7 @@ expression:
 expression:
 	patterns:
 		block[ ]data of [blockstate[s]] %blockstates%
-	return type: block data
+	return type: blockdata
 #BlockState - ItemType
 #Represents the itemtype of a block in a structure. Requires MC 1.17.1+
 #since 1.12.3
@@ -1132,7 +1132,7 @@ expression:
 expression:
 	patterns:
 		[item[ ]]type of [blockstate[s]] %blockstates%
-	return type: item type
+	return type: itemtype
 #BlockState - Offset
 #Represents the offset of a block in a structure. This is a vector, distance from the starting block of a structure.
 #Requires MC 1.17.1+
@@ -1160,7 +1160,7 @@ expression:
 		page %number% of [book] %itemtype%
 	set:
 #		(internal code)
-	return type: text component - base component
+	return type: basecomponent
 #Bound - All Bounds
 #Get a list of all bounds, optionally in a specific world.
 #since 1.15.0
@@ -1293,7 +1293,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: offline player
+	return type: offlineplayer
 #Chunk Coordinates
 #Represents the coordinates of a chunk.
 #since 1.13.0
@@ -1302,7 +1302,7 @@ expression:
 expression:
 	patterns:
 		chunk (x|z) of %chunk%
-	return type: number
+	return type: num
 #Entity NoClip
 #Set or get the noClip status of an entity (This will not work on players)
 #since 1.0.2
@@ -1383,7 +1383,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: number
+	return type: num
 #Hidden Item Flags
 #Hides the item flags on items, allowing you to make super duper custom items. Dye item flag added in 1.5.0 and only available on 1.16.2+.
 #since 1.0.0
@@ -1397,7 +1397,7 @@ expression:
 	patterns:
 		%itemtype% with (all|enchant[s]|destroy[s]|potion[ ]effect[s]|unbreakable|attribute[s]|dye) flag[s] hidden
 		%itemtype% with hidden (all|enchant[s]|destroy[s]|potion[ ]effect[s]|unbreakable|attribute[s]|dye) flag[s]
-	return type: item type
+	return type: itemtype
 #Inventory Name
 #This is a temp placeholder for Skript's inventory name expression, which is broken in 1.14+
 #since 1.0.0
@@ -1489,7 +1489,7 @@ expression:
 		nbt compound [(copy)] (of|from) file[s] %strings%
 	add:
 #		(internal code)
-	return type: nbt - compound
+	return type: nbtcompound
 #NBT - Item from NBT
 #This expression allows you to grab an item from NBT strings or compounds (compound support added in 1.6.0). 
 #This can be useful when wanting to grab items from file nbt, or nbt of an entity or an inventory holding block (like a chest or furnace).
@@ -1508,7 +1508,7 @@ expression:
 	patterns:
 		item[s] (from|of) nbt[s] %strings/nbtcompounds%
 		nbt item[s] (from|of) %strings/nbtcompounds%
-	return type: item type
+	return type: itemtype
 #NBT - Item with NBT
 #Give players items with NBT or even use items with NBT in GUIs
 #since 1.0.0
@@ -1518,7 +1518,7 @@ expression:
 expression:
 	patterns:
 		%itemtype% with [item( |-)]nbt %string/nbtcompound%
-	return type: item type
+	return type: itemtype
 #NBT - Item/Inventory Slot/Entity/Block/File
 #NBT of items, inventory slots, entities, tile entities (such as a furnace, hopper, brewing stand, banner, etc) or files. 
 #Supports get, set, add and reset. Reset will only properly work on an item, not entities or blocks. 
@@ -1606,7 +1606,7 @@ expression:
 expression:
 	patterns:
 		[nbt[ ]]tag[ ]type of tag %string% of %nbtcompound%
-	return type: nbt - tag type
+	return type: nbttype
 #NBT - Tags
 #Get all tags of an NBT compound.
 #since 1.14.2
@@ -1679,7 +1679,7 @@ expression:
 expression:
 	patterns:
 		[(all [[of] the]|the)] ingredients (for|of) recipe %string%
-	return type: item type
+	return type: itemtype
 #Stored Enchantments
 #Get/set the stored enchantments of an enchanted book.
 #since 1.0.0
@@ -1701,7 +1701,7 @@ expression:
 #		(internal code)
 	delete:
 #		(internal code)
-	return type: enchantment type
+	return type: enchanting type
 #Structure - BlockStates
 #Get a list of the blockstates in a structure. This represents the palette of blocks a structure holds.
 #Requires MC 1.17.1+
@@ -1834,7 +1834,7 @@ expression:
 #		(internal code)
 	reset:
 #		(internal code)
-	return type: colour
+	return type: color
 #Team - Entries
 #Represents the entries of a team. You can add/remove players/entities to teams.
 #since 1.15.0
@@ -1873,7 +1873,7 @@ expression:
 		%beeteams%'[s] team option %teamoption%
 	set:
 #		(internal code)
-	return type: team - option status
+	return type: teamoptionstatus
 #Team - Prefix/Suffix
 #Get/set the prefix/suffix of a team.
 #since 1.15.0
@@ -1995,7 +1995,7 @@ expression:
 		[a] [new] text component[s] (from|of) %strings%
 		[a] [new] translate component[s] (from|of) %objects%
 		[a] [new] translate component[s] (from|of) %string% (with|using) %objects%
-	return type: text component - base component
+	return type: basecomponent
 #Total Experience
 #Represents the total experience points the player currently has.
 #since 1.2.0
@@ -2028,7 +2028,7 @@ expression:
 	patterns:
 		[a] [new] world creator (with name|named) %string%
 		[a] [new] world creator (with name|named) %string% to (copy|clone) %world%
-	return type: world creator
+	return type: worldcreator
 #World Creator Options
 #Set different options for world creators. See SkBee wiki for more details.
 #since 1.8.0

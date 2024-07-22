@@ -152,4 +152,4 @@ expression:
 		[the] [LuckPerm[s]] group [(named|with name)] %string%'s (priority|weight)
 	set:
 #		(internal code)
-	return type: number
+	return type: num

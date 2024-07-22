@@ -145,7 +145,7 @@ expression:
 		%numbers%'[s] (bit %number%|bit(s| range) [from] %number%( to |[ ]-[ ])%number%)
 	get:
 #		(internal code)
-	return type: number
+	return type: num
 #ExprChangeValue
 expression:
 	patterns:
@@ -213,7 +213,7 @@ expression:
 expression:
 	patterns:
 		[the] [matched] pattern
-	return type: number
+	return type: num
 #ExprMemberNames
 expression:
 	patterns:
@@ -235,7 +235,7 @@ expression:
 expression:
 	patterns:
 		[the] [parse[r]] mark
-	return type: number
+	return type: num
 #ExprParseRegex
 expression:
 	patterns:

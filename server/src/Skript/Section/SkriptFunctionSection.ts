@@ -1,20 +1,17 @@
 import { DiagnosticSeverity, Location } from 'vscode-languageserver/node';
 import { TokenTypes } from '../../TokenTypes';
-import { SkriptContext } from '../validation/SkriptContext';
 import { SkriptVariable } from '../storage/SkriptVariable';
+import { SkriptTypeState } from '../storage/type/SkriptTypeState';
+import { SkriptContext } from '../validation/SkriptContext';
 import {
 	SkriptSection
 } from "./skriptSection/SkriptSection";
-import { SkriptFile } from './SkriptFile';
-import { PatternData } from '../../pattern/data/PatternData';
-import { PatternType } from '../../pattern/PatternType';
-import { SkriptTypeState } from '../storage/type/SkriptTypeState';
 export class SkriptFunction extends SkriptSection {
 	name: string;
 	//context.currentString should be 'function example(a: string, b: number) :: string' for example
 	constructor(parent: SkriptSection, context: SkriptContext) {
 		super(parent, context);
-		const regex = /^function ([a-zA-Z0-9_]{1,})\((.*)\)(| (?:::| returns ) (.*?))$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
+		const regex = /^function ([a-zA-Z0-9_]{1,})\((.*)\)(?:| ?(?:::|returns ) (.*?))$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		//(,|and|)){1,}\)
 		const result = regex.exec(context.currentString);
 		if (result == null) {

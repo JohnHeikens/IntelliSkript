@@ -22,7 +22,7 @@ type class[ ]info:
 type inventory[ ]holder:
 
 
-type number[s]:
+type num[ber][s]:
 
 type long:
 	inherits: number

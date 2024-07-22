@@ -213,7 +213,7 @@ expression:
 expression:
 	patterns:
 		[skutil[ities] ]number of (upper|lower)case char[acter]s in %string%
-	return type: number
+	return type: num
 #ExprClearAccented
 expression:
 	patterns:
@@ -224,7 +224,7 @@ expression:
 	patterns:
 		[skutil[ities] ]number of (cpu|processor) cores
 		[skutil[ities] ](cpu|processor) core count
-	return type: number
+	return type: num
 #ExprCpuSpec
 expression:
 	patterns:
@@ -247,7 +247,7 @@ expression:
 	patterns:
 		[skutil[ities] ]convert date %date% to unix[ date]
 		[skutil[ities] ]date %date% as unix[ date]
-	return type: number
+	return type: num
 #ExprDirList
 expression:
 	patterns:
@@ -281,13 +281,13 @@ expression:
 	patterns:
 		[skutil[ities] ]size of (file|dir[ectory]) %string% in bytes
 		[skutil[ities] ](file|dir[ectory]) %string%'s size in bytes
-	return type: number
+	return type: num
 #ExprFileLines
 expression:
 	patterns:
 		[skutil[ities] ]line count of file %string%
 		[skutil[ities] ]file %string%'s line count
-	return type: number
+	return type: num
 #ExprFileNameExt
 expression:
 	patterns:
@@ -299,7 +299,7 @@ expression:
 	patterns:
 		[skutil[ities] ]file %string%'s (last modified|creation|last access) value
 		[skutil[ities] ](last modified|creation|last access) value of file %string%
-	return type: number
+	return type: num
 #ExprFromBin
 expression:
 	patterns:
@@ -363,12 +363,12 @@ expression:
 	patterns:
 		[skutil[ities] ]convert hexa[decimal] %string% to num[ber]
 		[skutil[ities] ]hexa[decimal] %string% as num[ber]
-	return type: number
+	return type: num
 #ExprLoaded
 expression:
 	patterns:
 		[skutil[ities] ]number of[ loaded] ((commands|cmds)|functions|s(c|k)ripts|triggers|statements|variables|aliases|events|effects|expressions|conditions)
-	return type: number
+	return type: num
 #ExprLoadedList
 expression:
 	patterns:
@@ -395,7 +395,7 @@ expression:
 expression:
 	patterns:
 		[skutil[ities] ](free|total|max) (ram|memory)
-	return type: number
+	return type: num
 #ExprRandomizeString
 expression:
 	patterns:
@@ -417,7 +417,7 @@ expression:
 expression:
 	patterns:
 		[skutil[ities] ][current ]system (nanos[econds]|millis[econds]|seconds)
-	return type: number
+	return type: num
 #ExprTimeInTimeZone
 expression:
 	patterns:
@@ -469,13 +469,13 @@ expression:
 	patterns:
 		[skutil[ities] ]last modified value of url %string%
 		[skutil[ities] ]url %string%'s last modified value
-	return type: number
+	return type: num
 #ExprUrlLines
 expression:
 	patterns:
 		[skutil[ities] ]line count of url %string%
 		[skutil[ities] ]url %string%'s line count
-	return type: number
+	return type: num
 #ExprUrlOnlineState
 expression:
 	patterns:
@@ -505,7 +505,7 @@ expression:
 	patterns:
 		[skutil[ities] ]ssl (issue|expire) value of url %string%
 		[skutil[ities] ]url %string%'s ssl (issue|expire) value
-	return type: number
+	return type: num
 #ExprUrlSSLSerialNumber
 expression:
 	patterns:
@@ -523,7 +523,7 @@ expression:
 	patterns:
 		[skutil[ities] ]ssl version of url %string%
 		[skutil[ities] ]url %string%'s ssl version
-	return type: number
+	return type: num
 #ExprUrlSize
 expression:
 	patterns:
@@ -535,7 +535,7 @@ expression:
 	patterns:
 		[skutil[ities] ]size of url %string% in bytes
 		[skutil[ities] ]url %string%'s size in bytes
-	return type: number
+	return type: num
 #ExprVersion
 expression:
 	patterns:
