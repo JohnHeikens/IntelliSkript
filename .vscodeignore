@@ -17,3 +17,4 @@ client/node_modules/**
 !client/node_modules/{minimatch,brace-expansion,concat-map,balanced-match}/**
 !client/node_modules/{semver,lru-cache,yallist}/**
 skript icon.svg
+webpack.config.js
