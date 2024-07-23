@@ -1,11 +1,11 @@
-import assert = require('assert');
+
+import { PatternData } from '../../../pattern/data/PatternData';
 import { PatternTree } from '../../../pattern/PatternTree';
 import { PatternType } from "../../../pattern/PatternType";
+import { TokenTypes } from '../../../TokenTypes';
 import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptPatternContainerSection } from '../reflect/SkriptPatternContainerSection';
-import { PatternData } from '../../../pattern/data/PatternData';
 import { SkriptSectionGroup } from '../SkriptSectionGroup';
-import { TokenTypes } from '../../../TokenTypes';
 export class SkriptTypeSection extends SkriptPatternContainerSection {
     baseClasses: SkriptTypeSection[] = [];
     patterns: PatternData[] = [];

@@ -9,7 +9,7 @@ import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptSectionGroup } from '../SkriptSectionGroup';
 import { SkriptPatternSection } from './SkriptPatternSection';
-import assert = require('assert');
+
 
 const patternRegEx = /pattern(|s)/;
 export class SkriptPatternContainerSection extends SkriptSection {

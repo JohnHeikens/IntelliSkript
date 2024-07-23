@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
 
@@ -18,8 +17,7 @@ export class SkriptPatternSection extends SkriptSection {
 	//}
 
 	override processLine(context: SkriptContext): void {
-		assert(this.parent instanceof SkriptPatternContainerSection);
-		this.parent.addPattern(context);
+		(this.parent as SkriptPatternContainerSection).addPattern(context);
 	}
 }
 //import { SkriptEventSection } from './SkriptEventSection';import { Hierarchy } from '../../../Hierarchy';

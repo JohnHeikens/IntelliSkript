@@ -28,7 +28,6 @@ import { SemanticTokenLine, UnOrderedSemanticTokensBuilder } from './UnOrderedSe
 import { start } from 'repl';
 import { ParseResult } from '../validation/ParseResult';
 import { IndentData } from '../validation/IndentData';
-import assert = require('assert');
 import { MatchResult } from '../../pattern/match/matchResult';
 
 
@@ -334,23 +333,25 @@ export class SkriptFile extends SkriptSection {
 				const stacksToPop = indentData.expected - indentData.mostValid;
 
 				popStacks(stacksToPop);
-				assert(mostValidContext);
+				//for debugger
+				if (mostValidContext) {
 
-				//merge parse result
-				this.builder.addLine(mostValidContext.parseResult.tokens as SemanticTokenLine)
-				this.parseResult.diagnostics.push(...mostValidContext.parseResult.diagnostics);
+					//merge parse result
+					this.builder.addLine(mostValidContext.parseResult.tokens as SemanticTokenLine)
+					this.parseResult.diagnostics.push(...mostValidContext.parseResult.diagnostics);
 
 
-				//expectedIndentationCount = currentinden
-				if (indentData.hasColon) {
-					//when the no section was able to be created, create a new skriptsection
-					newSection ||= new SkriptSection(mostValidContext.currentSection, mostValidContext);
-					context.currentSection?.children.push(newSection);
-					context.currentSection = newSection;
+					//expectedIndentationCount = currentinden
+					if (indentData.hasColon) {
+						//when the no section was able to be created, create a new skriptsection
+						newSection ||= new SkriptSection(mostValidContext.currentSection, mostValidContext);
+						context.currentSection?.children.push(newSection);
+						context.currentSection = newSection;
+					}
+
+					lastCodeLine = currentLineIndex;
+					indentData.finishLine();
 				}
-
-				lastCodeLine = currentLineIndex;
-				indentData.finishLine();
 			}
 
 			//empty lines and comments should indentate like the lines above them

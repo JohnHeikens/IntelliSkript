@@ -1,4 +1,3 @@
-import assert = require('assert');
 import { PatternData } from "../../pattern/data/PatternData";
 import { PatternResultProcessor } from "../../pattern/patternResultProcessor";
 import { PatternType } from "../../pattern/PatternType";
@@ -17,9 +16,9 @@ export class SkriptEventListenerSection extends SkriptSection {
 		this.eventPattern = eventPattern;
 		this.patternContainer = new PatternTreeContainer(context.currentSkriptFile.patternContainer);
 		const s = this.eventPattern.section as SkriptEventSection;
-		assert(s.eventValues);
-		for (let i = 0; i < s.eventValues.length; i++) {
-			this.patternContainer.addPattern(s.eventValues[i]);
-		}
+		if (s.eventValues)
+			for (let i = 0; i < s.eventValues.length; i++) {
+				this.patternContainer.addPattern(s.eventValues[i]);
+			}
 	}
 }

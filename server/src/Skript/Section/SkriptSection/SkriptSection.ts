@@ -12,7 +12,7 @@ import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSectionGroup } from '../SkriptSectionGroup';
 import { TransformedPattern } from './PatternToLineTransform';
 //import { SkriptConditionSection } from './SkriptConditionSection';
-import assert = require('assert');
+
 //import { createBasicSection } from './CreateBasicSection';
 //const variablePattern = /\{(.*)\}/g;
 //IMPORT BELOW TO AVOID CIRCULAR DEPENDENCIES
