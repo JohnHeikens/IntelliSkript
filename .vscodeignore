@@ -9,3 +9,4 @@
 contributing.md
 .travis.yml
 **/node_modules/**
+addon-parser
