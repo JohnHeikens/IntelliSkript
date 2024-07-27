@@ -3,49 +3,40 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"name": "Run Web Extension",
 			"type": "extensionHost",
+			"debugWebWorkerHost": true,
 			"request": "launch",
-			"name": "Launch Client",
-			"runtimeExecutable": "${execPath}",
 			"args": [
-				"--extensionDevelopmentPath=${workspaceRoot}"
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"--extensionDevelopmentKind=web"
 			],
-			"preLaunchTask": {
-				"type": "npm",
-				"script": "watch"
+			"outFiles": [
+				"${workspaceFolder}/client/dist/**/*.js",
+				"${workspaceFolder}/server/dist/**/*.js"
+			],
+			"preLaunchTask": "npm: watch",
+			"env": {
+				"DEBUG_MODE": "true"
 			}
 		},
+		
 		{
-			"name": "Attach to Server",
 			"type": "node",
-			"request": "attach",
-			"port": 6009,
-			"restart": true,
-			"smartStep": true,
-			"outFiles": [
-				"${workspaceRoot}/server/out/**/*.js"
-			],
-			"sourceMaps": true
-		},
-		{
-			"name": "Language Server E2E Test",
-			"type": "extensionHost",
 			"request": "launch",
-			"runtimeExecutable": "${execPath}",
-			"args": [
-				"--extensionDevelopmentPath=${workspaceRoot}",
-				"--extensionTestsPath=${workspaceRoot}/client/out/test/index",
-				"${workspaceRoot}/client/testFixture"
+			"name": "Generate Addon Files",
+			"runtimeArgs": [
+				"-r",
+				"ts-node/register"
 			],
-		}
-	],
-	"compounds": [
-		{
-			"name": "Client + Server",
-			"configurations": [
-				"Launch Client",
-				"Attach to Server"
-			]
+            "program": "${workspaceFolder}/addon-parser/src/index.ts",
+            "cwd": "${workspaceFolder}/addon-parser",
+			//"args": [
+			//	"${workspaceFolder}/addon-parser/src/index.ts"
+			//],
+			"preLaunchTask": "buildaddonparser",
+			"outFiles": ["${workspaceFolder}/addon-parser/out/**/*.js"],
+			"sourceMaps": true
 		}
 	]
 }

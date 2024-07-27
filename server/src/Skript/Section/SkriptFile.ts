@@ -1,18 +1,17 @@
-import { SkriptSection } from "./skriptSection/SkriptSection";
-import { SkriptFunction } from './SkriptFunctionSection';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { Diagnostic, DiagnosticSeverity, Range, TextEdit } from 'vscode-languageserver/node';
+import { DiagnosticSeverity, Range, TextEdit } from 'vscode-languageserver/node';
+import { URI } from 'vscode-uri';
 import { PatternData } from '../../pattern/data/PatternData';
-import { PatternResultProcessor, stopAtFirstResultProcessor } from '../../pattern/patternResultProcessor';
-import { PatternType } from "../../pattern/PatternType";
-import { SkriptPatternCall } from '../../pattern/SkriptPattern';
-import { TokenTypes } from '../../TokenTypes';
 import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
-import { SkriptContext } from '../validation/SkriptContext';
-import { SkriptOption } from '../storage/SkriptOption';
+import { PatternType } from "../../pattern/PatternType";
 import { SkriptPatternMatchHierarchy } from '../../pattern/SkriptPatternMatchHierarchy';
+import { TokenTypes } from '../../TokenTypes';
 import { SkriptFolder } from '../folder-container/SkriptFolder';
 import { SkriptWorkSpace } from '../folder-container/SkriptWorkSpace';
+import { SkriptOption } from '../storage/SkriptOption';
+import { IndentData } from '../validation/IndentData';
+import { ParseResult } from '../validation/ParseResult';
+import { SkriptContext } from '../validation/SkriptContext';
 import { SkriptTypeSection } from './custom/SkriptTypeSection';
 import { SkriptConditionProcessorSection } from './reflect/SkriptConditionProcessorSection';
 import { SkriptEffect as SkriptEffectSection } from './reflect/SkriptEffectSection';
@@ -23,16 +22,15 @@ import { SkriptPatternContainerSection } from './reflect/SkriptPatternContainerS
 import { SkriptPropertySection } from './reflect/SkriptPropertySection';
 import { SkriptCommandSection } from './SkriptCommand';
 import { SkriptEventListenerSection } from './SkriptEventListenerSection';
+import { SkriptFunction } from './SkriptFunctionSection';
 import { SkriptOptionsSection } from './SkriptOptionsSection';
+import { SkriptSection } from "./skriptSection/SkriptSection";
 import { SemanticTokenLine, UnOrderedSemanticTokensBuilder } from './UnOrderedSemanticTokensBuilder';
-import { start } from 'repl';
-import { ParseResult } from '../validation/ParseResult';
-import { IndentData } from '../validation/IndentData';
-import { MatchResult } from '../../pattern/match/matchResult';
 
 
 
 export class SkriptFile extends SkriptSection {
+	uri: URI;
 	document: TextDocument;
 	text: string = "";
 	//workSpace: SkriptWorkSpace;
@@ -191,7 +189,7 @@ export class SkriptFile extends SkriptSection {
 	}
 	validate() {
 		//clear old data
-		this.patternContainer = new PatternTreeContainer(this.parent.patternContainer);
+		this.patternContainer = new PatternTreeContainer(this.parent.getPatternTree());
 		this.matches = new SkriptPatternMatchHierarchy();
 		//create reference to builder
 		this.parseResult = new ParseResult(this.builder);
@@ -376,6 +374,7 @@ export class SkriptFile extends SkriptSection {
 		this.builder = new UnOrderedSemanticTokensBuilder(this.document);
 		this.parent = parent;
 		this.patternContainer = new PatternTreeContainer(parent.getPatternTree());
+		this.uri = URI.parse(document.uri);
 	}
 	toString(): string {
 		const uri = this.document.uri;

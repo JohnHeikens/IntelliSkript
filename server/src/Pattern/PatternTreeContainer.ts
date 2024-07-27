@@ -7,7 +7,6 @@ import { SkriptTypeSection } from '../skript/section/custom/SkriptTypeSection';
 import { MatchProgress } from './match/MatchProgress';
 import { MatchResult } from './match/matchResult';
 import { PatternMatch } from './match/PatternMatch';
-import assert = require('assert');
 import { PatternTreeNode } from './patternTreeNode/PatternTreeNode';
 import { SkriptTypeState } from '../skript/storage/type/SkriptTypeState';
 import { NumberRegExp } from '../IntelliSkriptConstants';
@@ -21,7 +20,8 @@ export class PatternTreeContainer implements PatternMatcher {
 		for (let i = 0; i < PatternType.count; i++) {
 			this.trees[i] = new PatternTree();
 		}
-		this.containersToTraverse = Object.assign(this.containersToTraverse, parent?.containersToTraverse);
+		if (parent)
+			this.containersToTraverse.push(...parent.containersToTraverse);
 		this.containersToTraverse.push(this);
 	}
 
@@ -278,15 +278,6 @@ export class PatternTreeContainer implements PatternMatcher {
 		//loop all trees we can traverse
 		for (const container of this.containersToTraverse) {
 			const tree = container.trees[testPattern.patternType];
-			//if (!tree.root) {
-			//	if (tree.compatiblePatterns.length) {
-			//		tree.compile();
-			//		assert(tree.root != undefined);
-			//	}
-			//	else
-			//		return undefined;
-			//
-			//}
 			const root = tree.compileAndGetRoot();
 			const data = this.getMatchingPatternPart(testPattern, { start: 0, currentNode: root, startNode: root, patternType: testPattern.patternType });
 			if (data) return data;

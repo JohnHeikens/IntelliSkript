@@ -47,7 +47,7 @@ export class SemanticTokenLine {
 		);
 	}
 	push(token: SemanticToken): void {
-		const checkTokens = !IntelliSkriptConstants.IsReleaseMode && true;
+		const checkTokens = IntelliSkriptConstants.IsDebugMode && true;
 		if (token.length > 0) {
 			const lineTokens = this.tokens;
 			if (checkTokens) {

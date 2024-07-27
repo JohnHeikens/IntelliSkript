@@ -10,7 +10,8 @@
 				"reveal": "never"
 			},
 			"problemMatcher": [
-				"$tsc"
+				"$ts-webpack",
+				"$tslint-webpack"
 			]
 		},
 		{
@@ -26,18 +27,25 @@
 				"reveal": "never"
 			},
 			"problemMatcher": [
-				"$tsc-watch"
+				"$ts-webpack-watch",
+				"$tslint-webpack-watch"
 			]
 		},
 		{
-			"label": "Clean",
-			"type": "shell",
-			"command": "Remove-item",
-			"args": [
-				"${workspaceRoot}/server/out/**",
-				"-recurse"
-			],
-			"group": "build"
-		}
+			"label": "buildaddonparser",
+			"type": "typescript",
+			"tsconfig": "addon-parser/tsconfig.json",
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+			//"presentation": {
+			//	"panel": "dedicated",
+			//	"reveal": "never"
+			//},
+		},
 	]
 }

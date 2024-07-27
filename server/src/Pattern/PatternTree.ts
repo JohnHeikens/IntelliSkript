@@ -13,7 +13,7 @@ import { SkriptPatternCall } from './SkriptPattern';
 import { TokenTypes } from '../TokenTypes';
 import { PatternType } from './PatternType';
 import { removeDuplicates } from "./removeDuplicates";
-import assert = require('assert');
+
 import { TypeNode } from './patternTreeNode/TypeNode';
 import { TokenModifiers } from '../TokenModifiers';
 import { SkriptTypeSection } from '../skript/section/custom/SkriptTypeSection';
@@ -242,11 +242,13 @@ export class PatternTree {
 
 	//add a pattern to the tree
 	private addToTree(data: PatternData): void {
-		const regExpHierarchy = createRegExpHierarchy(data.regexPatternString);
-		assert(this.root != undefined);
-		const endNodes = this.addPatternPart(data, [this.root], regExpHierarchy);
-		for (const node of endNodes) {
-			node.endNode = data;
+		//for debugger
+		if (this.root) {
+			const regExpHierarchy = createRegExpHierarchy(data.regexPatternString);
+			const endNodes = this.addPatternPart(data, [this.root], regExpHierarchy);
+			for (const node of endNodes) {
+				node.endNode = data;
+			}
 		}
 	}
 	compileAndGetRoot(): PatternTreeNode {
@@ -384,7 +386,6 @@ export class PatternTree {
 
 	static parsePattern(context: SkriptContext, patternSection: SkriptPatternContainerSection, type: PatternType): PatternData | undefined {
 		const Hierarchy = this.createHierarchy(context);
-		assert(context.currentSection);
 		if (!context.hasErrors) {
 			let m: RegExpMatchArray | null;
 			const expressionArguments: SkriptTypeState[] = [];
@@ -392,26 +393,28 @@ export class PatternTree {
 			const argumentPositions: Location[] = [];
 			let previousTokenEndPos = 0;
 			while ((m = argumentRegExp.exec(context.currentString))) {
-				assert(m.index != undefined);
-				const typeStart = m.index + 1;
-				const typeString = m[1];
-				context.addToken(TokenTypes.regexp, previousTokenEndPos, typeStart - previousTokenEndPos, [TokenModifiers.definition]);
-				const result = context.currentSection.parseTypes(context, typeStart, typeStart + typeString.length);
-				if (result) {
-					expressionArguments.push(result);
-				}
-				else {
-					context.addDiagnostic(typeStart, typeString.length, "this type is not recognized", DiagnosticSeverity.Error, "IntelliSkript->Type->Not Recognized");
-					const obj = context.currentSection.getTypeData('object');
-					if (obj) {//we expect the 'object' type to always be available
-						expressionArguments.push(new SkriptTypeState(obj));
+				//for debugger
+				if (m.index != undefined) {
+					const typeStart = m.index + 1;
+					const typeString = m[1];
+					context.addToken(TokenTypes.regexp, previousTokenEndPos, typeStart - previousTokenEndPos, [TokenModifiers.definition]);
+					const result = context.currentSection.parseTypes(context, typeStart, typeStart + typeString.length);
+					if (result) {
+						expressionArguments.push(result);
 					}
 					else {
-						shouldReturn = true;
+						context.addDiagnostic(typeStart, typeString.length, "this type is not recognized", DiagnosticSeverity.Error, "IntelliSkript->Type->Not Recognized");
+						const obj = context.currentSection.getTypeData('object');
+						if (obj) {//we expect the 'object' type to always be available
+							expressionArguments.push(new SkriptTypeState(obj));
+						}
+						else {
+							shouldReturn = true;
+						}
 					}
+					previousTokenEndPos = typeStart + typeString.length;
+					argumentPositions.push(context.getLocation(typeStart, typeString.length));
 				}
-				previousTokenEndPos = typeStart + typeString.length;
-				argumentPositions.push(context.getLocation(typeStart, typeString.length));
 			}
 			context.addToken(TokenTypes.regexp, previousTokenEndPos, undefined, [TokenModifiers.definition]);
 			if (shouldReturn) return;

@@ -1,22 +1,26 @@
-import path = require('path');
+import { URI } from 'vscode-uri';
+import { isRelativeURI } from '../../file_system/fileFunctions';
 import { SkriptSectionGroup } from '../section/SkriptSectionGroup';
 import type { SkriptFolder } from './SkriptFolder';
 
 export class SkriptFolderContainer extends SkriptSectionGroup {
     override children: SkriptFolder[] = [];
-    getSubFolderByUri(uri: string): SkriptFolder | undefined {
+    getSubFolderByUri(uri: URI): SkriptFolder | undefined {
         //const resolvedUri = resolveUri(uri);
         for (const f of this.children) {
-            const relativePath = path.relative(f.uri, uri);
-            if (!relativePath.startsWith('.')) {
+            if (isRelativeURI(f.uri, uri)) {
                 return f;
             }
+            //const relativePath = path.relative(f.uri, uri);
+            //if (URI.file(uri)  Utils.resolvePath(f.uri, uri)) {
+            //    return f;
+            //}
         }
         //return this.looseFolders;
         return undefined;
     }
     //recursive
-    getFolderByUri(uri: string): SkriptFolder | undefined {
+    getFolderByUri(uri: URI): SkriptFolder | undefined {
         const subFolder = this.getSubFolderByUri(uri);
         if (subFolder) {
             const subSubFolder = subFolder.getFolderByUri(uri);

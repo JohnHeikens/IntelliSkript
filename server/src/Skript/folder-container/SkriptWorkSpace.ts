@@ -1,15 +1,13 @@
-import * as fs from 'fs';
-import { fileURLToPath } from 'url';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
-import { AddonSkFilesDirectory } from '../../IntelliSkriptConstants';
 import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
+import Mutex from '../../Thread';
 import { SkriptFile } from '../section/SkriptFile';
 import { SkriptFolder } from './SkriptFolder';
 import { SkriptFolderContainer } from './SkriptFolderContainer';
-import path = require('path');
 
 export class SkriptWorkSpace extends SkriptFolderContainer {
+	mutex = new Mutex();
 	//the 'childsections' variable is not used here. TODO somehow merge the childsections and files variable
 	//
 	looseFiles: SkriptFile[] = [];
@@ -17,70 +15,35 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 	//a workspace doesn't have a parent.
 	override parent: undefined;
 	addonFolder: SkriptFolder;
-	addFolder(folder: SkriptFolder) {
-		//read synchronously, because we are in an async function already and the code after this depends on this
-		const files = fs.readdirSync(fileURLToPath(folder.uri), undefined);//, (err: NodeJS.ErrnoException | null, files: string[]) => {
-		//if (err) {
-		//	console.error("Could not list the directory.", err);
-		//	process.exit(1);
-		//}
-		const folderPath = fileURLToPath(folder.uri);
-
-		files.forEach(file => {
-			const completePath = path.join(folderPath, file);
-			//convert path back to URI
-			const fileUri = URI.file(completePath).toString();
-
-			const stat = fs.lstatSync(completePath);
-			if (stat.isDirectory()) {
-				const child = new SkriptFolder(folder, fileUri);
-				//folder
-				folder.children.push(child);
-				//add folders recursively
-				this.addFolder(child);
-			}
-			else if (stat.isFile()) {
-				const extName = path.extname(completePath);
-				if (extName == '.sk') {
-					const document = TextDocument.create(fileUri, "sk", 0, fs.readFileSync(completePath, "utf8"));
-					const skriptFile = new SkriptFile(folder, document);
-					skriptFile.validate();
-					folder.files.push(skriptFile);
-				}
-			}
-			//else, it's another file
-		});
-		//});
-	}
-	readAddonFiles() {
-		this.addFolder(this.addonFolder);
-	}
+	//readAddonFiles() {
+	//	this.addFolder(this.addonFolder);
+	//}
 
 	//the constructor will be used before the debugger is launched. caution!
 	constructor() {
 		super();
 		//the addon folder will not use itself as parent pattern container, because when it calls getpatterncontainer(), this.addonFolder is still undefined
-		this.children.push(this.addonFolder = new SkriptFolder(this, URI.file(AddonSkFilesDirectory).toString()));
+		this.children.push(this.addonFolder = new SkriptFolder(this, URI.from({ scheme: "internal" })));
 	}
 
-	getSkriptFileByUri(uri: string): SkriptFile | undefined {
+	getSkriptFileByUri(uri: URI): SkriptFile | undefined {
 		const f = this.getFolderByUri(uri);
 		if (f) {
 			return f.getSkriptFileByUri(uri);
 		}
 		else {
-			return this.looseFiles.find(val => val.document.uri == uri) ?? this.addonFolder.getSkriptFileByUri(uri);
+			return this.looseFiles.find(val => val.uri.toString() == uri.toString()) ?? this.addonFolder.getSkriptFileByUri(uri);
 		}
 	}
 
 	validateTextDocument(document: TextDocument, couldBeChanged: boolean = true): void {
-		let file = this.getSkriptFileByUri(document.uri);
+		const uri: URI = URI.parse(document.uri);
+		let file = this.getSkriptFileByUri(uri);
 		if (!file) {
-			const folder = this.getFolderByUri(document.uri);
+			const folder = this.getFolderByUri(uri);
 			file = new SkriptFile(folder ?? this, document);
 			if (folder) {
-				folder.files.push(file);
-				folder.files.sort((a, b) => a.document.uri > b.document.uri ? 1 : -1);
+				folder.addFile(file);
 			}
 			else {
 				this.looseFiles.push(file);
@@ -119,35 +82,29 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 
 		//use the token builder from the file
 		if (!file.validated) {
-			//validate addon folder
-			this.addonFolder.validate();
+			//revalidate all possibly invalidated dependencies
 
-			if ((file.parent instanceof SkriptFolder) && (file.parent != this.addonFolder)) {
+			//the workspace folder which is associated with this file
+			const mainSubFolder = this.getSubFolderByUri(uri);
+
+			if (mainSubFolder != this.addonFolder) {
+				//first of all, validate the entire addon folder
+				this.addonFolder.validate();
+			}
+
+			//when not, this file is a loose file
+			if (file.parent instanceof SkriptFolder) {
 				const folder = file.parent;
 
-				//revalidate all possibly invalidated dependencies
-				let currentFolder = this.getSubFolderByUri(document.uri);
-				while (currentFolder instanceof SkriptFolder && file.parent != folder) {
-					//validate parent folders recursively
+				let currentFolder = mainSubFolder;
+				//recursively validate parent folders until we are at the file
+				while (currentFolder && file.parent != currentFolder) {
 					currentFolder.validate();
-					//recursively validate until we are at the file
-					currentFolder = currentFolder.getSubFolderByUri(document.uri);
+					currentFolder = currentFolder.getSubFolderByUri(uri);
 				}
 				//finally, validate the folder itself
 				//regenerate patterns, but without those of the old file to avoid double definitions
-				folder.patternContainer = new PatternTreeContainer(folder.parent.getPatternTree());
-
-				for (const folderFile of folder.files) {
-					if (folderFile.validated) {
-						folder.patternContainer.merge(folderFile.patternContainer);
-					}
-					else {
-						folderFile.validate();
-					}
-					if (folderFile.document.uri == file.document.uri) {
-						break;
-					}
-				}
+				currentFolder?.validate(file);
 			}
 			else {
 				file.validate();

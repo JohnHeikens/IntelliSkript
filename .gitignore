@@ -1,8 +1,8 @@
 out
+dist
 node_modules
 client/server
-.vscode-test
+.vscode-test-web
 *.vsix
 *.cpuprofile
 *.map
-dist/extension.js

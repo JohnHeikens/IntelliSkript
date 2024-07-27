@@ -1,62 +1,34 @@
-/* --------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See License.txt in the project root for license information.
- * ------------------------------------------------------------------------------------------ */
-import {
-	ChangeAnnotation,
-	CodeAction,
-	CodeActionKind,
-	DefinitionLink,
-	Diagnostic,
-	DidChangeConfigurationNotification,
-	DocumentFormattingParams,
-	DocumentSelector,
-	Hover,
-	InitializeParams,
-	InitializeResult,
-	MarkupContent,
-	MarkupKind,
-	ProposedFeatures,
-	Range,
-	SemanticTokensClientCapabilities,
-	SemanticTokensLegend,
-	SemanticTokensRegistrationOptions,
-	SemanticTokensRegistrationType,
-	SymbolInformation,
-	SymbolKind,
-	TextDocumentPositionParams,
-	TextDocumentSyncKind,
-	TextDocuments,
-	TextEdit,
-	WorkspaceChange,
-	createConnection,
-} from 'vscode-languageserver/node';
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+import { BrowserMessageReader, BrowserMessageWriter, createConnection } from 'vscode-languageserver/browser';
 
-import {
-	TextDocument
-} from 'vscode-languageserver-textdocument';
-
-import {
-	SkriptFile
-} from "./skript/section/SkriptFile";
-
+import { ChangeAnnotation, CodeAction, CodeActionKind, DefinitionLink, Diagnostic, DidChangeConfigurationNotification, DocumentFormattingParams, DocumentSelector, Hover, InitializeParams, InitializeResult, MarkupContent, MarkupKind, Range, RequestType, SemanticTokensClientCapabilities, SemanticTokensLegend, SemanticTokensRegistrationOptions, SemanticTokensRegistrationType, SymbolInformation, SymbolKind, TextDocumentPositionParams, TextDocuments, TextDocumentSyncKind, WorkspaceChange } from 'vscode-languageserver';
+import { TextDocument } from 'vscode-languageserver-textdocument';
+import { URI } from 'vscode-uri';
 import * as IntelliSkriptConstants from './IntelliSkriptConstants';
-import { AddonParser } from './skript/addon-parser/AddonParser';
-import { SkriptWorkSpace } from './skript/folder-container/SkriptWorkSpace';
-import { TokenTypes } from './TokenTypes';
-import assert = require('assert');
-import { Sleep } from './Thread';
-import { SkriptFolder } from './skript/folder-container/SkriptFolder';
-import { SkriptVariable } from './skript/storage/SkriptVariable';
 import { PatternData } from './pattern/data/PatternData';
-import { idParser } from './skript/addon-parser/idParser';
-import { TokenModifiers } from './TokenModifiers';
+import { SkriptFolder } from './skript/folder-container/SkriptFolder';
+import { SkriptWorkSpace } from './skript/folder-container/SkriptWorkSpace';
+import { SkriptFile } from './skript/section/SkriptFile';
+import { SkriptVariable } from './skript/storage/SkriptVariable';
 import { IndentData } from './skript/validation/IndentData';
+import { Sleep } from './Thread';
+import { TokenModifiers } from './TokenModifiers';
+import { TokenTypes } from './TokenTypes';
 
 
-// Create a connection for the server, using Node's IPC as a transport.
-// Also include all preview / proposed LSP features.
-const connection = createConnection(ProposedFeatures.all);
+console.log('running server lsp-web-extension-sample');
+
+/* browser specific setup code */
+
+const messageReader = new BrowserMessageReader(self);
+const messageWriter = new BrowserMessageWriter(self);
+
+const connection = createConnection(messageReader, messageWriter);
+
+/* from here on, all code is non-browser specific and could be shared with a regular extension */
 
 // Create a simple text document manager.
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
@@ -64,6 +36,9 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 //workspaces
 
 let currentWorkSpace = new SkriptWorkSpace();
+
+//this function will unlock the workspace when it finished loading
+let unlockWorkSpace: () => void;
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = true;
@@ -106,23 +81,47 @@ function computeLegend(capability: SemanticTokensClientCapabilities): SemanticTo
 	return { tokenTypes, tokenModifiers };
 }
 
+const ReadFileRequest = new RequestType<{ uri: string }, string, void>('custom/readFile');
+const ListFilesRequest = new RequestType<{ folderUri: string }, string[], void>('custom/listFiles');
+const getDocumentsRequest = new RequestType<{ folderUri: string }, { uri: string, content: string }[], void>('custom/getDocuments');
+const getStartDataRequest = new RequestType<{}, { addonPath: string }, void>('custom/getStartData');
+
+async function processWorkspaceFolder(folder: SkriptFolder) {
+	const folderUri = folder.uri.toString();
+	const documents = await connection.sendRequest(getDocumentsRequest, { folderUri: folderUri });
+
+	//the client will send us a list of files. we will create the folders for them ourselves.
+	for (const { uri, content } of documents) {
+
+		//currentWorkSpace.validateTextDocument()
+		//create folders until we're at the files level
+		const parentFolder = folder.createFoldersForUri(URI.parse(uri));
+		const document = TextDocument.create(uri, "skript", 0, content)
+		parentFolder.addFile(new SkriptFile(parentFolder, document));
+	}
+}
+
 connection.onInitialize(async (params: InitializeParams) => {
+	//lock the workspace, so other functions can't do anything with it
+	unlockWorkSpace = await currentWorkSpace.mutex.lock();
+
 	//works for the client only
 	//const myExtDir = vscode.extensions.getExtension ("JohnHeikens.IntelliSkript").extensionPath;
-	if (!IntelliSkriptConstants.IsReleaseMode) {
+	if (IntelliSkriptConstants.IsDebugMode) {
 		await Sleep(5000);//give the debugger time to start
-		AddonParser.ParseFiles();
-		idParser.ParseFiles();
+		//AddonParser.ParseFiles();
+		//idParser.ParseFiles();
 	}
-	currentWorkSpace.readAddonFiles();
+	//currentWorkSpace.readAddonFiles();
 
 	//currentWorkSpaces.push(new SkriptWorkSpace());
 	if (params.workspaceFolders != null) {
 		console.log(params.workspaceFolders);
 		for (const folder of params.workspaceFolders) {
-			const f = new SkriptFolder(currentWorkSpace, folder.uri);
-			currentWorkSpace.children.push(f);
-			currentWorkSpace.addFolder(f);
+			currentWorkSpace.children.push(new SkriptFolder(currentWorkSpace, URI.parse(folder.uri)));
+			//const f = new SkriptFolder(currentWorkSpace, folder.uri);
+			//currentWorkSpace.children.push(f);
+			//currentWorkSpace.addFolder(f);
 		}
 	}
 
@@ -221,12 +220,12 @@ connection.onInitialize(async (params: InitializeParams) => {
 		}
 		setTimeout(() => {
 			resolve(result);
-		}, 50);
+		}, 5000);
 	});
 });
 
 connection.onInitialized(async () => {
-
+	//the client is ready now.
 
 	if (hasConfigurationCapability) {
 		// Register for all configuration changes.
@@ -247,21 +246,34 @@ connection.onInitialized(async () => {
 		//{ language: 'skriptlang' }
 	];
 
-	const settings = await getGlobalSettings();
+	const settings = await getGlobalSettings() ?? defaultSettings;
 
 	if (settings.UseColorTheme) {
 
-		assert(semanticTokensLegend != undefined);
-		const registrationOptions: SemanticTokensRegistrationOptions = {
-			documentSelector: sel,
-			legend: semanticTokensLegend,
-			range: false,
-			full: {
-				delta: true
-			}
-		};
-		void connection.client.register(SemanticTokensRegistrationType.type, registrationOptions);
+		if (semanticTokensLegend) {
+			const registrationOptions: SemanticTokensRegistrationOptions = {
+				documentSelector: sel,
+				legend: semanticTokensLegend,
+				range: false,
+				full: {
+					delta: true
+				}
+			};
+			void connection.client.register(SemanticTokensRegistrationType.type, registrationOptions);
+		}
 	}
+
+
+	//add addon folder URI to addon folder
+	const startData = await connection.sendRequest(getStartDataRequest, {});
+	currentWorkSpace.addonFolder.uri = URI.parse(startData.addonPath);
+
+	//loop over folders and read them
+	for (const f of currentWorkSpace.children) {
+		await processWorkspaceFolder(f);
+	}
+
+	unlockWorkSpace();
 });
 
 // IntelliSkript settings
@@ -284,7 +296,7 @@ const documentSettings: Map<string, Thenable<IntelliSkriptSettings>> = new Map()
 
 connection.onDocumentFormatting((params: DocumentFormattingParams) => {
 	const { textDocument, options } = params;
-	const file = currentWorkSpace.getSkriptFileByUri(textDocument.uri);
+	const file = currentWorkSpace.getSkriptFileByUri(URI.parse(textDocument.uri));
 	if (file)
 		return file.format();
 
@@ -369,9 +381,11 @@ documents.onDidChangeContent(change => {
 });
 
 async function validateTextDocument(textDocument: TextDocument, couldBeChanged: boolean = true): Promise<void> {
-	currentWorkSpace.validateTextDocument(textDocument);
+	const unlock = await currentWorkSpace.mutex.lock();
+	currentWorkSpace.validateTextDocument(textDocument, couldBeChanged);
 
-	const validatedDocument = currentWorkSpace.getSkriptFileByUri(textDocument.uri);
+	const validatedDocument = currentWorkSpace.getSkriptFileByUri(URI.parse(textDocument.uri));
+	unlock();
 	if (validatedDocument) {
 		const diagnostics: Diagnostic[] = validatedDocument.parseResult.diagnostics;
 
@@ -390,7 +404,7 @@ export interface wordInfo {
 function getWordInfo(params: TextDocumentPositionParams): wordInfo {
 
 	//check the line
-	const f = currentWorkSpace.getSkriptFileByUri(params.textDocument.uri);
+	const f = currentWorkSpace.getSkriptFileByUri(URI.parse(params.textDocument.uri));
 	if (f) {
 		const lines = f.document.getText().split('\n');
 		const clickedLineText = lines[params.position.line];
@@ -477,7 +491,7 @@ connection.onHover((params: TextDocumentPositionParams): Hover | undefined => {
 //https://github.com/microsoft/vscode-languageserver-node/blob/main/testbed/server/src/server.ts
 
 connection.onDefinition((params): DefinitionLink[] => {
-	const f = currentWorkSpace.getSkriptFileByUri(params.textDocument.uri);
+	const f = currentWorkSpace.getSkriptFileByUri(URI.parse(params.textDocument.uri));
 	if (f) {
 		const info = getWordInfo(params);
 		if (info.variable) {
@@ -534,7 +548,7 @@ connection.onDocumentSymbol((identifier) => {
 //this file will build its tokens for the first time
 connection.languages.semanticTokens.on((params) => {
 	//const settings = getDocumentSettings(params.textDocument.uri);
-	const file = currentWorkSpace.getSkriptFileByUri(params.textDocument.uri);
+	const file = currentWorkSpace.getSkriptFileByUri(URI.parse(params.textDocument.uri));
 	if (file == undefined) {
 		//this happens in a changes preview. todo: add support for changes preview
 		return { data: [] };
@@ -552,7 +566,7 @@ connection.languages.semanticTokens.on((params) => {
 
 //this file was modified while the tokens were already built
 connection.languages.semanticTokens.onDelta((params) => {
-	const file = currentWorkSpace.getSkriptFileByUri(params.textDocument.uri);
+	const file = currentWorkSpace.getSkriptFileByUri(URI.parse(params.textDocument.uri));
 	if (file == undefined) {
 		return { edits: [] };
 	}
