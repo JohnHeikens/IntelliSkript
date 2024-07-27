@@ -2,10 +2,14 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as IntelliSkriptConstants from '../../IntelliSkriptConstants';
-import * as Thread from '../../Thread';
-import { Parser } from './Parser';
-import { SkriptNestHierarchy } from '../../nesting/SkriptNestHierarchy';
+import { Parser, RepoDirectory } from './Parser';
+
+
+export const ServerDirectory = path.join(RepoDirectory, 'server');
+export const ServerAssetsDirectory = path.join(ServerDirectory, "assets");
+export const AddonSkFilesDirectory = path.join(ServerAssetsDirectory, "addons");
+export const skriptFileHeader = "#AUTOMATICALLY GENERATED SKRIPT FILE\n#COPYRIGHT JOHN HEIKENS\n#https://github.com/JohnHeikens/IntelliSkript\n"
+
 export class GeneralJson {
 	name = "";
 	description?: string[];
@@ -143,7 +147,7 @@ export class AddonParser extends Parser {
 			return str;
 		}
 
-		let str = IntelliSkriptConstants.skriptFileHeader;
+		let str = skriptFileHeader;
 		const toDefine = new Map<string, TypeJson>();
 
 		//define types at first as they are used in effects and other patterns
@@ -232,13 +236,13 @@ export class AddonParser extends Parser {
 		const parseResult = AddonParser.parseFileJson(fileData);
 		const inputFileName = file.substring(0, file.indexOf('.'));
 		const outputFileName = inputFileName;
-		const targetPath = path.join(IntelliSkriptConstants.AddonSkFilesDirectory, outputFileName) + ".sk";
+		const targetPath = path.join(AddonSkFilesDirectory, outputFileName) + ".sk";
 		fs.writeFileSync(targetPath, parseResult);
 	}
 	static override ParseFiles(): void {
 
-		if (!fs.existsSync(IntelliSkriptConstants.AddonSkFilesDirectory)) {
-			fs.mkdirSync(IntelliSkriptConstants.AddonSkFilesDirectory, { recursive: true });
+		if (!fs.existsSync(AddonSkFilesDirectory)) {
+			fs.mkdirSync(AddonSkFilesDirectory, { recursive: true });
 		}
 		const text = fs.readFileSync(path.join(this.parserDirectory, "inheritance.txt"), "utf8").toLocaleLowerCase();
 		for (const line of text.split('\n')) {

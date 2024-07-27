@@ -1,14 +1,14 @@
 
 import path = require('path');
-import * as IntelliSkriptConstants from '../../IntelliSkriptConstants';
-import { Parser } from './Parser';
 import * as fs from 'fs';
+import { Parser } from './Parser';
+import { AddonSkFilesDirectory, skriptFileHeader } from './AddonParser';
 
 export class idParser extends Parser {
     static override idDirectory: string = path.join(this.parserDirectory, "ids");
     static override ParseFile(file: string, contents: string): void {
         const inputFileName = file.substring(0, file.indexOf('.'));
-        let outputFileString = IntelliSkriptConstants.skriptFileHeader;
+        let outputFileString = skriptFileHeader;
         outputFileString += "expression:\n";
         outputFileString += "\treturn type: " + (inputFileName == "entities" ? "entity" : inputFileName.substring(0, inputFileName.length - 1)) + "type\n";
         outputFileString += "\tpatterns:\n";
@@ -20,7 +20,7 @@ export class idParser extends Parser {
             outputFileString += "\t\t" + prefix + trimmedLine + "\n";
         }
         const outputFileName = "zzz (postload) - IntelliSkript " + inputFileName.substring(0, 1).toUpperCase() + inputFileName.substring(1);
-        const targetPath = path.join(IntelliSkriptConstants.AddonSkFilesDirectory, outputFileName) + ".sk";
+        const targetPath = path.join(AddonSkFilesDirectory, outputFileName) + ".sk";
         fs.writeFileSync(targetPath, outputFileString);
     }
 }

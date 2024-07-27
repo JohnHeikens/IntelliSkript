@@ -1,8 +1,11 @@
-import path = require('path');
+import * as path from 'path';
 import * as fs from 'fs';
-import * as IntelliSkriptConstants from '../../IntelliSkriptConstants';
+
+
+export const currentDirectory : string = __dirname;// out directory
+export const RepoDirectory = path.join(currentDirectory, "../..");
 export class Parser {
-    static parserDirectory: string = path.join(IntelliSkriptConstants.ServerSrcDirectory, "skript", "addon-parser");
+    static parserDirectory: string = path.join(RepoDirectory, "addon-parser");
     static idDirectory: string;
     static ParseFile(file: string, contents: string) {
         throw "not implemented!";
@@ -12,11 +15,11 @@ export class Parser {
         console.log("Parsing files in " + this.idDirectory);
         const files = fs.readdirSync(this.idDirectory, undefined);
 
-        files.forEach((file, index) => {
+        for (const file of files) {
 
             const completePath = path.join(this.idDirectory, file);
             const contents = fs.readFileSync(completePath, "utf8");
             this.ParseFile(file, contents);
-        });
+        };
     }
 }
