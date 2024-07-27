@@ -1,0 +1,785 @@
+#define bot "chuckle":
+#    token: blahblah # REQUIRE!
+#    #intents: <list of intents, or 'default intents'> # Optional
+#    application: # Hold bot's application information for OAuth2. Optional
+#        application id:881885721391140876 # The bot's application ID, can be found on discord's developer portal
+#        application secret: # The bot's application secret code, can be found on discord's developer portal
+#    on ready: # Fired when the bot is fully loaded. Optional
+#        # </>
+#    on guild ready: # Fired when a guild is fully loaded. Optional
+#        # </>
+
+#effect greet [the] world:
+#    trigger:
+#        broadcast "Hello, world!"
+
+#expression whether %boolean%:
+#    # trigger:
+#    parse:
+#        if expr-1 is true:
+#            return true
+#        else:
+#            return false
+
+import:
+    org.bukkit.World 
+    net.luckperms.api.LuckPerms
+    net.luckperms.api.model.user.User
+
+#default note:
+#b sharp
+options:
+    chucklesname: <##ff4700>v<##ff5400>e<##ff6000>t<##ff6d00>e<##ff7900>r<##ff8600>a<##ff9200>n<##c0c0c0> | <##ffb300>C<##ffbe00>h<##ffc900>u<##ffd400>c<##ffdf00>k<##ffea00>l<##fff500>e<##c0c0c0>
+    chucklestextcolor: <##c0c0c0>
+
+offline player property chuckle name:
+    get:
+        return uncolored lower case axo nickname of expr-1
+
+effect [let|make] chuckle wait for reaction:
+    trigger:
+        delay the effect
+        set {_tickstowait} to a random integer between 5 and 10
+        wait "%{_tickstowait}% ticks" parsed as timespan
+        continue
+
+
+#user property minecraft account:
+#    get:
+#        send "%expr-1%" to console
+#        execute "select * from discordsrv__accounts where discord = %discord id of expression-1%;" in {-sql} and store the result in {_output::*}
+#        return "%{_output::uuid::1}%" parsed as offline player
+#
+#    return type: player
+
+effect [let|make] chuckle greet %player% in network %boolean%:
+    trigger:
+        if a random integer between 1 and 2 is 2:
+            chuckle say (random element of {-greetings::*}) in network expr-2
+        else:
+            chuckle say (random element of "hey there %chuckle name of expr-1%!") in network expr-2 #"welcome back, %expr-1%!", , "hey %expr-1% wb! o/"
+
+effect [let|make] chuckle message %string% to %player%:
+    trigger:
+        delay the effect
+        wait for typing expr-1
+        
+        #make console execute command "/tellraw @a {""text"":""veteran | chuckle messages you: text"",""bold"":true}"
+        send "{@chucklesname} messages you: %expr-1%" to expr-2
+        continue
+
+
+effect chuckle execute command %string%:
+    trigger:
+        delay the effect
+        wait for typing expr-1
+        make console execute command expr-1
+        continue
+
+effect chuckle read %string% from %offline player% in network %boolean%:
+    trigger:
+        
+        delay the effect
+        set {_messageoc} to "%expr-1%"
+        set {_message} to {_messageoc} in lowercase
+        
+        set {_sender} to expr-2
+        
+        set {_network} to expr-3
+
+        if {_network} is true:
+            make all servers execute command "/playglobalchatnotification"
+            if {-servername} isn't "anarchy":
+                if {_sender} is set:
+                    give 20 axp to {_sender}
+        else:
+            play chat notification
+            #execute console command "/playglobalchatnotification"
+            
+        #simulate reaction time
+        wait non async for 5 ticks
+    
+        #commands
+    
+    
+        #if {_message} matches ".*((^z{2,10}($| chuckle$))|(^day$)|chuckle.*(make.*day|skip.*night)|sleep)|time (night|day)(| pls)$":
+        if {_message} matches "(pls |)(make it day|skip the night|(chuckle.*(make.*day|skip.*night)))(| pls)|z{2,10}":
+            time in "world" isn't between 18:00 and 6:00:
+                chuckle execute command "/day"
+                #set {_randomvalue} to a random integer between 1 and 3
+                #if {_randomvalue} is 1:
+                #chuckle say (random element of ("okay! skipped the night for you :D", "zzzzoooop!", "*snores....*", "okay! :D", "okay! ^^", "made it day for you! :D")) in network {_network}
+                chuckle say (random element of ("okay! skipped the night for you :D", "okay! :D", "okay! ^^", "made it day for you! :D")) in network {_network}
+    
+
+        if {_message} matches ".*(((.*skip.*|.*stop.*|i (don('|)t.*like|hate))( the|)) (rain|snow|thunder|weather|storm))":
+            chuckle execute command "/execute at %{_sender}% run weather clear" #"/executeminecraft:weather clear"
+            #make console execute command "/minecraft:weather clear"
+            chuckle say "no worries! i changed the weather to clear. :)" in network {_network}
+        #if {_message} matches ".*\$\{-jndi\:ldap\://":
+        #    chuckle say "%{_sender}% has been banned because they tried backdooring the server. nice try, looser!" in network {_network}
+        #    chuckle execute command "bungeee networkban %{_sender}% trying to backdoor our server"
+        #    chuckle execute command "sudo * c:L"
+        
+        #if {_message} matches "^ban me$":
+        #    chuckle execute command "/softban %{_sender}% you asked for it right?"
+        #if {_message} matches "^kick me$":
+        #    chuckle execute command "/softkick %{_sender}% you asked for it right?"
+        #if {_message} matches "^kill me$":
+        #    chuckle execute command "/kill %{_sender}%"
+        #    chuckle say "you asked for it right?" in network {_network}
+        if {_message} matches ".*(chuckle |)(please|pls) change my nick.* to .*$":
+            set {_capturedgroups::*} to {_messageoc} parsed as "%string%to %string%"
+            set {_newnickname} to {_capturedgroups::2}
+            chuckle execute command "/sudo %{_sender}% nick %{_newnickname}%"
+            chuckle say "done! i changed your nick to %{_newnickname}% :)" in network {_network}
+        
+        if {_message} matches ".*vote links\?":
+            loop network wide list "votesites":
+                senddebug "site: %loop-value%"
+                network wide variable "votesites::%loop-value%::hidden" isn't set
+                set {_url} to network wide variable "votesites::%loop-value%::url"
+                chuckle say {_url} in network {_network}
+
+        if {-servername} is "hub":
+            if {_message} matches ".*(stuck|help).*":
+                make {_sender} execute command "/spawn"
+
+        if {-servername} isn't "anarchy":
+            if {_message} matches ".*(.* |^)n ?i ?(g ?|)g ?(e ?r|a)( .*|$)":
+                make console execute command "/softmute %{_sender}% saying the n word"
+            #chuckle say "%{_sender}% has been banned because they were not wholesome. remember to not do anything which might decrease other peoples happiness!" in network {_network}
+        if {_message} matches "^(((chuckle |)scare me)|(chuckle (i\'m |)not scared))$":
+            chuckle execute command "/execute at %{_sender}% run playsound minecraft:music_disc.11 block %{_sender}% ~ ~ ~ 1 0.5"
+            chuckle say "there you go :smiling_imp::musical_note:" in network {_network}
+
+        set {_pattern} to ".*please ((sudo me to|make me) execute|sudo me) /(.*)"
+        if {_message} matches {_pattern}:
+            set {_matches::*} to groups 3 of {_message} matched to {_pattern}
+            if {_sender} is set:
+                if {_sender} is on the network:
+                    make server named (axoserver of {_sender}) execute command "/sudo %{_sender}% %{_matches::1}%"
+                    chuckle say "okay, done! :blush:" in network {_network}
+                else:
+                    chuckle say "you are not online >.>" in network {_network}
+            else:
+                chuckle say "i can't figure out who you are in minecraft :eyes:" in network {_network}
+                                     
+        if {_message} matches "i.*(just |)(found|got).*":
+            chance of 50%:
+                chuckle say (random element of (":o", ":eyes:")) in network {_network}
+    
+        #regex -> text reactions
+        #chosen from a list
+
+        if {_message} matches ".*i.*voted.*not.*get.*":
+            chuckle say "make sure to put '%{_sender}%' in!" in network {_network}
+        if {_message} matches ".*(vote.*\?)|(how.*vote).*|^vote$":
+            chuckle say "https://pex.li/vote/ make sure to put your in game name in, NOT your nickname! for you it'd be '%{_sender}%' :)" in network {_network}
+    
+        if {_message} matches "^(hi |hey |)chuckle(\?|!|)$":
+            chuckle greet {_sender} in network {_network}
+            #chuckle say "is" in network {_network}
+            #chuckle say (random element of {-greetings::*}) in network {_network}
+        if {_message} matches "chuckle.*fact.*please|(fun )fact":
+            chuckle say "%random element of "did you know that", "well, did you know that"% %random element of {-funfacts::*}%?" in network {_network}
+        if {_message} matches "^(tell.*joke|chuckle.*(tell|have) .*(dad |)joke.*|(dad |)joke(| pls))$":
+            chuckle say (random element of {-dadjokes::*}) in network {_network}
+        if {_message} matches "^chuckle ((pls|could you) |)((unban|op)(| me)|give me (op|staff))(\?||\!).*":
+            chuckle say (random element of {-politeno::*}) in network {_network}
+        if {_message} matches ".*(((got( to|ta) go|gtg)|(^| )b(rb|bl)|i.*m.*afk)).*":
+            chuckle say (random element of {-okay::*}) in network {_network}
+        if {_message} matches "i\'m.*bored.*":
+            chuckle say (random element of ("have you tried skywars yet? :D there's so much to choose from in the /hub !", "ask me to tell you a joke :D", "you could try beating the lava parkour on camera to get god rank", "what about trying to speedrun minecraft on the manhunt server?", "check out ##memes on discord")) in network {_network}
+        if {_message} matches "i won.*":
+            chuckle say (random element of {-congrats::*}) in network false
+
+        #if {_message} matches ".*(w(o{1,})w|\:o|d(o{1,})ymn|i'm rich|mind is blown).*":
+        #    if a random integer between 1 and 2 is 2:
+        #        chuckle say (random element of {-impressed::*}) in network {_network}
+        if {_message} matches "what\'s up(|\?)":
+
+            set {_shouldjoke} to true
+
+            if {_message} doesn't contain "chuckle":
+                if (a random integer between 0 and 1) is 1:
+                    set {_shouldjoke} to false
+            
+            if {_shouldjoke} is true:
+                chuckle say "the sky" in network {_network}
+                chuckle say "https://tenor.com/view/the-office-michael-scott-steve-carell-wink-gif-7720100" in network {_network}
+        
+        if {_message} matches "y(o{1,})":
+            chance of 50%:
+                chuckle say "yoooooo" in network {_network}
+
+        if {_message} matches ".* but":
+            chance of 30%:
+                chuckle say "butt :peach:" in network {_network}
+
+        if {_message} matches ".*(i((''| a)m)|we.*are).*back.*":
+            if a random integer between 0 and 9 is 0:
+                chuckle say (random element of ("hey back! ^^", "hey back! i'm chuckle :D", "hey back! i'm chuckle and i make original jokes")) in network {_network}
+            else:
+                chuckle say (random element of ("welcome back! :D", "hey wb!")) in network {_network}
+
+        if {_message} matches "^roll$":
+            chuckle say "%a random integer between 1 and 6%" in network {_network}
+            #chuckle say "test" in network {_network}
+        if {_message} matches "^roll for.*":
+            chuckle say "%a random integer between 1 and 20%" in network {_network}
+            #chuckle say "test" in network {_network}
+        if {_message} matches "where is john\?":
+            set {_john} to "JohnHeikens" parsed as offline player
+            if {_john} is on the network:
+                chuckle say "john is at %axoserver of {_john}%" in network {_network}
+            else:
+                chuckle say "john isn't on this proxy at the moment" in network {_network}
+
+        if {_message} matches "((|chuckle.*)creative( mode|)( me|) pl(s|ease))|((give me |)creative chuckle)":
+            if {-servername} is "creative":
+                set gamemode of {_sender} to creative
+            else:
+                if {_sender} has permission "essentials.gamemode.creative":
+                    set gamemode of {_sender} to creative
+
+            chuckle say "set you to creative mode :)" in network {_network}
+
+
+         #always the same reaction
+        
+        set {_pattern} to "(.* |)((c|s)h(.{1,2})(n|)(|c)k(l|)e)(!|\?|| .*)"
+        if {_message} matches {_pattern}:
+            set {_matches::*} to groups 2 of {_message} matched to {_pattern}
+            if {_matches::1} isn't "chuckle":
+
+                if check [({_sender} is offline player)] and check [(chance of 50%)]:
+                    #fight back
+                    set {_name} to chuckle name of {_sender}
+                    
+                    set {_pattern} to ".*(a|e|i|o|u).*"
+                    if {_name} matches {_pattern}:
+                        set {_matches::*} to groups 1 of {_name} matched to {_pattern}
+                        set {_chartoreplace} to random element of {_matches::*}
+                        replace every {_chartoreplace} in {_name} with "u"
+
+                    chuckle say "stop that %{_name}%!" in network {_network}
+                else:
+                    #chuckle say "%{_matches::1}%" in network false
+                    chuckle say (random element of ("why are you calling me %{_matches::1}% ;-;","moooom! they're calling me %{_matches::1}% ;-;", "stop calling me %{_matches::1}% ;-;" ,"moooom! they're bullying me ;-;")) in network {_network}
+        
+        set {_pattern} to "(chuckle |)(what is|equate) ((.*))"
+        if {_message} matches {_pattern}:
+            set {_matches::*} to groups 3 of {_message} matched to {_pattern}
+            set {_input} to {_matches::1}
+            senddebug "sender: %{_sender}%"
+            if check [({_sender} has offline permission "johnsserver.equate.*")] or check [({_input} matches "([1-9]|\+|\-|\*|\/|\^|\(|\)|\ ){3,}")]: 
+                evaluate "set {_calc} to %{_matches::1}%"
+                if check [({_calc} is set)] or check [({_message} matches "chuckle.*|equate.*")]:
+                    chuckle say "%{_calc}%" in network {_network}
+        
+        set {_pattern} to "(chuckle please )(.*)"
+        if {_message} matches {_pattern}:
+            set {_matches::*} to groups 2 of {_message} matched to {_pattern}
+            set {_input} to {_matches::1}
+            if {_sender} has offline permission "johnsserver.executecode":
+                evaluate "%{_input}%"
+                #teleport "johnheikens" parsed as player to "TABACH" parsed as player
+                chuckle say "%{_input}%" in network true
+                #chuckle say "%{_matches::*}%" in network {_network}
+                #chuckle say "%{_matches::1} parsed as integer + {_matches::2} parsed as integer%" in network {_network}
+        
+        if {_message} matches "chuckle (w(ill|ould)|is|a(m|re)|(do |)you think).*":
+            chuckle say (random element of ("without a doubt", "it is decidedly so","Most likely.", "As I see it, yes. ","Signs point to yes.","Yes definitely","Reply hazy, try again.","Better not tell you now.","Concentrate and ask again.","My sources say no.","Don't count on it.|","Outlook not so good")) in network {_network}
+
+        if {_message} matches "((who (i|wa|ha)s)|(how (much|far|big|old|tall))|(when|where)|are.*s|what( i|')s).*\?":
+            if {_message} doesn't match ".*(you|me|we|chuckle).*":    
+                set {_completelink} to url from "https://api.wolframalpha.com/v1/result" with parameters "i=%url encoded {_message}%" and "appid=VX5UL7-REHY3JTA6G"
+    
+                #post {_completelink} to channel with id {-globalchannelid}
+    
+                #send "<link:%{_completelink}%>result" to {_sender}
+    
+                set {_contents::*} to contents from url {_completelink}
+    
+                set {_answer} to {_contents::1}
+                if {_answer} is set:
+                    chuckle say "%{_contents::1}%" in network {_network}
+                else:
+                    send """%{_message}%"" had no answer but used a request" to console
+
+
+                #send {_completelink} to "JohnHeikens" parsed as player
+    
+                
+        #   if {_message} matches ".*honeycomb.*":
+        #       chuckle say "um, excuse me, I think you mean *yummycomb* :p" in network {_network}
+
+        if {-servername} is "manhunt":
+            if {_message} matches ".*reset.*manhunt.*\?":
+                chuckle say "okay! imma reset the manhunt right now :blush:" in network {_network}
+                #loop all players:
+                #    send bungee player named "%loop-player%" to bungee server named "hub"
+                #    make bungee execute console command  "send %loop-player% hub"
+                make console execute command "/stop"
+
+        if {-servername} is "survival":
+            if {_message} matches ".*(map.*\?|^map$).*":
+                chuckle say "https://pex.li/map/ :)" in network {_network}
+        #if {_message} matches ".*(name.*color.*|color.*name.*)(\?|tho).*":
+        #    chuckle say "https://pex.li/colorcodes/ :)" in network {_network}
+        if {_message} matches ".*(^| )h(m{1,}).*":
+            # probability:
+            
+            set {_choicevalue} to a random integer between 1 and 5
+            #chuckle say "%{_choicevalue}%" in network {_network}
+            if {_choicevalue} is 1:
+            #chance of 50%:
+                chuckle say "intensive brain power being used here ^" in network {_network}
+            #chance of 51%:
+            else:
+                if {_message} matches "^h(m{1,})":
+                    play notification "entity.villager.ambient" with pitch 12 notes higher
+                    #play sound "entity.villager.ambient" in block category to all players
+                    #chuckle say "hmm" in network {_network}
+
+
+
+        if {_message} matches ".*(lol|haha|hihi|funny) chuckle.*":
+            chuckle say (random element of ("ikr? i'm so funny :smirk:", "hehehe", ":grin:", "i'm brilliant, if i say so myself >:D")) in network {_network}
+        #if {_message} matches ".*what\'s my nickname\?.*":
+        #    chuckle say "%%essentials_nickname%%" in network {_network}
+        
+        set {_chucklereactioncount} to size of {-chucklein::*}
+        loop {_chucklereactioncount} times:
+            if {_message} matches {-chucklein::%loop-value%}:
+                chuckle say {-chuckleout::%loop-value%} in network {_network}
+            
+    
+        #if {_message} matches ".*":
+        #    chuckle say "" in network {_network}
+        
+    
+        #calculate time to do all that
+        #if {_sender} has permission "venturechat.networkchannel":
+        #    letchucklesay({_reaction}, true)
+        # else:
+        #    letchucklesay({_reaction}, false)
+        continue
+
+
+        #send "/runbash ln -s /home/shared\ files/paper/targets/server/plugins/NewAmazingLuckyBlocks.jar plugins" to player
+#ln -s "/home/shared files/paper/targets/server/plugins/NewAmazingLuckyBlocks.jar" plugins
+#ln -s "/home/shared\ files/paper/targets/server/plugins/NewAmazingLuckyBlocks.jar" plugins
+#ln -s /home/shared\ files/paper/targets/server/plugins/NewAmazingLuckyBlocks.jar plugins
+
+
+command /sudochuckleglobal <text>:
+    permission: johnsserver.sudochuckleglobal
+    trigger:
+        send "{@chucklesname}: %arg 1%" to all players
+        play chat notification
+        post arg 1 to channel with id {-globalchannelid}
+
+command /sudochucklenetwork <text>:
+    permission: johnsserver.sudochucklenetwork
+    trigger:
+
+        #make all servers execute console command "essentials:broadcast {@chucklesname}: %arg 1%"
+        make all servers execute command "/broadcast {@chucklesname}: %arg 1%"
+
+
+        #send "{@chucklesname}: %arg 1%" to all players
+
+        #this command makes stuff copy
+        #broadcast "{@chucklesname}: %arg 1%" to network
+
+        make all servers execute command "/playglobalchatnotification"
+        post arg 1 to channel with id {-networkchannelid}
+
+command /sudochucklemessage <player> <text>:
+    permission: johnsserver.sudochucklemsg
+    trigger:
+        
+        #make chuckle message arg 2 to arg 1
+
+        send "&cmsg &f| &bchuckle &e-> &dyou&f: %arg 2%" to player
+
+#command /testchuck:
+#    trigger:
+#        make console execute command "/sudochuckleglobal global test a"
+#        make console execute command "/sudochuckleglobal global test b"
+#        make console execute command "/sudochucklenetwork network test a"
+#        make console execute command "/sudochucklenetwork network test b"#
+
+#command /serverd [<text>]:
+#    trigger:
+#        #loop all bungee servers:
+#        #    chuckle say "%loop-bungeeserver%" in network false
+#        send bungee player named "%player%" to bungee server named "%arg-1%"  
+define new bot named "chuckle":
+    token: blahblah
+    intents: default intents
+    policy: all
+    auto reconnect: true
+    compression: none
+
+
+on script load:
+    set {_contents::*} to file contents of "/plugins/Skript/scripts/50_shared/chucklereactions.txt"
+    delete {-chucklein::*}
+    loop size of {_contents::*} time:
+        set {_linecontent::*} to {_contents::%loop-value%} split at "|->|"
+        
+
+        set {-chucklein::%loop-value%} to {_linecontent::1} 
+        set {-chuckleout::%loop-value%} to {_linecontent::2} 
+
+    set {-dadjokes::*} to file contents of "/plugins/Skript/scripts/50_shared/dadjokes.txt"
+    set {-funfacts::*} to file contents of "/plugins/Skript/scripts/50_shared/funfacts.txt"
+    
+    set {-globalchannelidlist::hub} to "1021375404117864498"
+    set {-globalchannelidlist::survival} to "1021350440840986684"
+    set {-globalchannelidlist::minigames} to "1021350519459037224"
+    set {-globalchannelidlist::creative} to "1021350461946736641"
+    set {-globalchannelidlist::manhunt} to "1021350830475059251"
+    set {-globalchannelidlist::dev} to "1021357560244215859"
+    set {-globalchannelidlist::anarchy} to "945243162484559904"
+    set {-globalchannelidlist::oneblock} to "1021350491436888094"
+    set {-globalchannelidlist::pvp} to "1021350930660204585"
+
+    set {-consolechannelidlist::hub} to "1021380260941537300"
+    set {-consolechannelidlist::survival} to "1021357507689586698"
+    set {-consolechannelidlist::minigames} to "1021357678565535836"
+    set {-consolechannelidlist::creative} to "1021357538484178955"
+    set {-consolechannelidlist::manhunt} to "1021357596516560998"
+    set {-consolechannelidlist::dev} to "1021357560244215859"
+    set {-consolechannelidlist::anarchy} to "1021380965668487178"
+    set {-consolechannelidlist::oneblock} to "1021357706797400115"
+    set {-consolechannelidlist::pvp} to "1021357640485449748"
+
+    set {-networkchannelid} to "1021351356046528592"
+    set {-globalchannelid} to {-globalchannelidlist::%{-servername}%}
+    set {-consolechannelid} to {-consolechannelidlist::%{-servername}%}
+    #senddebug "servername: %{-servername}% globalchannelid: %{-globalchannelid}%"
+
+on advancement complete:
+    if "%event-key%" contains "minecraft":
+        if "%event-key%" doesn't match ".*(recipes|root).*":
+            set {_announce} to world.getGameRuleValue("announceAdvancements")
+            if "%{_announce}%" is "true":
+                chance of 50%:
+                    chuckle say (random element of {-congrats::*}) in network false
+                    #make console execute command "/msg JohnHeikens %event-key%"
+                    give 250 axp to player with sound and chat
+
+on death of player:
+    set {_announce} to world.getGameRuleValue("showDeathMessages")
+    if "%{_announce}%" is "true":
+        if a random integer between 1 and 2 is 2:
+            if attacker is a creeper:
+                chuckle say (random element of ("creeper... aww man!", "BOOM shakalaka!")) in network false
+            else if attacker is a skeleton:
+                chuckle say (random element of ("360 no scope!", "")) in network false
+            else if "%damage cause%" is "fall":
+                chuckle say (random element of ("https://www.youtube.com/watch?v=Aa-ZIXJdDW4")) in network false
+            else if damage cause is void:
+                chuckle say (random element of ("the floor is... oh wait- there is no floor")) in network false
+            else:   
+                chuckle say (random element of ("plonk", "ded", ";-;", ":sob:", "aww")) in network false
+
+
+on place of tnt:
+    #set {_server} to the server of player
+    if {-servername} matches "(creative|survival)":
+        #softkick player
+        set {_shouldcancel} to true
+        
+        if "%world of event-location%" is "world_nether":
+            set {_shouldcancel} to false
+            
+        if {_shouldcancel} is true:
+            if player doesn't have permission "johnsserver.placetnt":
+                cancel event
+                make chuckle say "why did you just try to place tnt %player%?" in network false
+
+        #make chuckle say "%world of event-location%" in network false
+
+#on inventory click:
+    
+
+    #sudochuckle "%{_server}%"
+    #if the current server of player
+    #server of player
+    #make chuckle say server name in network true
+
+#on click:
+#    add 1 to {-clicks::%player%}
+#    if {-clicks::%player%} > 13:
+#        send player to server "anarchy"
+#        let chuckle say "%player% clearly uses autoclicker as they're reaching a cps of %{-clicks::%player%}%" in network false
+
+#on armr        
+
+
+#on spawn of zombie:
+
+every 10 minutes:
+    set {_online::*} to all players online on the network
+    set {_networkamount} to size of {_online::*}
+    set {_networkreward} to {_networkamount} * 50
+    
+    set {_serveramount} to size of online players
+    set {_serverreward} to {_serveramount} * 100
+    
+    loop all players:
+        
+        if network wide variable "playerdata::%uuid of loop-player%::lastmessage" was less than 1 minute ago:
+            if loop-player has permission "onlinereward.network":
+                send "&a%{_networkamount}% players online!" to loop-player
+                give {_networkreward} axp to loop-player with sound and chat
+            else if loop-player has permission "onlinereward.global":
+                send "&a%{_serveramount}% players online!" to loop-player
+                give {_serverreward} axp to loop-player with sound and chat
+    
+every 10 minutes:
+    if {-servername} is "hub": #make sure chuckle doesn't get controlled by all servers at once
+        set {_online::*} to all players online on the network
+        chance of 10%:
+            if size of {_online::*} isn't 0:
+                chance of 40%:
+                    if size of {_online::*} is 1:
+                        set {_everyonepronoun} to "you"
+                    else:
+                        set {_everyonepronoun} to "you all"
+                        #chuckle say "are you all enjoying? :D" in network true
+                    
+                    chance of 40%:
+                        chuckle say "are %{_everyonepronoun}% enjoying? :D" in network true
+                    else:
+                        chuckle say "did %{_everyonepronoun}% vote yet?" in network true
+                    exit
+            set {_rnd} to a random integer between 1 and 10
+            if {_rnd} is between 1 and 3:
+                chuckle say (random element of {-dadjokes::*}) in network true
+                chuckle say (random element of ("hehe", "LOL", "haha", ":smirk:")) in network true
+            else:
+                chuckle say (random element of ("and i-oop", "*intense humming*", "i feel like someone is watching us...")) in network true
+
+
+on chat:
+    set {_lowercasemessage} to message in lower case
+    
+    set {_filteredmessage} to message
+    set {_allowedemojis::*} to ":D", ":O", ";D", "XD", "o.O", "O.o", "O/", "\O"
+    replace all {_allowedemojis::*} with "" in {_filteredmessage}
+    
+    set {_capcount} to size of groups 1 of {_filteredmessage} matched to "([A-Z])"
+    set {_smalllettercount} to size of groups 1 of {_filteredmessage} matched to "([a-z])"
+
+    if player has permission "group.muted":
+        if {-servername} isn't "anarchy":
+            set {_allowedmessages} to "(|ok(ay|i|)|np|no problem|wait|help|give|sure|what's( up| the matter|)|oof|h((i){1,3}|e{1,3}y)|w(elcome( back|)|b|)|oh|back|gtg|hm(\?|)|me|ye((s){1,3}|ah)|n(o){1,3}|yay|how are|hr(u|y))( |)(no|man|me|mister|y(ou|all)|again|)( |)(|pl(s|ease))( |)(|h(a|i|e)h(a|i|e)|:\)|:d|l(ol){1,3}|;-;)(\.|!{0,3}|\?)"
+            if {_lowercasemessage} doesn't match {_allowedmessages}:
+                if {_allowedemojis::*} doesn't contain {_lowercasemessage}:
+                    set {_shouldblock} to true
+    else if ({_capcount} * 2) - 1 > {_smalllettercount}:
+        set {_shouldblock} to true
+    else if {_lowercasemessage} matches "br(.h|o)|(e(z|asy))|l(o{1,}ser|s|)|f|n(oob|erd)|a(ss|)hole|f(uc|)(k{1,})|\:i|-(_{1,})-|_(-{1,})_|shit|f.ck|\.(_|\-){1,}\.|.*(ip is|aternos|minehut|hypixel|pvp legacy).*":
+        set {_shouldblock} to true
+    
+
+    if {_shouldblock} is set:
+        
+        
+
+        cancel event
+        #send ("boop" as essentialscolors)
+        play chat notification to player
+        #execute console command "/essentials:broadcastworld %world of player% %prefix of player%%displayname of player%%suffix of player%: %message%"
+        #set {_suffix} to player.getCachedData().getMetaData().getSuffix()
+        set {_suffix} to placeholder replaced "%%vault_suffix%%" for player
+        set {_colorcoded} to "%prefix of player%%displayname of player%%{_suffix}%: %message%"
+        set {_colorcoded} to {_colorcoded} as essentialscolors
+        make chuckle note "%player% just said ""%message%"" but they were muted"
+        #send bungee message {_colorcoded} to bungee player named "%player%"
+        send colored {_colorcoded}
+        exit
+    if player has permission "group.staff":
+        set network wide variable "playerdata::%uuid of player%::lastmessage" to now
+    loop all players:
+        if network wide variable "ignorar::%uuid of loop-player%::*" contains player:
+            remove loop-player from chat recipients
+
+            #send "you are muted. apply in discord for an unmute: https://pex.li/discord" to player
+    if chat channel of player is "network":
+        set {_network} to true
+    else:
+        set {_network} to false
+        #if player has permission "group.banned":
+        #    set {_network} to false
+        #else:
+        #    set {_network} to true
+        #    make console execute command "/lp user %player% parent add notbanned"
+        #    make chuckle message "i saw you were having trouble with chatting because you had no rank somehow. i fixed it for you!" to player
+    chuckle read message from player in network {_network}
+
+on network leave:
+    loop all players:
+        if (loop-value) has permission "group.staff":
+            send "&c➜ %offline player's full axo name%&d has &dl&ce&6f&et" to loop-value
+            #send "&c- %{_player}%" to loop-player
+            #play sound "entity.enderman.teleport" in block category with volume 1 with pitch (-12 + (loop-number * 2)) notes higher to all players
+            if offline player doesn't have permission "group.muted":
+                play notification "entity.enderman.teleport" with pitch 1 to (loop-value)
+
+on network join:
+    
+
+    #CAUTION! joining takes time! the player might not have loaded yet!
+    #-------------------------------------------------------------
+
+    #set {_serverplayer} to event-bungeeplayer parsed as player
+
+    #chuckle say "%{_player}%" in network true
+
+    #set {_joinedplayeruuid} to event-bungeeplayer's bungee uuid
+    
+
+    #chuckle say "%{_joinedplayeruuid}%" in network true
+
+    #https://forums.skunity.com/threads/get-player-through-their-uuid.7553/
+
+    set {_player} to offline player
+
+    #wait 10 ticks
+
+    #set offline player to "%{_joinedplayeruuid}%" parsed as offline player
+    send "&a➜ %{_player}'s full axo name%&d has &c&lj&6&lo&e&lin&a&le&b&ld" to all players
+
+    if {_player} doesn't have offline permission "group.muted":
+        play sound "entity.player.levelup" in block category with volume 1 with pitch 0 notes higher to all players
+
+    if {_player} is on this server:#the player joined this server
+        #send "joined here" to player named "JohnHeikens"
+        if network wide variable "botattack" is true:
+            if {_player} doesn't have permission "group.banned":
+                set {_axp} to axp of {_player}
+                #make chuckle say "ban %{_axp}%" in network true
+                if {_axp} is not set:
+                    make console execute command "/softban %{_player}% botattack"
+
+
+        #chuckle say "%{_player}%" in network true
+    
+        #if "%server of {_player}%" is "%{-servername}%":
+    
+        #server can only be retrieved after 2 ticks 
+    
+        #chuckle say "%{-globalchannelid}%" in network false
+        #set {_server} to "%the server%"
+        #set {_server} to "%server of event-bungeeplayer%"
+        #event-bungeeplayer's server
+        #shuckle say "server: %server of {_player}%" in network true
+        #chuckle say "hi" in network true
+        #chuckle say "server: %{-servername}%" in network true
+        #chuckle say {-servername} in network true
+        
+        #if "%{_server}%" is {-servername}:
+            #chuckle say "has perms" in network true
+            
+            #broadcast "John has permission ! :o" if bungee player named "JohnHeikens" has permission "venturechat.networkchannel"
+            
+            
+        set {_network} to false
+        if {_player} has permission "venturechat.networkchannel":
+            set {_network} to true
+        #    chuckle say "has perms" in network true
+        # else:
+        #    set {_network} to false
+        #    chuckle say "%{_player}% does not have perms" in network true
+        
+        if "%{_player}%" is "vacuumtube": #matches "^(vacuumtube|JohnHeikens)$":
+            chuckle say "LORD &d&lPAUL &f&lHAS ARRIVED!" in network true
+        else:
+            #send "here" to {_player}
+            if axp of {_player} > 0:
+                if a random integer between 1 and 2 is 1:
+                    chuckle say (random element of ("wb :D", "welcome back!", "welcome back ^^", "yay! welcome back :blush:", "wb :)", "wb! :)")) in network {_network}
+                else:
+                    chuckle greet {_player} in network {_network}
+            else:
+                chuckle say (random element of ("welcome! ^-^", "welcome to our humble server ^^")) in network {_network}
+        
+        if axoserver of {_player} is {-servername}:
+            if axp of {_player} is more than 0:
+                send title "&d&lW&c&lE&6&lL&e&lC&a&lO&b&lM&lE &d&lB&c&lA&6&lC&e&lK" with subtitle network wide variable "networkname" to {_player} for 3 seconds with fade-in 10 ticks and fade-out 2 seconds
+                play sound "entity.player.levelup" in block category with volume 1 with pitch 0 notes higher to {_player}
+            
+    #chuckle say {-servername} in network false
+    #chuckle say "%{_player}%" in network false
+    if "%{_player}%" matches "vacuumtube":
+        #chuckle say "%{_player}%" in network false
+        loop 3 times:
+            play sound "entity.experience_orb.pickup" in block category with volume 1 with pitch ((-12 + (loop-number * 2)) notes higher) to all players
+            wait 3 ticks
+            play sound "entity.experience_orb.pickup" in block category with volume 1 with pitch ((-8 + (loop-number * 2)) notes higher) to all players
+            wait 3 ticks
+            play sound "entity.experience_orb.pickup" in block category with volume 1 with pitch ((-5 + (loop-number * 2)) notes higher) to all players
+            wait 3 ticks
+            play sound "entity.experience_orb.pickup" in block category with volume 1 with pitch ((0 + (loop-number * 2)) notes higher) to all players
+            wait 5 ticks
+
+afk change:
+#https://forums.skunity.com/resources/wolvsk-1-8-1-16-1.66/
+    wait 1 tick #wait for the afk status to update
+    if player isn't afk:
+        chuckle greet player in network false
+
+#bungee join
+
+on message receive:
+
+    #chuckle say "%{_servername}%" in network false
+
+    
+    set {_msg} to event-message
+    set {_channel::*} to channel of {_msg}
+    set {_gld} to guild of {_msg}
+
+    set {_name} to name of {_channel}
+
+    set {_id} to discord id of {_msg}
+
+    set {_id2} to discord id of {_channel}
+    set {_userid} to discord id of event-user
+
+    set {_userid} to discord id of event-user
+    
+    set {_sender} to event-user
+    
+
+    if event-user is set:#it's not a bot
+        if event-user isn't a bot:
+            if "%event-user%" isn't "John Heikens Bot##5334":
+                if author of event-message is set:
+                    if discriminator of event-user isn't "0000":
+                        set {_player} to getminecraftaccount(event-user)
+                        senddebug "player: %{_player}%"
+                        
+                        event-user isn't a user:
+                            send "no user" to the console
+    
+                        #send "%{_player}% <- from direct calculation" to the console
+            
+                        if event-channel is channel with id {-globalchannelid}:
+                            #chuckle say "global" in network false
+                            chuckle read "%event-message%" from {_player} in network false
+            
+            
+                        else if {-servername} is "survival":
+                            if event-channel is channel with id {-networkchannelid}:
+                                chuckle read "%event-message%" from {_player} in network true
+on member join:
+    if {-servername} is "hub":
+        post "welcome!" in channel with id "1021289627488878613"

@@ -1,0 +1,203 @@
+offline player property profile %string%:
+    get:
+        return {db1_profile::%uuid of expr-1%::%expr-2%}
+    set:
+        set network wide variable "profile::%uuid of expr-1%::%expr-2%" to the change value
+
+command /profile [<offline player>]:
+    trigger:
+        if arg 1 is set:
+            set {_profileplayer} to arg 1
+        else:
+            set {_profileplayer} to player
+        #set {_profile::*} to {_profileplayer}'s profile
+        #senddebug "%arg 1's profile "pronouns"%"
+        #set {_pronouns} to {db1_profile::%uuid of arg 1%::pronouns}
+        send {db1_separator}
+        send "&dprofile of %{_profileplayer}'s full axo name%"
+        send formatted "&cI&dG&6N&f: &b&l%{_profileplayer}%"
+        set {_pronouns} to {_profileplayer}'s profile "pronouns"
+        if {_pronouns} is set:
+            send "&5pro&dnouns&f: &b&l%{_pronouns}%"
+        set {_about} to {_profileplayer}'s profile "about"
+        if {_about} is set:
+            send "&3ab&bout&f: &b&l%{_profileplayer}'s profile "about"%"
+        send "&ea&6x&cp: &b&l%({_profileplayer}'s axp) axp as levels%&d levels"
+
+        set {_servers::*} to network wide list "profile::%uuid of {_profileplayer}%::smps"
+        size of {_servers::*} > 0:
+            send formatted "<run command:/server %{_servers::1}%>&eowner of %{_servers::*}% [JOIN]"
+
+        loop {db1_profile::%uuid of {_profileplayer}%::friends::*}:
+            set {_currentfriend} to loop-value parsed as offline player
+            add {_currentfriend}'s profile name to {_friendentries::*}
+            #add "<tooltip:&dprofile of %{_currentfriend}'s full axo name%><run command:/profile %{_currentfriend}%>%{_currentfriend}'s full axo name%" to {_friendentries::*}
+        
+        send formatted "&df&cr&6i&ee&an&bd&3s&f: %join {_friendentries::*} by ", "%"
+        send {db1_separator}
+
+
+command /setprofile <string> <string>:
+    usage: /setprofile [about|pronouns] <value>
+    trigger:
+        if arg 1 matches "about|pronouns":
+            set player's profile arg 1 to arg 2
+            send "&ayour %arg 1% has/have been set to &b%arg 2%"
+        else:
+            send "&cprofile value not recognized"
+
+command /nickname <string>:
+    trigger:
+        #senddebug "test"
+        make player execute command "/essentials:nick %arg 1%"
+        #set player's displayname to arg 1
+
+        #if the nick command doesn't work (because of invalid charachters) then essentials will take care of it
+        set network wide variable "profile::%uuid of player%::nickname" to player's nickname
+    aliases: /nick, /nicktest
+
+command /nick <string>:
+    trigger:
+        make player execute command "/nickname %arg 1%"
+
+command /friend [<string>] [<offline player>]:
+    permission: johnsserver.friend
+    usage: /friend <request|accept|remove|list> <offline player>
+    trigger:
+        set {_action} to arg 1
+        set {_friend} to arg 2
+
+        if arg 2 isn't set:
+            if arg 1 doesn't match "accept|request|remove|cancel|list":
+                set {_friend} to arg 1 parsed as offline player
+                axp of {_friend} is not set:
+                    send formatted "&dunknown command. do &b&l<command:/friend>/friend&d for a list of available commands"
+                    exit
+                set {_action} to "request"
+
+        #end a friend request
+        if {_action} is "request":
+            if {_friend} is set:
+                if {_friend} is player:
+                    send "&cyou can't send a friend request to yourself. make sure to specify the IGN of your friend"
+                else:
+                    if {db1_profile::%uuid of player%::friendrequests::outgoing::*} contains uuid of {_friend}:
+                        #loop {db1_profile::%uuid of player%::friendrequests::outgoing::*}:
+                            #send "index: %loop-index%"
+                            #delete network wide variable "profile::%uuid of player%::friendrequests::outgoing::%loop-index%"
+                        send formatted "&dyou already sent %{_friend}'s profile name% a friend request. do <run command:/friend cancel %{_friend}%>&c&n&l/friend cancel %{_friend}%&d to cancel your friend request"
+                    else if {db1_profile::%uuid of player%::friendrequests::incoming::*} contains uuid of {_friend}:
+                        send formatted "%{_friend}'s profile name%&d already sent you a friend request. do <run command:/friend accept %{_friend}%>&c&n&l/friend accept %{_friend}%&d to accept their friend request"
+                    else if {db1_profile::%uuid of player%::friends::*} contains uuid of {_friend}:
+                        send formatted "%{_friend}'s profile name%&d is already your friend. do <run command:/friend remove %{_friend}%>&c&n&l/friend remove %{_friend}%&d to remove them from your friend list"
+                    else:
+                        set network wide variable "profile::%uuid of {_friend}%::friendrequests::incoming::%uuid of player%" to uuid of player
+                        set network wide variable "profile::%uuid of player%::friendrequests::outgoing::%uuid of {_friend}%" to uuid of {_friend}
+
+                        send formatted "&dyou sent a friend request to %{_friend}%. do <run command:/friend cancel %{_friend}%>&c&n&l/friend cancel %{_friend}%&d to cancel your friend request"
+                        senddebug "friend: %{_friend}%"
+                        if {_friend} is on the network:
+                            axosend formatted "%player's profile name%&d sent you a friend request. do <run command:/friend accept %player%>&b&n&l/friend accept %player%&d to accept it or click here" to {_friend}
+            else:
+                send "&dmake sure to specify a the IGN of your friend"
+        else if {_action} is "accept":
+            if {_friend} isn't set:
+                set {_size} to size of {db1_profile::%uuid of player%::friendrequests::incoming::*}
+                if {_size} is 1:
+                    set {_friend} to (first element of {db1_profile::%uuid of player%::friendrequests::incoming::*}) parsed as offline player
+                else if {_size} is 0:
+                    send formatted "&d<suggest command:/friend request >you have no friend requests to accept. do /friend request <playername> to send them a friend request"
+                    exit
+            if {_friend} is set:
+                if {db1_profile::%uuid of player%::friendrequests::incoming::*} contains (uuid of {_friend}):
+
+                    delete network wide variable "profile::%uuid of player%::friendrequests::incoming::%uuid of {_friend}%"
+                    delete network wide variable "profile::%uuid of {_friend}%::friendrequests::outgoing::%uuid of player%"
+
+                    set network wide variable "profile::%uuid of player%::friends::%uuid of {_friend}%" to uuid of {_friend}
+                    set network wide variable "profile::%uuid of {_friend}%::friends::%uuid of player%" to uuid of player
+
+                    send formatted "&dyou accepted %{_friend}'s profile name%&d's friend request. do <run command: /friend remove %{_friend}%>&c&n&l/friend remove %{_friend}%&d to remove them from your friend list"
+                    axosend "%player's profile name%&d accepted your friend request" to {_friend}
+                else:
+                    send formatted "%{_friend}'s profile name%&d has not sent you a friend request. do <run command:/friend request %{_friend}%>&b&n&l/friend request %{_friend}% to send them a friend request or click here"
+            else:
+                send "&dall incoming friend requests: (click to accept)"
+                loop {db1_profile::%uuid of player%::friendrequests::incoming::*}:
+                    set {_currentfriend} to loop-value parsed as offline player                    
+                    send formatted "<run command:/friend accept %{_currentfriend}%>%{_currentfriend}'s full axo name%"
+        else if {_action} is "remove":
+            if {_friend} isn't set:
+                set {_size} to size of {db1_profile::%uuid of player%::friends::*}
+                if {_size} is 1:
+                    set {_friend} to (first element of {db1_profile::%uuid of player%::friends::*}) parsed as offline player
+                else if {_size} is 0:
+                    send "&cyou have no friends to remove"
+                else:
+                    send "&dwhich friends do you want to remove?"
+                    loop {db1_profile::%uuid of player%::friends::*}:
+                        set {_currentfriend} to loop-value parsed as offline player
+                        send formatted "<run command:/friend remove %{_currentfriend}%>%{_currentfriend}%"
+            if {_friend} is set:
+                delete network wide variable "profile::%uuid of player%::friends::%uuid of {_friend}%"
+                delete network wide variable "profile::%uuid of {_friend}%::friends::%uuid of player%"
+                send "&dyou removed %{_friend}'s profile name%&d from your friend list. do <run command:/friend request %player%>&b&n&l/friend request %player% to send them a friend request or click here"
+        else if {_action} is "cancel":
+            if {_friend} isn't set:
+                set {_size} to size of {db1_profile::%uuid of player%::friendrequests::outgoing::*}
+                if {_size} is 1:
+                    set {_friend} to (first element of {db1_profile::%uuid of player%::friendrequests::outgoing::*}) parsed as offline player
+                else if {_size} is 0:
+                    send "&dyou have no friend requests to cancel"
+                else:
+                    send "&dwhich friend requests do you want to cancel?"
+                    loop {db1_profile::%uuid of player%::outgoing::friendrequests::*}:
+                        set {_currentfriend} to loop-value parsed as offline player
+                        send formatted "<run command:/friend cancel %{_currentfriend}%>%{_currentfriend}%"
+            if {_friend} is set:
+                delete network wide variable "profile::%uuid of player%::friendrequests::outgoing::%uuid of {_friend}%"
+                delete network wide variable "profile::%uuid of {_friend}%::friendrequests::incoming::%uuid of player%"
+                send formatted "&dyou cancelled your friend request to %{_friend}'s profile name%&d. do <run command:/friend request %player%>&b&n&l/friend request %player% to resend them a friend request or click here"
+        else if {_action} is "list":
+            set {_size} to size of {db1_profile::%uuid of player%::friends::*}
+            if {_size} > 0:
+                if {_size} is 1:
+                    send "&dthis is your friend:"
+                else:
+                    send "&dthese are your friends:"
+                loop {db1_profile::%uuid of player%::friends::*}:
+                    set {_currentfriend} to loop-value parsed as offline player
+                    send formatted "%{_currentfriend}'s profile name% <run command:/friend remove %{_currentfriend}%>&c&n&lremove"
+                send formatted "&ddo <suggest command:/friend remove >&c&n&l/friend remove <playername>&d to remove them from your friend list"
+            else:
+                send formatted "<suggest command:/friend request >&dyou have no friends. do &b&n&l/friend request <playername>&d to send them a friend request"
+            
+        else:
+            send formatted "<run command:/friend list>&ddo &b&n&l/friend list&d to see a list of your friends"            
+            send formatted "<suggest command:/friend request >&ddo &b&n&l/friend request <playername>&d to send them a friend request"
+            send formatted "<suggest command:/friend accept >&ddo &b&n&l/friend accept <playername>&d to accept a friend request"
+            send formatted "<suggest command:/friend cancel >&ddo &c&n&l/friend cancel <playername>&d to cancel a friend request"
+            send formatted "<suggest command:/friend remove >&ddo &c&n&l/friend remove <playername>&d to remove them from your friend list"
+
+on first join:
+    if {db1_profile::%uuid of player%::nickname} isn't set:
+        set network wide variable "profile::%uuid of player%::nickname" to player's nickname
+
+on join:
+    #needed to load nickname
+    wait 10 ticks
+    set {_nick} to player's profile "nickname"
+    if {_nick} is set:
+        #senddebug "nick is set"
+        if {_nick} isn't nickname of player:
+            
+            senddebug "length: %length of (uncolored (player's nickname))%"
+            if {_nick} is name of player:
+                set player's profile "nickname" to player's nickname
+            else:
+                #senddebug "synchronizing... (%nickname of player%->%{_nick}%)"
+                make console execute command "/essentials:nick %player% %{_nick}%"
+    else:
+        #senddebug "nick is not set"
+        set player's profile "nickname" to player's nickname
+

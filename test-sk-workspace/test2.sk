@@ -1,0 +1,261 @@
+function shop(p: player, u: text="main", a: integer=1):
+    if {_u} = "main":
+        create gui with virtual chest inventory with size 1 named "Shop":
+            loop 9 times:
+                format gui slot (loop-value)-1 with gray glass pane named "&r"
+            format gui slot 2 with coal ore named "&7Generators" with lore "&8Shop Category":
+                shop({_p}, "gens")
+            format gui slot 3 with iron sword named "&7Tools & Weaponry" with lore "&8Shop Category" with all flags hidden:
+                shop({_p}, "pvp")
+            format gui slot 4 with cobblestone named "&7Blocks" with lore "&8Shop Category":
+                shop({_p}, "blocks")
+            format gui slot 5 with tnt named "&7Raiding & Defence" with lore "&8Shop Category":
+                shop({_p}, "raid")
+            format gui slot 6 with blaze rod named "&7Gem Shop" with lore "&8Shop Category":
+                shop({_p}, "Gem")
+    if {_u} = "gens":
+        create gui with virtual chest inventory with size 2 named "Generators":
+            loop 9 times:
+                format gui slot {_n} ? 0 with stone button named "&r"
+                add 1 to {_n}
+            loop 9 times:
+                format gui slot {_n} ? 0 with gray glass pane named "&r"
+                add 1 to {_n}
+            format gui slot 9 with barrier named "&cBack" with lore "&8Back to Shop":
+                shop(player)
+            format gui slot 0 with white glass named "&fWhite Generator &8[&7T1&8]" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>100":
+                purchase({gen1}, player, 100)
+    if {_u} = "pvp":
+        create gui with virtual chest inventory with size 5 named "Tools & Weaponry":
+            loop 36 times:
+                format gui slot {_n} ? 0 with stone button named "&r"
+                add 1 to {_n}
+            loop 9 times:
+                format gui slot {_n} ? 0 with gray glass pane named "&r"
+                add 1 to {_n}
+            format gui slot 36 with barrier named "&cBack" with lore "&8Back to Shop":
+                shop(player)
+            format gui slot 0 with stone sword named "&7Stone Sword" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>500" with all flags hidden:
+                purchase(stone sword named "&7Stone Sword", player, 500)
+            format gui slot 1 with iron sword named "&fIron Sword" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>5k" with all flags hidden:
+                purchase(iron sword named "&fIron Sword", player, 5000)
+            format gui slot 2 with diamond sword named "<##59F8FF>Diamond Sword" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>10k" with all flags hidden:
+                purchase(diamond sword named "<##59F8FF>Diamond Sword", player, 10000)
+            format gui slot 3 with diamond sword of sharpness 1 named "<##59F8FF>Diamond Sword" with lore "&8Shop Item", "", "&b| &bEnchantments&8:", "&b| &fSharpness I", "", "&7| &fCost&8: <##17c628>$<##00ff1a>250k" with all flags hidden:
+                purchase(diamond sword of sharpness 1 named "<##59F8FF>Diamond Sword", player, 250000)
+            
+            format gui slot 9 with chainmail helmet named "&7Chainmail Armor Set" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>1k" with all flags hidden:
+                if {bal::%{_p}%} >= 1000:
+                    give {_p} chainmail helmet named "&7Chainmail Helmet"
+                    give {_p} chainmail chestplate named "&7Chainmail Chestplate"
+                    give {_p} chainmail leggings named "&7Chainmail Leggings"
+                    give {_p} chainmail boots named "&7Chainmail Boots"
+                    send "&a&lSHOP&8: &7Purchased &f1x &7Chainmail Armor Set&7!" to {_p}
+                    remove 1000 from {bal::%{_p}%}
+                else:
+                    send "&c&lSHOP&8: &7You need &c$%formatNum(1000)%&7 to buy this!" to {_p}
+            format gui slot 10 with iron helmet named "&fIron Armor Set" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>30k" with all flags hidden:
+                if {bal::%{_p}%} >= 30000:
+                    give {_p} iron helmet named "&fIron Helmet"
+                    give {_p} iron chestplate named "&fIron Chestplate"
+                    give {_p} iron leggings named "&fIron Leggings"
+                    give {_p} iron boots named "&fIron Boots"
+                    send "&a&lSHOP&8: &7Purchased &f1x &fIron Armor Set&7!" to {_p}
+                    remove 30000 from {bal::%{_p}%}
+                else:
+                    send "&c&lSHOP&8: &7You need &c$%formatNum(30000)%&7 to buy this!" to {_p}
+            format gui slot 11 with diamond helmet named "<##59F8FF>Diamond Armor Set" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>75k" with all flags hidden:
+                if {bal::%{_p}%} >= 75000:
+                    give {_p} diamond helmet named "<##59F8FF>Diamond Helmet"
+                    give {_p} diamond chestplate named "<##59F8FF>Diamond Chestplate"
+                    give {_p} diamond leggings named "<##59F8FF>Diamond Leggings"
+                    give {_p} diamond boots named "<##59F8FF>Diamond Boots"
+                    send "&a&lSHOP&8: &7Purchased &f1x <##59F8FF>Diamond Armor Set&7!" to {_p}
+                    remove 75000 from {bal::%{_p}%}
+                else:
+                    send "&c&lSHOP&8: &7You need &c$%formatNum(75000)%&7 to buy this!" to {_p}
+
+            format gui slot 18 with iron pickaxe named "&fIron Pickaxe" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>1k" with all flags hidden:
+                purchase(iron pickaxe named "&fIron Pickaxe", player, 1000)
+            format gui slot 19 with diamond pickaxe named "<##59F8FF>Diamond Pickaxe" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>10k" with all flags hidden:
+                purchase(diamond pickaxe named "<##59F8FF>Diamond Pickaxe", player, 10000)
+            format gui slot 20 with diamond pickaxe of efficiency 1 named "<##59F8FF>Diamond Pickaxe" with lore "&8Shop Item", "", "&b| &bEnchantments&8:", "&b| &fEfficiency I", "",  "&7| &fCost&8: <##17c628>$<##00ff1a>50k" with all flags hidden:
+                purchase(diamond pickaxe of efficiency 1 named "<##59F8FF>Diamond Pickaxe", player, 50000)
+            format gui slot 21 with diamond pickaxe of efficiency 2 named "<##59F8FF>Diamond Pickaxe" with lore "&8Shop Item", "", "&b| &bEnchantments&8:", "&b| &fEfficiency II", "",  "&7| &fCost&8: <##17c628>$<##00ff1a>100k" with all flags hidden:
+                purchase(diamond pickaxe of efficiency 2 named "<##59F8FF>Diamond Pickaxe", player, 100000)
+            format gui slot 22 with diamond pickaxe of efficiency 3 named "<##59F8FF>Diamond Pickaxe" with lore "&8Shop Item", "", "&b| &bEnchantments&8:", "&b| &fEfficiency III", "",  "&7| &fCost&8: <##17c628>$<##00ff1a>250k" with all flags hidden:
+                purchase(diamond pickaxe of efficiency 3 named "<##59F8FF>Diamond Pickaxe", player, 250000)
+            format gui slot 23 with diamond pickaxe of efficiency 4 named "<##59F8FF>Diamond Pickaxe" with lore "&8Shop Item", "", "&b| &bEnchantments&8:", "&b| &fEfficiency IV", "",  "&7| &fCost&8: <##17c628>$<##00ff1a>500k" with all flags hidden:
+                purchase(diamond pickaxe of efficiency 4 named "<##59F8FF>Diamond Pickaxe", player, 500000)
+            
+            format gui slot 27 with gold axe named "&6Golden Axe" with lore "&8Shop Item", "",  "&7| &fCost&8: <##17c628>$<##00ff1a>7.5k" with all flags hidden:
+                purchase(gold axe named "&6Golden Axe", player, 7500)
+    if {_u} = "blocks":
+        if {_a} > 64:
+            set {_a} to 64
+        if {_a} < 1:
+            set {_a} to 1
+        create gui with virtual chest inventory with size 4 named "Blocks":
+            loop 27 times:
+                format gui slot {_n} ? 0 with stone button named "&r"
+                add 1 to {_n}
+            loop 9 times:
+                format gui slot {_n} ? 0 with gray glass pane named "&r"
+                add 1 to {_n}
+            format gui slot 27 with barrier named "&cBack" with lore "&8Back to Shop":
+                shop(player)
+            format gui slot 35 with lime glass pane named "&aAdd blocks" with lore "&8Buy multiple", "", "&8| &fLeft-Click&8: &a+1", "&8| &fShift + Left-Click&8: &a+16", "&8| &fShift + Right-Click&8: &a+64":
+                if click type is shift+rmb:
+                    shop(player, "blocks", {_a}+64)
+                else if click type is shift+lmb:
+                    shop(player, "blocks", {_a}+16)
+                else:
+                    shop(player, "blocks", {_a}+1)
+            format gui slot 34 with RED glass pane named "&cRemove blocks" with lore "&8Buy multiple", "", "&8| &fLeft-Click&8: &c-1", "&8| &fShift + Left-Click&8: &c-16", "&8| &fShift + Right-Click&8: &c-64":
+                if click type is shift+rmb:
+                    shop(player, "blocks", {_a}-64)
+                else if click type is shift+lmb:
+                    shop(player, "blocks", {_a}-16)
+                else:
+                    shop(player, "blocks", {_a}-1)
+                
+            format gui slot 0 with {_a} of cobblestone named "&fCobblestone" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(10*{_a})%":
+                purchase(cobblestone, player, 10*{_a}, {_a})
+            format gui slot 1 with {_a} of sandstone named "&fSandstone" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(50*{_a})%":
+                purchase(sandstone, player, 50*{_a}, {_a})
+            format gui slot 2 with {_a} of stone bricks named "&fStone Bricks" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(100*{_a})%":
+                purchase(stone bricks, player, 100*{_a}, {_a})
+            
+            format gui slot 9 with {_a} of chest named "&fChest" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(100*{_a})%":
+                purchase(chest, player, 100*{_a}, {_a})
+            format gui slot 10 with {_a} of hopper named "&fHopper" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(100*{_a})%":
+                purchase(hopper, player, 100*{_a}, {_a})
+            format gui slot 11 with {_a} of ladders named "&fLadders" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(10*{_a})%":
+                purchase(ladders, player, 10*{_a}, {_a})
+            format gui slot 12 with water bucket named "&fWater Bucket" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(500*{_a})%":
+                purchase(water bucket, player, 500, 1)
+            format gui slot 13 with {_a} of blue ice named "&fBlue Ice" with lore "&8Shop Item", "", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(250*{_a})%":
+                purchase(blue ice, player, 250*{_a}, {_a})
+            
+
+
+
+            
+    if {_u} = "raid":
+        if {_a} > 64:
+            set {_a} to 64
+        if {_a} < 1:
+            set {_a} to 1
+        create gui with virtual chest inventory with size 4 named "Raiding & Defence":
+            loop 27 times:
+                format gui slot {_n} ? 0 with stone button named "&r"
+                add 1 to {_n}
+            loop 9 times:
+                format gui slot {_n} ? 0 with gray glass pane named "&r"
+                add 1 to {_n}
+            format gui slot 27 with barrier named "&cBack" with lore "&8Back to Shop":
+                shop(player)
+            format gui slot 0 with {_a} of oak wood named "&fDefence Block &8[&7T1&8]" with lore "&8Shop Item", "", "&7| &fBreak Chance&8: &f90%%", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(500*{_a})%":
+                purchase(oak wood named "&fDefence Block &8[&7T1&8]" with lore "&8Defence", player, 500*{_a}, {_a})
+            format gui slot 1 with {_a} of diorite named "&fDefence Block &8[&7T2&8]" with lore "&8Shop Item", "", "&7| &fBreak Chance&8: &f70%%", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(5000*{_a})%":
+                purchase(diorite named "&fDefence Block &8[&7T2&8]" with lore "&8Defence", player, 5000*{_a}, {_a})
+            format gui slot 2 with {_a} of polished deepslate named "&fDefence Block &8[&7T3&8]" with lore "&8Shop Item", "", "&7| &fBreak Chance&8: &f50%%", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(25000*{_a})%":
+                purchase(polished deepslate named "&fDefence Block &8[&7T3&8]" with lore "&8Defence", player, 25000*{_a}, {_a})
+            format gui slot 3 with {_a} of obsidian named "&fDefence Block &8[&7T4&8]" with lore "&8Shop Item", "", "&7| &fBreak Chance&8: &f30%%", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(500000*{_a})%":
+                purchase(obsidian named "&fDefence Block &8[&7T4&8]" with lore "&8Defence", player, 500000*{_a}, {_a})
+            format gui slot 4 with {_a} of bedrock named "&fDefence Block &8[&7T5&8]" with lore "&8Shop Item", "", "&7| &fBreak Chance&8: &f15%%", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(2500000*{_a})%":
+                purchase(bedrock named "&fDefence Block &8[&7T5&8]" with lore "&8Defence", player, 2500000*{_a}, {_a})
+            
+            format gui slot 9 with {_a} of oak trapdoor named "&fTrapdoor &8[&7T1&8]" with lore "&8Shop Item", "", "&7| &fBreak Chance&8: &f90%%", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(500*{_a})%":
+                purchase(oak trapdoor named "&fTrapdoor &8[&7T1&8]" with lore "&8Defence", player, 500*{_a}, {_a})
+            format gui slot 11 with {_a} of warped trapdoor named "&fTrapdoor &8[&7T2&8]" with  lore "&8Shop Item", "", "&7| &fBreak Chance&8: &f50%%", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(25000*{_a})%":
+                purchase(warped trapdoor named "&fTrapdoor &8[&7T2&8]" with lore "&8Defence", player, 10000*{_a}, {_a})
+            format gui slot 13 with {_a} of iron trapdoor named "&fTrapdoor &8[&7T3&8]" with lore "&8Shop Item", "", "&7| &fBreak Chance&8: &f30%%", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(100000*{_a})%":
+                purchase(iron trapdoor named "&fTrapdoor &8[&7T3&8]" with lore "&8Defence", player, 50000*{_a}, {_a})
+            
+            format gui slot 10 with {_a} of oak door named "&fDoor &8[&7T1&8]" with lore "&8Shop Item", "", "&7| &fBreak Chance&8: &f90%%", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(1000*{_a})%":
+                purchase(oak door named "&fDoor &8[&7T1&8]" with lore "&8Defence", player, 2000*{_a}, {_a})
+            format gui slot 12 with {_a} of warped door named "&fDoor &8[&7T2&8]" with lore "&8Shop Item", "", "&7| &fBreak Chance&8: &f50%%", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(50000*{_a})%":
+                purchase(warped door named "&fDoor &8[&7T2&8]" with lore "&8Defence", player, 20000*{_a}, {_a})
+            format gui slot 14 with {_a} of iron door named "&fDoor &8[&7T3&8]" with lore "&8Shop Item", "", "&7| &fBreak Chance&8: &f30%%", "&7| &fCost&8: <##17c628>$<##00ff1a>%formatNum(200000*{_a})%":
+                purchase(iron door named "&fDoor &8[&7T3&8]" with lore "&8Defence", player, 100000*{_a}, {_a})
+
+            format gui slot 18 with {_a} of tnt named "&fExplosive" with lore "&8Shop Item", "", "&7| &fCost&8: <##ffaa00>♦<##ffd900>%formatNum(200*{_a})%":
+                if {Gems::%{_p}%} >= 200*{_a}:
+                    give {_a} of tnt named "&fExplosive" with lore "&8Raiding Tool" to {_p}
+                    send "&a&lSHOP&8: &7Purchased &f%{_a}%x &fExplosive&7!" to {_p}
+                    remove 200*{_a} from {Gems::%{_p}%}
+                else:
+                    send "&c&lSHOP&8: &7You need &c♦%formatNum(200)%&7 to buy this!" to {_p}
+
+            format gui slot 35 with lime glass pane named "&aAdd blocks" with lore "&8Buy multiple", "", "&8| &fLeft-Click&8: &a+1", "&8| &fShift + Left-Click&8: &a+16", "&8| &fShift + Right-Click&8: &a+64":
+                if click type is shift+rmb:
+                    shop(player, "raid", {_a}+64)
+                else if click type is shift+lmb:
+                    shop(player, "raid", {_a}+16)
+                else:
+                    shop(player, "raid", {_a}+1)
+            format gui slot 34 with RED glass pane named "&cRemove blocks" with lore "&8Buy multiple", "", "&8| &fLeft-Click&8: &c-1", "&8| &fShift + Left-Click&8: &c-16", "&8| &fShift + Right-Click&8: &c-64":
+                if click type is shift+rmb:
+                    shop(player, "raid", {_a}-64)
+                else if click type is shift+lmb:
+                    shop(player, "raid", {_a}-16)
+                else:
+                    shop(player, "raid", {_a}-1)
+            format gui slot 19 with sea lantern named "&bRespawn Beacon" with lore "&8Shop Item", "&b| &fCost&8:<##17c628>$<##00ff1a>%formatNum(250)%":
+                purchase(sea lantern named "&bRespawn Beacon" with lore "&8Home", player, 250)
+    if {_u} = "Gem":
+        create gui with virtual chest inventory with size 4 named "Raiding & Defence":
+            loop 27 times:
+                format gui slot {_n} ? 0 with stone button named "&r"
+                add 1 to {_n}
+            loop 9 times:
+                format gui slot {_n} ? 0 with gray glass pane named "&r"
+                add 1 to {_n}
+            format gui slot 27 with barrier named "&cBack" with lore "&8Back to Shop":
+                shop(player)
+            format gui slot 0 with blaze rod named "&6Sellwand &8(&f1x&8)" with lore "&8Shop Item", "", "&7| &fCost&8: <##ffaa00>♦<##ffd900>%formatNum(250)%":
+                if {Gems::%{_p}%} >= 250:
+                    send "&a&lSHOP&8: &7Purchased &f1x Sellwand (1x)&7!" to {_p}
+                    remove 250 from {Gems::%{_p}%}
+                    console command "givesellwand 1 %{_p}%"
+                else:
+                    send "&c&lSHOP&8: &7You need &c♦%formatNum(500)%&7 to buy this!" to {_p}
+
+            format gui slot 1 with blaze rod named "&6Sellwand &8(&f1.1x&8)" with lore "&8Shop Item", "", "&7| &fCost&8: <##ffaa00>♦<##ffd900>%formatNum(500)%":
+                if {Gems::%{_p}%} >= 500:
+                    send "&a&lSHOP&8: &7Purchased &f1x Sellwand (1.1x)&7!" to {_p}
+                    remove 500 from {Gems::%{_p}%}
+                    console command "givesellwand 1.1 %{_p}%"
+                else:
+                    send "&c&lSHOP&8: &7You need &c♦%formatNum(750)%&7 to buy this!" to {_p}
+            format gui slot 2 with blaze rod named "&6Sellwand &8(&f1.2x&8)" with lore "&8Shop Item", "", "&7| &fCost&8: <##ffaa00>♦<##ffd900>%formatNum(750)%":
+                if {Gems::%{_p}%} >= 750:
+                    send "&a&lSHOP&8: &7Purchased &f1x Sellwand (1.2x)&7!" to {_p}
+                    remove 750 from {Gems::%{_p}%}
+                    console command "givesellwand 1.2 %{_p}%"
+                else:
+                    send "&c&lSHOP&8: &7You need &c♦%formatNum(750)%&7 to buy this!" to {_p}
+    open last gui to {_p}
+
+function purchase(i: item, p: player, pr: number, a: integer=1):
+    if {bal::%{_p}%} >= {_pr}:
+        give {_a} of {_i} to {_p}
+        send "&a&lSHOP&8: &7Purchased &f%{_a}%x %name of {_i} ? type of {_i}%&7!" to {_p}
+        remove {_pr} from {bal::%{_p}%}
+    else:
+        send "&c&lSHOP&8: &7You need &c$%formatNum({_pr})%&7 to buy this!" to {_p}
+function gempurchase(i: item, p: player, pr: number, a: integer=1):
+    if {Gems::%{_p}%} >= {_pr}:
+        give {_a} of {_i} to {_p}
+        send "&a&lSHOP&8: &7Purchased &f%{_a}%x %name of {_i} ? type of {_i}%&7!" to {_p}
+        remove {_pr} from {Gems::%{_p}%}
+    else:
+        send "&c&lSHOP&8: &7You need &c♦%formatNum({_pr})%&7 to buy this!" to {_p}
+command shop:
+    trigger:
+        shop(player)
+
+on npc right click:
+    npc is 2:
+        shop(player)

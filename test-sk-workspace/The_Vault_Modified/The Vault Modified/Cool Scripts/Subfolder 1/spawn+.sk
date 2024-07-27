@@ -1,0 +1,38 @@
+options:
+	# The location that players get teleported to when:
+	# - They fall into the void
+	# - They respawn
+	# - They join
+	# Example: "{spawn} ~ vector(0, 1, 0)" means "the location of spawn ({spawn}), but increase the Y value by 1 (vector(0, 1, 0))"
+	Events Location: {spawn} ~ vector(0, 1, 0)
+
+command /spawn [<player>]:
+	permission: essentials.spawn
+	trigger:
+		teleport player to {spawn}
+		send "&6Teleporting..."
+
+command /setspawn:
+	permission: essentials.spawn.set
+	permission message: &4You do not have access to that command.
+	trigger:
+		set {spawn} to player's location
+		send "&eSet spawn to your location!"
+
+on damage:
+	if damage cause is void:
+		set metadata tag "void" of victim to true
+		teleport victim to {@Events Location}
+		wait 1 tick
+		heal victim by (final damage)
+	else if damage cause is fall:
+		metadata tag "void" of victim is set
+		cancel event
+		wait 1 tick
+		delete metadata tag "void" of victim
+
+on respawn:
+	set respawn location to {@Events Location}
+
+on join:
+	teleport player to {@Events Location}

@@ -1,0 +1,1208 @@
+import: 
+    org.bukkit.entity.Player
+    org.bukkit.Bukkit
+    #java.lang.string
+    java.lang.String as JavaString
+    org.bukkit.event.server.ServerCommandEvent
+    me.clip.placeholderapi.PlaceholderAPI
+    ch.njol.skript.hooks.VaultHook
+
+    net.luckperms.api.LuckPerms
+    net.luckperms.api.model.user.User
+    net.luckperms.api.LuckPermsProvider
+    java.util.UUID
+    com.earth2me.essentials.Essentials
+    com.earth2me.essentials.api.IWarps
+    java.util.Set
+    mineverse.Aust1n46.chat.channel.ChatChannel
+    mineverse.Aust1n46.chat.api.MineverseChatPlayer
+    mineverse.Aust1n46.chat.api.MineverseChatAPI
+    org.bukkit.event.entity.EntityDamageByEntityEvent
+    java.lang.Character as JavaChar
+    java.nio.file.Files
+    java.nio.file.Path
+
+options:
+    checkinterval: 1
+
+expression network wide variable %string%:
+    get:
+        return {-tdb1::%expr-1%}
+        #return {db1_%expr-1%}
+    add:
+        #senddebug "adding is not supported"
+        #add the change value to variable "db1_%expr-1%" in channel "global"
+        #chd = changed
+        add the change value to variable {-tdb1::%expr-1%}
+        #resynchronize. this alone is not enough because the redis variable method takes a tick or so to update the variable in the same server
+        set variable "-tdb1::%expr-1%" in channel "global" to {-tdb1::%expr-1%}
+        #save variable
+        set {db1_%expr-1%} to {-tdb1::%expr-1%} #so the variable will be remembered upon next reload/startup
+        #set {_tempvar} to {-tdb1::%expr-1%}
+        #send "&dtemp variable: &b&l%{_tempvar}%" to "JohnHeikens" parsed as player
+        #set {_permvar} to {db1_%expr-1%}
+        #send "&dperm variable: &b&l%{_permvar}%" to "JohnHeikens" parsed as player
+        #send "add" to "JohnHeikens" parsed as player
+    set:
+        set {-tdb1::%expr-1%} to the change value #so the change is instant
+        #resynchronize. this alone is not enough because the redis variable method takes a tick or so to update the variable in the same server
+        set variable "-tdb1::%expr-1%" in channel "global" to {-tdb1::%expr-1%}
+        #save variable
+        set {db1_%expr-1%} to {-tdb1::%expr-1%} #so the variable will be remembered upon next reload/startup
+        #set {_tempvar} to {-tdb1::%expr-1%}
+        #send "&dtemp variable: &b&l%{_tempvar}%" to "JohnHeikens" parsed as player
+        #set {_permvar} to {db1_%expr-1%}
+        #send "&dperm variable: &b&l%{_permvar}%" to "JohnHeikens" parsed as player
+        #send "set" to "JohnHeikens" parsed as player
+    remove:
+        remove the change value from variable {tdb1::%expr-1%}
+        #resynchronize. this alone is not enough because the redis variable method takes a tick or so to update the variable in the same server
+        set variable "-tdb1::%expr-1%" in channel "global" to {-tdb1::%expr-1%}
+        #save variable
+        set {db1_%expr-1%} to {-tdb1::%expr-1%} #so the variable will be remembered upon next reload/startup
+    #remove all: 
+        #clear variable "db1_%expr-1%" in channel "global"
+        #clear {db1_%expr-1%}
+    delete:
+        delete variable "-tdb1::%expr-1%" in channel "global"
+        delete {db1_%expr-1%} #so the variable will be remembered upon next reload/startup
+
+non-single expression network wide list %string%:
+    get:
+        #loop {db1_%expr-1%::*}:
+        #    if {-tdb1::%expr-1%::%loop-index%} isn't set:
+        #        set variable "-tdb1::%expr-1%::%loop-index%" in channel "global" to loop-value
+        #set {-db1_%expr-1%::*} to {db1_%expr-1%::*}
+        return {-tdb1::%expr-1%::*}
+    delete:
+        #send "deleting. %{-tdb1::%expr-1%::*}%" to "JohnHeikens" parsed as player
+        #send "expr-1: %expr-1%" to "JohnHeikens" parsed as player
+        #send "indices: %indices of {-tdb1::%expr-1%::*}%" to "JohnHeikens" parsed as player
+        loop indices of {-tdb1::%expr-1%::*}:
+            #send "test" to ("JohnHeikens" parsed as player)
+            send "deleting %expr-1%::%loop-value%" to "JohnHeikens" parsed as player
+            delete network wide variable "%expr-1%::%loop-value%"
+            #senddebug "deleting %expr-1%::%loop-index%"
+        #send "finished loop" to "JohnHeikens" parsed as player
+        #senddebug "test"
+    #delete:
+    #    senddebug "deleting is not supported"
+
+offline player property axoserver: 
+    get:
+        return network wide variable "playerdata::%uuid of expr-1%::server"
+
+effect make server named %string% execute code %string%:
+    trigger:
+        send redis message "code %expr-2%" to channel "server%expr-1%"
+
+effect make server named %string% execute [console] command %string%:
+    trigger:
+        send redis message "cmd %expr-2%" to channel "server%expr-1%"
+
+condition %offline player% is on this server:
+    check:
+        if ("%expr-1%" parsed as player) is set:
+            continue
+
+effect axosend %string% to %offline player%:
+    trigger:
+        if expr-2 is on this server:
+            send formatted expr-1 to expr-2
+        else if expr-2 is set:
+            make server named (expr-2's axoserver) execute command "/sendraw %expr-2% %expr-1%"
+
+#debug:
+effect senddebug %string%:  
+    trigger:
+        axosend "<suggest command:%expr-1%>&4%{-servername}% &f| &cd&6e&eb&au&bg&f: %expr-1%" to ("JohnHeikens" parsed as offline player)
+        axosend "<suggest command:%expr-1%>&4%{-servername}% &f| &cd&6e&eb&au&bg&f: %expr-1%" to ("be_JohnHeikens2" parsed as offline player)
+
+
+event "firstnetworkjoin":
+    pattern: [on] first network join
+    event-values: offline player
+
+event "networkjoin":
+    pattern: [on] network join
+    event-values: offline player
+
+event "networkleave":
+    pattern: [on] network (leave|quit)
+    event-values: offline player
+
+event "citizeninteract":
+    pattern: [on] citizen interact
+    event-values: entity, player, string
+
+event "rediscommand":
+    pattern: [on] redis command
+    event-values: string
+
+condition %offline player% isn't on this server:
+    check:
+        if ("%expr-1%" parsed as player) isn't set:
+            continue
+
+condition %offline player% is on [the] network:
+    check:
+        if network wide variable "playerdata::%uuid of expr-1%::server" is set:
+            continue
+
+condition axoserver named %string% exists:
+    check:
+        if network wide variable "servers::%expr-1%" is set:
+            continue
+
+condition axoserver named %string% is online:
+    check:
+        if network wide variable "servers::%expr-1%::status" is "online":
+            continue
+
+expression warp [named|with name] %string%:
+    return type: location
+    get:
+        return {-warps}.getWarp(expr-1)
+    set:
+        {-warps}.setWarp(expr-1, the change value)
+    delete:
+        {-warps}.removeWarp(expr-1)
+
+non-single expression [all] players [online] (at|on) [the] [axo]server [named|with name] %string%:
+    return type: offline player
+    get:
+        set {_uuidplayers::*} to network wide list "servers::%expr-1%::players"
+        #senddebug "players: %{_uuidplayers::*}%"
+        loop network wide list "servers::%expr-1%::players":
+            #senddebug "player: %loop-value% -> %(("%loop-value%") parsed as offline player)%"
+            add (("%loop-value%") parsed as offline player) to {_players::*}
+        #senddebug "players: %{_players::*}%"
+        return {_players::*}
+
+non-single expression [all] players [online] (at|on) [the] network:
+    return type: offline player
+    get:
+        
+        loop network wide list "servers":
+            set {_test::*} to players online on server "%loop-value%"
+            add (players online on server "%loop-value%") to {_playerlist::*}
+        return {_playerlist::*}
+
+non-single expression all registered players:
+    return type: offline player
+    get:
+        loop network wide list "profile":
+            set {_result::%loop-value%} to ((loop-value) parsed as offline player)
+        return {_result::*}
+
+expression player [named|with name] %string%:
+    get:
+        return expr-1 parsed as player
+
+expression %string% repeated %number% times:
+    get:
+        return expr-1.repeat(expr-2)
+
+#effect set network variable %string% to %object%:
+    #db1 will get a sql set variable statement from all servers but that's okay
+#    set {%expr-1%} to expr-2
+#    set variable expr-1 in channel "global" to expr-2
+
+effect make bungee[cord] execute [console] command %string%:
+    trigger:
+        make console execute command "/bungeee %subtext of expr-1 from 2 to (length of expr-1)%"
+
+
+effect make all servers execute [console] command %string%:
+    trigger:
+        send redis message "cmd %expr-1%" to channel "global"
+
+
+
+expression bold %string%:
+    return type: string
+    get:
+        set {_boldstring} to expr-1#.replaceAll("(\§[0-9,A-F])", "$1&lfound")
+        #set {_boldstring} to {_boldstring}.replaceAll("(\§[0-9,A-F])", "$1&lfound")
+        #set {_boldstring} to {_boldstring}.replaceAll("(&[0-9,A-F])", "$1&lfound")
+        set {_boldstring} to {_boldstring}.replaceAll("(§[0-9,A-F,a-f])", "$1&l")
+        #set {_str} to "&"
+        #set {_first} to the first charachter of {_str}
+        #set {_first} to subtext of {_str} from charachter 1 to 1
+        #set {_first} to subtext of {_str} from 1 to 1
+        #senddebug "%{_first}%5test"
+        set {_boldstring} to "&l%{_boldstring}%"
+        replace all "&l&l" in {_boldstring} with "&l"
+        return {_boldstring}
+
+object property colorized name:
+    get:
+        set {_uncoloredname} to "%expr-1%"
+        #senddebug "uncolored name: %{_uncoloredname}%"
+        #senddebug "colored name: %{-colorednames::%{_uncoloredname}%}%"
+        return {-colorednames::%{_uncoloredname}%} if {-colorednames::%{_uncoloredname}%} is set
+        return "&6rab&4bit" if expr-1 is a rabbit
+        return "&cvillager" if expr-1 is a villager
+        return {_uncoloredname}
+
+effect send %offline player% to axoserver [named] %string%:
+    trigger:
+        make bungee execute command "/send %expr-1% %expr-2%"
+
+effect send all players on [axoserver [named]] %string% to [axoserver [named]] %string%:
+    trigger:
+        make bungee execute command "/send %expr-1% %expr-2%"
+
+offline player property axp:
+    get:
+        return network wide variable "profile::%uuid of expr-1%::axp"
+
+entity property collidability:
+    set:
+        expr-1.setCollidable(the change value)
+    get:
+        return expr-1.isCollidable()
+
+non-single entity property collision exemptions:
+    add:
+        set {_uuid} to (the change value.getUniqueId())
+        if expr-1.getCollidableExemptions().contains({_uuid}) is false:
+            expr-1.getCollidableExemptions().add({_uuid})
+        #senddebug "exemptions: %expr-1.getCollidableExemptions()%"
+    remove:
+        expr-1.getCollidableExemptions().remove((the change value).getUniqueId())
+    get:        
+        set {_exemptions::*} to ...expr-1.getCollidableExemptions()
+        loop {_exemptions::*}:
+            #senddebug "test: %loop-index% -> %loop-value%"
+            set {_val::%loop-index%} to ((loop-value).toString()) parsed as entity
+            #senddebug "val: %((loop-value).toString()) parsed as entity%"
+        return {_val::*}
+    set:
+        loop the change values:
+            #senddebug "entity to add: %loop-value% uuid: %uuid of loop-value% string uuid: %UUID.fromString(uuid of loop-value)%"
+            expr-1.getCollidableExemptions().add(loop-value.getUniqueId())
+
+effect tame %entities% to %player%:
+    trigger:
+        loop expressions 1:
+            try loop-value.setOwner(expr 2)
+
+expression placeholder replaced %string% for %offline player%:
+    get:
+        return PlaceholderAPI.setPlaceholders(expr-2, expr-1)
+        
+expression %string% as essentialscolors:
+    get:
+        return expr-1.replaceAll("&##([0-9a-fA-F]{6})","<##$1>")
+        #set {_result} to expr-1
+        #set {_matches::*} to groups 1 of expr-1 matched to "&#([0-9a-fA-F]{6})"
+        #send "here" to "johnheikens" parsed as player
+        #return {_result}.replaceAll("boop", "test")
+
+
+
+function getLuckpermsUser(player:offline player) :: object:
+    return {-luckpermsapi}.getUserManager().loadUser({_player}.getUniqueId()).join()
+
+
+condition %object% has offline permission %string%:
+    check:
+        #if expr-1.hasPermission(expr-2): #only works with online players
+        #    continue
+        if getLuckpermsUser(expr-1).getCachedData().getPermissionData().checkPermission(expr-2).asBoolean():
+            continue
+        
+condition %offline player% doesn't have offline permission %string%:
+    check:
+        if getLuckpermsUser(expr-1).getCachedData().getPermissionData().checkPermission(expr-2).asBoolean() is false:
+            continue
+
+offline player property offline prefix:
+    get:
+        return getLuckpermsUser(expr-1).getCachedData().getMetaData().getPrefix()
+
+offline player property offline suffix:
+    get:
+        return getLuckpermsUser(expr-1).getCachedData().getMetaData().getSuffix()
+
+offline player property axo nickname:
+    get:
+        set {_nickname} to network wide variable "profile::%uuid of expr-1%::nickname"
+        if {_nickname} isn't set:
+            return "%expr-1%"
+        else:
+            return {_nickname}
+
+offline player property full axo name:
+    get:
+        #senddebug "getting full axo name for %expr-1%"
+        #set {_suffix} to placeholder replaced "%%vault_suffix%%" for expr-1
+        #senddebug "suffix: %{_suffix}%"
+        #senddebug "prefix test: %VaultHook.chat.getPlayerPrefix(null, expr-1)%"
+        #senddebug "prefix test 2: %vault_rankprefix%"
+        #set {_user} to getLuckpermsUser(expr-1)
+        #senddebug "prefix test 3:%{_user}.getCachedData().getMetaData().getSuffix()%"
+        set {_colorcoded} to "%offline prefix of expr-1%%axo nickname of expr-1%%offline suffix of expr-1%"
+        return formatted {_colorcoded} as essentialscolors
+
+offline player property profile name:
+    return type: string 
+    get:
+        #senddebug "getting profile name"
+        return formatted "<tooltip:&dclick to see the profile of %expr-1's full axo name%><run command:/profile %expr-1%>%expr-1's full axo name%"
+
+number property sign:
+    get:
+        if expr-1 > 0:
+            return 1
+        else if expr-1 < 0:
+            return -1
+        else:
+            return 0
+
+
+expression url from %string% with parameters %strings%:
+    get:
+        set {_extraArguments} to join expr-2 using "&"
+
+        return join expr-1 and "?" and {_extraArguments}
+
+expression url encoded %string%:
+    get:
+        set {_result} to expr-1 
+        replace all " " in {_result} with "+"
+        replace all "?" in {_result} with "%%3F"
+        replace all "'" in {_result} with "%%27"
+        return {_result}
+
+
+#expressions
+
+expression %number% notes higher:
+    get:
+        return 2 ^ (expr-1 / 12)
+
+expression %number% axp as levels:
+    get:
+        return log((expr-1 / 100000) + 1,2) * 100
+        
+        #log((y / 100000) + 1,2) * 100 = x
+        #log((y / 100000) + 1,2) = x / 100
+        #(y / 100000) + 1 = 2 ^ (x / 100)
+        #(y / 100000) = (2 ^ (x / 100)) - 1
+        #y = ((2 ^ (x / 100)) - 1) * 100000
+        
+        
+
+expression %number% axp levels as axp:
+    get:
+        return ((2 ^ (expr-1/100))-1) * 100000
+
+
+effect [make|let] chuckle note %string%:
+    trigger:
+        post expr-1 to channel with id "1022851496989175859"
+
+#this is NOT optimized for performance!
+#effect set line matching %string% in file %string% to %string%:
+#    trigger:
+#        set {_contents::*} to file contents of expr-2
+#        loop size of {_contents::*} times:
+#            if {_contents::%loop-number%} matches expr-1:
+#                set line loop-number in file expr-2 to expr-3
+#                exit
+
+        
+
+#effects
+#volume will default to 1 just like pitch
+effect play notification %text% [with volume %number%] [with pitch %number%] to %player% [in channel %-string%]:
+    trigger:
+        set {_channelname} to expr-5 otherwise "chat"
+        set {_channelvolume} to (network wide variable "notificationvolume::%uuid of expr-4%::%{_channelname}%") otherwise (network wide variable "defaultnotificationvolume::%{_channelname}%")
+        #senddebug "volume: %{_channelvolume}%"
+        set {_volume} to {_channelvolume} * expr-2
+        if {_volume} > 0:
+            #senddebug "volume > 0"
+            set {_pitch} to expr-3
+            if expr-4 is on this server:
+                play sound expr-1 with volume {_volume} with pitch {_pitch} to expr-4
+            else:
+                send redis message "sound %expr-1% %{_volume}% %{_pitch}% %expr-4%" to channel "server%axoserver of expr-4%"
+
+effect play notification %-string% [with pitch %-number%]:
+    trigger:
+        loop all players:
+            set {_p} to loop-player
+            play notification expr-1 with pitch (expr-2 otherwise 1) to {_p}
+
+effect play chat notification to %player%:
+    trigger:
+        set {_pitch} to a random integer between -12 and 12
+        set {_sound} to network wide variable "notificationsound::%uuid of expr-1%" otherwise "block.note_block.bell"
+        set {_volume} to network wide variable "notificationvolume::%uuid of expr-1%::chat" otherwise network wide variable "defaultnotificationvolume::chat" 
+        
+        #send "playing sound" to consol
+        play sound {_sound} with volume {_volume} with pitch ({_pitch} notes higher) to expr-1
+
+effect play chat notification:
+    trigger:
+        loop all players:
+            if loop-value has permission "johnsserver.notifications.chat":
+                play chat notification to loop-value
+
+effect:
+    patterns:
+        give %number% axp to %offline player%
+        give %number% axp to %offline player% with sound
+        give %number% axp to %offline player% with sound and chat
+    trigger:
+        set {_player} to expr-2
+        
+        set {_playerserver} to axoserver of {_player}
+
+        set {_oldaxp} to network wide variable "profile::%uuid of {_player}%::axp" 
+        set {_oldaxplevel} to rounded down ({_oldaxp} axp as levels)
+
+        add expr-1 to network wide variable "profile::%uuid of {_player}%::axp"
+
+        set {_newaxp} to network wide variable "profile::%uuid of {_player}%::axp" 
+        set {_newaxplevel} to rounded down ({_newaxp} axp as levels)
+
+        if {_newaxplevel} is more than {_oldaxplevel}:
+            if {_player} is on the network:
+                set {_titleused} to true
+
+                make server named {_playerserver} execute code "send title ""&c&lL&6&lE&e&lV&a&lE&b&lL &d&lUP"" with subtitle ""&c&l%{_oldaxplevel}% &e&l-&6&l> &d&l%{_newaxplevel}% &c&lA&e&lX&a&lP &c&ll&6&le&e&lv&a&le&b&ll&d&ls"" to (""%{_player}%"" parsed as offline player) for 3 seconds with fade-in 10 ticks and fade-out 2 seconds"
+
+                #set {_onlineplayer} to {_player} parsed as online player
+                #play sound "ui.toast.challenge_complete" with volume 1 with pitch 12 notes higher to {_player}
+                play notification "ui.toast.challenge_complete" with pitch 2 to {_player} in channel "axp"
+                #make server named {_playerserver} execute code "play notification ""ui.toast.challenge_complete"" with pitch (12 notes higher) to (""%{_player}%"" parsed as offlineplayer) in channel ""axp"""
+
+            if {_newaxplevel} >= 25:
+                #senddebug "novice"
+                if {_newaxplevel} >= 100:
+                    if {_newaxplevel} >= 300:
+                        #senddebug "elite"
+                        if {_player} doesn't have offline permission "group.elite":
+                            make console execute command "/lp user %{_player}% parent add elite"
+                    #else:
+                        #senddebug "member"
+                    if {_player} doesn't have offline permission "group.member":
+                        make console execute command "/lp user %{_player}% parent add member"
+                else:
+                    if {_player} doesn't have offline permission "group.novice":
+                        make console execute command "/lp user %{_player}% parent add novice"
+                        if {_player} is on the network:
+                            axosend "you just leveled up to novice! click HERE to give the person who causes you to stay here the most a reward!" to {_player}
+        if check [({_player} is on the network)] and check [(the matched pattern > 1)]:
+            axosend "&b+ &a&l%expr-1% &ea&6x&cp&d!" to {_player} if the matched pattern is 3
+
+            if {_titleused} isn't set:
+                if expr-1 is less than 10:
+                    #whole calculation: (paste in desmos.com/calculator) 2\ -\ \left(\frac{x}{10}\right)\cdot1.5
+                    set {_pitch} to 2 - (expr-1 * 0.13) + (a random number between -0.2 and 0)
+                    play notification "entity.experience_orb.pickup" with pitch {_pitch} to {_player} in channel "axp"
+
+                else:
+                    if expr-1 is less than 100:
+                        #sqrt(expr-1) will be in range (4,10)
+                        #whole calculation: (paste in desmos.com/calculator) 2\ -\ \frac{\left(x-10\right)}{90}\cdot1.5
+                        set {_pitch} to (-0.01444 * expr-1) + 2.14444 + (a random number between -0.2 and 0)
+                        #set {_pitch} to 2 - (sqrt(expr-1) * 0.14) + (a random number between -0.2 and 0)
+                        #senddebug "playing notif"
+                        play notification "entity.player.levelup" with pitch {_pitch} to {_player} in channel "axp"
+                    else:
+                        if expr-1 is less than 500:
+                            play notification "entity.player.levelup" with pitch 1 to {_player} in channel "axp"
+                        else:
+                            play notification "ui.toast.challenge_complete" with pitch 2 to {_player} in channel "axp"
+                            #play sound "ui.toast.challenge_complete" with pitch 12 notes higher to {_player}
+
+effect softkick %player%:
+    trigger:
+        send expr-1 to server "anarchy"
+
+effect wait non async [for] %timespan%:
+    trigger:
+        delay the effect
+        wait expr-1
+        continue
+
+effect wait for typing %string%:
+    trigger:
+        delay the effect
+        set {_timetotype} to length of expr-1 * 3
+        wait non async for "%{_timetotype}% ticks" parsed as timespan
+        continue
+
+effect [let|make] chuckle say %string% in network %boolean%:
+    trigger:
+        set {_msg} to expr-1
+        set {_network} to expr-2
+        delay the effect
+        if expr-2 is true:
+            show typing status in (channel with id {-networkchannelid})
+            wait for typing {_msg}
+            make console execute command "/sudochucklenetwork %{_msg}%"
+        else:
+            show typing status in channel with id {-globalchannelid}
+            wait for typing {_msg}
+            make console execute command "/sudochuckleglobal %{_msg}%"
+        continue
+
+effect send lag notification because [of] %string%:
+    trigger:
+        send "&clag spike! %expr-1%" to all players
+        wait 2 ticks
+        send "&afinished %expr-1%" to all players
+
+on redis command:
+    if event-string contains "/sk reload":
+        send lag notification because of "reloading code"
+
+on command "/sk reload":
+    send lag notification because of "reloading code"
+
+#on world save:
+#    if  event-world is world "world":
+#        send lag notification because of "saving world"
+
+
+
+effect:
+    patterns:
+        run bash lines %strings%
+        run bash lines %strings% as root
+    trigger:
+        delete file "tempbashscript.sh"
+        create file "tempbashscript.sh"
+        set {_commands::*} to expr-1
+        loop size of {_commands::*} times:
+            write "%{_commands::%loop-number%}%" at line loop-number to file "tempbashscript.sh"
+        run bash command "chmod u+x tempbashscript.sh"
+        
+        if the matched pattern is 1:
+            #senddebug "running as normal user..."
+            run bash command "./tempbashscript.sh"
+        else:
+            senddebug "running as root user..."
+            delete file "tempbashscript2.sh"
+            create file "tempbashscript2.sh"
+            write "echo Qb7U2paHq2uQ9v23ddUH | su root -c './tempbashscript.sh'" at line 1 to file "tempbashscript2.sh"
+            run bash command "chmod u+x tempbashscript2.sh"
+            run bash command "./tempbashscript2.sh"
+            
+            #run bash command "echo Qb7U2paHq2uQ9v23ddUH | su root -c './tempbashscript.sh'"
+        #run script at "tempbashscript.sh"
+        #senddebug "script: %expr-1%"
+        #delete file "tempbashscript.sh"
+
+
+expression sed proof %string%:
+    get:
+        set {_result} to expr-1
+        replace all "&" in {_result} with "\&"
+        replace all """" in {_result} with "\"""
+        replace all "/" in {_result} with "\/"
+        replace all "?" in {_result} with "\?"
+        return {_result}
+
+effect replace lines matching %string% with %string% in file %string%:
+    trigger:
+        
+        set {_searchstring} to sed proof expr-1
+        senddebug "searchstring: %{_searchstring}%"
+
+        set {_replacestring} to sed proof expr-2
+        senddebug "replacestring: %{_replacestring}%"
+
+        run bash lines "cd %absolute path of ""%", "sed -i 's/%{_searchstring}%/%{_replacestring}%/' %expr-3%" as root
+
+expression text of file %string%:
+    get:
+        return Files.readString(Path.of(expr-1))
+
+effect send %offline player% to [a] backup server:
+    trigger:
+        if expr-1 has permission "bungeecord.server.hub": #works
+            send expr-1 to axoserver named "hub"
+        else:
+            send expr-1 to axoserver named "anarchy"
+
+
+effect stop [the] server safely:
+    trigger:
+        send all players on axoserver named {-servername} to axoserver named "hub"
+
+        #give all players time to leave
+        
+        network wide variable "smps::%{-servername}%" is set:#this is a smp. remove it from the /server command list (it will get added back once it starts up again)
+            make bungee execute command "/svm remove %{-servername}%"
+        wait 10 ticks
+
+        #set {-shouldstopwhenempty} to false
+        #set {-uptimeminutes} to 0
+        stop the server
+
+effect make the server hybernate:
+    trigger:
+        set network wide variable "servers::%{-servername}%::hybernating" to true
+        stop the server safely
+
+on skript stop:#when the server stops
+    set network wide variable "servers::%{-servername}%::lastseen" to now
+    set network wide variable "servers::%{-servername}%::status" to "restarting"
+
+effect react to kill of %entity% by %entity%:
+    trigger:
+        set {_attacker} to expr-2
+        set {_victim} to expr-1
+        if {_attacker} is player:
+            send title "&d&lK&c&lI&6&lL&e&lL" with subtitle "&4&l⚔ &c%bold ({_victim}'s colorized name)% &4&l⚔" to {_attacker} for 1 second with fade-in 5 ticks and fade-out 1 second
+        if {_victim} is player:
+            send title "&3&lY&b&lO&a&lU &d&lD&c&lI&6&lE&e&lD" with subtitle "&c&l☠ &c%bold ({_attacker}'s colorized name)% &c&l☠" to {_victim} for 1 second with fade-in 5 ticks and fade-out 1 second
+        play sound "block.respawn_anchor.deplete" in block category with volume 3 with pitch (random number between 0.5 and 2) at {_victim}
+        #play sound "entity.player.attack.sweep" in block category with volume 1 with pitch 1 to {_attacker}
+        set {_startpitch} to a random integer between -5 and 8
+
+        loop 4 times:
+            if loop-number is 2:
+                #doesn't work:
+                #show 10 "soul" particles at location of expr-1 for expr-2
+                #senddebug "/execute in %world of expr-1% run particle minecraft:soul %x-coordinate of expr-1% %(y-coordinate of expr-1) + 1% %z-coordinate of expr-1% 0.5 0.5 0.5 0 20 normal"
+                #make console execute command "/execute in %world of expr-1% run particle minecraft:soul %x-coordinate of expr-1% %(y-coordinate of expr-1) + 1% %z-coordinate of expr-1% 0.5 0.5 0.5 0 20 normal"
+                #senddebug "%((location of expr-1) offset by vector(0,1,0))%"
+                make 10 of soul at ((location of expr-1) offset by vector(0,1,0)) with offset vector(0.5, 1, 0.5) with extra 0
+            if loop-number < 4:
+                if {_attacker} is player:
+                    if {_victim} is player:
+                        play sound "entity.player.levelup" in block category with volume 0.5 with pitch (({_startpitch} + (loop-number * 2)) notes higher) at {_attacker}
+            play sound "entity.player.levelup" in block category with volume 0.5 with pitch ((0 - loop-number) notes higher) to {_victim}
+            wait 10 ticks
+        
+
+        #play sound "entity.player.attack.sweep" in block category with volume 1 with pitch (0 - loop-number) notes higher to {_attacker}
+        #loop 4 times:
+        #    wait 10 ticks
+
+
+
+#functions 
+
+function getminecraftaccount(user: user) :: offline player: 
+    set {_statement} to "select * from discordsrv__accounts where discord = '%discord id of {_user}%';"
+    execute unsafe {_statement } in {-sql::discord} and store the result in {_output::*}
+    #senddebug "result: %{_output::uuid::1}% -> %{_output::uuid::1} parsed as offline player%"
+    return "%{_output::uuid::1}%" parsed as offline player    
+
+expression get discord account async of %offline player%:
+    get:
+        #execute "select * from discordsrv__accounts where uuid = '%uuid of expr-1%';" in {-sql} and store the result in {_output::*}
+        senddebug "test"
+        set {_statement} to "select * from discordsrv__accounts where uuid = '%uuid of expr-1%';"
+        #senddebug "test: %{-sql::discord}%"
+        execute "select * from discordsrv__accounts where uuid = '%uuid of expr-1%';" in {-sql::discord} and store the result in {_output::*}
+        #send {_statement} to console
+        #senddebug "test: %{-sql::discord}%"
+        #senddebug "test: %{_output::discord::*}%"
+        #senddebug "test: %{_output::discord::1}%"
+        #senddebug "test: %indices of {_output::discord::*}%"
+        senddebug user with id "%{_output::discord::1}%"
+        {_output::discord::1} is set
+        return user with id "%{_output::discord::1}%"
+
+effect notify friends of %offline player% async:
+    trigger:
+        set {_p} to expr-1
+        wait 1 tick#make function async
+        #message friends of this player that they're online
+        loop network wide list "profile::%uuid of {_p}%::friends":
+            set {_friendofflineplayer} to "%(loop-value)%" parsed as offline player
+            #senddebug "class: %loop-value.getClass()%"
+            #senddebug "class: %"test".getClass()%"
+            #senddebug "p: %loop-value% -> %{_friendofflineplayer}%"
+            if {_friendofflineplayer} is on the network:
+                axosend "&dyour friend %{_p}'s profile name% joined" to {_friendofflineplayer}
+            #else:
+                #notify friends of {_p} async
+                set {_acc} to get discord account async of {_friendofflineplayer}# getdiscordaccountAsync({_friendofflineplayer})
+                #wait 1 tick
+                senddebug "acc: %{_acc}%"
+                if {_acc} is set:
+                    open private channel of {_friendofflineplayer} and store it in {_channel}
+                    post "joined" to channel with id "1063482240169943141"
+                    senddebug "channel: %{_channel}%"
+                    post "test" in {_channel}
+
+#function getdiscordaccountAsync(player: offline player) :: user:
+
+
+function loadAsync():
+    wait 1 tick
+    #load colored entity names
+    set {_contents::*} to file contents of "plugins/Skript/scripts/50_shared/colorednames.txt"
+    #senddebug "contents: %{_contents::*}%"
+    loop {_contents::*}:
+        set {_coloredname} to colored loop-value
+        set {_uncoloredname} to uncolored loop-value
+        #senddebug "colored name: %loop-value%"
+        #senddebug "uncolored name: %{_uncoloredname}%"
+        set {-colorednames::%{_uncoloredname}%} to {_coloredname}
+
+
+on script load:
+    set {_servernamestring::*} to owner of file "eula.txt" parsed as "<(server|smp)>%string%"
+    set {-servername} to {_servernamestring::1}
+
+    if {-loadcount} is set:
+        #make chuckle say "%{-loadcount}%" in network false
+        set {-loadcount} to {-loadcount} + 1
+    else:
+        #server just started. load all variables
+        set {-loadcount} to 1
+
+        set {-sql::db1} to the database "mysql://localhost:3306/skript?user=skript&password=SYpfyVJPHVHb9YZjEEGR&useSSL=false"
+        execute "select name from variables21" in {-sql::db1} and store the result in {_variablenames::*}
+
+        #copy all variables to a temporary list called '{-tdb1::*} this list will be deleted upon server restart. synchronization happens in the 'network wide variable/list' expression.
+        #THIS DOESNT WORK: delete {-tdb1::*}#delete all variables starting with {-tdb1::} it would not delete list members!
+        #
+
+
+
+        loop {_variablenames::name::*}:
+            set {_strippedname} to subtext of loop-value from 5 to the length of loop-value
+            set {-tdb1::%{_strippedname}%} to {db1_%{_strippedname}%}
+        
+        if network wide variable "databasetest::1" is not set:
+            chuckle note "variables aren't loading correctly in server %{-servername}%. restart the server if you made any changes"
+            log "variables failed to load. shutting down server"
+            set {_shouldstop} to true
+
+        else if network wide variable "databasetest::1" is 0:
+            chuckle note "variables aren't loading correctly in server %{-servername}% (databasetest::1 is %network wide variable "databasetest::1"%). restart the server if you made any changes"
+            log "variables failed appear to be reset. shutting down server"
+            set {_shouldstop} to true
+        else:
+            senddebug "variables loaded correctly"
+            #exit loop
+        {_shouldstop} is set:
+            chuckle note "additional data:"
+            if {-sql::db1} is not set:
+                chuckle note "sql is not set/loaded"
+            else:
+                chuckle note "sql is set/loaded"
+
+                chuckle note "5 variable samples:"
+                loop 5 times:
+                    set {_name} to random element of {_variablenames::name::*}
+                    #chuckle note "variable names: %{_name}%"
+                    set {_strippedname} to subtext of {_name} from 5 to the length of {_name}
+                    chuckle note "stripped name: %{_strippedname}% -> variable value: %{db1_%{_strippedname}%}%"
+            send all players on axoserver named {-servername} to axoserver named "hub"
+            stop the server
+            exit
+    #make bungee execute command "/svm add %{-servername}% localhost:%Bukkit.getPort()%"
+    #log "executing /svm add %{-servername}% localhost:%Bukkit.getPort()%"
+    #senddebug "port: %Bukkit.getPort()%"
+    #make chuckle say "%{-loadcount}%" in network false
+
+    
+    #set {-uptimeminutes} to 0
+
+    #copy all variables from the sql database to the temporary variables
+
+    #if true:
+
+
+
+    #senddebug "loading core..."
+
+    # load variables
+    #set {-greetings::*} to "hi!", "hiiii", "hey! :D", "heyo!", "hi hi", "wazzup?", "good day!", "hello" and "hey there!"
+    set {-congrats::*} to "yay! good job!", "gg!", "congratulations!", "congrats!", "well well!", "good job!", "doymn!", ":D", "c:", ":o", "congrats! :o", "yay!" and "woot!"
+    set {-greetings::*} to "hi!", "hiiii", "hey! :D", "heyo!", "hi hi", "good day!", "hello", "o/", "hey! o/" and "hey there!"
+    set {-agreements::*} to "yes", "yup", "hm hm"
+    set {-disagreements::*} to "no", "nup", "nope"
+    set {-politeno::*} to "no, sorry ):", "sorry buy no ):"
+    set {-okay::*} to "okay!", "ok!"
+    set {-impressed::*} to ":o", "o:", "wow!", "doymn", "whaat", ":eyes:"
+    #start async tasks
+    #keep bungee connected
+    
+    #make new discord bot:
+    #    enable all default intents
+    #    login to "blahblah" with name "chuckle"
+    #set {-serverport} to bungee port of bungee server named "%{-servername}%"
+        
+    set {-sql::discord} to the database "mysql://localhost:3306/discordsrv?user=discordsrv&password=SA36Cpj37BG2Mza5RkvZ&useSSL=false"
+    #set {-sql_network} to the database "mysql://localhost:3306/discordsrv?user=discordsrv&password=SA36Cpj37BG2Mza5RkvZ&useSSL=false"
+    set {-workinginvite} to "https://discord.gg/8Dhr7YReHX"
+    set {-bottoken} to "blahblah"
+    loadAsync()
+    set network wide variable "servers::%{-servername}%" to {-servername}
+    delete network wide variable "servers::%{-servername}%::hybernating"
+    set network wide variable "servers::%{-servername}%::lastseen" to now
+
+    set {-luckpermsapi} to LuckPermsProvider.get()
+
+    set {-essentialsapi} to Bukkit.getPluginManager().getPlugin("Essentials")
+    set {-warps} to {-essentialsapi}.getWarps()
+
+    set {-armornames::*} to "helmet", "chestplate", "leggings", "boots"
+    loop all players on axoserver named {-servername}:
+        #set {_var} to network wide variable "servers::%{-servername}%::players::%uuid of loop-value%"
+        #senddebug "var: %{_var}%"
+        (loop-value) isn't on this server
+        senddebug "deleting uuid of %loop-value%: %uuid of loop-value%"
+        delete network wide variable "servers::%{-servername}%::players::%uuid of loop-value%"
+        #register players
+    loop all players:
+        set network wide variable "servers::%{-servername}%::players::%uuid of loop-value%" to uuid of loop-value
+        #senddebug "registering %loop-value%"
+
+
+every {@checkinterval} minutes:
+    set {-uptimeminutes} to {-uptimeminutes} + 1
+    if number of all players is 0:
+        if {-uptimeminutes} is higher than 300:
+            make the server hybernate
+    
+    set network wide variable "servers::%{-servername}%::lastseen" to now
+    set network wide variable "servers::%{-servername}%::status" to "online"
+
+    if tps < 19.5:
+        chuckle note "lag spike in %{-servername}%! tps = %tps%, amount of players on %{-servername}% = %size of all players%... :thinking:"
+
+#on connect:
+#    if player doesn't have permission "bungeecord.server.%{-servername}%":
+#        kick the player due to "No permission to access this server"
+
+effect register %offline player% to the database:
+    trigger:
+        set network wide variable "profile::%uuid of expr-1%" to uuid of expr-1
+
+on join:
+    #senddebug "join"
+    loop 10 times:
+        if network wide variable "playerdata::%uuid of player%::server" is set:
+            #senddebug "waiting..."
+            wait 1 tick
+        else:
+            #senddebug "finished"
+            exit loop
+    set network wide variable "servers::%{-servername}%::players::%uuid of player%" to player
+    
+    set network wide variable "playerdata::%uuid of player%::server" to {-servername}
+
+    
+    set {_lastseen} to network wide variable "playerdata::%uuid of player%::lastseen" 
+    #senddebug "%player% joined"
+    if check [({_lastseen} isn't set)] or check [({_lastseen} was more than 1 second ago)]:
+        #senddebug "network join"
+        #senddebug "player: %uuid of player parsed as offline player%"
+        set {_friends::*} to network wide list "profile::%uuid of player%::friends"
+
+        #senddebug "friends of %player%: %{_friends::*}%"
+        #senddebug "friends 2: %{db1_profile::%uuid of player%::friends::*}%"
+        #call network join event
+        send redis message "join %uuid of player%" to channel "global"
+
+        notify friends of player async
+        #sendFriendNotifications(player)
+
+        if network wide variable "profile::%uuid of player%" isn't set:
+            #they joined the network for the first time
+            register player to the database
+            #set network wide variable "profile::%uuid of player%" to uuid of player
+            send redis message "firstjoin %uuid of player%" to channel "global"
+
+    wait 10 ticks
+    if player doesn't have permission "bungeecord.server.%{-servername}%":
+        loop 10 times:
+            if player is online:
+                send player to backup server
+                wait 20 ticks
+            else:
+                exit
+        senddebug "%player% manages to stay in survival somehow"
+
+on leave:
+    #todo: call network leave event
+    #send redis message "leave %uuid of player%" to channel "global"
+    #senddebug "leave"
+
+
+    
+    delete network wide variable "servers::%{-servername}%::players::%uuid of player%"
+    delete network wide variable "playerdata::%uuid of player%::server"
+    set network wide variable "playerdata::%uuid of player%::lastseen" to now
+
+    wait 1 second
+
+    if network wide variable "playerdata::%uuid of player%::server" isn't set:
+        #player isn't signalled on any other server
+        send redis message "leave %uuid of player%" to channel "global"
+
+
+    #let the last player leave
+    #wait 10 ticks
+    chuckle note "condidering to stop the server"
+    if number of all players is 0:
+        if {-shouldstopwhenempty} is true:
+            stop the server safely
+
+on npc right click:
+    #send "%player% clicked on %lowercase (uncolored (citizen event-number's name))%"
+    #cancel event
+
+    set {_name} to lowercase (uncolored (name of citizen event-number)) #returns name above head
+    #send {_name}
+    if {_name} is "lobby":
+        make player execute command "/lobby"
+    else if axoserver named {_name} exists:
+        if player has permission "bungeecord.server.%{_name}%":
+            send player to axoserver named {_name}
+    
+
+command /stop [<string>]:
+    permission: johnsserver.stop
+    usage: /stop confirm
+    trigger:
+        if check [(executor is a player)] and check [(arg 1 is not "confirm")]:
+            send "&ctype &b/stop confirm&c to confirm stopping the server"
+        else:
+            stop the server safely
+
+#on ServerCommandEvent:
+#doesn't work from discordsrv
+#    #chuckle say "hi" in network false
+#    #chuckle say "%event.getCommand()%" in network false
+#    send "%event.getCommand()%" to "JohnHeikens" parsed as player
+#    send "test" to "JohnHeikens" parsed as player
+#    if "%event.getCommand()%" contains "reload":
+#        send reload notification
+
+
+effect set line %number% of network motd to %string%:
+    trigger:
+        set {_inputwidth} to length of uncolored expr-2
+        senddebug "inputwidth: %{_inputwidth}%"
+        set {_sedstring} to expr-2
+        replace all "&" in {_sedstring} with "\&"
+        replace all """" in {_sedstring} with "\"""
+        replace all "/" in {_sedstring} with "\/"
+        replace all "?" in {_sedstring} with "\?"
+        senddebug "sedstring: %{_sedstring}%"
+
+        if {_sedstring} contains "&b":
+            set {_maxlinesize} to 38
+        else:
+            set {_maxlinesize} to 45 #length of normal size line, bold size line = 38
+        
+
+        set {_space} to (" " repeated ((({_maxlinesize} - {_inputwidth}) / 2) * 1.5) times)
+
+        set {_sedstring} to "%{_space}%%{_sedstring}%"
+
+        #replace all "§" in {_sedstring} with "found"
+        #replace all "§" in {_sedstring} with "\&"
+
+        run bash lines "sed -i 's/.*auto line %expr-1%.*/        - ""%{_sedstring}%"" ##auto line %expr-1%/' /home/serverproxy/server/plugins/AdvancedNMotd/AdvancedConfiguration/Strings.yml" as root
+        
+        #replace line matching /.*replace.*/ with expr-1
+        
+        #run "sed -i 's/.*replace.*/        - ""%expr-2%"" ##replace this line/' /home/serverproxy/server/plugins/AdvancedNMotd/AdvancedConfiguration/Strings.yml" as root
+        #sed -i 's/.*replace.*/        - "test" #replace this line/' /home/serverproxy/server/plugins/AdvancedNMotd/AdvancedConfiguration/Strings.yml
+        
+        #sudo -u root -p Qb7U2paHq2uQ9v23ddUH sed -i 's/.*replace.*/        - "testing" #replace this line/' /home/serverproxy/server/plugins/AdvancedNMotd/AdvancedConfiguration/Strings.yml
+        
+
+
+        make bungee execute command "/anm reload"
+
+condition %offline player% is a bedrock user:
+    check:
+        (name of expr-1) starts with "be_"
+        continue
+
+condition %entity% is ticking:
+    check:
+        expr-1.isTicking() is true
+        continue
+
+condition %offline player% is friends with %offline player%:
+    check:
+        network wide variable "profile::%uuid of expr-1%::friends::%uuid of expr-2%" is set
+        continue
+
+player property chat channel:
+    get:
+        #set {_pl} to MineverseChatAPI.getOnlineMineverseChatPlayer(expr-1)
+        #set {_var} to {_pl}.getCurrentChannel().getName()
+        return lowercase MineverseChatAPI.getOnlineMineverseChatPlayer(expr-1).getCurrentChannel().getName()
+    set:
+        #set {_channel} to ChatChannel.getChannel(the change value)
+        MineverseChatAPI.getOnlineMineverseChatPlayer(expr-1).setCurrentChannel(ChatChannel.getChannel(the change value))
+
+expression %number% rounded randomly:
+    get:
+        set {_basepart} to rounded down expr-1
+        if (a random number between 0 and 1) < (expr-1 - {_basepart}):
+            return {_basepart} + 1
+        else:
+            return {_basepart}
+
+player property ignorars:
+    get:
+        return MineverseChatAPI.getOnlineMineverseChatPlayer(expr-1).getIgnores()
+
+effect make %entity% damage %entity% by %number% using %damage cause%:
+    trigger:
+        set {_attacker} to expr-1
+        set {_victim} to expr-2
+        {_victim}.damage(expr-3, {_attacker})
+        set {_event} to (new EntityDamageByEntityEvent({_attacker}, {_victim}, expr-4, expr-3))
+        {_victim}.setLastDamageCause({_event})
+        Bukkit.getServer().getPluginManager().callEvent({_event})
+        #senddebug "damage cause: %{_victim}.getLastDamageCause()%"
+
+effect adjust view distance for %player%:
+    trigger:    
+        #setNoTickViewDistance(x): the render distance within which entities tick at
+        #setSendViewDistance(x): the render distance visible to the player
+        if expr-1 is afk:
+            #senddebug "setting to 2"
+            expr-1.setNoTickViewDistance(2)
+            expr-1.setSendViewDistance(2)
+        else if expr-1's gamemode is spectator:
+            #high render distance in spectator
+            #senddebug "setting to 10"
+            expr-1.setNoTickViewDistance(5)
+            expr-1.setSendViewDistance(10)
+        else:
+            #senddebug "setting to 7"
+            expr-1.setNoTickViewDistance(6)
+            expr-1.setSendViewDistance(7)
+
+on gamemode change:
+    wait 1 tick
+    adjust view distance for player
+
+on afk change:
+    wait 1 tick
+    adjust view distance for player
+
+expression utf8 charachter %number%:
+    get:
+        return "%...JavaChar.toChars(expr-1)%"
+
+on connect:
+    #senddebug "connecting (event hostname: %hostname%)"
+    #senddebug "hostname: %event.getHostname()%"
+    #log "host name: %event.getHostname()%"
+
+    set {_logininfo::*} to event.getHostname() split at utf8 charachter 0
+    #senddebug "char: %...JavaChar.toChars(0)%"
+    #senddebug "login info: %{_logininfo::1}%"
+    set {_hostname} to {_logininfo::1}
+
+    set {_lastseen} to network wide variable "playerdata::%uuid of player%::lastseen" 
+    #senddebug "lastseen: %{_lastseen}%"
+    if check [({_lastseen} isn't set)] or check [({_lastseen} was more than 1 second ago)]:
+        #chuckle note "host: %hostname%"
+        
+        set {_relevantpart} to first element of ({_hostname} split by ":")
+        #chuckle note "relevant part: %{_relevantpart}%"
+
+        #set network wide variable "playertoip::%uuid of player%" to uuid of player
+        #set network wide variable "playertoip::%uuid of player%::%ip of player%" to ip of player
+        #set network wide variable "lastusedip::%uuid of player%" to ip of player
+
+        #set network wide variable "iptoplayer::%ip%" to ip of player
+        #set network wide variable "iptoplayer::%ip%::%uuid of player%" to uuid of player
+        #set network wide variable "lastusedplayer::%ip%" to uuid of player
+
+        #set network wide variable "lastusedhost::%uuid of player%" to {_relevantpart}
+
+        if {_relevantpart} contains "axo.bar":
+            wait 3 ticks
+            send "&e&lWARNING! &dyou are using the ip &e&l%{_relevantpart}%&d to connect to our server network. change it to &a&lPEX.LI&d!" to player
+            send title "&d&lCHANGE YOUR &e&lIP" with subtitle "&d&lTO &e&lPEX.LI" to player for 60 seconds
+            send "<link:https://pex.li/ip>&dfor more information go to &7&l&nhttps://&b&l&npex.li/ip"
+            chuckle say "hey %player%! you joined using %{_relevantpart}%. go change the ip in the server adress box!" in network true
+        else:
+            set {_parts::*} to {_relevantpart} split by "."
+            if size of {_parts::*} is 3:#using a host
+                set {_smpname} to {_parts::1}
+                if axoserver named {_smpname} exists:
+                    network wide variable "servers::%{_smpname}%::lastseen" was less than a minute ago:
+                        #kick player by reason of "sending to %{_smpname}%" would kick players out of the network if the smp server was not online
+                        chuckle note "joining smp %{_smpname}%... "
+                        send player to axoserver named {_smpname}
+                    else:
+                        wait 1 tick
+                        network wide variable "servers::%{_smpname}%::hybernating" is set:
+                            send "&cyou joined using &b&l%{_relevantpart}%&c but that server is hybernating. starting it for you..."
+                            #player is a bedrock user:
+                            #    send "&cthe server you tried to join (&b&l%{_smpname}%&c since you joined using &b&l%{_relevantpart}%&c) is offline. go to &b&l/server smp&c and do &b&l/h start %{_smpname}%&c to start it or to create your own server!"
+                            #else:
+                            #    send formatted "<run command: /server smp>&cthe server you tried to join (&b&l%{_smpname}%&c since you joined using &b&l%{_relevantpart}%&c) is offline. go to /server smp and do <run command:/h start %{_smpname}%>&b&l/h start %{_smpname}%&c to start it or to create your own server!"
+                            send player to axoserver named "smp"
+                            wait 20 ticks
+                            make server named "smp" execute command "/sudo %player% h start %{_smpname}%"
+                        else:
+                            set {_message} to "&cyou joined using &b&l%{_relevantpart}%&c but that server is offline. ask one of the admins to start it: "
+                            loop network wide list "smps::%{_smpname}%::owners":
+                                add (loop-value parsed as offline player)'s profile name to {_message}
+                            send formatted {_message}
+
+                #if network wide variable "smps::%{_smpname}%" is set:
+                #    chuckle note "sending %player% to smp server"
+                #    send player to axoserver named "smp"
+                else:
+                    chuckle note "no smp found with the name %{_smpname}%"
+
+condition %player% has voted on all required sites:
+    check:
+        loop network wide list "votesites":
+            network wide variable "votesites::%loop-value%::hidden" isn't set
+            #senddebug "%loop-value%"
+            set {_lastvotetime} to network wide variable "lastvote::%uuid of expr-1%::%loop-value%"
+            #senddebug "last vote time: %{_lastvotetime}%"
+            {_lastvotetime} isn't set:
+                exit
+            {_lastvotetime} was more than 1 day ago:
+                exit
+        continue
+
+non-single expression sites %offline player% should vote on:
+    return type: string
+    get:
+        loop network wide list "votesites":
+            network wide variable "votesites::%loop-value%::hidden" isn't set
+            expr-1 is a bedrock user:
+                network wide variable "votesites::%loop-value%::antibedrock" is set
+                continue loop
+            senddebug "%loop-value%"
+            set {_lastvotetime} to network wide variable "lastvote::%uuid of expr-1%::%loop-value%"
+            senddebug "last vote time: %{_lastvotetime}%"
+            {_lastvotetime} isn't set:
+                add loop-value to {_sites::*}
+            else if {_lastvotetime} was more than 1 day ago:
+                add loop-value to {_sites::*}
+        return {_sites::*}
+
+effect perform vote check:
+    trigger:
+        loop all players:
+            (size of sites loop-player should vote on) > 1
+            send title "&d&l/&c&lV&6&lO&e&lT&a&lE" with subtitle "" to loop-player
+            send "<run command:/vote>&dremember to &d&l/&c&lv&6&lo&e&lt&a&le&d for random rewards!" to loop-player
+            play sound "block.note_block.pling" with volume 1 with pitch 1 to loop-player
+            play sound "block.note_block.pling" with volume 1 with pitch (4 notes higher) to loop-player
+            play sound "block.note_block.pling" with volume 1 with pitch (7 notes higher) to loop-player
+            play sound "block.note_block.pling" with volume 1 with pitch 2 to loop-player

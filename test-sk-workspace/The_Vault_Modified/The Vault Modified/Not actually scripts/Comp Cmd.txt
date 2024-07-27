@@ -1,0 +1,8 @@
+command /comp [<text>]:
+	permission: default
+	trigger:
+		if arg 1 is not set:
+			send "Please choose the competition number!"
+			
+		if arg 1 is "1"
+			execute console command "give %player% "

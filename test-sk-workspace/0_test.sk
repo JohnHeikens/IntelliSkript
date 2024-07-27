@@ -1,0 +1,262 @@
+command /backpack:
+	aliases: bp
+	trigger:
+		add 1 to {_c}
+		set {_c} to 0
+		set {_cc} to 1
+		open chest inventory with 6 rows named "&8Backpack" to event-player
+		loop 54 times:
+			set slot {_c} of event-player's current inventory to {%script%::Global::%event-player's uuid%::%{_cc}%}
+			add 1 to {_c}
+			add 1 to {_cc}
+			
+on inventory close:
+	send "%event-player%"
+	if the name of event-player's current inventory is "&8Backpack":
+		set {_c} to 0
+		clear {%script%::Global::%event-player's uuid%::*}
+		loop 54 times:
+			add slot {_c} of event-player's current inventory to {%script%::Global::%event-player's uuid%::*}
+			add 1 to {_c}
+			
+function find2BlockGap(xcoord: number,zcoord: number):: location:
+
+expression a %string%:
+
+on right click holding lead:
+	drop apple named "a" {_} {_}
+	set a "b" to {_c}
+	loop {_test}:
+		set {_blah} to loop-value
+	give {_test} apple
+	give {_test} apple named "a"
+	give {_test} (apple named "a")
+	set {_test} to player
+	give {_test} apple
+	set {_test} to apple named "a"
+	
+expression:
+	patterns:
+		b
+	return type: number
+	
+effect:
+	patterns:
+		a %number% c
+		
+effect:
+	patterns:
+		a f c
+		
+on join:
+	a b c
+	a f c
+	
+	1
+	wait 1 tick
+	1 tick
+	wait 1 tick
+	wait {_test}
+	
+function shop(arg1:string):
+	uuid of {_test}
+	return "%...JavaChar.toChars(expr-1)%"
+	
+expression test[(]%number%[)]:
+	trigger:
+	
+on rightclick:
+	wait 1 tick
+	wait testtype.testfunc() tick
+	shop("")
+	test(2)
+	
+on rightclick:
+	loop all players:
+		if distance between the player and loop-player is smaller than 5:
+			apply blindness 5 to loop-player for 5 seconds
+			
+on rightclick:
+
+	if players item is "&lAtmos Sword":
+on right click holding lead:
+	nbt compound from player's tool has tag "petleash"
+	set {_n} to string tag "petleash" of nbt compound of player's tool
+	if {_n} is "null":
+		target entity is set
+		owner of target entity is player
+		cancel event
+		if name of target entity is not set:
+			set lore of player's tool to "&eCaptured: %target entity's type% (%target entity's type%)"
+		else:
+			set lore of player's tool to "&eCaptured: %name of target entity% (%target entity's type%)"
+		set {_nbt} to nbt compound of target entity
+		set string tag "petleash" of nbt compound of player's tool to "%{_nbt}%"
+		set string tag "captured" of nbt compound of player's tool to "%target entity's type%"
+		delete target entity
+	else:
+		cancel event
+		set {_e} to string tag "captured" of nbt compound of player's tool
+		set {_t} to nbt compound from string tag "petleash" of nbt compound of player's tool
+		spawn {_e} parsed as entity type at player with nbt {_t}
+		set string tag "petleash" of nbt compound of player's tool to "null"
+		delete string tag "captured" of nbt compound of player's tool
+		
+command /AtmosSword:
+	permission: op
+	permission message: &cNuh uh
+	trigger:
+		set {_test} to netherite sword
+		give {_test} {_blah} named "&lAtmos Sword"
+		give {_test} netherite sword named "&lAtmos Sword"
+		
+		
+on rightclick:
+	if player's item is "&lAtmos Sword":
+		loop all players:
+			if distance between the player and loop-player is smaller than 5:
+				apply blindness 5 to loop-player for 5 seconds
+on click:
+	summon pig at location of block
+	
+on break of lightning rod:
+	set {_test} to a furnace named "Advanced Furnace"
+	drop a furnace named "Advanced Furnace" {_} {_}
+	
+expression <(-){0,1}\d+(\.(\d+))?(?!\.)>:
+	return type: number
+	
+offline player property axoserver: 
+	get:
+	
+effect:
+	trigger:
+on break of stone:
+	set {_block} to event-block
+	set {_hardness} to {_block}'s hardness
+	{_block}'s damage
+	{_block}'s hardness - {_block}'s damage
+	set {_progress} to {_test}
+	set {_progress} to {_block}'s hardness - {_block}'s damage
+	set {_total} to {_block}'s hardness
+	set {_percent} to round({_progress} / {_total} * 100, 2)
+	create bossbar titled "Mining Progress" and id "Mining Progress" for all players with progress {_percent}
+	1
+	axoserver of {_test}
+	
+effect:
+	patterns:
+		%commandsender% blah
+	trigger:
+	
+		1 tick
+		{_a}+{_b}
+		
+expression:
+	set string:
+	
+	set number:
+	
+effect [make|let] chuckle note %string%:
+	trigger:
+		channel with id {_test}
+		post {_test} to {_test}
+condition %offline player% is on this server:
+	check:
+	
+		{_a}+{_b}
+		{_a} + {_b}
+		1 tick
+		wait testfunc() tick
+		{_test} blah
+		expr-1 has permission "test"
+		expr-1 doesn't have permission "test"
+		
+		if tps < 19.5:
+			chuckle note "lag spike in %{-servername}%! tps = %tps%, amount of players on %{-servername}% = %size of all players%... :thinking:"
+		else:
+		#if {-loadcount} is set:
+		#make chuckle say "%{-loadcount}%" in network false
+		#    set {-loadcount} to {-loadcount} + 1
+		#    else:
+		
+		{_} parsed as {_}
+		"JohnHeikens" parsed as offline player
+		
+		send "<suggest command:%expr-1%>&4%{-servername}% &f| &cd&6e&eb&au&bg&f: %expr-1%" to ("JohnHeikens" parsed as offline player)
+		1 tick
+		1 tick
+		
+		if expr-1 doesn't have permission "bungeecord.server.%{-servername}%":
+			loop 10 times:
+			
+		{_test} parsed as {_t}
+		
+		send "" to {_test}
+		{_test} parsed as {_t}
+		send "searchstring: %{_searchstring}%"
+		
+effect axosend %string% to %offline player%:
+	trigger:
+		if expr-2 is on this server:
+		
+on break of lightning rod:
+	drop a furnace named "Advanced Furnace" at location of event-block
+	if name of player's tool is "Advanced Furnace":
+		drop {_t} at {_te}
+	location of event-block
+	a furnace
+	{_} named ""
+	drop {_} at location of event-block
+	drop a furnace named "Advanced Furnace" at location of event-block
+	set block at {_location} to a furnace
+	
+	if name of player's tool is "Advanced Furnace":
+	
+	
+	{_test} is "Advanced Furnace"
+	a furnace named "Advanced Furnace"
+	set {_advancedFurnace} to a furnace named "Advanced Furnace"
+	{_test} named "test"
+	
+	if name of player:
+		set {_belowLocation} to location of {_loc2}
+		delete block at {_location}
+		add 1 to {_topLocation}
+		set {_test} to "%test%"
+		1 tick
+		
+	wait 1 tick
+	
+on load:
+	set {_advancedFurnace} to a furnace named "Advanced Furnace"
+	add {_advancedFurnace} to player's inventory
+	
+on place of furnace:
+	if name of player's tool is "Advanced Furnace":
+		set {_location} to location of event-block
+		delete block at {_location}
+		set block at {_location} to furnace facing direction of player
+		set name of block at {_location} to "Advanced Furnace"
+		set {_topLocation} to {_location}
+		add 1 to {_topLocation}'s Y-coordinate
+		set block at {_topLocation} to lightning rod
+		
+on break of furnace:
+	if name of event-block is "Advanced Furnace":
+		cancel event
+		drop a furnace named "Advanced Furnace" at location of event-block
+		set {_topLocation} to location of event-block
+		add 1 to {_topLocation}'s Y-coordinate
+		if block at {_topLocation} is lightning rod:
+			set block at {_topLocation} to air
+		set block at location of event-block to air
+		
+on break of lightning rod:
+	set {_belowLocation} to location of event-block
+	subtract 1 from {_belowLocation}'s Y-coordinate
+	if name of block at {_belowLocation} is "Advanced Furnace":
+		cancel event
+		drop a furnace named "Advanced Furnace" at {_belowLocation}
+		set block at {_belowLocation} to air
+		set block at location of event-block to air

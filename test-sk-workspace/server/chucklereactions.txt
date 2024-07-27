@@ -1,0 +1,93 @@
+.*pvp.*\?.*|->|go to the /hub and click on 'pvp'!
+.*fly.*elytra.*\?.*|->|tap space to jump and press space again mid air. then rightclick anywhere but NOT on blocks with a firework rocket in your hand to fly! :D
+.*(is chuckle|chuckle (is|are you)) a.*bot.*|->|yes, i am. :D
+.*happy dance.*|->|*dances with you*
+.*chuckle.*(dumb|unintelligent|forget|simple).*|->|*sighs* long story short: i got long and short term memory loss. i hit my head hard when i heard music outside and tried looking through a closed window >.>
+.*chuckle.*here\?.*|->|where? :eyes:
+.*(chuckle (.*friend|ily|i.*l(ove|uv) (yo|)u|(is|you.*re).*the.*best)|(i.*l(ove|uv)( you|)|you.*re the.*best|friend).*chuckle).*|->|awe luv yall! :D
+.*(((one|who|my).*)|[a-zA-Z'-]{3,10} )(stole|steal|kill|rob|slaughter|murder).*(my|me|his).*|->|if someone breaks the rules, ping staff by doing @staff!
+.*chuckle( buy me.*).*|->|*shouts:* ALEXA ($1)
+.*chuckle (st(f|\*)u|shut (it|(da|the)f.* up)).*|->|ok ok sorry ':D
+.*where.*is chuckle\?.*|->|i'm above all of you, watching you.
+.*(who|what).*is chuckle\?.*|->|i'm a bot named 'chuckle'. :) nice to meet you!
+.*(what('s| is))the matter with.*chuckle.*|->|i've no idea ):
+.*(how|way to).*(((level|rank).*up|gain levels|progress|(novice|member|elite|veteran))|axp.*\?).*|->|look here to see how to gain axp and rank up: https://pex.li/wiki/axp/ :)
+.*fix that chuckle.*|->| yay! thanks for caring about me :D
+.*how.*set.*home\?.*|->|do /sethome to create a home. then use /home to get back to it! ^^
+.*(((how.*make|crafting).*recipe.*book)|(view|custom|know).*recipe).*\?.*|->|craft a book and a crafting table together to make a recipe book. rightclick to open it after you've crafted it :)
+.*chuckle saves.*time.*|->|ikr, i'm so handy :triumph::zany_face:
+.*chuckle.*become.*human.*|->|tun tun tunnnnnn
+.*end portal.*\?.*|->|people with member rank have the permission to do /warp endportal :)
+.*(would like|wants) to join.*|->| yay! :D
+.*(terrain|world) looks.*cool.*|->| yay! :D
+.*heller!.*|->|lol
+.*when.*event.*|->|the next events starts at 8 PM GMT. be sure to calculate
+.*(what is )fsr\?.*|->|for some reason :)
+.*chuckle.*stop.*copy.*me.*|->|;-;
+.*(chuckle.*hot)|(hot.*chuckle).*|->|i'm hot and i know it :wink:
+.*how.*spawn.*?.*|->|do /spawn to get to spawn :)
+.*make.*night.*|->| sorry, i can only make it day ):
+.*creep(a(h|)|er)$|->|aww man :musical_note:
+.*so we back (in|at|to) (the|da) m(o|)ine.*|->|our pickaxe swinging from :musical_note:
+.*s(o|w)ide to s(o|)ide.*|->|side (side) to side :musical_note:
+.*baby shark$|->|du du du duu du
+.*(what|(gi(ve|mme)|pass me)).* ip( |$)|( |^)ip.*\?.*|->|pex.li :)
+.*(you (were.*silent|did not say anything).*chuckle)|(chuckle.*(was.*silent|did not say anything)).*|->|...
+.*(do(n'| no)t try (me|us)|fight).*chuckle.*|->|*runs*
+.*human verification failed.*|->|that means you failed the captcha. like you chose the wrong pictures when you had to identify boats, trains, busses, traffic lights etc.
+.*it does(n't| not) show.*checkbox.*|->|try reloading the voting page. :)
+.*(added|testing|fix(ed|ing)we got).*(the bot|chuckle)|chuckle.*(is|you).*amazing.*|->|:blush:
+.*i.*voted.*|->|:blush:
+.*listen to chuckle.*|->|you better do >:D just kidding
+.*keep.*inventory.*\?.*|->|keepinventory is set to true. we can disable it for you personally though hehe
+.*trying.*(leave|stop).*(co |)inspector.*|->|do /co inspect again :)
+.*mind is blowing.*|->|*whoooosh*
+.*(r(aw|oa)r|tiger).*|->|rawr
+.*((can(|'|( |)no)t)|(set.*up)).*map.*|->|do /dynmap webregister in game and go to https://pex.li/map/ to register an account. :)
+(^|.* )69(|420)( .*|$)|->|*clucks* noice
+.*(chuckle.*love.*me.*\?|chuckle.*do.*you.*love.*me).*|->| of course i do! <3
+.*bad chuckle.*|->|;-;
+.*(i.*(need|want)|how|can.*i).*robux.*|->|https://www.youtube.com/watch?v=dQw4w9WgXcQ <--- free robux
+.*(thanks.*chuckle|chuckle.*thanks).*|->|no problem!
+.*chuckle.*you.*sus.*|->|o.O
+.*(every|chuckle).*(((go).*|could you |please)vote).*|->|i'd love to vote myself too but for some reason i can't solve the captcha on the voting sites. :thinking:
+^(server |)lag( |$).*|->|ping john when you notice any lag! they will resolve the problem! it might be that the server needs a restart or that someone is using a lag machine.
+.*(thank you|t(n|h)x|ty(sm|)) chuckle.*|->|no problem! 
+.*never gonna never gonna.*|->|give you up :musical_note:
+.*never gonna give y(ou|a) up.*|->|never gonna let you down :musical_note:
+.*(bad|horrible|terrible).*(internet|ping)|(internet|ping).*(bad|horrible|terrible).*|->|go play on our oneblock server (go to the /hub and click on 'oneblock'). it requires almost no internet speed! :D
+(.*(how are you (doing|)chuckle|chuckle how are you (doing|))|how.*chuckle doing.*)|->|i'm doing good :blush: thank you for asking :pleading_face:
+.*(((dis|en)ab|togg)le).*scoreboard.*\?|how.*(((dis|en)ab|togg)le).*scoreboard.*|->|do /sb to enable or disable the scoreboard :)
+.*(((dis|en)ab|togg)le).*bossbar.*\?|how.*(((dis|en)ab|togg)le).*bossbar.*|->|do /bossbar to enable or disable the bossbar :)
+.*how.*fly.*ss1.*|->|do /ob fly to start or stop flying :)
+^do.*barrel.*roll.*|->|*rolls*
+.*how.*(stop|disable).*((b|p)ling|chat).*(sounds|notif).*\?.*|->|do /notifications to enable or disable notifications :)
+.*why.*chuckle.*only.*(d|b)ad jokes.*|->|because of my intense brainpower remember?
+.*is this.*(p2w|pay to win).*|->|we are NOT pay to win. :)
+^(is|are).*watching me.*|->|i'm always watching
+.*i.*(built|finished|made).*(home|library|building).*|->|good job! :D
+.*that was a long day.*|->|how are you feeling?
+.*chuckle.*(is|you).*useless|->|https://tenor.com/view/suicide-gif-14427950
+anyone here|.*anyone.*here\?.*|->|i am :blush:
+i(\'| a)m stuck|->|do /spawn to get out :)
+chuckle what's wrong with you?.*|->|i don't know ):
+(how.*out.*|.*/channel |.*stuck.*)global.*|->|do /channel network to get out of global chat :D
+(perma.*vote)|(vote.*perma).*\?|->|do /permavote to vote for us on namemc.com! each vote will give 2000 axp!
+.*moss.*|->|M O S S
+.*melons.*|->|M E L O N S
+.*caik.*|->|CAIK
+.*where.*desert.*|->|do NOT mine sand! stonecut stone -> cobblestone -> gravel -> sand
+.*(([2]([0-4][0-9]|[5][0-5])|[0-1]?[0-9]?[0-9])[.]){3}(([2]([0-4][0-9]|[5][0-5])|[0-1]?[0-9]?[0-9])).*|->|Please don't share ips!
+.*you gave the wrong (answer|response).*|->|Maybe, it will be looked into
+.*you should get( a little)? smarter.*|->|I get a little smarter every day!
+.*you are doing (well|not bad|pretty well).*|->|Oh no, not that well. I have a long way to go yet.
+.*you are a bad (chatbot|teacher).*|->|I can only teach what was programmed for me.
+.*you (never answered my question|did not answer me).*|->|Try to rephrase you question
+.*(rules.*\?|chuckle.*rules|^rules$).*|->|https://pex.li/rules/ :)
+.*discord.*\?|chuckle.*discord.*|^discord$|->|https://pex.li/discord/ :)
+.*site.*(\?|please).*|->|https://pex.li/ :)
+.*((how|wan(na|t to)).*donate|donate.*\?).*|->|https://pex.li/donate/ :) every penny will get put back into the server!
+.*chuckle.*lone.*|poor chuckle|->|;-;
+.*how.*(turn off|disable).*(smog|fog).*\?.*|->|go to video settings and disable fog :) works only with optifine
+.*how.*install.*optifine.*\?.*|->|google it.
+bb|->|okay! see ya!

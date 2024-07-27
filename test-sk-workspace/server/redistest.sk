@@ -1,0 +1,48 @@
+options:
+    redisprefix: "&credis&f:"
+
+on redis message:
+    if (redis message) starts with "cmd":
+        set {_commands::*} to redis message parsed as "cmd %string%"
+
+        set {_values::string} to {_commands::1}
+        call custom event "rediscommand" with event-values {_values::*}
+
+        make console execute command "%{_commands::1}%"
+        
+    if (redis message) starts with  "code":
+        set {_commands::*} to redis message parsed as "code %string%"
+        evaluate "%{_commands::1}%"
+
+    if (redis message) starts with  "join":
+        set {_commands::*} to redis message parsed as "join %string%"
+        set {_values::offline player} to {_commands::1} parsed as offline player
+        call custom event "networkjoin" with event-values {_values::*}
+        #senddebug "&b&l%redis channel%&d -> &b&l%redis message%"
+        #senddebug "values: %{_values::*}%"
+
+    if (redis message) starts with "leave":
+        set {_commands::*} to redis message parsed as "leave %string%"
+        set {_values::offline player} to {_commands::1} parsed as offline player
+        call custom event "networkleave" with event-values {_values::*}
+    
+    if (redis message) starts with "sound":
+        set {_args::*} to redis message parsed as "sound %string% %number% %number% %offline player%"
+        play sound {_args::1} with volume {_args::2} with pitch {_args::3} to {_args::4}
+        #set {_values::offline player} to {_commands::1} parsed as offline player
+        #call custom event "networkleave" with event-values {_values::*}        
+
+    #if redis channel is "global":
+    #    send "%redis message% %redis channel% %redis message date%" to "JohnHeikens" parsed as player
+    
+    set {_color} to a random element of "&c", "&a", "&d", "&b"
+
+    #if check [(redis channel isn't {-servername})] or check [(redis message doesn't start with {@redisprefix})]:
+    #    senddebug "%{@redisprefix}% '%{_color}%%redis message%&r' %redis channel% %redis message date%"
+ 
+command /sendredis <text> <text>:
+    usage: /sendredis <channel> <message>
+    trigger:
+        send "&dmessage sent to channel '&b%arg 1%&d' :&b%arg 2%"
+        send redis message arg 2 to channel arg 1
+        #send redis message "hello world!" to channel "global"

@@ -1,0 +1,98 @@
+
+command /setup server:
+    permission: johnsserver.setup
+    trigger:
+        set line 18 in file "server.properties" to "online-mode=false"
+        set {_propertiesfile::*} to file contents of "server.properties"
+        set line 22 in file "server.properties" to "view-distance=6"
+        #set line 18 in file "server.properties" to "online-mode=false"
+        
+        #set line 10 in file "plugins/GlobalExecute/config.yml" to "PORT: 41006" 
+        #set line 13 in file "plugins/GlobalExecute/config.yml" to "PASSWORD: xwyRpaPzZL"
+        #set line 20 in file "plugins/GlobalExecute/config.yml" to "NAME: %{-servername}%"
+        #set line 29 in file "plugins/GlobalExecute/config.yml" to "    enabled: true"
+        #set line 30 in file "plugins/GlobalExecute/config.yml" to "    interval: 60"
+        #set line 31 in file "plugins/GlobalExecute/config.yml" to "    attempts: -1"
+        #send "%{-port}%" to player
+        #set yml value "PORT" from file "plugins/GlobalExecute/config.yml" to 41006
+        #set yml value "PASSWORD" from file "plugins/GlobalExecute/config.yml" to "xwyRpaPzZL"
+        #set yml value "NAME" from file "plugins/GlobalExecute/config.yml" to {-servername}
+        #set yml value "auto-reconnect.enabled" from file "plugins/GlobalExecute/config.yml" to true
+        #set yml value "auto-reconnect.interval" from file "plugins/GlobalExecute/config.yml" to 60
+        #set yml value "auto-reconnect.attempts" from file "plugins/GlobalExecute/config.yml" to -1
+
+        #replace lines matching "port:.*" with "port: 41008" in file "plugins/Skungee/config.yml"
+
+        replace lines matching "  Password: .*" with "  Password: ""lX0zR122NdgIZfIhhqmau0xgKSce9YFOtV2CgREeoOHkLqQxSA906We6JlAflUj9EXqB3yDyfLnIvk7""" in file "plugins/RediSkript/config.yml"
+        replace lines matching " - ""server.*" with " - ""server%{-servername}%""" in file "plugins/RediSkript/config.yml"
+
+        set yml value "Experiment_WebhookChatMessageDelivery" from file "plugins/DiscordSRV/config.yml" to true
+
+        set yml value "server" from file "plugins/LuckPerms/config.yml" to {-servername}
+        set yml value "data.username" from file "plugins/LuckPerms/config.yml" to "luckperms"
+        set yml value "data.password" from file "plugins/LuckPerms/config.yml" to "lp69mdbadm"
+        set yml value "storage-method" from file "plugins/LuckPerms/config.yml" to "mariadb"
+        
+        run bash lines "cp ""/home/shared files/paper/targets/server/plugins/DiscordSRV/config.yml"" ""plugins/DiscordSRV/config.yml"""
+        #Files.copy("/home/shared files/paper/targets/server/plugins/DiscordSRV/config.yml", "plugins/DiscordSRV/config.yml", StandardCopyOption.REPLACE_EXISTING)
+        #copy file "../../shared files/paper/targets/server/plugins/DiscordSRV/config.yml" to "plugins/DiscordSRV/config.yml"
+        set yml value "BotToken" from file "plugins/DiscordSRV/config.yml" to {-bottoken}
+        set yml value "Channels.global" from file "plugins/DiscordSRV/config.yml" to "%{-globalchannelid}%"
+        set yml value "Channels.network" from file "plugins/DiscordSRV/config.yml" to "%{-networkchannelid}%"
+        senddebug "%{-globalchannelid}%"
+        set yml value "DiscordConsoleChannelId" from file "plugins/DiscordSRV/config.yml" to {-consolechannelid}
+
+        if {-servername} is "hub":
+            replace lines matching "GroupRoleSynchronizationGroupsAndRolesToSync:.*" with "GroupRoleSynchronizationGroupsAndRolesToSync: {""banned"": ""882154003822166098"", ""novice"": ""1021359477540266016"", ""member"": ""1021872238489772033"", ""trusted"": ""1021352289518243891"", ""storyteller"": ""1021699522398797824"", ""elite"": ""1021339975406587964"", ""builder"": ""1021346538338930729"", ""veteran"": ""1021345466396442727"", ""staff"": ""1021340439481171978"", ""dev"": ""1021363037887791144"", ""admin"": ""1021338241594576917"",""donor"":""1021340074337652746"",""booster"":""881933151490941069"", ""vip"": ""1021345887022231583"", ""hero"": ""1021873408885149747"", ""legend"": ""1021352172593627136""}" in file "plugins/DiscordSRV/synchronization.yml"
+            replace lines matching "NicknameSynchronizationEnabled:.*" with "NicknameSynchronizationEnabled: true" in file "plugins/DiscordSRV/synchronization.yml"
+        else:
+            replace lines matching "GroupRoleSynchronizationGroupsAndRolesToSync:.*" with "GroupRoleSynchronizationGroupsAndRolesToSync: {}" in file "plugins/DiscordSRV/synchronization.yml"
+            replace lines matching "NicknameSynchronizationEnabled:.*" with "NicknameSynchronizationEnabled: false" in file "plugins/DiscordSRV/synchronization.yml"
+
+        #send "%yml value "Database.Type" from file "plugins/Plan/config.yml"%"
+        
+        #the plan yaml files aren't able to be read by skutilities
+        replace lines matching ".*Type:.*" with "    Type: MySQL" in file "plugins/Plan/config.yml"
+        replace lines matching ".*User:.*" with "        User: serverproxy_plan" in file "plugins/Plan/config.yml"
+        replace lines matching ".*Password:.*" with "        Password: M7tp6eB3Z" in file "plugins/Plan/config.yml"
+        replace lines matching "        Database:.*" with "        Database: serverproxy_plan" in file "plugins/Plan/config.yml"
+        replace lines matching ".*ServerName:.*" with "    ServerName: %{-servername}%" in file "plugins/Plan/config.yml"
+        replace lines matching ".*Accept_GeoLite2_EULA:.*" with "    Accept_GeoLite2_EULA: true" in file "plugins/Plan/config.yml"
+
+        if {-servername} matches "minigames|anarchy|survival":
+            set {_memoryneeded} to 5
+        else:
+            set {_memoryneeded} to 3
+        delete file "start.sh"
+        create file "start.sh"
+
+        write "java -Xms%{_memoryneeded}%G -Xmx%{_memoryneeded}%G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -jar paper.jar nogui" at line 1 to file "start.sh"
+        if {-servername} is "manhunt":
+            senddebug "checking"
+
+            write "rm -r world" at line 2 to file "start.sh"
+            write "rm -r world_nether" at line 3 to file "start.sh"  
+            write "rm -r world_the_end" at line 4 to file "start.sh" 
+            #set {_currentline} to 4
+        #else:
+        #    set {_currentline} to 1
+        #write "java -Xms%{_memoryneeded}%G -Xmx%{_memoryneeded}%G -XX:+UseG1GC -XX:+UnlockExperimentalVMOptions -XX:MaxGCPauseMillis=50 -XX:+DisableExplicitGC -XX:TargetSurvivorRatio=90 -XX:G1NewSizePercent=50 -XX:G1MaxNewSizePercent=80 -XX:InitiatingHeapOccupancyPercent=10 -XX:G1MixedGCLiveThresholdPercent=50 -jar paper.jar" at line 1 to file "start.sh"
+        run bash command "chmod u+x start.sh"
+        send "&6gave your server &b%{_memoryneeded}% &6gigs of RAM"
+        send "&6set view distance to &b6"
+
+        #replace lines matching ".*servername.*" with "  - ""server%{-servername}%""" in file "plugins/RediSkript/config.yml"
+
+command /findinvite:
+    trigger:
+        #create new invite in (channel with id "867887258903248909") and store it in {-invite}
+        #senddebug "invite: %{-invite}%"
+        #retrieve last 50 messages from (channel with id "867887258903248909") and store them in {-msg::*}
+        #senddebug "messages: %{-msg::*}%"
+        #purge {-msg::*}
+        
+        set {_guild} to guild with id "1234567"
+        {_guild}.leave().queue()
+        set {_member} to member with id "881885721391140876" in {_guild}
+        senddebug "guild: %{_guild}% member: %{-member}%"
+        #kick discord {_member} due to "you were not allowed to invite me."

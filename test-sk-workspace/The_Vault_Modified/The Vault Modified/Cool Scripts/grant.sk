@@ -1,0 +1,42 @@
+import:
+	net.luckperms.api.LuckPermsProvider
+
+command /grant <player>:
+	usage: &cUsage: /grant <player>
+	permission: rank.admin
+	permission message: &cYou do not have access to this command!
+	trigger:
+		set {_grant} to chest inventory with 6 rows named "Rank Grant - %arg-1%"
+		set {_s} to 0
+		loop all groups:
+			set slot {_s} of {_grant} to red wool named "&c%loop-value in strict proper case%" with lore "&7-------------------", "&6Prefix: %getGroupPrefix(loop-value)%", "&6Rank Tier: &c&l##%getGroupWeight(loop-value)%", "&6Suffix: %getGroupSuffix(loop-value)%", "&7-------------------" and "&a&lClick To grant %arg-1% this Rank."
+			add 1 to {_s}
+		open {_grant} to player
+
+on inventory click:
+	name of event-inventory starts with "Rank Grant - "
+	cancel event
+	set {_group} to uncolored name of event-item
+	set {_data::*} to name of event-inventory split at " - "
+	execute player command "/lp user %{_data::2}% parent set %{_group}%"
+	close player's inventory
+
+function getGroupPrefix(group: text, colored: boolean = true) :: text:
+	set {_api} to LuckPermsProvider.get()
+	set {_groupT} to {_api}.getGroupManager().getGroup({_group})
+	set {_prefix} to {_groupT}.getCachedData().getMetaData().getPrefix()
+	set {_prefix} to colored {_prefix} if {_colored} is true, else {_prefix}
+	return {_prefix} ? "None"
+
+function getGroupSuffix(group: text, colored: boolean = true) :: text:
+	set {_api} to LuckPermsProvider.get()
+	set {_groupT} to {_api}.getGroupManager().getGroup({_group})
+	set {_suffix} to {_groupT}.getCachedData().getMetaData().getSuffix()
+	set {_suffix} to colored {_suffix} if {_colored} is true, else {_suffix}
+	return {_suffix} ? "None"
+
+function getGroupWeight(group: text) :: integer:
+	set {_api} to LuckPermsProvider.get()
+	set {_groupT} to {_api}.getGroupManager().getGroup({_group})
+	set {_weight} to {_groupT}.getCachedData().getMetaData().getWeight()
+	return {_weight} ? -1

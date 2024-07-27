@@ -98,7 +98,7 @@
 		"package": "webpack --mode production --devtool hidden-source-map",
 		"lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
 		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
-		"chrome": "npm run compile && vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ./test-data"
+		"chrome": "npm run compile && vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ./test-sk-workspace"
 	},
 	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "^6.20.0",

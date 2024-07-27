@@ -1,0 +1,32 @@
+command /drop:
+	description: Toggle if you can drop items
+	trigger:
+		if metadata tag "drop" of player is not set:
+			send "&6You can drop items for 10 seconds now!"
+			send "&e&oType '/drop' again to disable dropping."
+			set metadata tag "drop" of player to true
+			loop 10 times:
+				wait 1 second
+				if metadata tag "drop" of player is not set:
+					stop
+		delete metadata tag "drop" of player
+		send "&eYou can no longer drop items."
+		
+on drop:
+	metadata tag "drop" of player is not set
+	cancel event
+	send "&cYou cannot drop items! Do /drop first!"
+
+on pickup:
+	if metadata tag "drop" of player is set:
+		cancel event
+		metadata tag "pickup_msg_received" of player is not set
+		set metadata tag "pickup_msg_received" of player to true
+		send "&cYou cannot pickup items while drop is enabled!"
+		send "&e&oType '/drop' to enable picking up items."
+		wait 1 second
+		delete metadata tag "pickup_msg_received" of player
+
+on quit:
+	delete metadata tag "pickup_msg_received" of player
+	delete metadata tag "drop" of player

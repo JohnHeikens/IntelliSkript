@@ -1,0 +1,404 @@
+command /msg [<string>] [<string>]:
+    trigger:
+        if arg 1 is set:
+            if arg 1 is "chuckle":
+                set {_cid} to network wide variable "conversationid::%uuid of player%"
+                if {_cid} is set:
+                    set {_requesturl} to url from "http://api.wolframalpha.com/v1/conversation.jsp" with parameters "appid=VX5UL7-REHY3JTA6G" and "conversationid=%{_cid}%" and "i=%url encoded arg 2%"
+                else:
+                    set {_requesturl} to url from "http://api.wolframalpha.com/v1/conversation.jsp" with parameters "appid=VX5UL7-REHY3JTA6G" and "i=%url encoded arg 2%"
+                set {_contents::*} to contents from url {_requesturl}
+
+                if {_contents::1} is set:
+                    if {_contents::2} doesn't contain "no result is available":
+                        send "%{_contents::2}%"
+                        set {_merged} to join {_contents::*} using nl
+            
+                        set {_answer} to {_contents::1}
+                        send "&cmsg &f| &bchuckle &e-> &dyou&f: %{_requesturl}%" to console
+                        send "&cmsg &f| &bchuckle &e-> &dyou&f: %content of json value "result" from text {_merged}%"
+        
+                        set network wide variable "conversationid::%uuid of player%" to content of json value "conversationID" from text {_merged}
+                
+            else:
+                set {_target} to arg 1 parsed as offline player
+                if network wide variable "ignorar::%{_target}%::*" contains player:
+                    send "%{_target}% ignores you. the message didn't arrive."
+                    exit
+                else:
+                    if {_target} is on the network:
+                        axosend "<suggest command:/msg %{_target}% >&cmsg &f| &b%player's full axo name% &e-> &dyou&f: %arg 2%" to {_target}
+                        make server named "%axoserver of {_target}%" execute console command "/playchatnotification %{_target}%"
+                    else:
+                        send "&cmsg &f| &ca player named '&b%arg 1%&c' is not online right now."
+                        exit
+            #success
+            send formatted "&cmsg &f| &dyou &e-> &b%(arg 1 parsed as offline player)'s profile name%&f: %arg 2%"
+            play chat notification to player
+    aliases: /tell, /t, /message, /w, /whisper
+
+
+command /joinplayer <offline player>:
+    permission: johnsserver.joinplayer
+    trigger:
+        set {_otherplayerserver} to axoserver of arg 1
+        if player has permission "bungeecord.server.%{_otherplayerserver}%":
+            send player to axoserver named {_otherplayerserver}
+
+
+command /showaxp [<offline player>]:
+    permission: johnsserver.axp.show
+    trigger:
+        if arg 1 is set:
+            set {_target} to arg 1
+        else:
+            set {_target} to player
+        set {_axp} to axp of {_target}
+        set {_axplevel} to {_axp} axp as levels
+        if {_axplevel} is less than 0:
+            set {_axplevel} to 0
+        send "&b%{_target}% &6has &b%{_axplevel}% &6axp levels, &b%{_axp}% &6axp"
+
+
+command /nv:
+    permission: johnsserver.nightvision
+    trigger:
+        make console execute command "/effect give %player% night_vision 100 1"
+    
+command /softban <offline player> [<text>]:
+    permission: johnsserver.softban
+    trigger:
+        set {_offlinecriminal} to arg 1
+        
+        set {_reason} to lowercase arg 2
+        if {_reason} is set:
+            if {_reason} matches ".*(bot|lag).*":
+                make bungee execute console command "/ban %arg 1% %arg 2%"
+                set {_networkbanned} to true
+
+            if {_reason} matches ".*crash.*":
+                make console execute command "/lp user %arg 1% parent add crasher"
+                set {_networkbanned} to false
+            if {_reason} matches ".*(grief|destroy).*":
+                make console execute command "/lp user %arg 1% parent add griefer"
+                set {_networkbanned} to false
+            if {_reason} matches ".*(st(eal|ole)|th(ief|eft)).*":
+                make console execute command "/lp user %arg 1% parent add thief"
+                set {_networkbanned} to false
+            if {_reason} matches ".*x(-|)ray.*":
+                make console execute command "/lp user %arg 1% parent add xrayer"
+                set {_networkbanned} to false
+            if {_reason} matches ".*(hack|cheat|bhop|killaura|fl(ight|y)|reach|no(fall|slow|push)|(impact|wurst|client)).*":
+                make console execute command "/lp user %arg 1% parent add hacker"
+                set {_networkbanned} to false
+            #if {_reason} contains "hacking":
+            #    set {_servers} to ""
+            if {_reason} matches ".*(spam|judg|annoy|attention).*":
+                make console execute command "/softmute %arg 1% %{_reason}%"
+            else if {_networkbanned} isn't set:
+                make bungee execute console command "/ban %arg 1% %arg 2%"
+                set {_networkbanned} to true
+
+                
+
+        set {_oldcriminalserver} to axoserver of {_offlinecriminal}
+        send "%{_offlinecriminal}% -> %{_offlinecriminal}%'s server: %{_oldcriminalserver}%"
+        
+
+        if {_offlinecriminal} doesn't have offline permission "bungeecord.server.%{_oldcriminalserver}%":
+            if {_offlinecriminal} has offline permission "bungeecord.server.hub":
+                senddebug "has permission to go to hub"
+                send {_offlinecriminal} to axoserver named "hub"
+            else:
+                send "%{_offlinecriminal}%"
+                send {_offlinecriminal} to axoserver named "anarchy"
+        
+        make embed:
+            set title of embed to ":rotating_light: **BAN** :rotating_light:"
+            set {_noDashUUID} to uuid of arg 1
+
+            replace all "-" in {_noDashUUID} with ""
+
+            set image of embed to "https://c.tenor.com/d0VNnBZkSUkAAAAC/bongocat-banhammer.gif" #"https://crafatar.com/avatars/%{_noDashUUID}%.png?size={-size}&overlay##{-texture}"
+            set image of embed to "https://crafatar.com/avatars/%{_noDashUUID}%.png" #"https://crafatar.com/avatars/%{_noDashUUID}%.png?size={-size}&overlay##{-texture}"
+            #set footer icon of embed to "https://crafatar.com/avatars/%{_noDashUUID}%.png?size={-size}&overlay##{-texture}"
+            #send "https://crafatar.com/avatars/%{_noDashUUID}%.png?size={-size}\&overlay##{-texture}"
+            #post "https://crafatar.com/avatars/%{_noDashUUID}%.png?size={-size}\&overlay##{-texture}" in channel with id {-networkchannelid}
+            set embed color of embed to red
+            if arg 2 is set:
+                set description of embed to "**%arg 1%** just got banned by **%player%** for **%arg 2%**"
+            else:
+                set description of embed to "**%arg 1%** just got banned by **%player%**"
+
+            add inline field named ":spy: offender" with value "%arg 1%" to fields of embed
+            add inline field named ":no_pedestrians: offense" with value arg 2 to fields of embed
+            add inline field named ":police_officer: staff member" with value "*%player%*" to fields of embed
+            set footer of embed to "💖pex.li💖"
+            set timestamp of embed to now
+        post last made embed in channel with id {-networkchannelid}
+
+
+        #make chuckle say "%{_offlinecriminal}% has just been banned from some servers for %arg 2% ): remember to be wholesome!" in network true
+        #make chuckle say "https://tenor.com/view/bongocat-banhammer-ban-hammer-bongo-gif-18219363" in network true
+
+command /softunban <offline player>:
+    permission: johnsserver.softunban
+    trigger:
+        set {_offlinecriminal} to arg 1
+
+        make console execute command "/lp user %{_offlinecriminal}% parent remove griefer"
+        make console execute command "/lp user %{_offlinecriminal}% parent remove thief"
+        make console execute command "/lp user %{_offlinecriminal}% parent remove hacker"
+        make console execute command "/lp user %{_offlinecriminal}% parent remove xrayer"
+        make console execute command "/lp user %{_offlinecriminal}% parent remove crasher"
+
+        #make chuckle say "%{_offlinecriminal}% has just been unbanned! :blush:" in network true
+
+command /softmute <offline player> <text>:
+    permission: johnsserver.softmute
+    trigger:
+        make console execute command "/lp user %arg 1% parent add muted"
+        #make chuckle say "%arg 1% has just muted for %arg 2% ): remember to be wholesome!" in network true
+       
+command /softunmute <offline player>:
+    permission: johnsserver.softunmute
+    trigger:
+        make console execute command "/lp user %arg 1% parent remove muted"
+        #make chuckle say "%arg 1% has just been unmuted :blush:" in network true
+
+command /ignore [<offlineplayer>]:
+    permission: johnsserver.ignore
+    trigger:
+        if arg 1 is not set:
+            send "&dYou are ignoring: "
+            loop {db1_ignorar::%uuid of player%::*}:
+                send "%loop-value parsed as offline player%"
+        else:
+            if arg 1 is "%player%":
+                send "&cYou cannot ignore yourself."
+            else:
+                if network wide variable "ignorar::%uuid of player%::*" contains uuid of arg 1:
+                    delete network wide variable "ignorar::%uuid of player%::%uuid of arg-1%"
+                    send "&aYou are no longer ignoring %arg 1's profile name%."
+                else:
+                    set network wide variable "ignorar::%uuid of player%::%uuid of arg-1%" to uuid of arg-1
+                    send "&dYou are now ignoring %arg 1's profile name%."
+
+command /setnotificationsound [<text>]:
+    permission: johnsserver.notifications.set.sound
+    trigger:
+        if arg 1 is set:
+            set network wide variable "notificationsound::%uuid of player%" to arg 1
+            send "&dset your notification sound to &b&b%arg 1%"
+        else:
+            #remove network wide variable "notificationsound::%uuid of player%" from network wide variable "notificationsound::*"
+            #remove uuid of player from network wide variable "notificationsound::*"
+            delete network wide variable "notificationsound::%uuid of player%"
+            send "&dset your notification sound to the default sound"
+        play chat notification to player
+            
+
+command /setnotificationvolume [<number>] [<text>]:
+    permission: johnsserver.notifications.set.volume
+    trigger:
+        set {_channel} to arg-2 otherwise "chat"
+        if network wide variable "defaultnotificationvolume::%{_channel}%" is set: 
+            #set {_currentvolume} to network wide variable "notificationvolume::%uuid of player%::%{_channel}%"
+            #senddebug "current volume: %{_currentvolume}%"
+            set network wide variable "notificationvolume::%uuid of player%::%{_channel}%" to arg 1
+            send "&dset your notification volume to &b&b%arg 1%"
+            play notification "block.note_block.bell" to player in channel {_channel}
+        else:
+            send "&c%arg-2% isn't a valid channel name"
+
+command /l:
+    permission: bungeecord.server.hub
+    aliases: /leave, /hub
+    trigger:
+        send player to server "hub"
+
+command /ragequit:
+    trigger:
+        if player has permission "bungeecord.server.hub":
+            make player execute command "/l"
+            make chuckle say "%player% just rage quitted :angry:" in network true
+
+
+command /discord:
+    trigger:
+        send formatted "&b&n<link:https://pex.li/discord>https://pex.li/discord &for &b<link:%{-workinginvite}%>%{-workinginvite}%" to player
+        set {_account} to get discord account async of player
+        if {_account} is set:
+            send "your discord account: %{_account}%" to player
+
+command /rules:
+    trigger:
+        send "&b&n<link:https://pex.li/rules>https://pex.li/rules" to player
+
+command /map:
+    trigger:
+        send "&b&n<link:https://pex.li/map>https://pex.li/map" to player
+command /website:
+    trigger:
+        send "&b&n<link:https://pex.li/>https://pex.li/" to player
+command /donate:
+    trigger:
+        send "&b&n<link:https://pex.li/donate>https://pex.li/donate" to player
+
+command /voteparty:
+    permission: johnsserver.vote.party
+    trigger:
+        send "&6amount of votes: &b%{db1_votecount}%"
+
+command /rollback <offlineplayer> [<string>]:
+    permission: johnsserver.rollback
+    trigger:
+        set {_duration} to arg 2
+        if {_duration} isn't set:
+            set {_duration} to "4w"
+
+        make player execute command "/co rollback user:%arg 1% time:%{_duration}% radius:##global"
+
+command /spectate <player>:
+    permission: johnsserver.spectate
+    trigger:
+        set player's gamemode to spectator
+        teleport player to arg 1
+
+command /verifyvote <string = "pex.li">:
+    trigger:
+        if arg 1 matches "axo\.bar|johnheikens\.com|pex\.li":
+            if network wide variable "votes::%arg 1%::%uuid of player%" is not set:
+                if contents from url "https://api.namemc.com/server/%arg 1%/likes?profile=%uuid of player%" is "true":
+
+                    give 2000 axp to player
+                    set network wide variable "votes::%arg 1%::%uuid of player%" to true
+                    loop all players online on the network:
+                        make server named (axoserver of loop-value) execute code "send title ""&c&lP&6&lE&e&lR&6&lM&c&lA &b&lVO&a&lTE &f&lCA&e&lST"" with subtitle ""&bby &a%player%"" to ""%loop-value%"" parsed as player for 3 seconds with fade-in 10 ticks and fade-out 2 seconds"
+                    make chuckle say "thanks for the perma vote on %arg 1% %player%! :D" in network true
+                else:
+                    send "&cnamemc says you didn't vote on &b%arg 1%"
+            else:
+                send "&cyou already got your reward for &b%arg 1%"
+        else:
+            send "&b%arg 1%&c is not one of our ip adresses."
+
+
+command /unpunishall:
+    permission: johnsserver.unpunish
+    trigger:
+        loop 700 times:
+            make bungeecord execute console command "/unpunish %loop-value%"
+            send "%loop-value%"
+
+command /grant <offline player> <text> <text> <boolean>:
+    usage: /grant <player> <rank> <duration> <donated or not>
+    permission: johnsserver.giverank
+    trigger:
+        
+        make console execute "/lp user %arg 1% parent addtemp %arg 2% %arg 3% accumulate"
+        # #make console execute "/lp user %arg 1% parent add donator"
+#
+        set {_rankorder::*} to "vip", "hero", "legend", "lord", "overlord"
+#
+        if {_rankorder::*} contains arg 2:
+            loop {_rankorder::*}:
+                set {_currentrankname} to loop-value
+                if {_currentrankname} is arg 2:
+                    exit loop
+                else:
+                    make console execute "/lp user %arg 1% parent addtemp %{_currentrankname}% %arg 3% accumulate"
+        
+        if arg 4 is true:
+            make console execute "/lp user %arg 1% parent add donor"
+            make chuckle say "thank you so much %arg 1% for donating for %arg 2%!" in network true
+
+#command /sudoplayer <text> <text>:
+#    permission: johnsserver.sudoplayer
+#    trigger:
+#        make (bungee player named arg 1) execute command arg 2
+#        make bungee player named "JohnHeikens" execute command "say What's up people !"
+
+command /setmotd <text> <text>:
+    permission: johnsserver.setmotd
+    trigger:
+        if arg 1 matches "1|2":
+            set line arg 1 parsed as integer of network motd to arg-2
+            send "&dupdated line &b&l%arg 1%&d of the network motd to:"
+            send colored arg 2
+
+command /online [<text>]:
+    permission: johnsserver.listplayers
+    trigger:
+        if arg-1 is set:
+            if axoserver named arg-1 exists:
+                send "&dplayers online on &b&l%arg-1%&d:"
+                loop all players online on server named arg-1:
+                    #senddebug "here: %loop-value% -> %(loop-value)'s profile name%"
+                    set {_playerlist::%loop-value%} to loop-value's profile name
+                send formatted join {_playerlist::*} using "&d,"
+            else:
+                send "&ca server with the name &b&l%arg-1%&c doesn't exist"
+        else:
+            send "&dplayers online:"
+            loop {db1_servers::*}:
+                set {_players::*} to all players online on server named loop-value
+                if (size of {_players::*}) > 0:
+                    send "&b%loop-value%"
+                    loop {_players::*}:
+                        #senddebug "here: %loop-value% -> %(loop-value)'s profile name%"
+                        set {_playerlist::%loop-value-1%::%loop-value-2%} to loop-value-2's profile name
+                    send formatted join {_playerlist::%loop-value%::*} using "&d,"
+
+
+command /setfaveserver [<string>]:
+    trigger:
+        arg-1 isn't set:
+            send "&duse this command to change your favourite server. when you vote your favourite server will get points"
+            exit
+        set network wide variable "profile::%uuid of player%::faveserver" to arg-1
+        send "&dset your favourite server to &b&l%arg-1%&d. when you vote your favourite server will get points"
+
+command /vote [<string>]:
+    trigger:
+        if arg-1 is "check":
+            player has permission "johnsserver.vote.check"
+            perform vote check
+        else:
+            if player is a bedrock user:
+                send "&dgo to &b&lpex.li/vote&d to vote! (you still have to vote on &b&l%sites player should vote on%&d)"
+            else:
+                send "&dvote for us on these sites:"
+                loop network wide list "votesites":
+                    network wide variable "votesites::%loop-value-2%::hidden" isn't set
+                    set {_lastvotetime} to network wide variable "lastvote::%uuid of player%::%loop-value%"
+
+                    set {_time} to difference between now and {_lastvotetime}
+                    if {_time} < 12 hours:
+                        continue loop
+                        set {_color} to "&c"
+                    else if {_time} < 24 hours:
+                        continue loop
+                        set {_color} to "&b"
+                    else:
+                        set {_color} to "&a"
+
+                    set {_url} to network wide variable "votesites::%loop-value%::url"
+                    if {_time} is set:
+                        set {_timestring} to "(%{_color}%%{_time}% ago&d)"
+                    else:
+                        set {_timestring} to ""
+                    send formatted "<link:%{_url}%>&d%loop-value%%{_timestring}% &b&l%{_url}%"
+                send formatted "<run command:/permavote>&dwant an even bigger reward? do &b&l&n/permavote&d to vote for us on namemc"
+
+command /permavote:
+    trigger:
+        send "&avote for us on these ip's! each vote will give 2000 AXP!"
+        send "&a<link:https://namemc.com/server/pex.li>&npex.li&r <cmd:/verifyvote pex.li>&6&nve&e&nrif&f&ny"
+        send "&a<link:https://namemc.com/server/johnheikens.com>&njohnheikens.com&r <cmd:/verifyvote johnheikens.com>&6&nve&e&nrif&f&ny"
+        send "&a<link:https://namemc.com/server/axo.bar>&naxo.bar&r <cmd:/verifyvote axo.bar>&6&nve&e&nrif&f&ny"
+
+
+
+every 20 minutes:
+    perform vote check

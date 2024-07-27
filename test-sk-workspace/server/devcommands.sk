@@ -1,0 +1,358 @@
+options:
+    allowedplugins: "CoreProtect", "FastAsyncWorldEdit", "GSit", "OpenInv", "armorstandeditor", "VeinMiner", "EssentialsXSpawn", "lifesteal", "MicroBlocks", "ntdLuckyBlock"
+
+command /showitemdata:
+    permission: johnsserver.showitemdata
+    trigger:
+        send "skript name:%player's tool%"
+        set {_n} to nbt compound of player's tool
+        send "nbt:%nbt compound of player's tool%"    
+
+command /giveaxp <offline player> <number>:
+    permission: johnsserver.axp.give
+    trigger:
+        give arg 2 axp to arg-1 with sound and chat
+
+command /respawn <player>:
+    permission: johnsserver.forcerespawn
+    trigger:
+        force arg-1 to respawn
+
+command /removeplugin <text>:
+    permission: johnsserver.removeplugin
+    trigger:
+        set {_fileloc} to "plugins/%arg-1%.jar"
+
+        #this is not working properly
+        #if file {_fileloc} exists:
+        run bash lines "rm ""%{_fileloc}%"""
+        #else:
+        #    send "&cplugin &f%arg-1%&c is not installed on this server"
+
+command /removedefaultplugin <text>:
+    permission: johnsserver.removeplugin.default
+    trigger:
+        make all servers execute command "/removeplugin %arg-1%"
+        run bash lines "rm ""/home/shared files/paper/links/server/plugins/%arg-1%.jar""" as root
+        send "&dremoved &b&l%arg-1%.jar&d from the default plugins. keep in mind that servers not online at this moment will keep it"
+
+command /adddefaultplugin <text>:
+    permission: johnsserver.addplugin.default
+    trigger:
+        set {_fileloc} to "/home/shared files/paper/targets/server/plugins/%arg-1%.jar"
+        make all servers execute command "/importplugin %arg-1%"
+        run bash lines "ln -s ""%{_fileloc}%"" ""/home/shared files/paper/links/server/plugins""" as root
+        send "&dadded &b&l%arg-1%.jar&d to the default plugins"
+
+
+command /importplugin [<text>]:
+    permission: johnsserver.import.plugin
+    trigger:
+        arg-1 isn't set:
+            send "&dyou can import plugins using this command. allowed plugins: &b&l%{@allowedplugins}%"
+            exit
+        executor doesn't have permission "johnsserver.import.plugin.all":
+            {@allowedplugins} doesn't contain arg-1
+            send "&b&l%arg-1%&c is not on the list of allowed plugins. did you misspell it? (wrong caps?) allowed plugins: &b&l%{@allowedplugins}%"
+
+        set {_fileloc} to "/home/shared files/paper/targets/server/plugins/%arg-1%.jar"
+        #if file {_fileloc} exists:
+        run bash lines "ln -s ""%{_fileloc}%"" plugins"
+        send "&aplugin &f%arg-1%&a has been imported successfully"
+        # else:
+        #    send "&cplugin &f%arg-1%&c is not found in our database"
+
+command /importdatapack [<text>]:
+    permission: johnsserver.import.datapack
+    trigger:
+        arg-1 isn't set:
+            send "&dyou can import datapacks using this command. make sure to spell the name of the datapack exactly"
+            exit
+        
+        set {_fileloc} to "/home/shared files/paper/targets/server/world/datapacks/%arg-1%.zip"
+        run bash lines "ln -s ""%{_fileloc}%"" world/datapacks"
+        send "&dimported &b&l%arg-1%"
+
+
+command /importschematic <text> <text>:
+    permission: johnsserver.importschematic
+    trigger:
+        if network wide variable "servers::%arg 2%" is set:
+            set {_fileloc} to "/home/server%arg 2%/server/plugins/FastAsyncWorldEdit/schematics/%arg-1%.schem"
+            run bash lines "cp ""%{_fileloc}%"" plugins/FastAsyncWorldEdit/schematics"
+            send "&aschematic &b%arg-1%&a has been imported successfully from server &b%arg 2%"
+        else:
+            send "&cthere is no server on our network with the name &b%arg 2%"
+
+command /set port to <number>:
+    permission: johnsserver.setport
+    trigger:
+        set line 26 in file "server.properties" to "server-port=%arg-1%"
+
+command /sudoallservers <text>:
+    permission: johnsserver.sudoallservers
+    trigger:
+        make all servers execute console command arg-1        
+        #make console execute command "/ge execute all %arg-1%"
+
+
+command /sudoserver <text> <text>:
+    permission: johnsserver.sudoallservers
+    trigger:
+        
+        if arg-1 is "proxy":
+            make bungee execute console command arg 2
+        else:
+            make server named arg-1 execute console command arg 2
+            if executor is player:
+                send "%arg-1% -> /%arg 2%"
+
+command /enchant <enchantment type> illegally:
+    permission: johnsserver.enchant.illegal
+    trigger:
+        enchant the player's tool with arg-1 
+
+command /botattack:
+    permission: johnsserver.botattack
+    trigger:
+        if network wide variable "botattack" is true:
+            set network wide variable "botattack" to false
+            make all servers execute console command "execute at @a run playsound ui.toast.challenge_complete block @p ~ ~ ~ 1000 1 1"
+        else:
+            set network wide variable "botattack" to true
+            make all servers execute console command "execute at @a run playsound event.raid.horn block @p ~ ~ ~ 1000 1 1"
+        chuckle say "set bot attack status to %{db1_botattack}%" in network true
+
+
+
+command /runbash <text>:
+    permission: johnsserver.bash.run
+    trigger:
+        send arg-1 to player
+        #send "ln -s ""/home/shared files/paper/targets/server/plugins/NewAmazingLuckyBlocks.jar"" plugins" to player
+        run bash lines arg-1
+        #run bash command arg-1 
+        #run bash command "ln -s ""/home/shared files/paper/targets/server/plugins/NewAmazingLuckyBlocks.jar"" plugins"
+
+command /runasroot <text>:
+    permission: johnsserver.bash.run.root
+    trigger:
+        send arg-1 to player
+        run bash lines arg-1 as root
+
+#command /promote donator <text> to <text>:
+#    permission: johnsserver.giverank
+#    trigger:
+#        celebrate rankup of arg-1 parsed as player
+#        make console execute "/lp user %arg-1% parent addtemp %arg 2% 1mo"
+#        make console execute "/lp user %arg-1% parent add donator"
+#        make chuckle say "thank you so much %arg-1% for donating %arg 2%!" in network true
+#
+#
+#command /rank up <text> from <text> to <text>:
+#    permission: johnsserver.giverank
+#    trigger:
+#        celebrate rankup of arg-1 parsed as player
+#        make console execute "/lp user %arg-1% parent remove %arg 2%"
+#        make console execute "/lp user %arg-1% parent add %arg 3%"
+#        make chuckle say "%arg-1% ranked up to %arg 3%! woot woot!" in network true
+
+#causes over 1 second of skript reload lag
+command /playglobalchatnotification [<string>] [<number>]:
+    permission: johnsserver.playglobalchatnotification
+    trigger:
+        if arg-1 is set:
+            if arg 2 is set:
+                play notification arg-1 with pitch arg 2
+            else:
+                play notification arg-1 with pitch ((random integer between -3 and 3) notes higher)
+        else:
+            play chat notification
+
+command /playchatnotification <offline player>:
+    permission: johnsserver.notifications.play
+    trigger:
+        play chat notification to arg-1
+
+command /addsshkey <string>:
+    permission: johnsserver.ssh.key.add
+    trigger:
+        set {_filename} to "../.ssh/authorized_keys"
+        if file {_filename} doesn't exist:
+            create file {_filename}
+
+        set {_linecount} to line count of file {_filename}
+        write arg-1 at line ({_linecount} + 1) to file {_filename}
+        send "%{_linecount} + 1%"
+
+command /removesshkey <string>:
+    permission: johnsserver.ssh.key.remove
+    trigger:
+        set {_filename} to "../.ssh/authorized_keys"
+        
+        set {_contents::*} to file contents of {_filename}
+        delete file {_filename}
+        create file {_filename}
+        loop {_contents::*}:
+            set {_parsed::*} to loop-value parsed as "%string%==%string%"
+            if {_parsed::2} contains arg-1:
+                remove loop-value from {_contents::*}
+                send "%{_parsed::1}% &chas been removed"
+            else:
+                set {_line} to {_line} + 1
+                write loop-value at line {_line} to file "../.ssh/authorized_keys"
+                send "%{_parsed::2}% &aremains"
+        
+
+            
+
+command /stopwhenempty:
+    permission: johnsserver.stop.empty
+    trigger:
+        if {-shouldstopwhenempty} is false:
+            set {-shouldstopwhenempty} to true
+            send "&ethe server will stop as soon as 0 players are online."
+            if amount of all players is 0:
+                stop the server safely
+        else:
+            set {-shouldstopwhenempty} to false
+            send "&ecancelled stopping the server as soon as 0 players are online."
+
+command /fixownership:
+    permission: johnsserver.bash.run
+    trigger:
+        run bash lines "chown -R server%{-servername}%:server%{-servername}% /home/server%{-servername}%" as root
+
+command /deletechunk:
+    permission: johnsserver.deletechunk
+    trigger:
+        set {_chunk} to chunk at the player
+        send "&a successfully deleted a chunk in %world of player% at %{_chunk}.getX()% %{_chunk}.getZ()%"
+        player.getWorld().regenerateChunk({_chunk}.getX(), {_chunk}.getZ())
+        {_chunk}.unload(true,false)
+
+command /test:
+    permission: johnsserver.test
+    trigger:
+        send ("JohnHeikens" parsed as player) to axoserver named "creative"
+        #make 10 of soul at location of player
+
+        #show 1 "SPELL_WITCH" particles at location of player for player
+        
+        #lerp 10 of dust_color_transition using dustTransition(pink, magenta, 3) at event.getTreeLocation() with offset vector(0, 1, 0) with extra 0.4
+
+        #set {_particleorigin} to location of player
+        #set {_particleorigin} to {_particleorigin} offset by vector(0, 1, 0)
+ 
+        #make 10 of soul at ((location of player) offset by vector(0,1,0)) with offset vector(0.5, 1, 0.5) with extra 0
+
+        #doesn't work:
+        #make console execute command "/execute in %world of expr-1% run particle minecraft:soul %x-coordinate of expr-1% %(y-coordinate of expr-1) + 1% %z-coordinate of expr-1% 0.5 0.5 0.5 0 20 normal"
+
+        #show 10 of soul with offset 0 0 0
+
+        #show 10 of Flame at location of player for player with speed 0
+        
+        #send placeholder replaced "%%vault_prefix%%" for "JohnHeikens" parsed as offline player
+
+        #make (bungee server with name "hub") execute console command "say test"
+        #make bungee execute console command "send Johnheikens survival"
+        #make bungee execute console command "bungeesk disconnect all"
+
+
+
+command /optimize <integer>:
+    permission: johnsserver.optimizeworld
+    trigger:
+        set {_playerpos} to the player's position
+        set {_pos1} to {_playerpos} 
+
+command /executecode <string>:
+    permission: johnsserver.executecode
+    trigger:
+        #senddebug "executing: %arg-1%"
+        evaluate arg-1
+
+
+command /evaluatecode <string>:
+    permission: johnsserver.evaluatecode
+    trigger:
+        #senddebug "executing: %arg-1%"
+        evaluate "set {_var::*} to %arg-1%"
+        send formatted "<suggest command:%{_var::*}%>%{_var::*}%"
+        
+command /broadcast <text>:
+    permission: johnsserver.broadcast
+    trigger:
+        send arg-1 to all players
+
+command /sendraw <offline player> <text>:
+    permission: johnsserver.broadcast
+    trigger:
+        send formatted arg 2 to arg-1
+        #send "to format: %arg 2%" to "JohnHeikens" parsed as player
+
+command /devmode <string>:
+    permission: johnsserver.devmode
+    trigger:
+        heal player
+        clear player's potion effects
+        if arg-1 is "edit":
+            clear player's inventory
+            set player's gamemode to creative
+            apply potion effect of night vision of tier 1 without particles for 10000 minutes to player
+
+command /preventdespawn:
+    permission: johnsserver.preventdespawn
+    trigger:
+        set {_mobs::*} to all mobs in radius 5 of the player
+        if size of {_mobs::*} is 0:
+            send "&cno mobs found close to you. stand close to a mob to prevent it from despawning"
+        else:
+            loop {_mobs::*}:
+                if (tag "PersistenceRequired" of nbt of loop-value) is 1:
+                    send "&b&l%loop-value%&d already has this tag"
+                else:
+                    add nbt of "{PersistenceRequired:1b}" to nbt of loop-value
+                    send "&dprevented &b&l%loop-value%&d from despawning"
+    
+        #make player execute command "/data merge entity @e[distance=..10,type=!player,limit=1,sort=nearest] {PersistenceRequired:1b}"
+
+
+command /addtag <string>:
+    permission: minecraft.command.data
+    trigger:
+        make player execute command "/data merge entity @e[distance=..10,type=!player,limit=1,sort=nearest] {%arg-1%:1b}"
+
+function runbashlinesasyncandsendoutput(lines:strings,p:player):
+    run bash lines {_lines::*}
+    wait 10 ticks
+    set {_output} to output of executed bash command
+    send "output: %{_output}%" to {_p} 
+    wait 10 ticks
+
+command /searchlogs <string> <string> [<string>]:
+    permission: johnsserver.searchlogs
+    usage: /searchlogs test 2022-12-*
+    trigger:
+        set {_command} to "zgrep %arg-1% %arg 2%"
+
+        if arg 3 is set:
+            set {_command} to "%{_command}%| grep %arg 3%" 
+        set {_lines::*} to "cd logs", "zgrep %arg-1% %arg 2%"
+        runbashlinesasyncandsendoutput({_lines::*}, player)
+        #sendoutput(player)
+
+command /testvar:
+    trigger:
+        set {-list::a} to "a"
+        set {-list::b} to "b"
+        send {-list::a}
+        send {-list::b}
+
+command /bangroup <string>:
+    permission: johnsserver.bangroup
+    usage: /bangroup hacker or /bangroup griefer or /bangroup xrayer or /bangroup crasher
+    trigger:
+        make console execute command "/lp group %arg-1% permission set bungeecord.server.%{-servername}% false"
+        send "&dbanned all people in group &b&l%arg-1%&d from &b&l%{-servername}%"
