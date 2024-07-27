@@ -73,7 +73,7 @@ export async function activate(context: ExtensionContext) {
 
 
 	context.subscriptions.push(readFileListener, listFilesListener, getDocumentsListener);
-	console.log('lsp-web-extension-sample server is ready');
+	vscode.window.showInformationMessage('client finished loading');
 }
 
 export async function deactivate(): Promise<void> {
