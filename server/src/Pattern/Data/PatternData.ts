@@ -1,6 +1,6 @@
-import type { integer, Location } from 'vscode-languageserver/node';
-import { SkriptTypeState } from "../../skript/storage/type/SkriptTypeState";
+import type { Location } from 'vscode-languageserver/node';
 import type { SkriptPatternContainerSection } from '../../skript/section/reflect/SkriptPatternContainerSection';
+import { SkriptTypeState } from "../../skript/storage/type/SkriptTypeState";
 
 export class PatternData {
 	definitionLocation: Location;
@@ -14,14 +14,14 @@ export class PatternData {
 	argumentPositions: Location[] = [];
 	patternType: PatternType = PatternType.effect;
 	/**
-	 * 
-	 * @param skriptPatternString 
-	 * @param regexPatternString 
-	 * @param definitionLocation 
-	 * @param patternType 
-	 * @param section 
-	 * @param expressionArguments 
-	 * @param argumentPositions 
+	 *
+	 * @param skriptPatternString
+	 * @param regexPatternString
+	 * @param definitionLocation
+	 * @param patternType
+	 * @param section
+	 * @param expressionArguments
+	 * @param argumentPositions
 	 * @param resultType passed by reference!
 	 */
 	constructor(skriptPatternString: string, regexPatternString: string, definitionLocation: Location, patternType: PatternType, section?: SkriptPatternContainerSection, expressionArguments?: SkriptTypeState[], argumentPositions?: Location[], resultType?: SkriptTypeState) {

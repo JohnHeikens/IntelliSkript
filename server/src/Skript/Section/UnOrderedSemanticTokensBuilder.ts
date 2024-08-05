@@ -1,8 +1,8 @@
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Position, SemanticTokens, SemanticTokensBuilder, SemanticTokensDelta } from 'vscode-languageserver/node';
+import * as IntelliSkriptConstants from '../../IntelliSkriptConstants';
 import { TokenModifiers } from '../../TokenModifiers';
 import { TokenTypes } from '../../TokenTypes';
-import * as IntelliSkriptConstants from '../../IntelliSkriptConstants';
 
 
 
@@ -33,7 +33,7 @@ export class SemanticToken {
 
 export class semanticTokenContainer {
 	/**caution! do not insert overlapping tokens! */
-	push(token: SemanticToken): void {
+	push(_token: SemanticToken): void {
 
 	}
 }

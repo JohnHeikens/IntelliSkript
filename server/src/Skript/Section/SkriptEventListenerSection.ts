@@ -1,12 +1,8 @@
 import { PatternData } from "../../pattern/data/PatternData";
-import { PatternResultProcessor } from "../../pattern/patternResultProcessor";
-import { PatternType } from "../../pattern/PatternType";
-import { SkriptPatternCall } from '../../pattern/SkriptPattern';
+import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
 import { SkriptContext } from '../validation/SkriptContext';
 import { SkriptEventSection } from './reflect/SkriptEventSection';
 import { SkriptSection } from './skriptSection/SkriptSection';
-import { MatchResult } from '../../pattern/match/matchResult';
-import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
 
 export class SkriptEventListenerSection extends SkriptSection {
 	patternContainer: PatternTreeContainer;

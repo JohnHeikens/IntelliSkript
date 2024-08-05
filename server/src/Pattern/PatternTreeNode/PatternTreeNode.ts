@@ -19,9 +19,9 @@ export class PatternTreeNode {
 	endNode?: PatternData;
 	patternKey?: string;
 
-	compare(other: PatternTreeNode) {
-		return false;
-	}
+	//compare(_other: PatternTreeNode) {
+	//	return false;
+	//}
 
 	constructor(patternKey?: string) {
 		this.patternKey = patternKey;

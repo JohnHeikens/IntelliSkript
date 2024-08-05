@@ -27,6 +27,7 @@ export class NestHierarchy<t extends NestHierarchy<t>> {
 				return child;
 			}
 		}
+		return undefined;
 	}
 
 	getChildNodeAt(pos: number): t | undefined {

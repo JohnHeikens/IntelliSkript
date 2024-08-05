@@ -1,8 +1,6 @@
 import { SkriptTypeState } from "../skript/storage/type/SkriptTypeState";
 import { PatternType } from './PatternType';
 import { PatternData } from './data/PatternData';
-import { PatternMatch } from './match/PatternMatch';
-import { MatchResult } from './match/matchResult';
 //examples:
 //  "set %objects% to %objects%"
 //  |

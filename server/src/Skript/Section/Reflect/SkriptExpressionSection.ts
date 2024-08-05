@@ -1,5 +1,3 @@
-import { PatternTree } from '../../../pattern/PatternTree';
-import { PatternType } from '../../../pattern/PatternType';
 import { TokenTypes } from '../../../TokenTypes';
 import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
@@ -61,7 +59,7 @@ export class SkriptExpressionSection extends SkriptPatternContainerSection {
 		const p = this.parsePattern(context);
 		if (p) {
 			this.patterns.push(p);
-			//add delete, set, 
+			//add delete, set,
 		}
 	}
 	override finish(context: SkriptContext): void {

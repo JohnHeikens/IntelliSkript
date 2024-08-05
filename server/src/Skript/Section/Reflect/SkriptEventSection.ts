@@ -3,10 +3,9 @@ import { PatternType } from "../../../pattern/PatternType";
 import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
-import { PatternTree } from '../../../pattern/PatternTree';
-
 import { SkriptTypeState } from '../../storage/type/SkriptTypeState';
 import { TokenTypes } from '../../../TokenTypes';
+
 export class SkriptEventSection extends SkriptPatternContainerSection {
 	eventValues: PatternData[] = [];
 	static override patternType: PatternType = PatternType.event;

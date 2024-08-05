@@ -1,25 +1,19 @@
-import { DiagnosticSeverity, integer } from 'vscode-languageserver';
+import { DiagnosticSeverity } from 'vscode-languageserver';
 import { Location } from 'vscode-languageserver/node';
 import { SkriptNestHierarchy } from '../nesting/SkriptNestHierarchy';
 import type { SkriptPatternContainerSection } from '../skript/section/reflect/SkriptPatternContainerSection';
-import { SkriptContext } from '../skript/validation/SkriptContext';
 import { SkriptTypeState } from "../skript/storage/type/SkriptTypeState";
+import { SkriptContext } from '../skript/validation/SkriptContext';
+import { TokenTypes } from '../TokenTypes';
 import { PatternData } from './data/PatternData';
 import { PatternTreeNode } from './patternTreeNode/PatternTreeNode';
-import { RegExpTreeError } from './RegExpTreeError';
-import { PatternResultProcessor } from './patternResultProcessor';
-import { PatternMatcher } from './PatternMatcher';
-import { SkriptPatternCall } from './SkriptPattern';
-import { TokenTypes } from '../TokenTypes';
 import { PatternType } from './PatternType';
+import { RegExpTreeError } from './RegExpTreeError';
 import { removeDuplicates } from "./removeDuplicates";
 
-import { TypeNode } from './patternTreeNode/TypeNode';
-import { TokenModifiers } from '../TokenModifiers';
 import { SkriptTypeSection } from '../skript/section/custom/SkriptTypeSection';
-import { MatchResult } from './match/matchResult';
-import { PatternMatch } from './match/PatternMatch';
-import { MatchProgress } from './match/MatchProgress';
+import { TokenModifiers } from '../TokenModifiers';
+import { TypeNode } from './patternTreeNode/TypeNode';
 
 //flags: U -> ungreedy, g -> global
 const argumentRegExp = /%(.*?)%/g;
@@ -63,7 +57,7 @@ function convertSkriptPatternToRegExp(pattern: string, hierarchy: SkriptNestHier
 	if (currentPosition < hierarchy.end) {
 		fixedString += convertString(pattern.substring(currentPosition, hierarchy.end));
 	}
-	fixedString = fixedString.replace(/ ?\.\+ ?/g, (match, offset, wholeString) => {
+	fixedString = fixedString.replace(/ ?\.\+ ?/g, (match) => {
 		return `(${match})?`;
 	});
 

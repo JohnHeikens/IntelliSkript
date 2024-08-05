@@ -1,6 +1,5 @@
-import { PatternData } from '../data/PatternData';
 import { SkriptPatternCall } from '../SkriptPattern';
-import { PatternMatch } from './PatternMatch'
+import { PatternMatch } from './PatternMatch';
 
 /**contains the full match and submatches */
 export class MatchResult {

@@ -4,12 +4,11 @@ import { PatternTree } from '../pattern/PatternTree';
 import { canBeSubPattern, PatternType } from '../pattern/PatternType';
 import { SkriptPatternCall } from '../pattern/SkriptPattern';
 import { SkriptTypeSection } from '../skript/section/custom/SkriptTypeSection';
+import { SkriptTypeState } from '../skript/storage/type/SkriptTypeState';
 import { MatchProgress } from './match/MatchProgress';
 import { MatchResult } from './match/matchResult';
 import { PatternMatch } from './match/PatternMatch';
 import { PatternTreeNode } from './patternTreeNode/PatternTreeNode';
-import { SkriptTypeState } from '../skript/storage/type/SkriptTypeState';
-import { NumberRegExp } from '../IntelliSkriptConstants';
 
 export class PatternTreeContainer implements PatternMatcher {
 	/** a list of expression trees, this is to save time (to not recursively have to get patterns from parents or something). we will start at the top and end at this container.
@@ -87,12 +86,12 @@ export class PatternTreeContainer implements PatternMatcher {
 	 * the player
 	 * end of submatch
 	 * end of match
-	 * @param testPattern 
-	 * @param currentNode 
-	 * @param index 
-	 * @param argumentIndex 
-	 * @param parentMatchNode 
-	 * @returns 
+	 * @param testPattern
+	 * @param currentNode
+	 * @param index
+	 * @param argumentIndex
+	 * @param parentMatchNode
+	 * @returns
 	 */
 	getMatchingPatternPart(testPattern: SkriptPatternCall, progress: MatchProgress, index: number = 0, argumentIndex: number = 0, recursion: number = 0): MatchResult | undefined {
 

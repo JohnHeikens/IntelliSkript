@@ -1,5 +1,6 @@
 import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
+import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
 
 export class SkriptPatternSection extends SkriptSection {
 
@@ -21,7 +22,3 @@ export class SkriptPatternSection extends SkriptSection {
 	}
 }
 //import { SkriptEventSection } from './SkriptEventSection';import { Hierarchy } from '../../../Hierarchy';
-import { SkriptNestHierarchy } from '../../../nesting/SkriptNestHierarchy';
-import { TokenTypes } from '../../../TokenTypes';
-import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
-

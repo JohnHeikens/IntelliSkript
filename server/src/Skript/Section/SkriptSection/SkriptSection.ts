@@ -36,7 +36,7 @@ export class SkriptSection extends SkriptSectionGroup {
 	/**
 	 * this function will be called when the full section is parsed. it's used to add the patterns of pattern container sections, for example
 	 */
-	finish(context: SkriptContext) {
+	finish(_context: SkriptContext) {
 
 	}
 
@@ -138,10 +138,10 @@ export class SkriptSection extends SkriptSectionGroup {
 	}
 
 	/**
-	 * 
-	 * @param context 
-	 * @param pattern 
-	 * @param match 
+	 *
+	 * @param context
+	 * @param pattern
+	 * @param match
 	 * @param matchPatternStart the start of the match, relative to the pattern
 	 * @param matchPatternEnd the end of the match, relative to the pattern
 	 */
@@ -403,7 +403,7 @@ export class SkriptSection extends SkriptSectionGroup {
 	createSection(context: SkriptContext): SkriptSection | undefined {
 		const checkPattern = /check \[(?!\()/g;
 		let p: RegExpExecArray | null;
-		let isIfStatement = false;
+		//let isIfStatement = false;
 		while ((p = checkPattern.exec(context.currentString))) {
 			const braceEndIndex = p.index + "check [".length;
 			const node = context.hierarchy?.getChildNodeAt(braceEndIndex); // without the brace because we need to check the brace
@@ -412,7 +412,7 @@ export class SkriptSection extends SkriptSectionGroup {
 					p.index + "check [".length,
 					node.end - node.start,
 					`add braces around here to increase skript(re) load performance`, DiagnosticSeverity.Information, "IntelliSkript->Performance->Braces->Lambda");
-				isIfStatement = true;
+				//isIfStatement = true;
 			}
 		}
 

@@ -1,12 +1,8 @@
 import { Hierarchy } from '../../Hierarchy';
-import { PatternData } from "../../pattern/data/PatternData";
-import { PatternResultProcessor } from "../../pattern/patternResultProcessor";
-import { SkriptVariable } from '../storage/SkriptVariable';
-import { SkriptSection } from './skriptSection/SkriptSection';
 import { PatternMatcher } from '../../pattern/PatternMatcher';
-import { SkriptPatternCall } from '../../pattern/SkriptPattern';
-import { MatchResult } from '../../pattern/match/matchResult';
 import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
+import { SkriptPatternCall } from '../../pattern/SkriptPattern';
+import { SkriptVariable } from '../storage/SkriptVariable';
 
 export class SkriptSectionGroup extends Hierarchy<SkriptSectionGroup> implements PatternMatcher {
 	patternContainer?: PatternTreeContainer;
@@ -16,7 +12,7 @@ export class SkriptSectionGroup extends Hierarchy<SkriptSectionGroup> implements
 		super(parent);
 	}
 
-	getVariableByName(name: string): SkriptVariable | undefined {
+	getVariableByName(_name: string): SkriptVariable | undefined {
 		//throw new Error("skriptsectiongroup without derivation");
 		return undefined;
 	}

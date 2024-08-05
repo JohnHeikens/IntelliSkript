@@ -1,5 +1,5 @@
 import { Diagnostic } from 'vscode-languageserver/node';
-import { semanticTokenContainer, SemanticTokenLine, UnOrderedSemanticTokensBuilder } from '../section/UnOrderedSemanticTokensBuilder';
+import { semanticTokenContainer, SemanticTokenLine } from '../section/UnOrderedSemanticTokensBuilder';
 
 export class ParseResult {
 

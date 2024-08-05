@@ -51,7 +51,7 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 		}
 		else if (couldBeChanged && file.updateContent(document)) {
 			// the document has changed
-			// all files coming 'after' this file need to be updated. 
+			// all files coming 'after' this file need to be updated.
 			// not only the previous dependents, because it could be that other files will get a dependency now
 			let found = false;
 			if (file.parent instanceof SkriptFolder) {
@@ -94,7 +94,6 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 
 			//when not, this file is a loose file
 			if (file.parent instanceof SkriptFolder) {
-				const folder = file.parent;
 
 				let currentFolder = mainSubFolder;
 				//recursively validate parent folders until we are at the file
@@ -114,7 +113,7 @@ export class SkriptWorkSpace extends SkriptFolderContainer {
 	override getPatternTree(): PatternTreeContainer | undefined {
 		//get patterndata from the skript extension folder
 		//don't call the getPatternData from the folder, because that will call this workspace again
-		//todo: 
+		//todo:
 		//we're checking twice for the addon folder patterns when compiling the addon folder
 		//it isn't that bad, because all files in the addon folder should be able to find their patterns
 		return this.addonFolder?.patternContainer;
