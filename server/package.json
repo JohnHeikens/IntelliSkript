@@ -5,9 +5,7 @@
 	"author": "John Heikens",
 	"publisher": "JohnHeikens",
 	"license": "SEE LICENSE IN LICENSE",
-	"engines": {
-		"node": "*"
-	},
+	"private": true,
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/JohnHeikens/IntelliSkript"
@@ -18,10 +16,15 @@
 		"Formatters",
 		"Themes"
 	],
-	"dependencies": {
-		"vscode-languageserver": "^9.0.1",
-		"vscode-languageserver-textdocument": "^1.0.11",
-		"vscode-uri": "^3.0.8"
+	"bugs": {
+		"url": "https://github.com/JohnHeikens/IntelliSkript/issues"
 	},
-	"scripts": {}
+	"engines": {
+		"node": "*"
+	},
+	"dependencies": {
+		"vscode-uri": "^3.0.8",
+		"vscode-languageserver": "^9.0.1",
+		"vscode-languageserver-textdocument": "^1.0.11"
+	}
 }

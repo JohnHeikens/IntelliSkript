@@ -35,7 +35,7 @@
 		"ui",
 		"workspace"
 	],
-	"browser": "./client/dist/browserClientMain",
+	"main": "./client/out/extension",
 	"contributes": {
 		"languages": [
 			{
@@ -92,30 +92,32 @@
 		]
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "webpack",
-		"watch": "webpack --watch",
-		"package": "webpack --mode production --devtool hidden-source-map",
-		"lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
-		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
-		"chrome": "npm run compile && vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ./test-sk-workspace"
+		"vscode:prepublish": "npm run webpack",
+		"webpack": "npm run clean && webpack --mode production --config ./client/webpack.config.js && webpack --mode production --config ./server/webpack.config.js",
+		"webpack:dev": "npm run clean && webpack --mode none --config ./client/webpack.config.js && webpack --mode none --config ./server/webpack.config.js",
+		"compile": "tsc -b",
+		"compile:client": "tsc -b ./client/tsconfig.json",
+		"compile:server": "tsc -b ./server/tsconfig.json",
+		"watch": "tsc -b -w",
+		"lint": "npm run lint:client && npm run lint:server",
+		"lint:client": "eslint --config ./client/.eslintrc.json ./client/src/*.ts",
+		"lint:server": "eslint --config ./server/.eslintrc.json ./server/src/*.ts",
+		"clean": "rimraf client/out && rimraf server/out",
+		"postinstall": "cd client && npm install && cd ../server && npm install && cd .."
 	},
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "^6.20.0",
-		"@typescript-eslint/parser": "^6.20.0",
-		"@vscode/test-web": "^0.0.51",
-		"copy-webpack-plugin": "^12.0.2",
+		"@types/node": "^18.11.9",
+		"@typescript-eslint/parser": "^6.14.0",
 		"eslint": "^8.56.0",
-		"path-browserify": "^1.0.1",
-		"raw-loader": "^4.0.2",
+		"merge-options": "^3.0.4",
+		"rimraf": "^5.0.5",
 		"ts-loader": "^9.5.1",
 		"ts-node": "^10.9.2",
-		"ts-webpack": "^1.0.0",
-		"typescript": "^5.5.4",
+		"typescript": "^5.3.3",
+		"webpack": "^5.89.0",
 		"webpack-cli": "^5.1.4"
 	},
 	"dependencies": {
-		"buffer": "^6.0.3",
 		"vscode-uri": "^3.0.8"
 	}
 }
