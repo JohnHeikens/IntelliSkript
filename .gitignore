@@ -1,8 +1,9 @@
-out
-dist
 node_modules
-client/server
-.vscode-test-web
+client/out
+client/node_modules
+server/out
+server/node_modules
+addon-parser/out
 *.vsix
 *.cpuprofile
 *.map
