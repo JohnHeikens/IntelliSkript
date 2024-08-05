@@ -15,8 +15,6 @@
 disable the 'IntelliSkript.UseColorTheme' setting<br>
 ![setting](https://user-images.githubusercontent.com/50964021/205459970-b192de41-d5ad-4353-a734-9d6a39f1c3fe.gif)
 
-this vs code extension doesn't work with Sk-VSC because it uses it's own language identifier (Sk-VSC) instead of skript 🤦
-
 ## What is IntelliSkript?
 
 IntelliSkript is the most advanced skript plugin for Visual Studio Code out there. this plugin will detect errors as you code! it is designed to be compatible with other skript plugins and color theme for VS Code.
