@@ -11,7 +11,7 @@ import { activateClient } from './client';
 
 let client: LanguageClient;
 export async function activate(context: ExtensionContext): Promise<void> {
-	const serverModule = context.asAbsolutePath(path.join('server', 'out', 'sampleServer.js'));
+	const serverModule = context.asAbsolutePath(path.join('server', 'out', 'serverWrapper.js'));
 	let serverOptions: ServerOptions = {
 		run: { module: serverModule, transport: TransportKind.ipc, options: { cwd: process.cwd() } },
 		debug: { module: serverModule, transport: TransportKind.ipc, options: { cwd: process.cwd() } }
