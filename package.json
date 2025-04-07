@@ -4,7 +4,7 @@
 	"description": "IntelliSense for skript",
 	"author": "John Heikens",
 	"license": "GNU",
-	"version": "1.7.13",
+	"version": "1.7.14",
 	"icon": "icon.png",
 	"repository": {
 		"type": "git",
@@ -20,8 +20,7 @@
 		"skript",
 		"intelliskript",
 		"intellisense",
-		"format",
-		"multi-root ready"
+		"format"
 	],
 	"engines": {
 		"vscode": "^1.85.0"

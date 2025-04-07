@@ -4,8 +4,7 @@
 		"out": false
 	},
 	"search.exclude": {
-		"out": true,
-		"server": true
+		"out": true
 	},
 	"files.trimTrailingWhitespace": true,
 	"editor.insertSpaces": false,

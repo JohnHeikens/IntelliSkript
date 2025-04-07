@@ -13,10 +13,10 @@ const path = require('path');
 module.exports = withDefaults({
 	context: path.join(__dirname),
 	entry: {
-		extension: './src/sampleServer.ts',
+		extension: './src/serverWrapper.ts',
 	},
 	output: {
-		filename: 'sampleServer.js',
+		filename: 'bundledServer.js',
 		path: path.join(__dirname, 'out')
 	}
 });
