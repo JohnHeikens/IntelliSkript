@@ -189,10 +189,9 @@ export class PatternTreeContainer implements PatternMatcher {
 					if (testResult)
 						return testResult;
 				}
-				else {
-					progress.currentNode = charChild;
-					continue;
-				}
+				//if the type nodes didn't contain a match, we'll just continue
+				progress.currentNode = charChild;
+				continue;
 			}
 			if (progress.currentNode.typeOrderedChildren.size) {
 				let testResult: MatchResult | undefined;

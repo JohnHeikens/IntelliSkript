@@ -28,7 +28,7 @@ expression block at %location%:
 expression %number% times:
     return type: numbers
 
-expression %number% (tick|second|minute|hour|day|month|year)[s]:
+expression [%number%] (tick|second|minute|hour|day|month|year)[s]:
     return type: timespan
 
 

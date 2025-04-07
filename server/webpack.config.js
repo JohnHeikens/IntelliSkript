@@ -16,7 +16,8 @@ module.exports = withDefaults({
 		extension: './src/serverWrapper.ts',
 	},
 	output: {
-		filename: 'bundledServer.js',
+		//bundled server. should be the same name as 'extension:'
+		filename: 'serverWrapper.js',
 		path: path.join(__dirname, 'out')
 	}
 });

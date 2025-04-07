@@ -836,7 +836,7 @@ expression:
 expression:
 	patterns:
 		%itemstacks% with no nbt
-	return type: item
+	return type: item/ material
 #Number of Enchantments
 #Get the number of enchantments on an item.
 expression:
@@ -852,7 +852,7 @@ expression:
 expression:
 	patterns:
 		shiny %itemstacks%
-	return type: item
+	return type: item/ material
 #Single ID Score Value
 #These expressions will get either the name or value of a ID based score.
 expression:
@@ -885,4 +885,4 @@ expression:
 		item in %player%['s] offhand
 	set:
 #		(internal code)
-	return type: item
+	return type: item/ material

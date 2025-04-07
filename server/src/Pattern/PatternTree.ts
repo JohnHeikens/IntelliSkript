@@ -16,7 +16,7 @@ import { TokenModifiers } from '../TokenModifiers';
 import { TypeNode } from './patternTreeNode/TypeNode';
 
 //flags: U -> ungreedy, g -> global
-const argumentRegExp = /%(.*?)%/g;
+const argumentRegExp = /(?<=\\)%(.*?)(?<=\\)%/g;
 
 function convertSkriptPatternToRegExp(pattern: string, hierarchy: SkriptNestHierarchy): string {
 	function convertString(input: string): string {

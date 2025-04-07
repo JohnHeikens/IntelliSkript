@@ -558,7 +558,7 @@ expression:
 expression:
 	patterns:
 		blank %potioneffecttype% [colo[u]r[ed]] potion
-	return type: item
+	return type: item/ material
 #ExprComparisons
 expression:
 	patterns:
@@ -648,7 +648,7 @@ expression:
 expression:
 	patterns:
 		[skquery] glowing %itemstacks%
-	return type: item
+	return type: item/ material
 #ExprHealthScale
 expression:
 	patterns:

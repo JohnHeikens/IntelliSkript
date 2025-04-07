@@ -93,10 +93,7 @@ export class Server {
 			//const myExtDir = vscode.extensions.getExtension ("JohnHeikens.IntelliSkript").extensionPath;
 			if (IntelliSkriptConstants.IsDebugMode) {
 				await Sleep(5000);//give the debugger time to start
-				//AddonParser.ParseFiles();
-				//idParser.ParseFiles();
 			}
-			//currentWorkSpace.readAddonFiles();
 
 			//currentWorkSpaces.push(new SkriptWorkSpace());
 			if (params.workspaceFolders != null) {
