@@ -4,6 +4,7 @@ import { PatternTree } from '../pattern/PatternTree';
 import { canBeSubPattern, PatternType } from '../pattern/PatternType';
 import { SkriptPatternCall } from '../pattern/SkriptPattern';
 import { SkriptTypeSection } from '../skript/section/custom/SkriptTypeSection';
+import { SkriptFunction } from "../skript/section/SkriptFunctionSection";
 import { SkriptTypeState } from '../skript/storage/type/SkriptTypeState';
 import { MatchProgress } from './match/MatchProgress';
 import { MatchResult } from './match/matchResult';
@@ -15,6 +16,7 @@ export class PatternTreeContainer implements PatternMatcher {
 	*/
 	containersToTraverse: PatternTreeContainer[] = [];
 	trees = new Array<PatternTree>(PatternType.count);
+	functions = new Map<string, SkriptFunction>();
 	constructor(parent?: PatternTreeContainer) {
 		for (let i = 0; i < PatternType.count; i++) {
 			this.trees[i] = new PatternTree();
@@ -188,10 +190,13 @@ export class PatternTreeContainer implements PatternMatcher {
 					const testResult = this.getMatchingPatternPart(testPattern, testProgress, index + 1, argumentIndex, recursion + 1);
 					if (testResult)
 						return testResult;
+					//just matching by charachters didn't work.
 				}
-				//if the type nodes didn't contain a match, we'll just continue
-				progress.currentNode = charChild;
-				continue;
+				else {
+					//we'll just continue matching by charachters
+					progress.currentNode = charChild;
+					continue;
+				}
 			}
 			if (progress.currentNode.typeOrderedChildren.size) {
 				let testResult: MatchResult | undefined;
@@ -301,13 +306,25 @@ export class PatternTreeContainer implements PatternMatcher {
 		return undefined;
 	}
 
+	getMatchingFunction(name: string): SkriptFunction | undefined {
+		let f: SkriptFunction | undefined = undefined;
+		for (const container of this.containersToTraverse) {
+			if (f = container.functions.get(name)) {
+				return f;
+			}
+		}
+		return undefined;
+	}
+
 	addPattern(pattern: PatternData): void {
 		this.trees[pattern.patternType].addPattern(pattern);
 	}
 
+	//add patterns of other container to this container
 	merge(other: PatternTreeContainer): void {
 		for (let i = 0; i < PatternType.count; i++) {
 			this.trees[i].merge(other.trees[i]);
 		}
+		this.functions = new Map([...this.functions.entries(), ...other.functions.entries()]);
 	}
 }

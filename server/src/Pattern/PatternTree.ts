@@ -15,8 +15,8 @@ import { SkriptTypeSection } from '../skript/section/custom/SkriptTypeSection';
 import { TokenModifiers } from '../TokenModifiers';
 import { TypeNode } from './patternTreeNode/TypeNode';
 
-//flags: U -> ungreedy, g -> global
-const argumentRegExp = /(?<=\\)%(.*?)(?<=\\)%/g;
+//flags: U -> ungreedy, g -> global. percentages are escapable with a slash.
+const argumentRegExp = /(?<!\\)\%(.*?)(?<!\\)\%/g;
 
 function convertSkriptPatternToRegExp(pattern: string, hierarchy: SkriptNestHierarchy): string {
 	function convertString(input: string): string {
@@ -179,8 +179,8 @@ export class PatternTree {
 				//for each possibility of this pattern, loop over the letters
 				for (let splitNodeIndex = 0; splitNodeIndex < currentNodes.length; splitNodeIndex++) {
 					const currentSplitNode = currentNodes[splitNodeIndex];
-					if ((char == ' ') && ((currentSplitNode.patternKey == ' '))) {
-						//no double spaces
+					if ((char == ' ') && ((currentSplitNode.patternKey == ' ') || currentSplitNode == this.root)) {
+						//no double spaces or spaces at the start of the pattern
 						newNodes.push(currentSplitNode);
 					}
 					else if (char == '%') {

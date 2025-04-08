@@ -90,7 +90,7 @@ export class SkriptSection extends SkriptSectionGroup {
 	}
 
 	/**will add a type token! */
-	parseTypes(context: SkriptContext, start = 0, end = context.currentString.length): SkriptTypeState | undefined {
+	parseTypes(context: SkriptContext, start = 0, end = context.currentString.length): SkriptTypeState {
 		const str = context.currentString.substring(start, end);
 		const result = new SkriptTypeState();
 		let parts: string[];
@@ -290,17 +290,34 @@ export class SkriptSection extends SkriptSectionGroup {
 							const functionNameEnd = child.start - 1;
 							let match;
 							if (match = functionNameRegex.exec(context.currentString.substring(0, functionNameEnd))) {
+								const javaClass = match[1];
+								const functionName = match[2];
+								let functionPatternData = undefined;
+								let returnTypeData = new SkriptTypeState();
+								const functionCallStart = functionNameEnd - functionName.length;
 								//TODO: search for functions
-								if (match[1])
-									context.addToken(TokenTypes.namespace, match.index, match[1].length);
-								context.addToken(TokenTypes.function, functionNameEnd - match[2].length, match[2].length);
-								pattern.replace(match.index, child.end + 1);
-								const objectData = this.getTypeData("unknown");
-								if (objectData) {
-									mergedPatternArguments.set(child.start, new SkriptTypeState(objectData));
+								if (javaClass) {
+									context.addToken(TokenTypes.namespace, match.index, javaClass.length);
+
+									let unKnownData = this.getTypeData("javaobject");
+									if (unKnownData) returnTypeData.possibleTypes.push(unKnownData);
 								}
+								else {
+									let matchingFunction = this.getPatternTree()?.getMatchingFunction(functionName);
+									if (!matchingFunction)
+										//couldn't find a function with this name. let's just pass it 'raw'.
+										continue;
+									functionPatternData = matchingFunction.pattern;
+									if (functionPatternData) {
+										returnTypeData = functionPatternData?.returnType;
+										context.addPatternMatch(functionPatternData, functionCallStart, child.end + 1);
+									}
+								}
+								context.addToken(TokenTypes.function, functionCallStart, functionName.length);
+								pattern.replace(match.index, child.end + 1);
+								mergedPatternArguments.set(child.start, returnTypeData);
+								continue;
 							}
-							continue;
 						}
 					}
 					else if (child.character == '{') {
@@ -342,8 +359,13 @@ export class SkriptSection extends SkriptSectionGroup {
 				sort(([keyA], [keyB]) => keyA - keyB).//sort
 				map(([, value]) => value);//erase keys
 
-			if (!isTopNode && currentPatternArguments.length == 1 && pattern.pattern.length == 1) {
-				//this pattern is just '%'. we should pass it to the pattern detector above
+			if (
+				(currentPatternArguments.length == 1 && pattern.pattern.length == 1) &&
+				//this pattern is just '%'
+				(!isTopNode //we should pass it to the pattern detector above
+					|| mainPatternType == PatternType.effect)//we don't have to evaluate anything
+				) {
+
 			}
 			else {
 

@@ -31,20 +31,30 @@ export class EventJson extends PatternJson {
 	"event values"?: string[];
 	cancellable = false;
 }
-export class ExpressionJson extends PatternJson {
-	changers?: string[];
+export class ModifierJson extends PatternJson {
 	"return type" = "";
+}
+export class ExpressionJson extends ModifierJson {
+	changers?: string[];
+}
+export class FunctionJson extends ModifierJson {
+
 }
 
 export class TypeJson extends PatternJson {
 	usage?: string;
 }
+export class SectionJson extends PatternJson {
+
+}
 export class fileJson {
+	types?: TypeJson[];
+	expressions?: ExpressionJson[];
 	effects?: EffectJson[];
+	sections?: SectionJson[];
 	conditions?: ConditionJson[];
 	events?: EventJson[];
-	expressions?: ExpressionJson[];
-	types?: TypeJson[];
+	functions?: FunctionJson[];
 }
 export class AddonParser extends Parser {
 
@@ -175,6 +185,11 @@ export class AddonParser extends Parser {
 				//	throw "type not found";
 			}
 		})
+		file.sections?.forEach(condition => {
+			str += generalData(condition);
+			str += "section:\n";
+			str += patterns(condition);
+		});
 		file.effects?.forEach(effect => {
 			str += generalData(effect);
 			str += "effect:\n";
@@ -185,7 +200,6 @@ export class AddonParser extends Parser {
 			str += generalData(condition);
 			str += "condition:\n";
 			str += patterns(condition);
-
 		});
 		file.events?.forEach(event => {
 			str += generalData(event);
@@ -229,6 +243,11 @@ export class AddonParser extends Parser {
 				else str += this.normalizeName(expression["return type"]);
 			}
 		});
+		file.functions?.forEach(f => {
+			str += generalData(f);
+			str += "function " + f.patterns[0] + " :: " + f['return type'] + ":";
+			str += "#\t(internal code)\n";
+		})
 		return str;
 	}
 	static override ParseFile(file: string, contents: string): void {

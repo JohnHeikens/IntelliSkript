@@ -10,7 +10,7 @@ export class idParser extends Parser {
         const inputFileName = file.substring(0, file.indexOf('.'));
         let outputFileString = skriptFileHeader;
         outputFileString += "expression:\n";
-        outputFileString += "\treturn type: " + (inputFileName == "entities" ? "entity" : inputFileName.substring(0, inputFileName.length - 1)) + "type\n";
+        outputFileString += "\treturn type: " + inputFileName + "type\n";
         outputFileString += "\tpatterns:\n";
         const vowels = "aeiou";
 
@@ -19,6 +19,7 @@ export class idParser extends Parser {
             const prefix = vowels.includes(trimmedLine.substring(0, 1)) ? "[an] " : "[a] ";
             outputFileString += "\t\t" + prefix + trimmedLine + "\n";
         }
+
         const outputFileName = "zzz (postload) - IntelliSkript " + inputFileName.substring(0, 1).toUpperCase() + inputFileName.substring(1);
         const targetPath = path.join(AddonSkFilesDirectory, outputFileName) + ".sk";
         fs.writeFileSync(targetPath, outputFileString);
