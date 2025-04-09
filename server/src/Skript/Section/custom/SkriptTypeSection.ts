@@ -4,9 +4,9 @@ import { PatternTree } from '../../../pattern/PatternTree';
 import { PatternType } from "../../../pattern/PatternType";
 import { TokenTypes } from '../../../TokenTypes';
 import { SkriptContext } from '../../validation/SkriptContext';
-import { SkriptPatternContainerSection } from '../reflect/SkriptPatternContainerSection';
+import { ReflectPatternContainerSection } from '../reflect/ReflectPatternContainerSection';
 import { SkriptSectionGroup } from '../SkriptSectionGroup';
-export class SkriptTypeSection extends SkriptPatternContainerSection {
+export class SkriptTypeSection extends ReflectPatternContainerSection {
     baseClasses: SkriptTypeSection[] = [];
     patterns: PatternData[] = [];
 

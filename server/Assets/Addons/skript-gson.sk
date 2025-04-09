@@ -394,3 +394,10 @@ expression:
 	remove:
 #		(internal code)
 	return type: json
+#jsonfile
+#Get json file from string/object input
+#since 2.8.0 - performance & clean
+#Examples:
+#jsonfile("plugins/test/test.json")
+function jsonfile(file: string) :: Object:
+#	(internal code)

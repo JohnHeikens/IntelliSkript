@@ -96,7 +96,6 @@ export class PatternTreeContainer implements PatternMatcher {
 	 * @returns
 	 */
 	getMatchingPatternPart(testPattern: SkriptPatternCall, progress: MatchProgress, index: number = 0, argumentIndex: number = 0, recursion: number = 0): MatchResult | undefined {
-
 		//RULES
 		//when a pattern is found, the function that found the end of the pattern adds the patternmatch
 		//when calling recursively, never move the index back
@@ -109,8 +108,7 @@ export class PatternTreeContainer implements PatternMatcher {
 			//for example:
 			//set {_var} to 3 + 4
 			//% + % and set % to % both end at the same time
-			const endNodeData = progress.currentNode.endNode;
-			if (endNodeData) {
+			for (const endNodeData of progress.currentNode.patternsEndedHere) {
 				//we have a potential match!
 				if (index == pattern.length && !progress.parent) {
 					progress.foundPattern = endNodeData;
@@ -163,7 +161,6 @@ export class PatternTreeContainer implements PatternMatcher {
 							})) return fullMatch;
 						}
 					}
-
 					//when no full match is found, we just continue
 				}
 			}
@@ -320,7 +317,7 @@ export class PatternTreeContainer implements PatternMatcher {
 		this.trees[pattern.patternType].addPattern(pattern);
 	}
 
-	//add patterns of other container to this container
+	//add patterns and functions of other container to this container
 	merge(other: PatternTreeContainer): void {
 		for (let i = 0; i < PatternType.count; i++) {
 			this.trees[i].merge(other.trees[i]);

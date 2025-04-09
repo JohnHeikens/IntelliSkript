@@ -16,7 +16,7 @@ export class PatternTreeNode {
 	//for example:
 	//say % <- end node
 	//say % to % <- another end node
-	endNode?: PatternData;
+	patternsEndedHere: PatternData[] = [];
 	patternKey?: string;
 
 	//compare(_other: PatternTreeNode) {
@@ -31,7 +31,7 @@ export class PatternTreeNode {
 	clone(): PatternTreeNode {
 		const clone = new PatternTreeNode();
 		clone.patternKey = this.patternKey;
-		clone.endNode = this.endNode;
+		clone.patternsEndedHere = [...this.patternsEndedHere];
 		clone.stringOrderedChildren = new Map<string, PatternTreeNode>();
 		for (const [key, value] of this.stringOrderedChildren) {
 			//this method is definitely not optimized for memory usage as the nodes aren't linked anymore after this
@@ -51,8 +51,8 @@ export class PatternTreeNode {
 				this.stringOrderedChildren.set(key, value.clone());
 			}
 		}
-		if (other.endNode) {
-			this.endNode = other.endNode;
+		if (other.patternsEndedHere) {
+			this.patternsEndedHere = other.patternsEndedHere;
 		}
 	}
 }

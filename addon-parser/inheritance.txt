@@ -8,3 +8,4 @@ offline player->command sender
 player->offline player, livingentity
 guildchannel->channel
 entity type->entity data
+projectile->entity type

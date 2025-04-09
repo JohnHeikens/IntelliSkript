@@ -27,7 +27,7 @@ export class SemanticToken {
 		return new SemanticToken({ line: this.position.line, character: this.position.character }, this.length, this.type, this.tokenModifierFlags);
 	}
 	toString() {
-		return "type: " + this.type + ", start: " + this.position.character + ", length: " + this.length;
+		return "type: " + TokenTypes[this.type] + ", start: " + this.position.character + ", length: " + this.length;
 	}
 }
 

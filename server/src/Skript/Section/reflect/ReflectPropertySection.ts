@@ -3,10 +3,10 @@ import { PatternTree } from '../../../pattern/PatternTree';
 import { PatternType } from '../../../pattern/PatternType';
 import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
-import { SkriptExpressionSection } from './SkriptExpressionSection';
+import { ReflectExpressionSection } from './ReflectExpressionSection';
 import { SkriptTypeState } from '../../storage/type/SkriptTypeState';
 
-export class SkriptPropertySection extends SkriptExpressionSection {
+export class ReflectPropertySection extends ReflectExpressionSection {
 	propertyParentType: TypeData;
 	constructor(parent: SkriptSection, context: SkriptContext, propertyParentType: TypeData, ) {
 		super(parent, context);

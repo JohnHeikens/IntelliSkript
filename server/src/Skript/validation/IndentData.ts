@@ -27,12 +27,12 @@ export class IndentData {
      * for example:
      * function test():
      *     function test2():
-     * mostValid for test2() should return 0 here
+     * mostValid for test2() should return 0 here, because a function should start at the start of a line.
      */
     mostValid: integer = 0;
     hasColon: boolean = false;
 
-    /**indentation offset - correct offset; this should be 0 all the time while parsing a perfect skript file. 
+    /**indentation offset - correct offset; this should be 0 all the time while parsing a perfect skript file.
      * when you paste a piece of code with some extra tabs, it will hopefully recognise the correct offset and adjust the indentation offset using this.
      * we don't need this variable, because we're just going at the indent offset we're at until it doesn't work anymore.
     */

@@ -1,7 +1,7 @@
 import { PatternData } from "../../pattern/data/PatternData";
 import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
 import { SkriptContext } from '../validation/SkriptContext';
-import { SkriptEventSection } from './reflect/SkriptEventSection';
+import { ReflectEventSection } from './reflect/ReflectEventSection';
 import { SkriptSection } from './skriptSection/SkriptSection';
 
 export class SkriptEventListenerSection extends SkriptSection {
@@ -11,7 +11,7 @@ export class SkriptEventListenerSection extends SkriptSection {
 		super(context.currentSkriptFile, context);
 		this.eventPattern = eventPattern;
 		this.patternContainer = new PatternTreeContainer(context.currentSkriptFile.patternContainer);
-		const s = this.eventPattern.section as SkriptEventSection;
+		const s = this.eventPattern.section as ReflectEventSection;
 		if (s.eventValues)
 			for (let i = 0; i < s.eventValues.length; i++) {
 				this.patternContainer.addPattern(s.eventValues[i]);

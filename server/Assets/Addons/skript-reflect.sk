@@ -22,6 +22,11 @@ type:
 	patterns:
 		null
 
+#SecSection
+section:
+	patterns:
+		create [new] section [with [arguments variables] %objects%] (and store it|stored) in %objects%
+
 #EffCallEvent
 effect:
 	patterns:

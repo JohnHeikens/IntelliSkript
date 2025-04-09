@@ -1,7 +1,7 @@
 import { DiagnosticSeverity } from 'vscode-languageserver';
 import { Location } from 'vscode-languageserver/node';
 import { SkriptNestHierarchy } from '../nesting/SkriptNestHierarchy';
-import type { SkriptPatternContainerSection } from '../skript/section/reflect/SkriptPatternContainerSection';
+import type { ReflectPatternContainerSection } from '../skript/section/reflect/ReflectPatternContainerSection';
 import { SkriptTypeState } from "../skript/storage/type/SkriptTypeState";
 import { SkriptContext } from '../skript/validation/SkriptContext';
 import { TokenTypes } from '../TokenTypes';
@@ -136,6 +136,11 @@ export class PatternTree {
 	merge(other: PatternTree): void {
 		this.incompatiblePatterns.push(...other.incompatiblePatterns);
 		this.compatiblePatterns.push(...other.compatiblePatterns);
+		if(this.root){
+			for (const p of other.compatiblePatterns) {
+				this.addToTree(p);
+			}
+		}
 	}
 
 	//returns endnodes of the pattern parts
@@ -241,7 +246,7 @@ export class PatternTree {
 			const regExpHierarchy = createRegExpHierarchy(data.regexPatternString);
 			const endNodes = this.addPatternPart(data, [this.root], regExpHierarchy);
 			for (const node of endNodes) {
-				node.endNode = data;
+				node.patternsEndedHere.push(data);
 			}
 		}
 	}
@@ -378,7 +383,7 @@ export class PatternTree {
 		return fixedString;
 	}
 
-	static parsePattern(context: SkriptContext, patternSection: SkriptPatternContainerSection, type: PatternType): PatternData | undefined {
+	static parsePattern(context: SkriptContext, patternSection: ReflectPatternContainerSection, type: PatternType): PatternData | undefined {
 		const Hierarchy = this.createHierarchy(context);
 		if (!context.hasErrors) {
 			let m: RegExpMatchArray | null;

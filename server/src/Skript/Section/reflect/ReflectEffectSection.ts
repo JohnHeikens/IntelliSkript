@@ -4,10 +4,10 @@ import type { SkriptContext } from '../../validation/SkriptContext';
 import {
 	SkriptSection
 } from "../skriptSection/SkriptSection";
-import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
+import { ReflectPatternContainerSection } from './ReflectPatternContainerSection';
 import { PatternType } from '../../../pattern/PatternType';
 
-export class SkriptEffect extends SkriptPatternContainerSection {
+export class ReflectEffectSection extends ReflectPatternContainerSection {
 	static patternType = PatternType.effect;
 	createSection(context: SkriptContext): SkriptSection | undefined {
 		const regex = /^(parse|trigger)$/;

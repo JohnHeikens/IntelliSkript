@@ -84,6 +84,18 @@ expression:
 		movement.jump
 		movement.unmount
 
+#Open Anvil
+section:
+	patterns:
+		open [an] anvil [gui] (named|with title) %string% to %players% with left item %itemstack% [and [right] item %itemstack%]
+		open [an] anvil [gui] (named|with title) %string% to %players% with [items] %itemstacks%
+		open [an] anvil [gui] (named|with title) %string% to %players% with left item %itemstack% [and [right] item %itemstack%] [[and] exclud(e|ing) left and right clicks]
+
+#SecOpenSign
+section:
+	patterns:
+		open [a] sign [gui] to %players% [with [(text|lines)] %strings%]
+
 #Armour Change Client Side
 #Change what a player is wearing for another player, client side.
 effect:

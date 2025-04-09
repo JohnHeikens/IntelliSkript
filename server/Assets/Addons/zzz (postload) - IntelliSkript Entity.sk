@@ -5,45 +5,65 @@ expression:
 	return type: entitytype
 	patterns:
 		[an] allay
+		[an] area effect cloud
 		[an] armadillo
 		[an] armor stand
+		[an] arrow
 		[an] axolotl
 		[a] bat
 		[a] bee
 		[a] blaze
+		[a] block display
 		[a] bogged
 		[a] breeze
 		[a] cat
 		[a] cave spider
+		[a] chest boat
+		[a] chest minecart
 		[a] chicken
 		[a] cod
+		[a] command block minecart
 		[a] cow
 		[a] creeper
 		[a] dolphin
 		[a] donkey
 		[a] drowned
+		[an] egg
 		[an] elder guardian
 		[an] ender dragon
 		[an] enderman
 		[an] endermite
 		[an] evoker
+		[an] evoker fangs
+		[an] experience bottle
+		[an] experience orb
+		[an] eye of ender
 		[a] fox
 		[a] frog
+		[a] furnace minecart
 		[a] ghast
 		[a] giant
 		[a] glow squid
 		[a] goat
 		[a] guardian
 		[a] hoglin
+		[a] hopper minecart
 		[a] horse
 		[a] husk
 		[an] illusioner
+		[an] interaction
 		[an] iron golem
+		[an] item display
+		[an] item frame
+		[a] leash knot
 		[a] llama
+		[a] llama spit
 		[a] magma cube
+		[a] marker
 		[a] mooshroom
 		[a] mule
 		[an] ocelot
+		[a] painting
 		[a] panda
 		[a] parrot
 		[a] phantom
@@ -53,24 +73,31 @@ expression:
 		[a] pillager
 		[a] player
 		[a] polar bear
+		[a] potion
 		[a] pufferfish
 		[a] rabbit
 		[a] ravager
 		[a] salmon
 		[a] sheep
 		[a] shulker
+		[a] shulker bullet
 		[a] silverfish
 		[a] skeleton
 		[a] skeleton horse
 		[a] slime
 		[a] sniffer
 		[a] snow golem
+		[a] snowball
+		[a] spectral arrow
 		[a] spider
-		[a] strider
 		[a] squid
 		[a] stray
+		[a] strider
 		[a] tadpole
-		[a] llama
+		[a] text display
+		[a] tnt
+		[a] tnt minecart
+		[a] trident
 		[a] tropical fish
 		[a] turtle
 		[a] vex
@@ -81,6 +108,7 @@ expression:
 		[a] witch
 		[a] wither
 		[a] wither skeleton
+		[a] wither skull
 		[a] wolf
 		[a] zoglin
 		[a] zombie

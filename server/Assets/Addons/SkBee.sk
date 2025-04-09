@@ -1316,6 +1316,887 @@ type:
 	patterns:
 		tag[ ]resolver[s]
 
+#Attribute Modifier Apply
+#Apply an attribute modifier to an item or living entity.
+#If running Minecraft 1.21+ use `id`
+#If running Minecraft 1.20.6 and below, use `name` and `uuid` (uuid is optional, will default to random).
+#See [**McWiki Component**](https://minecraft.wiki/w/Data_component_formatattribute_modifiers) and [**McWiki Modifiers**](https://minecraft.wiki/w/AttributeModifiers) for further details.
+#`transient` = Non-persisent attribute modifier (LivingEntities only, not Items), will not save to the entity's NBT (Requires PaperMC).
+#**Entries/Sections**:
+#- `attribute` = The attribute this modifier is to act upon.
+#- `slot` = Slot Type the item must be in for the modifier to take effect (Minecraft 1.20.6+ uses Equipment Slot Group, other versions use Equipment Slot).
+#- `id` = The NamespacedKey to identify this modifier (Minecraft 1.21+).
+#- `name` = The name used to identifiy this modifier (Minecraft 1.20.6 and below).
+#- `uuid` = The uuid used to identify this modifier [optional] (Minecraft 1.20.6 and below).
+#- `amount` = Amount of change from the modifier.
+#- `operation` = The operation to decide how to modify. See [**McWiki**](https://minecraft.wiki/w/AttributeOperations) for more details.
+#since 3.5.9
+#Examples:
+#Apply Attribute Modifiers to Items
+#set {_i} to a stick
+#apply attribute modifier to {_i}:
+#	attribute: scale
+#	id: "minecraft:my_hand_scale"
+#	slot: mainhand_slot_group
+#	amount: 2
+#	operation: add_number
+#apply attribute modifier to {_i}:
+#	attribute: scale
+#	id: "minecraft:my_hand_scale_off"
+#	slot: offhand_slot_group
+#	amount: -0.9
+#	operation: add_number
+#give player 1 of {_i}
+#Apply Attribute Modifiers to LivingEntities
+#apply transient attribute modifier to player:
+#	id: "my_mods:mining"
+#	attribute: player mining efficiency
+#	amount: 50
+#	operation: add_number
+#apply transient attribute modifier to player:
+#	id: "my_mods:scale"
+#	attribute: scale
+#	amount: -0.5
+#	operation: add_number
+section:
+	patterns:
+		apply [transient] attribute modifier to %itemtypes/livingentities%
+
+#Bound - Copy Bound
+#Create an exact replica of an existing bound with a new id.
+#since 2.15.0
+#Examples:
+#create a copy of bound with id "some_bound" with id "some_bound_copy"
+#create a copy of bound with id "some_bound" with id "some_bound_copy":
+#	resize the bound between {_pos1} and {_pos2}
+#	add {_player} to bound owners of bound
+section:
+	patterns:
+		create [a] copy of [bound] %bound% (with|using) [the] id %string%
+
+#Bound - Create
+#Create a bound within 2 locations. This can be used as an effect and as a section.
+#Optional value `temporary` creates a bound which persists until server stops (not saved to file).
+#Optional value `full` will mark the bound to use the world's min/max height.
+#These optional values can be used together.
+#**SPECIAL NOTE**:
+#- When using locations = The bound created will use the locations you pass thru
+#- When using blocks = The bound created will extend the x/y/z axes by 1 to fully include those blocks.
+#since 2.5.3, 2.10.0 (temporary bounds)
+#Examples:
+# Create bounds using locations
+#create bound with id "le-test" between {_1} and {_2}:
+#	set bound value "le-value" of event-bound to 52
+#	set owner of event-bound to player
+#create a new bound with id "%uuid of player%.home" between {loc1} and {loc2}
+#create a temporary bound with id "%{_world}%.safezone-%random uuid%" between {loc1} and {loc2}
+#create a full bound with id "spawn" between {loc} and location of player
+# Create bounds using blocks
+#create bound with id "my_home" within block at player and block 10 above target block
+#create bound with id "le_bound" within {_block1} and {_block2}
+#create a new bound with id "%uuid of player%.home" between {block1} and {block2}
+section:
+	patterns:
+		create [a] [new] [temporary] [full] bound with id %string% (within|between) %block/location% and %block/location%
+
+#ItemComponent - Adventure Predicate Apply
+#Apply an adventure can break/can place on predicate to items.
+#Requires Paper 1.21.3+
+#See [**Can Break**](https://minecraft.wiki/w/Data_component_formatcan_break)/[**Can Place On**](https://minecraft.wiki/w/Data_component_formatcan_place_on) components on McWiki for more info.
+#**Entries**:
+#- `blocks` = The blocks this item can place on/can break. (Accepts ItemTypes, BlockDatas, Tags, TagKeys and RegistryKeySets(soon™))
+#- `show_in_tooltip` = Show or hide the "Can break/Can Place On" line on this item's tooltip. (Optional, defaults to true)
+#since 3.8.0
+#Examples:
+#apply can break adventure predicate to player's tool:
+#	blocks: grass block, dirt, stone, gravel
+#apply can break adventure predicate to player's tool:
+#	blocks: minecraft block tag "minecraft:mineable/pickaxe"
+#apply can place on adventure predicate to player's tool:
+#	blocks: minecraft block tag "minecraft:logs"
+section:
+	patterns:
+		apply (can place on|can break) [adventure] predicate to %itemstacks/itemtypes/slots%
+
+#ItemComponent - Consumable Component Apply
+#Apply a consumable component to an item.
+#If present, this item can be consumed by the player.
+#Requires Paper 1.21.3+
+#See [**Consumable Component**](https://minecraft.wiki/w/Data_component_formatconsumable) on McWiki for more info.
+#**Entries**:
+#- `consume_seconds` = The amount of time it takes for a player to consume the item. Defaults to 1.6 seconds. [Optional]
+#- `animation` = The animation used during consumption of the item. [Optional]
+#  Must be one of "none", "eat", "drink", "block", "bow", "spear", "crossbow", "spyglass", "toot_horn" or "brush". Defaults to "eat"]
+#- `sound` = A sound key to player when consumed. Defaults to "entity.generic.eat" [Optional]
+#- `has_consume_particles` = Whether consumption particles are emitted while consuming this item. Defaults to true. [Optional]
+#- `on_consume_effect` = A `consume effect` to by applied to the component (supports a list) [Optional].
+#- `on_consume_effects` = A section to apply `consume effects` [Optional].
+#since 3.8.0
+#Examples:
+#apply consumable to {_i}:
+#	animation: "drink"
+#	consume_seconds: 2.5 seconds
+#	on_consume_effects:
+#		apply -> potion effect of slowness for 10 seconds with probability 0.5
+#		apply -> clear all effects
+#		apply -> remove effects night vision
+#		apply -> play sound "blah.blah"
+#		apply -> teleport randomly within 15
+#		apply -> teleport randomly within 20 meters
+#		apply -> teleport randomly within 100 blocks
+#set {_effects} to apply_effects(potion effect of night vision for 10 seconds, 0.5)
+#set {_i} to 1 of stick
+#apply consumable component to {_i}:
+#	consume_seconds: 3.2 seconds
+#	animation: "brush"
+#	sound: "block.stone.break"
+#	has_consume_particles: false
+#	on_consume_effect: {_effects}
+#give {_i} to player
+section:
+	patterns:
+		apply consumable [component] to %itemstacks/itemtypes/slots%
+
+#ItemComponent - CustomModelData Component Apply
+#Apply a custom model data component to items.
+#Requires Paper 1.21.4+
+#See [**CustomModelData Component**](https://minecraft.wiki/w/Data_component_formatcustom_model_data) on McWiki for more info.
+#**Entries**:
+#- `floats` = A list of numbers.
+#- `flags` = A list of booleans (true/false).
+#- `strings` = A list of strings.
+#- `colors` = A list of colors.
+#since 3.8.0
+#Examples:
+#apply custom model data to player's tool:
+#	floats: 1, 2, 3, 4, 5
+#	strings: "hello", "yippee"
+#	flags: true, true, true, false
+#	colors: blue, green, rgb(1,1,1)
+section:
+	patterns:
+		apply custom model data [component] to %itemstacks/itemtypes/slots%
+
+#ItemComponent - Death Protection Component Apply
+#Apply a death protection component to an item.
+#If present, this item protects the holder from dying by restoring a single health point.
+#Requires Paper 1.21.3+
+#See [**Death Protection Component**](https://minecraft.wiki/w/Data_component_formatdeath_protection) on McWiki for more info.
+#`death_effect` = A `consume effect` to by applied to the component (supports a list) [Optional].
+#`death_effects` = A section to apply `consume effects` [Optional].
+#since 3.8.0
+#Examples:
+#set {_p::1} to potion effect of night vision for 10 seconds
+#set {_p::2} to potion effect of slow mining for 5 seconds
+#set {_effects} to apply_effects({_p::*}, 0.5)
+#set {_i} to 1 of stick
+#apply death protection component to {_i}:
+#	death_effects: {_effects}
+#give {_i} to player
+#apply death protection to {_i}:
+#	death_effects:
+#		apply -> potion effect of slowness for 10 seconds with probability 0.5
+#		apply -> clear all effects
+#		apply -> remove effects night vision
+#		apply -> play sound "blah.blah"
+#		apply -> teleport randomly within 15
+#		apply -> teleport randomly within 20 meters
+#		apply -> teleport randomly within 100 blocks
+section:
+	patterns:
+		apply death protection [component] to %itemstacks/itemtypes/slots%
+
+#ItemComponent - Equippable Component Apply
+#Apply an equippable component to any item so it can be equipped in the specified slot.
+#Requires Paper 1.21.3+
+#See [**Equippable Component**](https://minecraft.wiki/w/Data_component_formatequippable) on McWiki for more info.
+#**Entries**:
+#- `slot` = The slot the item can be put on (See Equipment Slot).
+#- `equip_sound` = The sound to be played when equipped. [Optional]
+#- `asset_id` = The key of the equipment model to use when equipped. [Optional]
+#- `allowed_entities` = A list of entity types or a Minecraft entity tag that can equip this item. [Optional]
+#- `dispensable` = Whether the item can be dispensed by using a dispenser. Defaults to true. [Optional]
+#- `swappable` = Whether the item can be equipped into the relevant slot by right-clicking. Defaults to true. [Optional]
+#- `damage_on_hurt` = Whether this item is damaged when the wearing entity is damaged. Defaults to true. [Optional]
+#- `camera_overlay` = The key of the overlay texture to use when equipped. [Optional]
+#since 3.8.0
+#Examples:
+#apply equippable component to {_item}:
+#	slot: hand_slot
+#	equip_sound: "entity.player.burp"
+#	asset_id: "my_pack:some_asset"
+#	allowed_entities: player, evoker, zombie  Shown as list of entity types.
+#	allowed_entities: minecraft entity tag "undead"  Shown as Minecraft entity tag
+#	dispensable: false
+#	swappable: true
+#	damage_on_hurt: true
+#	camera_overlay: "my_pack:some_overlay"
+section:
+	patterns:
+		apply equippable [component] to %itemstacks/itemtypes/slots%
+
+#ItemComponent - Firework Explosion Component Apply
+#Apply a firework explosion effect to a firework star.
+#This can also be used within the Fireworks Component's `explosions:` section.
+#Requires Paper 1.21.3+
+#See [**Firework Explosion Component**](https://minecraft.wiki/w/Data_component_formatfirework_explosion) on McWiki for more info.
+#**Entries**:
+#- `shape` = The [firework type](https://docs.skriptlang.org/classes.htmlFireworkType) of the explosion.
+#- `colors` = The colors of the initial particles of the explosion, randomly selected from.
+#- `fade_colors` = The colors of the fading particles of the explosion, randomly selected from.
+#- `has_trail` = Whether or not the explosion has a trail effect (diamond).
+#- `has_twinkle` = Whether or not the explosion has a twinkle effect (glowstone dust).
+#since 3.8.0
+#Examples:
+# Apply to item
+#apply firework explosion to {_i}:
+#	shape: small ball
+#	colors: red, yellow and white
+#	fade_colors: blue, green and red
+#	has_trail: true
+#	has_twinkle: true
+# Apply as explosion in fireworks
+#apply fireworks to {_i}:
+#	flight_duration: 3
+#	explosions:
+#		apply firework explosion:
+#			shape: small ball
+#			colors: red, yellow and white
+#			fade_colors: blue, green and red
+#			has_trail: true
+#			has_twinkle: true
+#		apply firework explosion:
+#			shape: large ball
+#			colors: red, white and blue
+#			has_trail: false
+#			has_twinkle: false
+section:
+	patterns:
+		apply firework explosion [component] [to %itemstacks/itemtypes/slots%]
+
+#ItemComponent - Fireworks Component Apply
+#Apply a fireworks component to a firework rocket.
+#Requires Paper 1.21.3+
+#See [**Fireworks Component**](https://minecraft.wiki/w/Data_component_formatfireworks) on McWiki for more info.
+#**Entries**:
+#- `flight_duration` = The flight duration of this firework rocket, i.e. the number of gunpowders used to craft it. (Integer between 0 and 255, defaults to 1)
+#- `explosions` = A section to apply firework explosions (see 'ItemComponent - Firework Explosion Component Apply' section).
+#since 3.8.0
+#Examples:
+#apply fireworks to {_i}:
+#	flight_duration: 3
+#	explosions:
+#		apply firework explosion:
+#			shape: small ball
+#			colors: red, yellow and white
+#			fade_colors: blue, green and red
+#			has_trail: true
+#			has_twinkle: true
+#		apply firework explosion:
+#			shape: large ball
+#			colors: red, white and blue
+#			has_trail: false
+#			has_twinkle: false
+section:
+	patterns:
+		apply fireworks [component] to %itemstacks/itemtypes/slots%
+
+#ItemComponent - Food Component Apply
+#Apply a food component to any item giving it food properties.
+#You will also require a `consumable` component to actually make the item consumable.
+#Requires Paper 1.21.3+
+#See [**Food Component**](https://minecraft.wiki/w/Data_component_formatfood) on McWiki for more details.
+#**Entries/Sections**:
+#- `nutrition` = The number of food points restored by this item when eaten. Must be a non-negative integer.
+#- `saturation` = The amount of saturation restored by this item when eaten.
+#- `can always eat` = If true, this item can be eaten even if the player is not hungry. Defaults to false. [Optional]
+#since 3.5.8
+#Examples:
+#apply food component to player's tool:
+#	nutrition: 5
+#	saturation: 3
+#set {_i} to 1 of book
+#apply food component to {_i}:
+#	nutrition: 5
+#	saturation: 3
+#	can_always_eat: true
+#give player 1 of {_i}
+section:
+	patterns:
+		apply food component to %itemstacks/itemtypes/slots%
+
+#ItemComponent - Instrument Component Apply
+#Apply an instrument component to an item that supports it (such as a goat horn).
+#It may seem silly that this is a section with only 1 value, but I'm hoping that Paper updates the API to support all the features Minecraft has for this.
+#Requires Paper 1.21.3+
+#See [**Instrument Component**](https://minecraft.wiki/w/Data_component_formatinstrument) on McWiki for more info.
+#**Entries**:
+#- `instrument` = The instrument to be played.
+#since 3.8.0
+#Examples:
+#set {_i} to 1 of goat horn
+#apply instrument to {_i}:
+#	instrument: admire_goat_horn
+section:
+	patterns:
+		apply instrument [component] to %itemstacks/itemtypes/slots%
+
+#ItemComponent - JukeboxPlayable Component Apply
+#Apply an jukebox playable component to an item.
+#When applied, the item can be inserted into a jukebox and plays the specified song.
+#Requires Paper 1.21.3+
+#See [**JukeboxPlayable Component**](https://minecraft.wiki/w/Data_component_formatjukebox_playable) on McWiki for more info.
+#**Entries**:
+#- `song` = A jukebox song to be played.
+#- `show_in_tooltip` = Whether this will show in the item's tooltip.
+#since 3.8.0
+section:
+	patterns:
+		apply jukebox playable [component] to %itemstacks/itemtypes/slots%
+
+#ItemComponent - Potion Contents Component Apply
+#Apply a potion contents component to an item (can be used on a potion/arrow or any consumable item).
+#Requires Paper 1.21.3+
+#See [**Potion Contents Component**](https://minecraft.wiki/w/Data_component_formatpotion_contents) on McWiki for more info.
+#Note: `potion` and `custom_effects` entries cannot be used together.
+#**Entries**:
+#- `potion` = The base potion of the item.
+#- `custom_color` = The overriding color of this potion texture, and/or the particles of the area effect cloud created.
+#- `custom_name` = An optional string used to generate containing stack name. (See McWiki for more details on this) [Optional]
+#- `custom_effects` = A list of the additional effects that this item should apply. [Optional]
+#since 3.8.1
+#Examples:
+#apply potion contents to {_i}:
+#	potion: long_swiftness
+#	custom_color: rgb(126, 207, 243)
+#apply potion contents component to {_i}:
+#	custom_color: pink
+#	custom_name: "harming"
+#	custom_effects:
+#		apply -> potion effect of night vision for 5 minutes
+#		apply -> potion effect of slowness for 6 minutes
+#set {_i} to 1 of potion
+#set {_pe::*} to active potion effects of player
+#apply potion contents to {_i}:
+#	custom_color: rgb(126, 207, 243)
+#	custom_effects:
+#		apply effects {_pe::*}
+#give {_i} to player
+section:
+	patterns:
+		apply potion contents [component] to %itemstacks/itemtypes/slots%
+
+#ItemComponent - Tool Component Apply
+#Apply a tool component to any item making it usable tool.
+#Requires Paper 1.21.3+
+#See [**Tool Component**](https://minecraft.wiki/w/Data_component_formattool) on McWiki for more details.
+#**Entries/Sections**:
+#- `default_mining_speed` = The default mining speed of this tool, used if no rules override it. Defaults to 1.0. [Optional]
+#- `damage_per_block` = The amount of durability to remove each time a block is broken with this tool. Must be a non-negative integer. [Optional]
+#- `rules:` =  A list of rules for the blocks that this tool has a special behavior with.
+#since 3.8.0
+#Examples:
+#set {_i} to a stick
+#apply tool component to {_i}:
+#	default_mining_speed: 2.3
+#	damage_per_block: 2
+#	rules:
+#		apply tool rule:
+#			blocks: minecraft block tag "minecraft:all_signs"  Shown as a Minecraft block tag
+#			speed: 1.0
+#			correct_for_drops: true
+#		apply tool rule:
+#			blocks: stone, granite, andesite and gravel  Shown as a list of ItemTypes
+#			speed: 0.5
+#			correct_for_drops: false
+#give {_i} to player
+section:
+	patterns:
+		apply tool component to %itemstacks/itemtypes/slots%
+
+#ItemComponent - Tool Rule Apply
+#Apply rules to a tool component. You can add as many as you'd like.
+#See [**McWiki Tool Component**](https://minecraft.wiki/w/Data_component_formattool) for more details.
+#**Entries/Sections**:
+#NOTE: One of either `block_types` or `block_tag` MUST be used.
+#`blocks` = The blocks to match for this rule to apply (Supports ItemTypes, BlockDatas, Minecraft Tags and TagKeys).
+#`speed` = If the blocks match, overrides the default mining speed (Must be a positive number). [Optional]
+#`correct for drops` = If the blocks match, overrides whether or not this tool is considered correct to mine at its most efficient speed, and to drop items if the block's loot table requires it. [Optional]
+#since 3.8.0
+#Examples:
+#set {_i} to a stick
+#apply tool component to {_i}:
+#	default_mining_speed: 2.3
+#	damage_per_block: 2
+#	rules:
+#		apply tool rule:
+#			blocks: minecraft block tag "minecraft:all_signs"  Shown as a Minecraft block tag
+#			speed: 1.0
+#			correct_for_drops: true
+#		apply tool rule:
+#			blocks: stone, granite, andesite and gravel  Shown as a list of ItemTypes
+#			speed: 0.5
+#			correct_for_drops: false
+#give {_i} to player
+section:
+	patterns:
+		apply tool rule
+
+#ItemComponent - Use Cooldown
+#Apply a cooldown to all items of the same type when it has been used.
+#Requires Paper 1.21.3+
+#See [**Use Cooldown Component**](https://minecraft.wiki/w/Data_component_formatuse_cooldown) on McWiki for more details.
+#**Entries**:
+#- `seconds` = The cooldown duration (timespan, must be >= 1 tick).
+#- `group` = The unique key to identify this cooldown group. If present, the item is included in a cooldown group and no longer shares cooldowns with its base item type, but instead with any other items that are part of the same cooldown group. [Optional]
+#since 3.8.0
+#Examples:
+#apply use cooldown to {_item}:
+#	seconds: 5 seconds
+#	group: "blah:special_apple"
+section:
+	patterns:
+		apply use cooldown [component] to %itemstacks/itemtypes/slots%
+
+#Minecraft - Spawn Entity
+#Spawn an entity from a Minecraft Key/EntityType.
+#This is both a section and an effect (used just like Skript's spawn sec/effect). Requires Minecraft 1.20.2+
+#since 3.5.0
+#Examples:
+# Spawn from MinecraftEntityType
+#mc spawn sheep at player
+#mc spawn minecraft:cow at player
+#mc spawn minecraft:wind_charge at player
+# Spawn from String
+#mc spawn "sheep" at player
+#mc spawn "minecraft:cow" at location(1,100,1)
+#mc spawn "minecraft:wind_charge" above target block
+# Spawn from Minecraft Key
+#set {_key} to mc key from "minecraft:sheep"
+#mc spawn {_key} above target block
+#mc spawn (mc key from "sheep") at {_location}
+#mc spawn (minecraft key from "minecraft:breeze") at location(1,100,1, world "world_nether")
+# Spawn Using Section
+#le spawn sheep at player:
+#	set ai of entity to false
+#mc spawn minecraft:armor_stand at player:
+#	set gravity of entity to false
+#mc spawn "minecraft:breeze" at player:
+#	set max health of entity to 100
+#	set health of entity to 100
+section:
+	patterns:
+		(minecraft|mc|skbee|le) spawn [%number% of] %minecraftentitytypes/namespacedkeys/strings% [%directions% %locations%]
+
+#Recipe - Register Brewing Recipe
+#This section allows you to register a brewing recipe, define the ingredient and input. Requires a PaperMC server.
+#
+#`id` = The ID of this recipe.
+#
+#`result` = The resulting output ItemStack of this recipe (What the 3 bottle slots turn into).
+#
+#`ingredient` = Represents the ItemStack put in the top of the brewer (Accepts an ItemStack or RecipeChoice).
+#
+#`input` = Represents the ItemStack put in the 3 bottle slots (Accepts an ItemStack or RecipeChoice).
+#since 3.0.0
+#Examples:
+#on load:
+#	register brewing recipe:
+#		id: "custom:brew_glow_diamond"
+#		result: diamond of unbreaking with all item flags
+#		ingredient: glowstone dust
+#		input: potato
+#		
+#	register brewing recipe:
+#		id: "custom:yummy_soup"
+#		result: mushroom stew named "&bYummy Soup"
+#		ingredient: glowstone dust
+#		input: water bottle
+section:
+	patterns:
+		register [a] [new] (brewing recipe|potion mix)
+
+#Recipe - Register Cooking Recipe
+#This section allows you to register any cooking recipe and define special properties.
+#
+#`id` = The ID for your recipe. This is used for recipe discovery and Minecraft's /recipe command.
+#
+#`result` = The resulting ItemStack of this recipe.
+#
+#`input` = The item the recipe requires as an input to output the result (Accepts an ItemStack or RecipeChoice) (Required).
+#
+#`cooktime` = How long the recipe will take to finish cooking before result is given (Optional).
+#
+#`experience` = The amount of experience gained when the recipe is finished cooking (Optional).
+#Default cook times are, furnace = 10 seconds, smoking/blasting = 5 seconds and campfire = 30 seconds.
+#
+#`group` = You can define a group in which all recipes under this are sorted together in the recipe book (Optional).
+#Examples of this in game are beds and wood types.
+#
+#`category` = Which category in the recipe book this recipe should appear within (Optional 1.19.4+).
+#Valid category types are "food", "blocks", "misc", if no category is defined it defaults to "misc".
+#since 3.0.0
+#Examples:
+#register new furnace recipe:
+#	id: "sieve:gravel_to_sand"
+#	result: sand
+#	input: gravel
+#	group: "sieve"
+#	cooktime: 1 minecraft day  20 minutes
+#	experience: 6
+#	category: "blocks"
+#register new campfire recipe:
+#	id: "sieve:cobblestone_to_gravel"
+#	result: gravel
+#	input: cobblestone
+#	group: "sieve"
+#	category: "blocks"
+#register new smoking recipe:
+#	id: "chef:beef_jerky"
+#	result: cooked mutton named "&oBeef&r Jerky"
+#	input: rotten flesh
+#	category: "food"
+#register a new blasting recipe:
+#	id: "firery_sword"
+#	result: diamond sword of fire aspect named "Flaming Sword"
+#	input: diamond sword
+section:
+	patterns:
+		register [a] [new] (furnace|smoking|blasting|campfire) recipe
+
+#Recipe - Register Shaped Recipe
+#This section allows you to register a shaped recipe, define the shape and set ingredients.
+#You can optionally add a group and category.
+#
+#`id` = The ID for your recipe. This is used for recipe discovery and Minecraft's /recipe command.
+#
+#`result` = The resulting item of this recipe.
+#
+#`shape` = A list of strings (1 to 3 strings) which each have 1-3 characters (must be the same char count per string).
+#These correspond to the ingredients set for these shapes. (See examples for details.)
+#Blank spaces will just be empty spaces in a crafting grid.
+#
+#`group` = Define a group to group your recipes together in the recipe book
+#(an example would be having 3 recipes with the same outcome but a variety of ingredients) (optional).
+#
+#`category` = The recipe book category your recipe will be in (optional) [Requires MC 1.19+].
+#Options are "building", "redstone", "equipment", "misc".
+#
+#`ingredients` = This section is where you will set the ingredients to correspend with your shape.
+#since 3.0.0
+#Examples:
+#on load:
+#	register shaped recipe:
+#		id: "custom:fancy_stone"
+#		result: stone named "&aFANCY STONE"
+#		shape: "aaa", "aba", "aaa"
+#		group: "bloop"
+#		category: "building"
+#		ingredients:
+#			set ingredient of "a" to stone
+#			set ingredient of "b" to diamond
+#	register shaped recipe:
+#		id: "custom:fancy_sword"
+#		result: diamond sword of unbreaking 5 named "&bStrong Sword"
+#		shape: "a", "a", "b"
+#		ingredients:
+#			set ingredient of "a" to emerald
+#			set ingredient of "b" to stick named "DOOM"
+#	register shaped recipe:
+#		id: "custom:string"
+#		result: 4 of string
+#		shape: "a"
+#		ingredients:
+#			set ingredient of "a" to material choice of all wool
+#	register shaped recipe:
+#		id: "custom:bee_2"
+#		result: (skull of "MHF_Bee" parsed as offline player) named "&bMr &3Bee"
+#		shape: "x x", " z ", "x x"
+#		ingredients:
+#			set ingredient of "x" to honeycomb
+#			set ingredient of "z" to honey bottle
+section:
+	patterns:
+		register [a] [new] shaped recipe
+
+#Recipe - Register Shapeless Recipe
+#This section allows you to register a shapeless recipe and add ingredients.
+#
+#`id` = The ID for your recipe. This is used for recipe discovery and Minecraft's /recipe command.
+#
+#`result` = The resulting item of this recipe.
+#
+#`group` = Define a group to group your recipes together in the recipe book
+#(an example would be having 3 recipes with the same outcome but a variety of ingredients) (optional).
+#
+#`category` = The recipe book category your recipe will be in (optional) [Requires MC 1.19+].
+#Options are "building", "redstone", "equiptment", "misc".
+#
+#`ingredients` = This section is where you will add the ingredients.
+#since 3.0.0
+#Examples:
+#on load:
+#	register shapeless recipe:
+#		id: "custom:string"
+#		result: 4 string
+#		ingredients:
+#			add material choice of every wool to ingredients
+#	register shapeless recipe:
+#		id: "custom:totem_of_undying"
+#		result: totem of undying
+#		group: "custom tools"
+#		category: "redstone"
+#		ingredients:
+#			add diamond block to ingredients
+#			add material choice of every plank to ingredients
+#			add emerald block to ingredients
+#			add end rod to ingredients
+#			add wither skeleton skull to ingredients
+#	register shapeless recipe:
+#		id: "custom:end_rod"
+#		result: end rod
+#		group: "custom tools"
+#		category: "redstone"
+#		ingredients:
+#			add diamond block to ingredients
+#			add emerald block to ingredients
+section:
+	patterns:
+		register [a] [new] shapeless recipe
+
+#Recipe - Register Smithing Recipe
+#This section allows you to register a smithing transform recipe, define the output as well as the template, 
+#base and addition items. Requires MC 1.20+
+#
+#`id` = The ID for your recipe.
+#
+#`result` = The resulting ItemStack of this recipe.
+#
+#`template` = Represents the first slot in the smithing inventory (Accepts an ItemStack or RecipeChoice).
+#
+#`base` = Represents the second slot in the smithing inventory (Accepts an ItemStack or RecipeChoice).
+#
+#`addition` = Represents the third slot in the smithing inventory (Optional).
+#
+#`copynbt` = Represents whether to copy the nbt from the input base item to the output, default = true (Requires PaperMC) (Optional).
+#since 3.0.0
+#Examples:
+#on load:
+#	register smithing transform recipe:
+#		id: "test:smithing"
+#		result: emerald of unbreaking named "&cFire Stone" with all item flags
+#		template: paper named "&cFire Paper"
+#		base: diamond
+#		addition: blaze powder
+section:
+	patterns:
+		register [a] [new] smithing [transform] recipe
+
+#Recipe - Register Transmute Recipe
+#Represents a recipe which will change the type of the input material when combined with an additional material, but preserve all custom data. 
+#Only the material of the result stack will be used.
+#Used for dyeing shulker boxes in Vanilla.
+#See [**crafting_transmute**](https://minecraft.wiki/w/Recipecrafting_transmute) on McWiki for more info.
+#Requires Minecraft 1.21.2+
+#**Entries**:
+#- `id` = The ID for your recipe. This is used for recipe discovery and Minecraft's /recipe command.
+#- `result` = The material that will be transmuted in the result slot.
+#- `input` = The input ingredient (The item which will have it's data copied to the result).
+#- `material` = The item to be applied to the first (like a dye).
+#- `group` = Define a group to group your recipes together in the recipe book (an example would be having 3 recipes with the same outcome but a variety of ingredients) [optional].
+#- `category` = The recipe book category your recipe will be in [optional]. Options are "building", "redstone", "equipment", "misc".
+#since 3.8.0
+#Examples:
+#register transmute recipe:
+#	id: "custom:better_swords"
+#	result: netherite sword
+#	input: minecraft item tag "minecraft:swords"
+#	material: netherite ingot
+section:
+	patterns:
+		register transmute recipe
+
+#Repeating While Loop
+#Similar to Skript's while loop, this while loop will repeat at the given timespan.
+#It is recommended to NOT use a wait within these sections, as the section will repeat regardless.
+#**Patterns**:
+#The 2nd pattern is only of concern if you are running Folia or have Paper schedulers enabled in the config, otherwise just use the first pattern.
+#- `globally` = Will run this loop on the global scheduler (Use this for non entity/block related tasks).
+#- `for %entity` = Will run this task for an entity, will follow the entity around (region wise)and will cancel itself when the entity is no longer valid.
+#- `at %location%` = Will run this loop at a specific location (Use this for block related tasks).
+#since 3.9.0
+#Examples:
+#on entity added to world:
+#	if event-entity is a wolf:
+#		while event-entity is valid repeating every 1 seconds:
+#			set {_p} to nearest player in radius 15 around event-entity
+#			if {_p} is set:
+#				set target of event-entity to {_p}
+#
+section:
+	patterns:
+		while <.+> repeating every %timespan% [globally]
+		while <.+> repeating every %timespan% [(at|on|for) %entity/location%]
+
+#SwitchCase - Case
+#In a switch section/expression, you can manage different actions based on the case matching the switched value.
+#Multiple objects are supported in cases.
+#Default will run if all other cases fail to match. Default must go last or all cases after it will be ignored.
+#since 3.8.0
+#Examples:
+#on break:
+#	switch event-block:
+#		case dirt:
+#			give player a stick named "Dirt"
+#		case stone:
+#			give player an apple named "Stone"
+#		case grass block:
+#			give player an iron ingot named "Iron Ingot"
+#		default:
+#			kill player
+#on damage of a mob by a player:
+#	switch type of victim:
+#		case zombie, husk, a drowned:
+#			spawn 3 baby zombies at victim
+#		case skeleton, stray:
+#			spawn a skeleton horse at victim:
+#				set {_h} to entity
+#			spawn a skeleton at victim:
+#				set {_s} to entity
+#			make {_s} ride {_h}
+#		case sheep, cow, chicken, pig:
+#			kill attacker
+#		default:
+#			give attacker a diamond
+section:
+	patterns:
+		case %objects%
+		(default [case]|case default)
+
+#SwitchCase - Switch
+#Switch an object and use cases to manage different actions.
+#since 3.8.0
+#Examples:
+#on break:
+#	switch event-block:
+#		case dirt:
+#			give player a stick named "Dirt"
+#		case stone:
+#			give player an apple named "Stone"
+#		case grass block:
+#			give player an iron ingot named "Iron Ingot"
+#		default:
+#			kill player
+#on damage of a mob by a player:
+#	switch type of victim:
+#		case zombie, husk, a drowned:
+#			spawn 3 baby zombies at victim
+#		case skeleton, stray:
+#			spawn a skeleton horse at victim:
+#				set {_h} to entity
+#			spawn a skeleton at victim:
+#				set {_s} to entity
+#			make {_s} ride {_h}
+#		case sheep, cow, chicken, pig:
+#			kill attacker
+#		default:
+#			give attacker a diamond
+section:
+	patterns:
+		switch %object%
+
+#Task - Run Task Later
+#Run a task later. Similar to Skript's delay effect, with the difference being everything in the
+#section is run later. All code after your section will keep running as normal without a delay.
+#This can be very useful in loops, to prevent halting the loop.
+#You can optionally have your task repeat until cancelled.
+#You can optionally run your code async/on another thread.
+#
+#NOTE: A good chunk of Bukkit/Minecraft stuff can NOT be run async. It may throw console errors.
+#Please be careful when running async, this is generally reserved for heavy math/functions that could cause lag.
+#Simply waiting a tick, or running a new non-async section will put your code back on the main thread.
+#**Patterns**:
+#The 2nd pattern is only of concern if you are running Folia or have Paper schedulers enabled in the config, otherwise just use the first pattern.
+#- `globally` = Will run this task on the global scheduler.
+#- `for %entity` = Will run this task for an entity, will follow the entity around (region wise)and will cancel itself when the entity is no longer valid.
+#- `at %location%` = Will run this task at a specific location (Use this for block changes in this section).
+#since 3.0.0
+#Examples:
+#on explode:
+#	loop exploded blocks:
+#		set {_loc} to location of loop-block
+#		set {_data} to block data of loop-block
+#		run 2 seconds later:
+#			set block at {_loc} to {_data}
+#
+#run 0 ticks later repeating every second:
+#	add 1 to {_a}
+#	if {_a} > 10:
+#		exit loop
+section:
+	patterns:
+		[async] (run|execute) [task] %timespan% later [repeating every %timespan%] [globally]
+		[async] (run|execute) [task] %timespan% later [repeating every %timespan%] [(at|on|for) %entity/location%]
+
+#TextComponent - Click Event Callback
+#Create a click event, that when clicked will run the code in this section.
+#
+#NOTE: Internally this just makes the player run a special command
+#so you will see console messages where a player runs the command "/paper callback" in your console.
+#
+#NOTE: Paper didn't make this command available by default
+#so you'll have to give your players the permission `bukkit.command.paper.callback`.
+#(As of PaperMC 1.20.1[build-169], the permission is no longer required).
+#
+#`uses` = The amount of times the player can click this. Defaults to 1. Use `-1` for unlimited uses.
+#
+#`lifetime` = How long the player has til they can't click it. Defaults to 12 hours.
+#since 2.17.0
+#Examples:
+#set {_t} to mini message from "JOIN US AT SPAWN FOR A SPECIAL EVENT (10 SECONDS REMAINING!)"
+#create callback for {_t} with a duration of 10 seconds:
+#	teleport player to spawn of world "world"
+#send component {_t} to all players
+#set {_t} to text component from "&cDONT CLICK ME"
+#create callback for {_t} with (size of players) uses:
+#	kill player
+#	broadcast "&b%player% &eclicked it &cAND DIED&7!!!"
+#send component {_t} to all players
+#set {_t} to text component from "Hey you! Click this for a free item."
+#set {_t2} to text component from "&e&lONE TIME USE!"
+#create a callback for {_t}:
+#	give player random item out of available item types
+#send components (merge components {_t} and {_t2} with " ") to players
+section:
+	patterns:
+		create [a] [new] [click event] callback for %textcomponent% [with %number% use[s]] [[and] with [a] (lifetime|duration) of %timespan%]
+
+#Transfer - Retrieve Cookie
+#Retrieve a cookie from a player. Requires Minecraft 1.20.5+
+#Due to the retrieval process happening async, this will delay proceeding code.
+#While the cookie is being retrieved, the following code will wait.
+#NOTE: Cookies are stored across server transfers.
+#since 3.5.3
+#Examples:
+#command /server <string>:
+#	trigger:
+#		store cookie "%uuid of player%-transfer" with key "transfer" on player
+#		transfer player to arg-1
+# Connect event is recommended over join event
+# This way if you have to kick the player it's done before they join
+#on connect:
+#	 only do a cookie check if player was transferred
+#	if player is transferred:
+#		retrieve cookie with key "transfer" from player:
+#			if transfer cookie = "%uuid of player%-transfer":
+#				 stop code if cookie is correct
+#				stop
+#		 kick player if cookie is missing or incorrect
+#		kick player due to "&cIllegal Transfer"
+section:
+	patterns:
+		retrieve cookie with key %namespacedkey/string% [from %player%]
+
 #Abort Creature Spawn
 #Abort a creature spawn event, preventing it from retrying more attempts after canceling.
 #Aborting should only be done if you're blanket blocking this entity type from spawning.
@@ -8229,3 +9110,187 @@ expression:
 	set:
 #		(internal code)
 	return type: object
+#apply_effects
+#Create an 'apply_effects' consume effect.
+#This will create a list of potion effects to be applied when consumed with a chance between 0 and 1.
+#This can be used in a death protection/consumable component.
+#since 3.8.0
+#Examples:
+#set {_p::1} to potion effect of night vision for 10 seconds
+#set {_p::2} to potion effect of slow mining for 5 seconds
+#set {_c} to apply_effects({_p::*}, 0.5)
+function apply_effects(potion effects: potioneffects, probability: number) :: ItemComponent - Consume Effect:
+#	(internal code)
+
+#axisAngleFromVector
+#Creates a new AxisAngle4f using a vector and angle (Will be converted and returned as a Quaternion).
+#I have no clue what this is, ask ThatOneWizard!
+#since 2.15.0
+#Examples:
+#set {_v} to axisAngleFromVector(0.25, vector(0,0,1))
+function axisAngleFromVector(angle: number, vector: vector) :: Quaternion:
+#	(internal code)
+
+#bukkitColor
+#Creates a new Bukkit Color using alpha (transparency), red, green and blue channels.
+#Number values must be between 0 and 255.
+#since 2.8.0
+#Examples:
+#set {_color} to bukkitColor(50,155,100,10)
+function bukkitColor(alpha: number, red: number, green: number, blue: number) :: Bukkit Color:
+#	(internal code)
+
+#clear_all_effects
+#Create a 'clear_all_effects' consume effect.
+#This will clear all effects when consumed.
+#This can be used in a death protection/consumable component.
+#since 3.8.0
+#Examples:
+#set {_c} to clear_all_effects()
+function clear_all_effects :: ItemComponent - Consume Effect:
+#	(internal code)
+
+#displayBrightness
+#Creates a new display brightness object for use on a Display Entity.
+#Number values must be between 0 and 15.
+#See [**Display Entity Data**](https://minecraft.wiki/w/DisplayEntity_data) on McWiki for more details.
+#since 2.8.0
+#Examples:
+#set {_db} to displayBrightness(10,10)
+function displayBrightness(blockLight: number, skyLight: number) :: DisplayEntity - Display Brightness:
+#	(internal code)
+
+#dustOption
+#Creates a new dust option to be used with 'dust' particle. Color can either be a regular color or an RGB color using
+#Skript's rgb() function. Size is the size the particle will be.
+#since 1.9.0
+#Examples:
+#set {_c} to dustOption(red, 1.5)
+#set {_c} to dustOption(rgb(1, 255, 1), 3)
+function dustOption(color: color, size: number) :: dustoption:
+#	(internal code)
+
+#dustTransition
+#Creates a new dust transition to be used with 'dust_color_transition' particle.
+#Color can either be a regular color or an RGB color using Skript's rgb() function.
+#Size is the size the particle will be. Requires MC 1.17+
+#since 1.11.1
+#Examples:
+#set {_d} to dustTransition(red, green, 10)
+#set {_d} to dustTransition(blue, rgb(1,1,1), 5)
+function dustTransition(fromColor: color, toColor: color, size: number) :: dusttransition:
+#	(internal code)
+
+#peaksAndValleys
+#Peaks and Valleys in chunk generation.
+#since 3.9.0
+#Examples:
+#set {_weird} to biome weirdness of biome parameter point
+#set {_pv} to peaksAndValleys({_weird})
+#if {_pv} < -0.85:
+#	set {_biome} to river
+function peaksAndValleys(number: number) :: Number:
+#	(internal code)
+
+#play_sound
+#Create a 'play_sound' consume effect.
+#Will play a sound when consumed.
+#This can be used in a death protection/consumable component.
+#since 3.8.0
+#Examples:
+#set {_c} to play_sound("minecraft:block.stone.break")
+function play_sound(sound: string) :: ItemComponent - Consume Effect:
+#	(internal code)
+
+#remove_effects
+#Create a 'remove_effects' consume effect.
+#This will create a list of potion effect types to be removed when consumed.
+#This can be used in a death protection/consumable component.
+#since 3.8.0
+#Examples:
+#set {_c} to remove_effects(night vision, poison)
+function remove_effects(potion effect types: potioneffecttypes) :: ItemComponent - Consume Effect:
+#	(internal code)
+
+#resolver
+#Creates a tag resolver for replacements in mini message.
+#`placeholder` = The string that will be replaced in the mini message.
+#In the mini message itself this part needs to be surrounded by <>. See examples!
+#`replacement` = A string/text component that will replace the first string.
+#since 3.5.0
+#Examples:
+# Create a component
+#set {_t} to translate component of player's tool
+#add hover event showing player's tool to {_t}
+# Use this component in the resolver to replace "<item>" in the mini message
+#set {_r} to resolver("item", {_t})
+# setup the mini message with the replacement placeholder
+#set {_m} to mini message from "<rainbow> Hey guys check out my <item> aint she a beaut?" with {_r}
+#send component {_m}
+function resolver(placeholder: string, replacement: object) :: tagresolver:
+#	(internal code)
+
+#teleport_randomly
+#Create a 'teleport_randomly' consume effect.
+#This will make the consumer teleport randomly when consumed.
+#This can be used in a death protection/consumable component.
+#since 3.8.0
+#Examples:
+#set {_c} to teleport_randomly(10)
+function teleport_randomly(diameter: number) :: ItemComponent - Consume Effect:
+#	(internal code)
+
+#timespan
+#Create a new Timespan.
+#since 3.9.0
+#Examples:
+#set {_time} to timespan(1, minute)
+#set {_time} to timespan(10, minutes)
+#set {_time} to timespan(3, ticks)
+#set {_time} to timespan(1, hour) + timespan(10, minutes)
+function timespan(time: number, timeperiod: timespanperiod) :: Timespan:
+#	(internal code)
+
+#trail
+#Creates a new trail to be used with 'trail' particle.
+#Takes in a location for the target (where the trail heads to), the color and duration.
+#Requires Minecraft 1.21.4+
+#since 3.6.5
+#Examples:
+#set {_trail} to trail(location of target block, blue, 1 second)
+#make 10 of trail using {_trail} at location of player
+function trail(target: location, color: color, duration: timespan) :: trail:
+#	(internal code)
+
+#transformation
+#Creates a new Transformation
+#since 2.8.0
+#Examples:
+#on load:
+#	set {_trans} to vector(0,1,0)
+#	set {_scale} to vector(1,1,1)
+#	set {_lr} to quaternion(1,1,1,1)
+#	set {_rr} to axisAngle(2,2,2,2)
+#	set {_transform} to transformation({_trans}, {_scale}, {_lr}, {_rr})
+function transformation(translation: vector, scale: vector, leftRotation: quaternion, rightRotation: quaternion) :: DisplayEntity - Transformation:
+#	(internal code)
+
+#vector4
+#Creates a new Vector4(Quaternion).
+#Use Quaternion instead, this was just a placeholder! Will be removed in the future!
+#since 2.8.0 (DEPRECATED)
+#Examples:
+#set {_v} to vector4(1,0,0,0)
+function vector4(x: number, y: number, z: number, w: number) :: Quaternion:
+#	(internal code)
+
+#vibration
+#Creates a new vibration to be used with 'vibration' particle.
+#TO = the destination location the particle will travel to.
+#ARRIVAL TIME = the time it will take to arrive at the destination location.
+#Requires MC 1.17+
+#since 1.11.1
+#Examples:
+#set {_v} to vibration({loc}, 10 seconds)
+function vibration(to: location, arrivalTime: timespan) :: vibration:
+#	(internal code)

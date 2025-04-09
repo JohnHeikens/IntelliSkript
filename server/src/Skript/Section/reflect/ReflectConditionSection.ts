@@ -2,9 +2,9 @@ import { PatternType } from '../../../pattern/PatternType';
 import { TokenTypes } from '../../../TokenTypes';
 import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
-import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
+import { ReflectPatternContainerSection } from './ReflectPatternContainerSection';
 
-export class SkriptConditionProcessorSection extends SkriptPatternContainerSection {
+export class ReflectConditionSection extends ReflectPatternContainerSection {
 	static patternType = PatternType.condition;
 	createSection(context: SkriptContext): SkriptSection | undefined {
 		const regex = /^(check)$/;

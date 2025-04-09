@@ -8,22 +8,22 @@ import { SkriptTypeState } from '../../storage/type/SkriptTypeState';
 import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
 import { SkriptSectionGroup } from '../SkriptSectionGroup';
-import { SkriptPatternSection } from './SkriptPatternSection';
+import { ReflectPatternSection } from './ReflectPatternSection';
 
 
 const patternRegEx = /pattern(|s)/;
-export class SkriptPatternContainerSection extends SkriptSection {
+export class ReflectPatternContainerSection extends SkriptSection {
 	static patternType = PatternType.expression;
 	patternContainer: PatternTreeContainer;
 	returnType: SkriptTypeState = new SkriptTypeState();
 	patterns: PatternData[] = [];
 	/**
 	 * used by expression and property section to parse the pattern and extract arguments
-	 * @param context 
+	 * @param context
 	 * @returns the parsed pattern. it's not added yet!
 	 */
 	parsePattern(context: SkriptContext): PatternData | undefined {
-		const pattern = PatternTree.parsePattern(context, this, (<typeof SkriptPatternContainerSection>this.constructor).patternType);
+		const pattern = PatternTree.parsePattern(context, this, (<typeof ReflectPatternContainerSection>this.constructor).patternType);
 		if (pattern) {
 			pattern.returnType = this.returnType;
 			if (this.patterns.length == 0) {
@@ -48,7 +48,7 @@ export class SkriptPatternContainerSection extends SkriptSection {
 		//match whole string
 		if (new RegExp(`^${patternRegEx.source}$`).test(context.currentString)) {
 			context.addToken(TokenTypes.keyword);
-			return new SkriptPatternSection(this, context);
+			return new ReflectPatternSection(this, context);
 		}
 		else {
 			//we don't recognise this pattern

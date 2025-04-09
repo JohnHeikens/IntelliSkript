@@ -1,8 +1,8 @@
 import { TokenTypes } from '../../../TokenTypes';
 import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
-import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
-export class SkriptExpressionSection extends SkriptPatternContainerSection {
+import { ReflectPatternContainerSection } from './ReflectPatternContainerSection';
+export class ReflectExpressionSection extends ReflectPatternContainerSection {
 	//set y to x
 	hasGet = false;
 	//set x to y

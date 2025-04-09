@@ -4,7 +4,7 @@ import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
 
 //TODO: add support for options
-export class SkriptImportSection extends SkriptSection {
+export class ReflectImportSection extends SkriptSection {
 	processLine(context: SkriptContext): void {
 		const regex = /^([a-z]{1,}(?:\.([a-zA-Z0-9_]{1,})){1,})(?:|\$([a-zA-Z0-9_]{1,}))(?:| as (.*))$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = regex.exec(context.currentString);

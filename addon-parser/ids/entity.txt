@@ -1,43 +1,63 @@
 allay
+area effect cloud
 armadillo
 armor stand
+arrow
 axolotl
 bat
 bee
 blaze
+block display
 bogged
 breeze
 cat
 cave spider
+chest boat
+chest minecart
 chicken
 cod
+command block minecart
 cow
 creeper
 dolphin
 donkey
 drowned
+egg
 elder guardian
 ender dragon
 enderman
 endermite
 evoker
+evoker fangs
+experience bottle
+experience orb
+eye of ender
 fox
 frog
+furnace minecart
 ghast
 giant
 glow squid
 goat
 guardian
 hoglin
+hopper minecart
 horse
 husk
 illusioner
+interaction
 iron golem
+item display
+item frame
+leash knot
 llama
+llama spit
 magma cube
+marker
 mooshroom
 mule
 ocelot
+painting
 panda
 parrot
 phantom
@@ -47,24 +67,31 @@ piglin brute
 pillager
 player
 polar bear
+potion
 pufferfish
 rabbit
 ravager
 salmon
 sheep
 shulker
+shulker bullet
 silverfish
 skeleton
 skeleton horse
 slime
 sniffer
 snow golem
+snowball
+spectral arrow
 spider
-strider
 squid
 stray
+strider
 tadpole
-llama
+text display
+tnt
+tnt minecart
+trident
 tropical fish
 turtle
 vex
@@ -75,6 +102,7 @@ warden
 witch
 wither
 wither skeleton
+wither skull
 wolf
 zoglin
 zombie

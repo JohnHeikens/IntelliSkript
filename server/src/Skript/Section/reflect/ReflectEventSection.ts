@@ -2,11 +2,11 @@ import { PatternData } from "../../../pattern/data/PatternData";
 import { PatternType } from "../../../pattern/PatternType";
 import { SkriptContext } from '../../validation/SkriptContext';
 import { SkriptSection } from '../skriptSection/SkriptSection';
-import { SkriptPatternContainerSection } from './SkriptPatternContainerSection';
+import { ReflectPatternContainerSection } from './ReflectPatternContainerSection';
 import { SkriptTypeState } from '../../storage/type/SkriptTypeState';
 import { TokenTypes } from '../../../TokenTypes';
 
-export class SkriptEventSection extends SkriptPatternContainerSection {
+export class ReflectEventSection extends ReflectPatternContainerSection {
 	eventValues: PatternData[] = [];
 	static override patternType: PatternType = PatternType.event;
 

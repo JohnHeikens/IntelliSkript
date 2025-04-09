@@ -620,21 +620,6 @@ type:
 	patterns:
 		entity[ ]snapshot[s]
 
-#Entity Type
-#The type of an entity, e.g. player, wolf, powered creeper, etc.
-#since 1.3
-#Examples:
-#victim is a cow
-#spawn a creeper
-type:
-	patterns:
-		entity[ ]type[s]
-
-expression:
-	return type: entitytype
-	patterns:
-		detailed usage will be added eventually
-
 #Entity Type with Amount
 #An entity type with an amount, e.g. '2 zombies'. I might remove this type in the future and make a more general 'type' type, i.e. a type that has a number and a type.
 #since 1.3
@@ -1349,25 +1334,6 @@ type:
 type:
 	patterns:
 		potion[ ]effect[ ]type[s]
-
-#Projectile
-#A projectile, e.g. an arrow, snowball or thrown potion.
-#since 1.0
-#Examples:
-#projectile is a snowball
-#shoot an arrow at speed 5 from the player
-type:
-	patterns:
-		projectile[s]
-
-expression:
-	return type: projectile
-	patterns:
-		arrow
-		fireball
-		snowball
-		thrown potion
-		etc.
 
 #Quaternion
 #Quaternions are four dimensional vectors, often used for representing rotations.
@@ -2136,6 +2102,193 @@ type:
 	patterns:
 		player[s]
 	inherits: offline player, livingentity
+
+#Entity Type
+#The type of an entity, e.g. player, wolf, powered creeper, etc.
+#since 1.3
+#Examples:
+#victim is a cow
+#spawn a creeper
+type:
+	patterns:
+		entity[ ]type[s]
+	inherits: entity data
+
+expression:
+	return type: entitytype
+	patterns:
+		detailed usage will be added eventually
+
+#Projectile
+#A projectile, e.g. an arrow, snowball or thrown potion.
+#since 1.0
+#Examples:
+#projectile is a snowball
+#shoot an arrow at speed 5 from the player
+type:
+	patterns:
+		projectile[s]
+	inherits: entity type
+
+expression:
+	return type: projectile
+	patterns:
+		arrow
+		fireball
+		snowball
+		thrown potion
+		etc.
+
+#Conditionals
+#Conditional sections
+#if: executed when its condition is true
+#else if: executed if all previous chained conditionals weren't executed, and its condition is true
+#else: executed if all previous chained conditionals weren't executed
+#parse if: a special case of 'if' condition that its code will not be parsed if the condition is not true
+#else parse if: another special case of 'else if' condition that its code will not be parsed if all previous chained conditionals weren't executed, and its condition is true
+#since 1.0
+#Examples:
+#if player's health is greater than or equal to 4:
+#	send "Your health is okay so far but be careful!"
+#else if player's health is greater than 2:
+#	send "You need to heal ASAP, your health is very low!"
+#else:  Less than 2 hearts
+#	send "You are about to DIE if you don't heal NOW. You have only %player's health% heart(s)!"
+#parse if plugin "SomePluginName" is enabled:  parse if %condition%
+#	 This code will only be executed if the condition used is met otherwise Skript will not parse this section therefore will not give any errors/info about this section
+section:
+	patterns:
+		else
+		else [parse] if <.+>
+		else [parse] if (any|at least one [of])
+		else [parse] if [all]
+		[parse] if (any|at least one [of])
+		[parse] if [all]
+		[parse] if <.+>
+		then [run]
+		<.+>
+
+#Filter
+#Filters a variable list based on the supplied conditions. Unlike the filter expression, this effect maintains the indices of the filtered list.
+#It also supports filtering based on meeting any of the given criteria, rather than all, like multi-line if statements.
+#since 2.10
+#Examples:
+#set {_a::*} to integers between -10 and 10
+#filter {_a::*} to match:
+#	input is a number
+#	mod(input, 2) = 0
+#	input > 0
+#send {_a::*}  sends 2, 4, 6, 8, and 10
+section:
+	patterns:
+		filter %objects% to match [any|all]
+
+#For Each Loop (Experimental)
+#A specialised loop section run for each element in a list.
+#Unlike the basic loop, this is designed for extracting the key & value from pairs.
+#The loop element's key/index and value can be stored in a variable for convenience.
+#
+#When looping a simple (non-indexed) set of values, e.g. all players, the index will be the loop counter number.
+#since 2.10
+#Examples:
+#for each {_player} in players:
+#	send "Hello %{_player}%!" to {_player}
+#loop {_item} in {list of items::*}:
+#	broadcast {_item}'s name
+#for each key {_index} in {list of items::*}:
+#	broadcast {_index}
+#loop key {_index} and value {_value} in {list of items::*}:
+#	broadcast "%{_index}% = %{_value}%"
+#for each {_index}, {_value} in {my list::*}:
+#	broadcast "%{_index}% = %{_value}%"
+section:
+	patterns:
+		(for [each]|loop) [value] %object% in %objects%
+		(for [each]|loop) (key|index) %object% in %objects%
+		(for [each]|loop) [key|index] %object%(,| and) [value] %object% in %objects%
+
+#Loop
+#Loop sections repeat their code with multiple values.
+#A loop will loop through all elements of the given expression, e.g. all players, worlds, items, etc. The conditions & effects inside the loop will be executed for every of those elements, which can be accessed with ‘loop-’, e.g. <code>send "hello" to loop-player. When a condition inside a loop is not fulfilled the loop will start over with the next element of the loop. You can however use stop loop to exit the loop completely and resume code execution after the end of the loop.
+#Loopable Values
+#All expressions that represent more than one value, e.g. ‘all players’, ‘worlds’, etc., as well as list variables, can be looped. You can also use a list of expressions, e.g. loop the victim and the attacker, to execute the same code for only a few values.
+#List Variables
+#When looping list variables, you can also use loop-index in addition to loop-value inside the loop. loop-value is the value of the currently looped variable, and loop-index is the last part of the variable's name (the part where the list variable has its asterisk *).
+#since 1.0
+#Examples:
+#loop all players:
+#	send "Hello %loop-player%!" to loop-player
+#loop items in player's inventory:
+#	if loop-item is dirt:
+#		set loop-item to air
+#loop 10 times:
+#	send title "%11 - loop-value%" and subtitle "seconds left until the game begins" to player for 1 second  10, 9, 8 etc.
+#	wait 1 second
+#loop {Coins::*}:
+#	set {Coins::%loop-index%} to loop-value + 5  Same as "add 5 to {Coins::%loop-index%}" where loop-index is the uuid of the player and loop-value is the number of coins for the player
+#loop shuffled (integers between 0 and 8):
+#	if all:
+#		previous loop-value = 1
+#		loop-value = 4
+#		next loop-value = 8
+#	then:
+#		 kill all players
+section:
+	patterns:
+		loop %objects%
+
+#Shoot
+#Shoots a projectile (or any other entity) from a given entity or location.
+#since 2.10
+#Examples:
+#shoot arrow from all players at speed 2
+#shoot a pig from all players:
+#	add event-entity to {_projectiles::*}
+section:
+	patterns:
+		shoot %entitydatas% [from %livingentities/locations%] [(at|with) (speed|velocity) %number%] [%direction%]
+		(make|let) %livingentities/locations% shoot %entitydatas% [(at|with) (speed|velocity) %number%] [%direction%]
+
+#Spawn
+#Spawns entities. This can be used as an effect and as a section.
+#If it is used as a section, the section is run before the entity is added to the world.
+#You can modify the entity in this section, using for example 'event-entity' or 'cow'. 
+#Do note that other event values, such as 'player', won't work in this section.
+#If you're spawning a display and want it to be empty on initialization, like not having a block display be stone, set hidden config node 'spawn empty displays' to true.
+#Note that when spawning an entity via entity snapshots, the code within the section will not run instantaneously as compared to spawning normally (via 'a zombie').
+#since 1.0, 2.6.1 (with section), 2.8.6 (dropped items), 2.10 (entity snapshots)
+#Examples:
+#spawn 3 creepers at the targeted block
+#spawn a ghast 5 meters above the player
+#spawn a zombie at the player:
+#	set name of the zombie to ""
+#spawn a block display of a ladder[waterlogged=true] at location above player:
+#	set billboard of event-display to center  allows the display to rotate around the center axis
+#Minecraft 1.20.2+ (entity snapshots)
+section:
+	patterns:
+		(spawn|summon) %entitytypes/entitysnapshots% [%directions% %locations%]
+		(spawn|summon) %number% of %entitytypes/entitysnapshots% [%directions% %locations%]
+
+#While Loop
+#While Loop sections are loops that will just keep repeating as long as a condition is met.
+#since 2.0, 2.6 (do while)
+#Examples:
+#while size of all players < 5:
+#	send "More players are needed to begin the adventure" to all players
+#	wait 5 seconds
+#set {_counter} to 1
+#do while {_counter} > 1:  false but will increase {_counter} by 1 then get out
+#	add 1 to {_counter}
+# Be careful when using while loops with conditions that are almost 
+# always true for a long time without using 'wait %timespan%' inside it, 
+# otherwise it will probably hang and crash your server.
+#while player is online:
+#	give player 1 dirt
+#	wait 1 second  without using a delay effect the server will crash
+section:
+	patterns:
+		[do] while <.+>
 
 #Action Bar
 #Sends an action bar message to the given player(s).
@@ -14846,3 +14999,457 @@ expression:
 		[the] (yaw|pitch) of %entities/locations/vectors%
 		%entities/locations/vectors%'[s] (yaw|pitch)
 	return type: float
+#abs
+#Returns the absolute value of the argument, i.e. makes the argument positive.
+#since 2.2
+#Examples:
+#abs(3) = 3
+#abs(-2) = 2
+function abs(n: number) :: Number:
+#	(internal code)
+
+#acos
+#The inverse of the cosine, also called arccos. Returns result in degrees, not radians. Only returns values from 0 to 180.
+#since 2.2
+#Examples:
+#acos(0) = 90
+#acos(1) = 0
+#acos(0.5) = 30
+function acos(n: number) :: Number:
+#	(internal code)
+
+#asin
+#The inverse of the sine, also called arcsin. Returns result in degrees, not radians. Only returns values from -90 to 90.
+#since 2.2
+#Examples:
+#asin(0) = 0
+#asin(1) = 90
+#asin(0.5) = 30
+function asin(n: number) :: Number:
+#	(internal code)
+
+#atan
+#The inverse of the tangent, also called arctan. Returns result in degrees, not radians. Only returns values from -90 to 90.
+#since 2.2
+#Examples:
+#atan(0) = 0
+#atan(1) = 45
+#atan(10000) = 89.9943
+function atan(n: number) :: Number:
+#	(internal code)
+
+#atan2
+#Similar to atan, but requires two coordinates and returns values from -180 to 180.
+#The returned angle is measured counterclockwise in a standard mathematical coordinate system (x to the right, y to the top).
+#since 2.2
+#Examples:
+#atan2(0, 1) = 0
+#atan2(10, 0) = 90
+#atan2(-10, 5) = -63.4349
+function atan2(x: number, y: number) :: Number:
+#	(internal code)
+
+#axisAngle
+#Returns a quaternion from the given angle (in degrees) and axis (as a vector). This represents a rotation around the given axis by the given angle.
+#since 2.10
+#Examples:
+#axisangle(90, (vector from player's facing))
+function axisAngle(angle: number, axis: vector) :: Quaternion:
+#	(internal code)
+
+#calcExperience
+#Calculates the total amount of experience needed to achieve given level from scratch in Minecraft.
+#since 2.2-dev32
+function calcExperience(level: long) :: long:
+#	(internal code)
+
+#ceil
+#Rounds a number up, i.e. returns the closest integer larger than or equal to the argument.
+#since 2.2
+#Examples:
+#ceil(2.34) = 3
+#ceil(2) = 2
+#ceil(2.99) = 3
+function ceil(n: number) :: long:
+#	(internal code)
+
+#ceiling
+#Alias of ceil.
+#since 2.2
+#Examples:
+#ceiling(2.34) = 3
+#ceiling(2) = 2
+#ceiling(2.99) = 3
+function ceiling(n: number) :: long:
+#	(internal code)
+
+#clamp
+#Clamps one or more values between two numbers.
+#since 2.8.0
+#Examples:
+#clamp(5, 0, 10) = 5
+#clamp(5.5, 0, 5) = 5
+#clamp(0.25, 0, 0.5) = 0.25
+#clamp(5, 7, 10) = 7
+#clamp((5, 0, 10, 9, 13), 7, 10) = (7, 7, 10, 9, 10)
+#set {_clamped::*} to clamp({_values::*}, 0, 10)
+function clamp(values: numbers, min: number, max: number) :: Number:
+#	(internal code)
+
+#combinations
+#Get the number of possible sets from 1 to 'options' with each set having a size equal to 'selected'
+#For example, a combination with 3 options and a set size of 1, returns 3: (1), (2), (3)
+#A combination of 3 options with a set size of 2 returns 3: (1, 2), (1, 3), (2, 3)
+#Note that the bigger the 'options' and lower the 'selected' may result in approximations or even infinity values.
+#Combinations differ from permutations in that combinations focus on unique sets, ignoring the order of elements, whereas permutations account for the arrangement of elements within the set.
+#Example: (1, 2) and (2, 1) represent a single combination since order doesn't matter in combinations, but they are two distinct permutations because permutations consider the order.
+#since 2.11
+#Examples:
+#combinations(10, 8) = 45
+#combinations(5, 3) = 10
+#combinations(size of {some list::*}, 2)
+function combinations(options: number, selected: number) :: Number:
+#	(internal code)
+
+#concat
+#Joins the provided texts (and other things) into a single text.
+#since 2.9.0
+#Examples:
+#concat("hello ", "there")  hello there
+#concat("foo ", 100, " bar")  foo 100 bar
+function concat(texts: objects) :: Text:
+#	(internal code)
+
+#cos
+#The cosine function. This is basically the sine shifted by 90°, i.e. cos(a) = sin(a + 90°), for any number a. Uses degrees, not radians.
+#since 2.2
+#Examples:
+#cos(0) = 1
+#cos(90) = 0
+function cos(n: number) :: Number:
+#	(internal code)
+
+#date
+#Creates a date from a year, month, and day, and optionally also from hour, minute, second and millisecond.
+#A time zone and DST offset can be specified as well (in minutes), if they are left out the server's time zone and DST offset are used (the created date will not retain this information).
+#since 2.2
+#Examples:
+#date(2014, 10, 1)  0:00, 1st October 2014
+#date(1990, 3, 5, 14, 30)  14:30, 5th May 1990
+#date(1999, 12, 31, 23, 59, 59, 999, -3*60, 0)  almost year 2000 in parts of Brazil (-3 hours offset, no DST)
+function date(year: number, month: number, day: number, hour: number = 0, minute: number = 0, second: number = 0, millisecond: number = 0, zone_offset: number = NaN, dst_offset: number = NaN) :: Date:
+#	(internal code)
+
+#exp
+#The exponential function. You probably don't need this if you don't know what this is.
+#since 2.2
+#Examples:
+#exp(0) = 1
+#exp(1) = 2.7183
+function exp(n: number) :: Number:
+#	(internal code)
+
+#factorial
+#Get the factorial of a number.
+#Getting the factorial of any number above 21 will return an approximation, not an exact value.
+#Any number after 170 will always return Infinity.
+#Should not be used to calculate permutations or combinations manually.
+#since 2.11
+#Examples:
+#factorial(0) = 1
+#factorial(3) = 3*2*1 = 6
+#factorial(5) = 5*4*3*2*1 = 120
+#factorial(171) = Infinity
+function factorial(number: number) :: Number:
+#	(internal code)
+
+#floor
+#Rounds a number down, i.e. returns the closest integer smaller than or equal to the argument.
+#since 2.2
+#Examples:
+#floor(2.34) = 2
+#floor(2) = 2
+#floor(2.99) = 2
+function floor(n: number) :: long:
+#	(internal code)
+
+#formatNumber
+#Converts numbers to human-readable format. By default, ',' (e.g. '123,456,789') will be used for whole numbers and ',.' (e.g. '123,456,789.00) will be used for decimal numbers. A hashtag '' represents a digit, a comma ',' is used to separate numbers, and a period '.' is used for decimals. 
+#Will return none if the format is invalid.
+#For further reference, see this article.
+#since 2.10
+#Examples:
+#command /balance:
+#	aliases: bal
+#	executable by: players
+#	trigger:
+#		set {_money} to formatNumber({money::%sender's uuid%})
+#		send "Your balance: %{_money}%" to sender
+function formatNumber(number: number, format: string = ) :: Text:
+#	(internal code)
+
+#isNaN
+#Returns true if the input is NaN (not a number).
+#since 2.8.0
+#Examples:
+#isNaN(0)  false
+#isNaN(0/0)  true
+#isNaN(sqrt(-1))  true
+function isNaN(n: number) :: Boolean:
+#	(internal code)
+
+#ln
+#The natural logarithm. You probably don't need this if you don't know what this is.
+#Returns NaN (not a number) if the argument is negative.
+#since 2.2
+#Examples:
+#ln(1) = 0
+#ln(exp(5)) = 5
+#ln(2) = 0.6931
+function ln(n: number) :: Number:
+#	(internal code)
+
+#location
+#Creates a location from a world and 3 coordinates, with an optional yaw and pitch.
+#If for whatever reason the world is not found, it will fallback to the server's main world.
+#since 2.2
+#Examples:
+# TELEPORTING
+#teleport player to location(1,1,1, world "world")
+#teleport player to location(1,1,1, world "world", 100, 0)
+#teleport player to location(1,1,1, world "world", yaw of player, pitch of player)
+#teleport player to location(1,1,1, world of player)
+#teleport player to location(1,1,1, world("world"))
+#teleport player to location({_x}, {_y}, {_z}, {_w}, {_yaw}, {_pitch})
+# SETTING BLOCKS
+#set block at location(1,1,1, world "world") to stone
+#set block at location(1,1,1, world "world", 100, 0) to stone
+#set block at location(1,1,1, world of player) to stone
+#set block at location(1,1,1, world("world")) to stone
+#set block at location({_x}, {_y}, {_z}, {_w}) to stone
+# USING VARIABLES
+#set {_l1} to location(1,1,1)
+#set {_l2} to location(10,10,10)
+#set blocks within {_l1} and {_l2} to stone
+#if player is within {_l1} and {_l2}:
+# OTHER
+#kill all entities in radius 50 around location(1,65,1, world "world")
+#delete all entities in radius 25 around location(50,50,50, world "world_nether")
+#ignite all entities in radius 25 around location(1,1,1, world of player)
+function location(x: number, y: number, z: number, world: world = event-world, yaw: number = 0, pitch: number = 0) :: Location:
+#	(internal code)
+
+#log
+#A logarithm, with base 10 if none is specified. This is the inverse operation to exponentiation (for positive bases only), i.e. log(base ^ exponent, base) = exponent for any positive number 'base' and any number 'exponent'.
+#Another useful equation is base ^ log(a, base) = a for any numbers 'base' and 'a'.
+#Please note that due to how numbers are represented in computers, these equations do not hold for all numbers, as the computed values may slightly differ from the correct value.
+#Returns NaN (not a number) if any of the arguments are negative.
+#since 2.2
+#Examples:
+#log(100) = 2  10^2 = 100
+#log(16, 2) = 4  2^4 = 16
+function log(n: number, base: number = 10) :: Number:
+#	(internal code)
+
+#max
+#Returns the maximum number from a list of numbers.
+#since 2.2
+#Examples:
+#max(1) = 1
+#max(1, 2, 3, 4) = 4
+#max({some list variable::*})
+function max(ns: numbers) :: Number:
+#	(internal code)
+
+#mean
+#Get the mean (average) of a list of numbers.
+#You cannot get the mean of a set of numbers that includes infinity or NaN.
+#since 2.11
+#Examples:
+#mean(1, 2, 3) = 2
+#mean(0, 5, 10) = 5
+#mean(13, 97, 376, 709) = 298.75
+function mean(numbers: numbers) :: Number:
+#	(internal code)
+
+#median
+#Get the middle value of a sorted list of numbers. If the list has an even number of values, the median is the average of the two middle numbers.
+#You cannot get the median of a set of numbers that includes NaN.
+#since 2.11
+#Examples:
+#median(1, 2, 3, 4, 5) = 3
+#median(1, 2, 3, 4, 5, 6) = 3.5
+#median(0, 123, 456, 789) = 289.5
+function median(numbers: numbers) :: Number:
+#	(internal code)
+
+#min
+#Returns the minimum number from a list of numbers.
+#since 2.2
+#Examples:
+#min(1) = 1
+#min(1, 2, 3, 4) = 1
+#min({some list variable::*})
+function min(ns: numbers) :: Number:
+#	(internal code)
+
+#mod
+#Returns the modulo of the given arguments, i.e. the remainder of the division d/m, where d and m are the arguments of this function.
+#The returned value is always positive. Returns NaN (not a number) if the second argument is zero.
+#since 2.2
+#Examples:
+#mod(3, 2) = 1
+#mod(256436, 100) = 36
+#mod(-1, 10) = 9
+function mod(d: number, m: number) :: Number:
+#	(internal code)
+
+#offlineplayer
+#Returns a offline player from their name or UUID. This function will still return the player if they're online. If Paper 1.16.5+ is used, the 'allowLookup' parameter can be set to false to prevent this function from doing a web lookup for players who have not joined before. Lookups can cause lag spikes of up to multiple seconds, so use offline players with caution.
+#since 2.8.0, 2.9.0 (prevent lookups)
+#Examples:
+#set {_p} to offlineplayer("Notch")
+#set {_p} to offlineplayer("069a79f4-44e9-4726-a5be-fca90e38aaf5")
+#set {_p} to offlineplayer("Notch", false)
+function offlineplayer(nameOrUUID: string, allowLookups: boolean = true) :: Offline Player:
+#	(internal code)
+
+#permutations
+#Get the number of possible ordered arrangements from 1 to 'options' with each arrangement having a size equal to 'selected'
+#For example, permutations with 3 options and an arrangement size of 1, returns 3: (1), (2), (3)
+#Permutations with 3 options and an arrangement size of 2 returns 6: (1, 2), (1, 3), (2, 1), (2, 3), (3, 1), (3, 2)
+#Note that the bigger the 'options' and lower the 'selected' may result in approximations or even infinity values.
+#Permutations differ from combinations in that permutations account for the arrangement of elements within the set, whereas combinations focus on unique sets and ignore the order of elements.
+#Example: (1, 2) and (2, 1) are two distinct permutations because the positions of '1' and '2' are different, but they represent a single combination since order doesn't matter in combinations.
+#since 2.11
+#Examples:
+#permutations(10, 2) = 90
+#permutations(10, 4) = 5040
+#permutations(size of {some list::*}, 2)
+function permutations(options: number, selected: number) :: Number:
+#	(internal code)
+
+#player
+#Returns an online player from their name or UUID, if player is offline function will return nothing.
+#Setting 'getExactPlayer' parameter to true will return the player whose name is exactly equal to the provided name instead of returning a player that their name starts with the provided name.
+#since 2.8.0
+#Examples:
+#set {_p} to player("Notch")  will return an online player whose name is or starts with 'Notch'
+#set {_p} to player("Notch", true)  will return the only online player whose name is 'Notch'
+#set {_p} to player("069a79f4-44e9-4726-a5be-fca90e38aaf5")  <none> if player is offline
+function player(nameOrUUID: string, getExactPlayer: boolean = false) :: Player:
+#	(internal code)
+
+#product
+#Calculates the product of a list of numbers.
+#since 2.2
+#Examples:
+#product(1) = 1
+#product(2, 3, 4) = 24
+#product({some list variable::*})
+#product(2, {_v::*}, and the player's y-coordinate)
+function product(ns: numbers) :: Number:
+#	(internal code)
+
+#quaternion
+#Returns a quaternion from the given W, X, Y and Z parameters. 
+#since 2.10
+#Examples:
+#quaternion(1, 5.6, 45.21, 10)
+function quaternion(w: number, x: number, y: number, z: number) :: Quaternion:
+#	(internal code)
+
+#rgb
+#Returns a RGB color from the given red, green and blue parameters. Alpha values can be added optionally, but these only take affect in certain situations, like text display backgrounds.
+#since 2.5, 2.10 (alpha)
+#Examples:
+#dye player's leggings rgb(120, 30, 45)
+#set the colour of a text display to rgb(10, 50, 100, 50)
+function rgb(red: long, green: long, blue: long, alpha: long = 255) :: Color:
+#	(internal code)
+
+#root
+#Calculates the nth root of a number.
+#since 2.11
+#Examples:
+#root(2, 4) = 2  same as sqrt(4)
+#root(4, 16) = 2
+#root(-4, 16) = 0.5  same as 16^(-1/4)
+function root(n: number, number: number) :: Number:
+#	(internal code)
+
+#round
+#Rounds a number, i.e. returns the closest integer to the argument. Place a second argument to define the decimal placement.
+#since 2.2, 2.7 (decimal placement)
+#Examples:
+#round(2.34) = 2
+#round(2) = 2
+#round(2.99) = 3
+#round(2.5) = 3
+function round(n: number, d: number = 0) :: Number:
+#	(internal code)
+
+#sin
+#The sine function. It starts at 0° with a value of 0, goes to 1 at 90°, back to 0 at 180°, to -1 at 270° and then repeats every 360°. Uses degrees, not radians.
+#since 2.2
+#Examples:
+#sin(90) = 1
+#sin(60) = 0.866
+function sin(n: number) :: Number:
+#	(internal code)
+
+#sqrt
+#The square root, which is the inverse operation to squaring a number (for positive numbers only). This is the same as (argument) ^ (1/2) – other roots can be calculated via number ^ (1/root), e.g. set {_l} to {_volume}^(1/3).
+#Returns NaN (not a number) if the argument is negative.
+#since 2.2
+#Examples:
+#sqrt(4) = 2
+#sqrt(2) = 1.4142
+#sqrt(-1) = NaN
+function sqrt(n: number) :: Number:
+#	(internal code)
+
+#sum
+#Sums a list of numbers.
+#since 2.2
+#Examples:
+#sum(1) = 1
+#sum(2, 3, 4) = 9
+#sum({some list variable::*})
+#sum(2, {_v::*}, and the player's y-coordinate)
+function sum(ns: numbers) :: Number:
+#	(internal code)
+
+#tan
+#The tangent function. This is basically <a href='sin'>sin(arg)/cos(arg)</code>. Uses degrees, not radians.
+#since 2.2
+#Examples:
+#tan(0) = 0
+#tan(45) = 1
+#tan(89.99) = 5729.5779
+function tan(n: number) :: Number:
+#	(internal code)
+
+#uuid
+#Returns a UUID from the given string. The string must be in the format of a UUID.
+#since 2.11
+#Examples:
+#uuid("069a79f4-44e9-4726-a5be-fca90e38aaf5")
+function uuid(uuid: string) :: UUID:
+#	(internal code)
+
+#vector
+#Creates a new vector, which can be used with various expressions, effects and functions.
+#since 2.2-dev23
+#Examples:
+#vector(0, 0, 0)
+function vector(x: number, y: number, z: number) :: Vector:
+#	(internal code)
+
+#world
+#Gets a world from its name.
+#since 2.2
+#Examples:
+#set {_nether} to world("%{_world}%_nether")
+function world(name: string) :: World:
+#	(internal code)

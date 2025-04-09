@@ -1,10 +1,10 @@
 import type { Location } from 'vscode-languageserver/node';
-import type { SkriptPatternContainerSection } from '../../skript/section/reflect/SkriptPatternContainerSection';
+import type { ReflectPatternContainerSection } from '../../skript/section/reflect/ReflectPatternContainerSection';
 import { SkriptTypeState } from "../../skript/storage/type/SkriptTypeState";
 
 export class PatternData {
 	definitionLocation: Location;
-	section?: SkriptPatternContainerSection;
+	section?: ReflectPatternContainerSection;
 	skriptPatternString: string;
 	regexPatternString: string;
 	/**this regexp only matches the start of the string!*/
@@ -24,7 +24,7 @@ export class PatternData {
 	 * @param argumentPositions
 	 * @param resultType passed by reference!
 	 */
-	constructor(skriptPatternString: string, regexPatternString: string, definitionLocation: Location, patternType: PatternType, section?: SkriptPatternContainerSection, expressionArguments?: SkriptTypeState[], argumentPositions?: Location[], resultType?: SkriptTypeState) {
+	constructor(skriptPatternString: string, regexPatternString: string, definitionLocation: Location, patternType: PatternType, section?: ReflectPatternContainerSection, expressionArguments?: SkriptTypeState[], argumentPositions?: Location[], resultType?: SkriptTypeState) {
 		this.skriptPatternString = skriptPatternString;
 		this.regexPatternString = regexPatternString;
 		this.patternRegExp = new RegExp(`^${regexPatternString}`);

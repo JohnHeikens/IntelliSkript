@@ -123,7 +123,7 @@ export class SkriptContext {
 						node.end = i;//pop
 					}
 				}
-				else if('%(,'.includes(node.character)) {
+				else if ('%(,'.includes(node.character)) {
 					node.children.push(new SkriptNestHierarchy(i + 1, '"'));//push
 				}
 				//currentNestLevel++;
@@ -194,13 +194,20 @@ export class SkriptContext {
 		}
 
 		this.hierarchy.end = this.currentString.length;
-		if (addDiagnostics) {
-
-			const lastActiveNode = this.hierarchy.getActiveNode();
-			if (lastActiveNode != this.hierarchy) {
-				this.addDiagnostic(lastActiveNode.start, this.hierarchy.end - lastActiveNode.start, "no matching closing character found", DiagnosticSeverity.Error, "IntelliSkript->Nest->No Matching");
+		let lastActiveNode : SkriptNestHierarchy = this.hierarchy;
+		while (true) {
+			const lastActiveChildNode:SkriptNestHierarchy | undefined = lastActiveNode.getActiveChildNode();
+			if (!lastActiveChildNode) break;
+			if (addDiagnostics) {
+				if (lastActiveChildNode != this.hierarchy) {
+					this.addDiagnostic(lastActiveChildNode.start, this.hierarchy.end - lastActiveChildNode.start, "no matching closing character found", DiagnosticSeverity.Error, "IntelliSkript->Nest->No Matching");
+				}
 			}
-		}
+			//remove this node
+			lastActiveNode.children.pop();
+
+			lastActiveNode = lastActiveChildNode;
+		};
 		return this.hierarchy;
 
 

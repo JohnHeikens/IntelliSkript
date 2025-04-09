@@ -37,7 +37,7 @@ export class SkriptFolder extends SkriptFolderContainer {
 
 	}
 	/**
-	 * 
+	 *
 	 * @param endFile validate until this file is encountered
 	 */
 	validate(endFile?: SkriptFile) {
@@ -51,9 +51,9 @@ export class SkriptFolder extends SkriptFolderContainer {
 					this.parent.getPatternTree());
 			for (const file of this.files) {
 				//this way, a file won't know what is previous to it
-				file.validated ?
-					this.patternContainer.merge(file.patternContainer) :
+				if (!file.validated)
 					file.validate();
+				this.patternContainer.merge(file.patternContainer);
 
 				if (file === endFile) //we don't need patterns after this
 					return;

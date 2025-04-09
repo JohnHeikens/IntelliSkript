@@ -245,7 +245,7 @@ export class AddonParser extends Parser {
 		});
 		file.functions?.forEach(f => {
 			str += generalData(f);
-			str += "function " + f.patterns[0] + " :: " + f['return type'] + ":";
+			str += "function " + f.patterns[0] + " :: " + f['return type'] + ":\n";
 			str += "#\t(internal code)\n";
 		})
 		return str;

@@ -8,11 +8,16 @@ export class NestHierarchy<t extends NestHierarchy<t>> {
 	children: t[] = [];
 	//positions:number[] = [];
 	//characters = "";
-	getActiveNode(): t {
+
+	//returns the child node which doesn't have an end yet
+	getActiveChildNode() : t | undefined {
 		if (this.children.length > 0 && (this.children[this.children.length - 1] as NestHierarchy<t>).end == 0) {
-			return this.children[this.children.length - 1].getActiveNode();
+			return this.children[this.children.length - 1];
 		}
-		return this as unknown as t;
+		return undefined;
+	}
+	getActiveNode(): t {
+		return this.getActiveChildNode()?.getActiveNode() ?? this as unknown as t;
 	}
 
 
