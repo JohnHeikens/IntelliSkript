@@ -44,7 +44,7 @@ export class SkriptFunction extends SkriptSection {
 							const typeStartPosition = currentArgumentString.index + variableDefinitionParts[0].length + ":".length + noSpaceResult.index;
 							/**where the arguments are located */
 							const loc = specializedContext.getLocation(currentArgumentString.index, variableDefinitionParts[0].trim().length);
-							const initialType = this.parseTypes(specializedContext, typeStartPosition, typeStartPosition + variableDefinitionParts[1].length);
+							const initialType = this.parseTypes(specializedContext, typeStartPosition, variableDefinitionParts[1].length);
 							if (argumentTypes.length) regexPattern += ','
 							argumentTypes.push(initialType);
 							argumentPositions.push(loc);

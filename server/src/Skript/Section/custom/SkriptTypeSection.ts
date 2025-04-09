@@ -24,7 +24,7 @@ export class SkriptTypeSection extends ReflectPatternContainerSection {
             context.addToken(TokenTypes.keyword, 0, currentPosition);
             const baseClassNames = context.currentString.substring(currentPosition).split(", ");
             for (const currentBaseClassName of baseClassNames) {
-                const pattern = this.parseType(context, currentPosition, currentPosition + currentBaseClassName.length);
+                const pattern = this.parseType(context, currentPosition, currentBaseClassName.length);
                 if (pattern) {
                     this.baseClasses.push(pattern.section as SkriptTypeSection);
                 }

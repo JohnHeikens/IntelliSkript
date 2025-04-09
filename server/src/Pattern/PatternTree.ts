@@ -397,7 +397,7 @@ export class PatternTree {
 					const typeStart = m.index + 1;
 					const typeString = m[1];
 					context.addToken(TokenTypes.regexp, previousTokenEndPos, typeStart - previousTokenEndPos, [TokenModifiers.definition]);
-					const result = context.currentSection.parseTypes(context, typeStart, typeStart + typeString.length);
+					const result = context.currentSection.parseTypes(context, typeStart, typeString.length);
 					if (result) {
 						expressionArguments.push(result);
 					}

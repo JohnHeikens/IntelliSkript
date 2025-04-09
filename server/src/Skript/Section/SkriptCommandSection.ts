@@ -1,27 +1,53 @@
 import { PatternData } from "../../pattern/data/PatternData";
 import { PatternTreeContainer } from '../../pattern/PatternTreeContainer';
 import { PatternType } from "../../pattern/PatternType";
+import { SkriptPatternCall } from "../../pattern/SkriptPattern";
 import { TokenTypes } from '../../TokenTypes';
 import { SkriptTypeState } from '../storage/type/SkriptTypeState';
 import { SkriptContext } from '../validation/SkriptContext';
 import { SkriptSection } from "./skriptSection/SkriptSection";
 
-const playerRegExpString = "(the )?player";
 const sectionRegExp = /(aliases|executable by|prefix|usage|description|permission(?: message|)|cooldown(?: (?:message|bypass|storage))?)/;
 export class SkriptCommandSection extends SkriptSection {
-	playerPatternData: PatternData;
+	patternContainer: PatternTreeContainer;
+	name = "";
 	//context.currentString should be 'command /test <string> :: string' for example
 	constructor(parent: SkriptSection, context: SkriptContext) {
 		super(parent, context);
 		this.patternContainer = new PatternTreeContainer(parent.getPatternTree());
+
 		//get the "player" type, not the entity literal
 		const playerType = super.getTypeData("player");
-		const resultType = playerType ? new SkriptTypeState(playerType) : new SkriptTypeState();
-		this.playerPatternData = new PatternData("[the] player", playerRegExpString, context.getLocation(0, "command".length), PatternType.expression, undefined, [], [], resultType);
-		const regex = /command (\/|)(((?! ).){1,})( ((?! ).){1,}){0,}/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
-		const result = regex.exec(context.currentString);
+		const commandSenderData = this.getPatternData(new SkriptPatternCall("command sender", PatternType.expression))?.fullMatch.matchedPattern;
+		if (playerType && commandSenderData)
+			this.patternContainer.addPattern(new PatternData("[the] player", "(the )?player", commandSenderData.definitionLocation, PatternType.expression, undefined, [], [], new SkriptTypeState(playerType)));
+
+
+		const validCommandRegex = /^command \/?([a-zA-Z0-9_]+)( ((?! ).){1,})*$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
+		const result = validCommandRegex.exec(context.currentString);
+		//extract arguments and their types from the current string
+
+		const typeRegex = /\<(.+?)\>/g;
+		let previousIndex = "command ".length;
+		let m;
+		let argumentIndex = 1;
+		while (m = typeRegex.exec(context.currentString)) {
+			let typeStart = m.index + 1;
+			let typeEnd = typeStart + m[1].length;
+			context.addToken(TokenTypes.regexp, previousIndex, typeStart - previousIndex);
+			//parse types
+			const parsedTypes = this.parseTypes(context, typeStart, m[1].length);
+			this.patternContainer.addPattern(new PatternData("arg[ument]( |-)" + argumentIndex, "arg(ument)?( |-)" + argumentIndex, context.getLocation(typeStart, m[1].length), PatternType.expression, undefined, [], [], parsedTypes))
+			previousIndex = typeEnd;
+			argumentIndex++;
+		}
+		context.addToken(TokenTypes.regexp, previousIndex);
+
 		if (result == null) {
 			context.addDiagnostic(0, context.currentString.length, "cannot recognize this command");
+		}
+		else {
+			this.name = result[1];
 		}
 	}
 	createSection(context: SkriptContext): SkriptSection | undefined {

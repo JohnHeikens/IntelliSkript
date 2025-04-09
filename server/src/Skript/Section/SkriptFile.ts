@@ -20,7 +20,7 @@ import { ReflectExpressionSection } from './reflect/ReflectExpressionSection';
 import { ReflectImportSection } from './reflect/ReflectImportSection';
 import { ReflectPatternContainerSection } from './reflect/ReflectPatternContainerSection';
 import { ReflectPropertySection } from './reflect/ReflectPropertySection';
-import { SkriptCommandSection } from './SkriptCommand';
+import { SkriptCommandSection } from './SkriptCommandSection';
 import { SkriptEventListenerSection } from './SkriptEventListenerSection';
 import { SkriptFunction } from './SkriptFunctionSection';
 import { SkriptOptionsSection } from './SkriptOptionsSection';
@@ -135,11 +135,11 @@ export class SkriptFile extends SkriptSection {
 				const propertyResult = /^(?:((?:(?:local) )?(?:(?:plural|non-single) )?)((?:[^\s]| ){1,}) property) .*/.exec(context.currentString);
 				if (propertyResult) {
 					const typeStart = propertyResult[1].length;
-					const typeEnd = typeStart + propertyResult[2].length;
-					const data = this.parseType(context, typeStart, typeEnd);
+					const data = this.parseType(context, typeStart, propertyResult[2].length);
 					addKeywordToken = false;
 					if (data) {
 						s = new ReflectPropertySection(this, context, data);
+						const typeEnd = typeStart + propertyResult[2].length;
 						patternStartIndex = typeEnd + " property ".length;
 						//add keyword token for 'local plural'
 						context.addToken(TokenTypes.keyword, 0, typeStart);

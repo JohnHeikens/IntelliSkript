@@ -254,6 +254,7 @@ export class SkriptContext {
 		results[indexes.length] = { text: this.currentString.substring(currentIndex, end), index: currentIndex };
 		return results;
 	}
+	/**expects start and end! */
 	addPatternMatch(data: PatternData, start = 0, end = this.currentString.length) {
 		this.currentSkriptFile?.matches.addNestedChild(new SkriptPatternMatchHierarchy(start + this.currentPosition, end + this.currentPosition, data));
 	}

@@ -75,23 +75,24 @@ export class SkriptSection extends SkriptSectionGroup {
 			undefined;
 	}
 
-	parseType(context: SkriptContext, start = 0, end = context.currentString.length): TypeData | undefined {
-		const data = this.getTypeData(context.currentString.substring(start, end));
+	/**expects start and length! */
+	parseType(context: SkriptContext, start = 0, length = context.currentString.length - start): TypeData | undefined {
+		const data = this.getTypeData(context.currentString.substring(start, start + length));
 		let modifiers: TokenModifiers[] = [];
 		if (data) {
-			context.addPatternMatch(data, start, end);
+			context.addPatternMatch(data, start, start + length);
 		}
 		else {
 			modifiers.push(TokenModifiers.deprecated);
-			context.addDiagnostic(start, end - start, "cannot recognize type", DiagnosticSeverity.Error);
+			context.addDiagnostic(start, length, "cannot recognize type", DiagnosticSeverity.Error);
 		}
-		context.addToken(TokenTypes.type, start, end - start, modifiers);
+		context.addToken(TokenTypes.type, start, length, modifiers);
 		return data;
 	}
 
 	/**will add a type token! */
-	parseTypes(context: SkriptContext, start = 0, end = context.currentString.length): SkriptTypeState {
-		const str = context.currentString.substring(start, end);
+	parseTypes(context: SkriptContext, start = 0, length = context.currentString.length - start): SkriptTypeState {
+		const str = context.currentString.substring(start, start + length);
 		const result = new SkriptTypeState();
 		let parts: string[];
 		let currentPosition = start;

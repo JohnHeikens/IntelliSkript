@@ -23,29 +23,15 @@ export class ReflectEventSection extends ReflectPatternContainerSection {
 			const valueStrings = context.currentString.substring(currentPosition).split(", ");
 			//const unknownType = this.getTypeData("unknown");
 			for (let i = 0; i < valueStrings.length; i++) {
-				//valueStrings.forEach(element => {
-				//const type = context.currentSection?.parseType(context, currentPosition, currentPosition + valueStrings[i].length);
-				const eventValueType = this.getTypeData(valueStrings[i]);
+				const eventValueType = this.parseType(context, currentPosition, valueStrings[i].length);
 				if (eventValueType) {
 					this.eventValues.push(new PatternData("[the] [event( |-)]]" + valueStrings[i], "(the )?(event( |-))?" + valueStrings[i], context.getLocation(currentPosition, valueStrings[i].length), PatternType.expression, this, [], [], new SkriptTypeState(eventValueType)));
 				}
-				//this.eventValues.pu;
 				currentPosition += valueStrings[i].length + ", ".length;
 			}
 		}
 		else {
 			return super.processLine(context);
 		}
-		//else if (context.currentString.startsWith("pattern: ")) {
-		//	context.currentSkriptFile.addPattern(context.push("pattern: ".length), this, PatternType.event);
-		//}
-		//else {
-		//	context.addDiagnostic(0, context.currentString.length, "can't understand this line");
-		//}
 	}
-	//override addPattern(context: SkriptContext): void {
-	//	const pattern = PatternTree.parsePattern(context, this, PatternType.event);
-	//	if (pattern)
-	//		context.currentSkriptFile.addPattern(pattern);
-	//}
 }
