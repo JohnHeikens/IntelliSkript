@@ -27,6 +27,7 @@ import { SkriptOptionsSection } from './SkriptOptionsSection';
 import { SkriptSection } from "./skriptSection/SkriptSection";
 import { SemanticTokenLine, UnOrderedSemanticTokensBuilder } from './UnOrderedSemanticTokensBuilder';
 import { ReflectSectionSection } from './reflect/ReflectSectionSection';
+import { SkriptAliasesSection } from './SkriptAliasesSection';
 
 
 
@@ -92,7 +93,6 @@ export class SkriptFile extends SkriptSection {
 		let s: SkriptSection | undefined;
 		if (sectionKeyword == "function") {
 			s = new SkriptFunction(this, context);
-
 		}
 		else if (sectionKeyword == "command") {
 			s = new SkriptCommandSection(this, context);
@@ -117,6 +117,9 @@ export class SkriptFile extends SkriptSection {
 		}
 		else if (sectionKeyword == "type") {
 			s = new SkriptTypeSection(this, context);
+		}
+		else if (sectionKeyword == "aliases"){
+			s = new SkriptAliasesSection(this, context);
 		}
 		else {
 			const result = /^((local )?((plural|non-single) )?expression)( .*|)/.exec(context.currentString);
@@ -294,10 +297,10 @@ export class SkriptFile extends SkriptSection {
 						else {
 							//context.currentString = trimmedLine;
 							sectionContext.currentSection?.processLine?.(sectionContext);
-							if (sectionContext.parseResult.diagnostics.length)
-								return false;
 							//trimmedContext.currentSection.endLine = context.currentLine;
 						}
+						if (sectionContext.parseResult.diagnostics.length)
+							return false;
 						mostValidContext = sectionContext;
 						return true;
 					}
