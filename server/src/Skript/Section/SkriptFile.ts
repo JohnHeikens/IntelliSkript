@@ -118,7 +118,7 @@ export class SkriptFile extends SkriptSection {
 		else if (sectionKeyword == "type") {
 			s = new SkriptTypeSection(this, context);
 		}
-		else if (sectionKeyword == "aliases"){
+		else if (sectionKeyword == "aliases") {
 			s = new SkriptAliasesSection(this, context);
 		}
 		else {
@@ -187,11 +187,25 @@ export class SkriptFile extends SkriptSection {
 
 
 	static trimLineWithoutComments(line: string): { trimmedLine: string, commentIndex: number } {
+		let currentDelimiters = "";
+		let commentIndex = -1;
+		for (let i = 0; i < line.length; i++) {
+			const char = line[i];
+			if ('"%'.includes(char)) {
+				if (currentDelimiters.length > 0 && currentDelimiters[currentDelimiters.length - 1] == char) {
+					currentDelimiters = currentDelimiters.substring(0, currentDelimiters.length - 1);
+				} else
+					currentDelimiters += line[i];
+			}
+			else if (char === '#' && currentDelimiters.length == 0){
+				commentIndex = i; break;
+			}
+		}
 		//remove comments and space from the right
-		const commentIndex = line.search(
-			//there can't be a < in front of a # because then it might be a hex color
-			/(?<![#\<])#(?!#)/
-		);
+		//const commentIndex = line.search(
+		//	//there can't be a < in front of a # because then it might be a hex color
+		//	/(?<![#\<])#(?!#)/
+		//);
 		const lineWithoutComments = commentIndex == -1 ? line : line.substring(0, commentIndex);
 		return { trimmedLine: lineWithoutComments.trim(), commentIndex: commentIndex };
 	}

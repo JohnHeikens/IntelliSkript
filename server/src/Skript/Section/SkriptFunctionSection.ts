@@ -31,7 +31,7 @@ export class SkriptFunction extends SkriptSection {
 			if (result[2].trim().length > 0) {
 				const argumentIndex = "function ".length + result[1].length + "(".length;
 				const specializedContext = context.push(argumentIndex, result[2].length);
-				specializedContext.createHierarchy();
+				specializedContext.getHierarchy();
 				const argumentStrings = specializedContext.splitHierarchically(/,/g); //result[2].split(/,|and/);
 
 

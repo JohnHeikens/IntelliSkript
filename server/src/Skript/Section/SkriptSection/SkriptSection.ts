@@ -209,7 +209,7 @@ export class SkriptSection extends SkriptSectionGroup {
 
 	//detect patterns like a [b | c]
 	//return value: a type. basically, it will convert each subpattern into a result type (a %)
-	detectPatternsRecursively(context: SkriptContext, mainPatternType: PatternType = PatternType.effect, isTopNode = true, currentNode: SkriptNestHierarchy = context.createHierarchy(true)): { detectedPattern: PatternData | undefined } {
+	detectPatternsRecursively(context: SkriptContext, mainPatternType: PatternType = PatternType.effect, isTopNode = true, currentNode: SkriptNestHierarchy = context.getHierarchy(true)): { detectedPattern: PatternData | undefined } {
 		let foundPattern: PatternData | undefined;
 		const mergedPatternArguments: Map<number, SkriptTypeState> = new Map<number, SkriptTypeState>();
 		//const currentNode = isTopNode ? context.createHierarchy(isTopNode) : context.hierarchy;
@@ -270,7 +270,7 @@ export class SkriptSection extends SkriptSectionGroup {
 		}
 		//then process main node
 		//will also return true if currentNode.character is ''
-		if ('%('.includes(currentNode.character)) {
+		if ('%('.includes(currentNode.delimiter)) {
 			//let mergedPattern = '';
 			//the position in the pattern
 			//let currentPosition = currentNode.start;
@@ -279,9 +279,9 @@ export class SkriptSection extends SkriptSectionGroup {
 
 			for (let i = 0; i < currentNode.children.length; i++) {
 				const child = currentNode.children[i];
-				if ('"{('.includes(child.character)) {//string or variable
+				if ('"{('.includes(child.delimiter)) {//string or variable
 					let typeToReplace: SkriptTypeState | undefined;
-					if (child.character == '(') {
+					if (child.delimiter == '(') {
 						if (childResultList[i])
 							typeToReplace = childResultList[i].returnType;
 						else {
@@ -321,13 +321,13 @@ export class SkriptSection extends SkriptSectionGroup {
 							}
 						}
 					}
-					else if (child.character == '{') {
+					else if (child.delimiter == '{') {
 						//variable
 						this.addVariableReference(context.getLocation(child.start, child.end - child.start), context.currentString.substring(child.start, child.end));
 						//context.addToken(variable.isParameter ? TokenTypes.parameter : TokenTypes.variable, child.start, child.end - child.start);
 
 					}
-					else if (child.character == '"') {
+					else if (child.delimiter == '"') {
 						const stringData = this.getTypeData("string");
 						if (stringData)
 							typeToReplace = new SkriptTypeState(stringData);
@@ -383,9 +383,9 @@ export class SkriptSection extends SkriptSectionGroup {
 			}
 		}
 		//won't pass for '' because it's being handled above
-		else if ('"{'.includes(currentNode.character)) {
-			const borderSize = currentNode.character == '"' ? 1 : 0;
-			const tokenType = currentNode.character == '"' ? TokenTypes.string : TokenTypes.variable;
+		else if ('"{'.includes(currentNode.delimiter)) {
+			const borderSize = currentNode.delimiter == '"' ? 1 : 0;
+			const tokenType = currentNode.delimiter == '"' ? TokenTypes.string : TokenTypes.variable;
 
 			//just tokenize around the already processed child nodes
 			let currentPosition = currentNode.start - borderSize;

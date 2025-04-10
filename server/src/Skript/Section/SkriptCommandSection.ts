@@ -22,8 +22,10 @@ export class SkriptCommandSection extends SkriptSection {
 		if (playerType && commandSenderData)
 			this.patternContainer.addPattern(new PatternData("[the] player", "(the )?player", commandSenderData.definitionLocation, PatternType.expression, undefined, [], [], new SkriptTypeState(playerType)));
 
-
-		const validCommandRegex = /^command \/?([a-zA-Z0-9_]+)( ((?! ).){1,})*$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
+		//valid commands:
+		// /?
+		// //worldeditsizer [<integer>] [<integer>]
+		const validCommandRegex = /^command \/*([^\s]+)( ((?! ).){1,})*$/; // /function ([a-zA-Z0-9]{1,})\(.*)\) :: (.*)/;
 		const result = validCommandRegex.exec(context.currentString);
 		//extract arguments and their types from the current string
 

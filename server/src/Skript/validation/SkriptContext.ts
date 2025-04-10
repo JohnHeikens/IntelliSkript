@@ -106,7 +106,8 @@ export class SkriptContext {
 		}, message, severity, code, data);
 	}
 
-	createHierarchy(addDiagnostics = false) {
+	getHierarchy(addDiagnostics = false) {
+		if (this.hierarchy) return this.hierarchy;
 		const openBraces = "{([";//< can also be used as operator so not including in brace list
 		const closingBraces = "})]";
 		this.hierarchy = new SkriptNestHierarchy(0, '');
@@ -115,7 +116,7 @@ export class SkriptContext {
 			const currentChar = this.currentString[i];
 			if (currentChar == '"') {
 				const node = this.hierarchy.getActiveNode();
-				if (node.character == '"') {
+				if (node.delimiter == '"') {
 					if (this.currentString[i + 1] == '"') {
 						i++; continue;//skip escaped string characters
 					}
@@ -123,7 +124,7 @@ export class SkriptContext {
 						node.end = i;//pop
 					}
 				}
-				else if ('%(,'.includes(node.character)) {
+				else if ('%(,'.includes(node.delimiter)) {
 					node.children.push(new SkriptNestHierarchy(i + 1, '"'));//push
 				}
 				//currentNestLevel++;
@@ -131,21 +132,21 @@ export class SkriptContext {
 			}
 			else if (currentChar == '%') {
 				const node = this.hierarchy.getActiveNode();
-				if (node.character == '"') {
+				if (node.delimiter == '"') {
 					if (this.currentString[i + 1] == '%') {
 						i++; continue;//skip escaped string characters
 					}
 				}
-				if (node.character == '%') {
+				if (node.delimiter == '%') {
 					node.end = i;//pop
 				}
-				else if (node.character == "") {
+				else if (node.delimiter == "") {
 					if ((i == 0) || (this.currentString[i - 1].match(/[0-9]/) == null)) {//don't push for percentages
 						node.children.push(new SkriptNestHierarchy(i + 1, '%'));//push
 					}
 				}
 				//order is important here! "example".includes("") will return true!
-				else if ("{\"".includes(node.character)) {
+				else if ("{\"".includes(node.delimiter)) {
 					node.children.push(new SkriptNestHierarchy(i + 1, '%'));//push
 				}
 				//else if(node.character.length > 0){
@@ -155,11 +156,11 @@ export class SkriptContext {
 			}
 			else if (currentChar == ',') {
 				const node = this.hierarchy.getActiveNode();
-				if (node.character == '(')
+				if (node.delimiter == '(')
 					//first child
 					node.children.push(new SkriptNestHierarchy(i + 1, ','));
 
-				else if (node.character == ',') {
+				else if (node.delimiter == ',') {
 					//pop last ',' child
 					node.end = i;
 					//add new ',' node to parent node
@@ -168,21 +169,21 @@ export class SkriptContext {
 			}
 			else if (openBraces.includes(currentChar)) {
 				const node = this.hierarchy.getActiveNode();
-				if (node.character != '"') {//braces don't count in a string
+				if (node.delimiter != '"') {//braces don't count in a string
 					node.children.push(new SkriptNestHierarchy(i + 1, currentChar));//push
 				}
 			}
 			else if (closingBraces.includes(currentChar)) {
 				const node = this.hierarchy.getActiveNode();
 
-				if (node.character != '"') {//braces don't count in a string
-					if (node.character == ',' && currentChar == ')') {
+				if (node.delimiter != '"') {//braces don't count in a string
+					if (node.delimiter == ',' && currentChar == ')') {
 						//pop ',' node
 						node.end = i;
 						//pop '(' node. we know for sure that a ',' node is always nested in a '(' node
 						this.hierarchy.getActiveNode().end = i;
 					}
-					else if (node.character.length && (closingBraces.indexOf(currentChar) == openBraces.indexOf(node.character))) {
+					else if (node.delimiter.length && (closingBraces.indexOf(currentChar) == openBraces.indexOf(node.delimiter))) {
 						node.end = i;//pop
 					}
 					else if (addDiagnostics) {
@@ -194,9 +195,9 @@ export class SkriptContext {
 		}
 
 		this.hierarchy.end = this.currentString.length;
-		let lastActiveNode : SkriptNestHierarchy = this.hierarchy;
+		let lastActiveNode: SkriptNestHierarchy = this.hierarchy;
 		while (true) {
-			const lastActiveChildNode:SkriptNestHierarchy | undefined = lastActiveNode.getActiveChildNode();
+			const lastActiveChildNode: SkriptNestHierarchy | undefined = lastActiveNode.getActiveChildNode();
 			if (!lastActiveChildNode) break;
 			if (addDiagnostics) {
 				if (lastActiveChildNode != this.hierarchy) {

@@ -29,27 +29,27 @@ function convertSkriptPatternToRegExp(pattern: string, hierarchy: SkriptNestHier
 		if (child.start - 1 > currentPosition) {
 			fixedString += convertString(pattern.substring(currentPosition, child.start - 1));
 		}
-		if (child.character == '[') {
+		if (child.delimiter == '[') {
 			fixedString += '(';
 		}
-		else if (child.character == '(') {
-			fixedString += child.character;
+		else if (child.delimiter == '(') {
+			fixedString += child.delimiter;
 		}
-		else if (child.character == '|') {
+		else if (child.delimiter == '|') {
 			if (child.start > hierarchy.start) {
-				fixedString += child.character;
+				fixedString += child.delimiter;
 			}
 		}
-		if (child.character == '<') {
+		if (child.delimiter == '<') {
 			fixedString += pattern.substring(child.start, child.end);
 		}
 		else {
 			fixedString += convertSkriptPatternToRegExp(pattern, child);
 		}
-		if (child.character == '[') {
+		if (child.delimiter == '[') {
 			fixedString += ')?';
 		}
-		else if (child.character == '(') {
+		else if (child.delimiter == '(') {
 			fixedString += ')';
 		}
 		currentPosition = child.end + 1;
@@ -76,10 +76,10 @@ function createRegExpHierarchy(regExString: string): SkriptNestHierarchy {
 		if ((openBraces + closingBraces + '|\\').includes(char)) {
 			let node = hierarchy.getActiveNode();
 			if (closingBraces.includes(char)) {
-				if (node.character != '[' || char == ']') {
+				if (node.delimiter != '[' || char == ']') {
 					node.end = i; //pop
 					const linkedOpenbrace = openBraces[closingBraces.indexOf(char)];
-					if (node.character != linkedOpenbrace) {
+					if (node.delimiter != linkedOpenbrace) {
 						node = hierarchy.getActiveNode();
 						if (node != hierarchy) {
 							node.end = i; //pop twice (needed for pipes and if a brace was placed incorrectly)
@@ -87,12 +87,12 @@ function createRegExpHierarchy(regExString: string): SkriptNestHierarchy {
 					}
 				}
 			}
-			else if (node.character != '[') {
+			else if (node.delimiter != '[') {
 				if (openBraces.includes(char)) {
 					node.children.push(new SkriptNestHierarchy(i + 1, char));
 				}
 				else if (char == '|') {
-					if (node.character == '|') {
+					if (node.delimiter == '|') {
 						node.end = i;//pop
 						node = hierarchy.getActiveNode();
 					}
@@ -116,7 +116,7 @@ function createRegExpHierarchy(regExString: string): SkriptNestHierarchy {
 	}
 
 	let lastActiveNode = hierarchy.getActiveNode();
-	if (lastActiveNode.character == '|') {
+	if (lastActiveNode.delimiter == '|') {
 		//pop
 		lastActiveNode.end = regExString.length;
 		lastActiveNode = hierarchy.getActiveNode();
@@ -148,7 +148,7 @@ export class PatternTree {
 	//send [the | % to the] player
 	addPatternPart(data: PatternData, currentNodes: PatternTreeNode[], Hierarchy: SkriptNestHierarchy): PatternTreeNode[] {
 		const pattern = data.regexPatternString;//.replace(/\\(.)/g, "$1");
-		if (Hierarchy.children.length && Hierarchy.children[0].character == '|') {
+		if (Hierarchy.children.length && Hierarchy.children[0].delimiter == '|') {
 			//divide in [ | ]
 			let allOptionEnds: PatternTreeNode[] = [];
 			for (const child of Hierarchy.children) {
@@ -270,19 +270,19 @@ export class PatternTree {
 			if ((openBraces + closingBraces + '|\\').includes(char)) {
 				let node = hierarchy.getActiveNode();
 				if (closingBraces.includes(char)) {
-					if (node.character != '<' || char == '>') {
+					if (node.delimiter != '<' || char == '>') {
 
 						const linkedOpenbrace = openBraces[closingBraces.indexOf(char)];
-						if ((char == ')') && (node.character == '[')) {
+						if ((char == ')') && (node.delimiter == '[')) {
 							//just ignore, this is a literal brace
 							continue;
 						}
 
 						node.end = i; //pop
-						if (node.character != linkedOpenbrace) {
+						if (node.delimiter != linkedOpenbrace) {
 							const oldNode = node;
 							node = hierarchy.getActiveNode();
-							if (oldNode.character == '(') {//this was a literal brace
+							if (oldNode.delimiter == '(') {//this was a literal brace
 								node.children = node.children.splice(0, node.children.length - 1);
 								node.children.push(...oldNode.children);
 							}
@@ -292,12 +292,12 @@ export class PatternTree {
 						}
 					}
 				}
-				else if (node.character != '<') {
+				else if (node.delimiter != '<') {
 					if (openBraces.includes(char)) {
 						node.children.push(new SkriptNestHierarchy(i + 1, char));
 					}
 					else if (char == '|') {
-						if (node.character == '|') {
+						if (node.delimiter == '|') {
 							node.end = i;//pop
 							node = hierarchy.getActiveNode();
 						}
@@ -322,7 +322,7 @@ export class PatternTree {
 		hierarchy.end = context.currentString.length;
 
 		let lastActiveNode = hierarchy.getActiveNode();
-		if (lastActiveNode.character == '|') {
+		if (lastActiveNode.delimiter == '|') {
 			lastActiveNode.end = hierarchy.end;//pop
 			lastActiveNode = hierarchy.getActiveNode();
 		}
@@ -341,7 +341,7 @@ export class PatternTree {
 		for (let i = 0; i < hierarchy.children.length; i++) {
 			const node = hierarchy.children[i];
 			let fixedNode = false;
-			if (node.character == '(') {
+			if (node.delimiter == '(') {
 				if (currentString[node.end + ')'.length] == '?') {
 					const spaceCheckPosition = node.start - 2;
 					const hasSpaceLeft = currentString[spaceCheckPosition] == ' ';
