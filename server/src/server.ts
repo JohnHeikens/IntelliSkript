@@ -132,17 +132,18 @@ export class Server {
 
 						// Tell the client that this server supports code completion.
 						//completionProvider: {
-						//	resolveProvider: true
+						//	//the charachter to type to request a completion
+						//	triggerCharacters: [' '],
+						//	//the charachter to type to complete the completion
+						//	allCommitCharacters: [';'],
+						//	//we will provide additional information for each completion
+						//	resolveProvider: false,
 						//},
+						//we will show where symbols are defined
 						definitionProvider: true,
 						codeActionProvider: true,
 						//textDocumentSync: TextDocumentSyncKind.Full,
 						hoverProvider: true,
-						//completionProvider: {
-						//	triggerCharacters: ['.'],
-						//	allCommitCharacters: [';'],
-						//	resolveProvider: false,
-						//},
 						//signatureHelpProvider: {
 						//},
 						//referencesProvider: { workDoneProgress: true },
@@ -637,41 +638,41 @@ export class Server {
 			return [];
 		});
 
-		// This handler provides the initial list of the completion items.
-		//connection.onCompletion(
-		//	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-		//		// The pass parameter contains the position of the text document in
-		//		// which code complete got requested. For the example we ignore this
-		//		// info and always provide the same completion items.
-		//		return [
-		//			{
-		//				label: 'TypeScript',
-		//				kind: CompletionItemKind.Text,
-		//				data: 1
-		//			},
-		//			{
-		//				label: 'JavaScript',
-		//				kind: CompletionItemKind.Text,
-		//				data: 2
+		//		// This handler provides the initial list of the completion items.
+		//		connection.onCompletion(
+		//			(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
+		//				// The pass parameter contains the position of the text document in
+		//				// which code complete got requested. For the example we ignore this
+		//				// info and always provide the same completion items.
+		//				return [
+		//					{
+		//						label: 'function',
+		//						kind: CompletionItemKind.Text,
+		//						data: 1
+		//					},
+		//					{
+		//						label: 'command',
+		//						kind: CompletionItemKind.Text,
+		//						data: 2
+		//					}
+		//				];
 		//			}
-		//		];
-		//	}
-		//);
-
-		// This handler resolves additional information for the item selected in
-		// the completion list.
-		//connection.onCompletionResolve(
-		//	(item: CompletionItem): CompletionItem => {
-		//		if (item.data === 1) {
-		//			item.detail = 'TypeScript details';
-		//			item.documentation = 'TypeScript documentation';
-		//		} else if (item.data === 2) {
-		//			item.detail = 'JavaScript details';
-		//			item.documentation = 'JavaScript documentation';
-		//		}
-		//		return item;
-		//	}
-		//);
+		//		);
+//
+		//		// This handler resolves additional information for the item selected in
+		//		// the completion list.
+		//		connection.onCompletionResolve(
+		//			(item: CompletionItem): CompletionItem => {
+		//				if (item.data === 1) {
+		//					item.detail = 'create a function';
+		//					item.documentation = 'create a function';
+		//				} else if (item.data === 2) {
+		//					item.detail = 'create a command';
+		//					item.documentation = 'create a command';
+		//				}
+		//				return item;
+		//			}
+		//		);
 
 		// Make the text document manager listen on the connection
 		// for open, change and close text document events

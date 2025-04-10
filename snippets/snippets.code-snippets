@@ -1,0 +1,66 @@
+{
+	"function": {
+		"prefix": [
+			"function"
+		],
+		"body": [
+			"function ${1:name}(${2:arguments}) :: ${3:return type}:"
+		],
+		"description": "Creates a function"
+	},
+	"command": {
+		"prefix": [
+			"command"
+		],
+		"body": [
+			"command /${1:name} ${2:arguments}:",
+			"\tdescription:${3:description}",
+			"\tpermission: ${4:permission}",
+			"\ttrigger:"
+		],
+		"description": "Creates a command"
+	},
+	"condition": {
+		"prefix": [
+			"condition"
+		],
+		"body": [
+			"condition:",
+			"\tpatterns:$1{pattern}",
+			"\ttrigger:"
+		],
+		"description": "Creates a condition"
+	},
+	"expression": {
+		"prefix": [
+			"expression"
+		],
+		"body": [
+			"expression:",
+			"\treturn type:$2{return type}",
+			"\tpatterns:$1{pattern}",
+			"\ttrigger:"
+		],
+		"description": "Creates an expression"
+	},
+	//sections
+	"looparray": {
+		"prefix": [
+			"loop"
+		],
+		"body": [
+			"loop {${1:loop variable}::*}:"
+		],
+		"description": "Loops over an array"
+	},
+	//miscellaneous
+	"multi line comment":{
+		"prefix": ["###"],
+		"body": [
+			"###",
+			"${1:your comment here}",
+			"###"
+		],
+		"description": "Creates a multi line comment"
+	}
+}

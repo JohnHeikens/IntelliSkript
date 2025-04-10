@@ -4,7 +4,7 @@
 	"description": "IntelliSense for skript",
 	"author": "John Heikens",
 	"license": "GNU",
-	"version": "1.7.17",
+	"version": "1.7.19",
 	"icon": "icon.png",
 	"repository": {
 		"type": "git",
@@ -14,7 +14,8 @@
 	"categories": [
 		"Programming Languages",
 		"Linters",
-		"Formatters"
+		"Formatters",
+		"Snippets"
 	],
 	"keywords": [
 		"skript",
@@ -36,6 +37,12 @@
 	],
 	"main": "./client/out/extension",
 	"contributes": {
+		"snippets": [
+			{
+				"language": "skript",
+				"path": "./snippets/snippets.code-snippets"
+			}
+		],
 		"languages": [
 			{
 				"id": "skript",
