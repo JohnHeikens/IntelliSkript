@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "version": "1.0-alpha2"
+  },
+  "conditions": [
+    {
+      "id": "CondIsOfTemplate",
+      "name": "Struct Is From Template",
+      "description": [
+        "Checks if a struct is from a specific template. The template name is case insensitive.",
+        "The template name can be a string or a literal."
+      ],
+      "since": [
+        "1.0"
+      ],
+      "patterns": [
+        "[the] %structs% (is|are)[n't| not] [a] %string% struct[s]",
+        "[the] %structs% (were|was)[n't| not] made from [the] %string% template"
+      ]
+    }
+  ],
+  "expressions": [
+    {
+      "id": "ExprStructInstance",
+      "name": "Struct Creation",
+      "description": [
+        "Creates an instance of a struct based off a template. The template name is case insensitive. Initial field values can be set by adding entries with the format 'fieldname: value'."
+      ],
+      "since": [
+        "1.0"
+      ],
+      "return type": "Struct",
+      "patterns": [
+        "[a[n]] <([\\w ]+)> struct [instance] [with [the] [initial] values [of]]"
+      ]
+    },
+    {
+      "id": "ExprFieldAccess",
+      "name": "Struct Field Access",
+      "description": [
+        "Access a field of a struct. The field name is case insensitive. Non-constant fields can be set, reset, or deleted."
+      ],
+      "since": [
+        "1.0"
+      ],
+      "return type": "Object",
+      "changers": [
+        "delete",
+        "reset"
+      ],
+      "patterns": [
+        "[the] field <[\\w ]+> [of] %struct%",
+        "%struct%'[s] <[\\w ]+> field",
+        "%struct%[ ]->[ ]<[\\w ]+>"
+      ]
+    },
+    {
+      "id": "ExprStructTemplate",
+      "name": "Template of Struct",
+      "description": [
+        "Returns the name of the template used to create a struct."
+      ],
+      "examples": [
+        "set {_struct} to a message struct\nset {_template} to template of {_struct}\n# {_template} is now \"message\"\n"
+      ],
+      "since": [
+        "1.0"
+      ],
+      "return type": "Text",
+      "patterns": [
+        "[the] [struct] template of %structs%",
+        "%structs%'[s] [struct] template"
+      ]
+    }
+  ],
+  "types": [
+    {
+      "id": "Struct",
+      "name": "Struct",
+      "description": [
+        "A struct is a collection of typed fields."
+      ],
+      "patterns": [
+        "struct[s]"
+      ]
+    }
+  ],
+  "structures": [
+    {
+      "id": "StructStructTemplate",
+      "name": "Struct Template",
+      "description": [
+        "Creates a struct template. The template name is case insensitive and has the same restrictions as function names.",
+        "Fields are defined in the format '[const[ant]] <fieldname>: <fieldtype> [= %object%]'. Their names are case insensitive and consist of letters, underscores, and spaces. No two fields in the same template can have the same name.",
+        "The field type can be a single type or a plural type. The default value can be set by adding an optional '= value' at the end of the line.The default value will be evaluated when the struct is created.",
+        "Fields can be marked as constant by adding 'const' or 'constant' at the beginning of the line. Constant fields cannot be changed after the struct is created."
+      ],
+      "examples": [
+        "struct message:\n    sender: player\n    message: string\n    const timestamp: date = now\n    attachments: objects\n"
+      ],
+      "since": [
+        "1.0"
+      ],
+      "patterns": [
+        "struct <([\\p{IsAlphabetic}][\\p{IsAlphabetic}\\p{IsDigit}_]*)>"
+      ]
+    }
+  ]
+}
